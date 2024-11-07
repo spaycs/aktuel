@@ -28,7 +28,7 @@ const Home = ({ navigation }) => {
         if (navigation.isFocused()) {
           Alert.alert(
             'Çıkmak Üzeresiniz',
-            'Uygulamadan çıkmak istediğinizden emin misiniz?1',
+            'Uygulamadan çıkmak istediğinizden emin misiniz?123',
             [
               { text: 'Evet', onPress: () => BackHandler.exitApp() },
               { text: 'Hayır', style: 'cancel' },
