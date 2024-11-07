@@ -139,7 +139,8 @@ const DepolarArasiProductModal = ({
                 }}
               />
               <View style={MainStyles.productDepolarArasiModalMiktarInput}>
-               <Text style={MainStyles.inputDepolarArasiModalFiyat}>Liste Fiyatı: {selectedProduct?.Liste_Fiyatı}</Text>
+              <Text style={MainStyles.inputDepolarArasiModalFiyat}>Liste Fiyatı:{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(selectedProduct?.Liste_Fiyatı)}
+               </Text>
                </View>
             </View>
           </View>

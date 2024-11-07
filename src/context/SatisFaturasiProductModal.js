@@ -451,7 +451,7 @@ const SatisFaturasiProductModal = ({
                 style={MainStyles.productModalMiktarInput}
                 placeholderTextColor={colors.placeholderTextColor}
                 editable={false}
-                value={calculateTotal()}
+                value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
                 keyboardType="numeric"  
               />
             </View>

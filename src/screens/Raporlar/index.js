@@ -129,6 +129,24 @@ const Raporlar = ({ navigation }) => {
     >
       <Text>Yıllık Rapor</Text>
     </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => handlePress('SiparisKarsilama', 'IQM_YillikRapor')}
+    >
+      <Text>Sipariş Karşılama</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => handlePress('SorumlulukBazindaBekleyenSiparis', 'IQM_YillikRapor')}
+    >
+      <Text>Sorumluluk Bazında Bekleyen Sipariş</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => handlePress('TedarikciBazindaSatisKarsilama', 'IQM_YillikRapor')}
+    >
+      <Text>Tedarikçi Bazında Satış Karşılama</Text>
+    </TouchableOpacity>
     
   </ScrollView>
 );
@@ -138,7 +156,7 @@ const styles = StyleSheet.create({
 container: {
   flex: 1,
   padding: 20,
-  backgroundColor: colors.white
+  backgroundColor: colors.white,
 },
 button: {
   height: 40,

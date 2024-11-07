@@ -28,6 +28,9 @@ import KasaAlacak from "../screens/Raporlar/KasaAlacak";
 import BankaBakiyeleri from "../screens/Raporlar/BankaBakiyeleri";
 import axiosLinkMain from "../utils/axiosMain";
 import { useAuthDefault } from '../components/DefaultUser';
+import SiparisKarsilama from "../screens/Raporlar/SiparisKarsilama";
+import SorumlulukBazindaBekleyenSiparis from "../screens/Raporlar/SorumlulukBazindaBekleyenSiparis";
+import TedarikciBazindaSatisKarsilama from "../screens/Raporlar/TedarikciBazindaSatisKarsilama";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -417,6 +420,39 @@ const Router = () => {
                 component={YillikRapor}
                 options={({ navigation, route }) => ({
                     headerTitle: "Yıllık Rapor",
+                    headerTitleStyle: {
+                      fontSize: 16,
+                    },
+                   
+                    })}
+            />
+            <Stack.Screen
+                name="SiparisKarsilama"
+                component={SiparisKarsilama}
+                options={({ navigation, route }) => ({
+                    headerTitle: "Sipariş Karşılama",
+                    headerTitleStyle: {
+                      fontSize: 16,
+                    },
+                   
+                    })}
+            />
+            <Stack.Screen
+                name="SorumlulukBazindaBekleyenSiparis"
+                component={SorumlulukBazindaBekleyenSiparis}
+                options={({ navigation, route }) => ({
+                    headerTitle: "Sorumluluk Bazında Bekleyen Sipariş",
+                    headerTitleStyle: {
+                      fontSize: 16,
+                    },
+                   
+                    })}
+            />
+            <Stack.Screen
+                name="TedarikciBazindaSatisKarsilama"
+                component={TedarikciBazindaSatisKarsilama}
+                options={({ navigation, route }) => ({
+                    headerTitle: "Tedarikçi Bazında Satış Karşılaştırma",
                     headerTitleStyle: {
                       fontSize: 16,
                     },

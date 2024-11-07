@@ -271,7 +271,7 @@ const calculateTotalWithoutDiscount = () => {
                   placeholderTextColor="#999"
                   editable={false}
                   keyboardType="numeric"  
-                  value={calculateTotalWithoutDiscount()}
+                  value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithoutDiscount())}
                 />
               </View>
             </View>

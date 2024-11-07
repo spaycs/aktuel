@@ -280,11 +280,11 @@ const calculateTotalQuantity = () => {
           </View>
           <View style={MainStyles.rowContainerOnizleme}>
             <Text style={MainStyles.totalText}>Vergi Toplam:</Text>
-            <Text style={MainStyles.amountText}>{calculateTotalTax()} </Text>
+            <Text style={MainStyles.amountText}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalTax())} </Text>
           </View>
           <View style={MainStyles.rowContainerOnizleme}>
             <Text style={MainStyles.totalText}>Yekün:</Text>
-            <Text style={MainStyles.amountTextYekun}>{calculateYekun()} </Text>
+            <Text style={MainStyles.amountTextYekun}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateYekun())} </Text>
           </View>
         </View>
       </View>

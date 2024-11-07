@@ -387,7 +387,7 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalMiktarInput}
                   placeholderTextColor="#999"
                   editable={false}
-                  value={calculateTotalWithoutDiscount()}
+                  value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithoutDiscount())}
                 />
               </View>
             </View>

@@ -157,7 +157,7 @@ const Home = ({ navigation }) => {
   return (
     <View style={[MainStyles.flex1, MainStyles.backgroundColorWhite, MainStyles.paddingHorizontal15, MainStyles.justifyContent]}>
        <View style={MainStyles.marginTop5}><Text style={[MainStyles.fontSize14, MainStyles.fontWeightBold, MainStyles.marginBottom10]}>Günlük Durum</Text></View>
-      <ScrollView horizontal style={{ maxHeight: 135 }} showsHorizontalScrollIndicator={false}>
+      <ScrollView horizontal style={{ maxHeight: 145 }} showsHorizontalScrollIndicator={false}>
   <View style={{ flexWrap: 'wrap' }}>
         {gunlukKazancVerileri.map((item, index) => (
            <View

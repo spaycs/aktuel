@@ -1526,7 +1526,7 @@ export const MainStyles = {
     inputDepolarArasiModalFiyat: {
       fontSize: 12,
       color: colors.black,
-      paddingVertical: 15,
+      paddingVertical: 10,
     },
     productModalIskontoInput: {
       width: '90%', 
