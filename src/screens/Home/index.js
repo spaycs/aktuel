@@ -21,6 +21,10 @@ const Home = ({ navigation }) => {
   const [menuIzinleri, setMenuIzinleri] = useState(null); // Menü izinleri için state
   const [hasAccess, setHasAccess] = useState(true); // Erişim izni kontrolü
   const [gunlukKazancVerileri, setGunlukKazancVerileri] = useState([]); 
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> 35a3b7ddd79d6b8f5956518382f433cfa8252748
 
   useFocusEffect(
     useCallback(() => {
@@ -28,7 +32,11 @@ const Home = ({ navigation }) => {
         if (navigation.isFocused()) {
           Alert.alert(
             'Çıkmak Üzeresiniz',
+<<<<<<< HEAD
             'Uygulamadan çıkmak istediğinizden emin misiniz?12344',
+=======
+            'Uygulamadan çıkmak istediğinizden emin misiniz?',
+>>>>>>> 35a3b7ddd79d6b8f5956518382f433cfa8252748
             [
               { text: 'Evet', onPress: () => BackHandler.exitApp() },
               { text: 'Hayır', style: 'cancel' },
