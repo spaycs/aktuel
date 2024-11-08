@@ -52,31 +52,8 @@ const Drawer = createDrawerNavigator();
 */
 
 function DrawerNavigator() {
-  const navigation = useNavigation();
-  const [sohbetCount, setSohbetCount] = useState(0);
-  const { defaults } = useAuthDefault();
-
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      try {
-        const temsilciId =  defaults[0].IQ_Kod;
-        const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
-        const data = response.data;
-        if (Array.isArray(data) && data.length > 0) {
-          setSohbetCount(data.length); 
-        } else {
-          setSohbetCount(0); 
-        }
-      } catch (error) {
-        console.error('API çağrısı başarısız oldu:', error);
-      }
-    }, 20000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
     return (
-      <Drawer.Navigator
+    <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           drawerStyle: {
@@ -160,7 +137,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-    }} />
+      }} />
         <Drawer.Screen name="Alınan Sipariş Fişi"  component={AlinanSiparis}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -170,7 +147,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-    }} />
+     }} />
         <Drawer.Screen name="Satış İrsaliyesi"  component={SatisIrsaliyesi}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -180,7 +157,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
        
-    }} />
+      }} />
         <Drawer.Screen name="Satış Faturası"  component={SatisFaturasi}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -190,7 +167,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-    }} />
+      }} />
         <Drawer.Screen name="Tahsilat Tediye"  component={TahsilatTediye}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -200,7 +177,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
         
-    }} />
+      }} />
         <Drawer.Screen name="Alış İrsaliyesi"  component={AlisIrsaliyesi}
         options={{
           drawerItemStyle: { display: 'none' },
@@ -220,19 +197,38 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-    }} />
+     }} />
       </Drawer.Navigator>
     );
   }
   
 
 const Router = () => {
+  const navigation = useNavigation();
+  const [sohbetCount, setSohbetCount] = useState(0);
+  const { defaults } = useAuthDefault();
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const temsilciId =  defaults[0].IQ_Kod;
+        const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
+        const data = response.data;
+        if (Array.isArray(data) && data.length > 0) {
+          setSohbetCount(data.length); 
+        } else {
+          setSohbetCount(0); 
+        }
+      } catch (error) {
+        console.error('API çağrısı başarısız oldu:', error);
+      }
+    }, 20000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
     return(
         <Stack.Navigator >
-
-
-           
-           
              <Stack.Screen
                 name="GetStarted"
                 component={GetStarted}
@@ -252,22 +248,35 @@ const Router = () => {
                     })}
             />
           
-          <Stack.Screen
-                name="DrawerNavigator"
-                component={DrawerNavigator}
-                options={{headerShown: false, tabBarVisible: true,}}
-            />
+         
             
             <Stack.Screen
                 name="Home"
                 component={Home}
-                options={({ navigation, route }) => ({
-                    headerBackVisible:false,
-                    
-                    headerTitle: () => (
-                        <MikroIQ/>
-                        ),
-                    })}
+                options={{
+                  headerTitleAlign: 'center',
+                  drawerItemStyle: { display: 'none' },
+                  headerBackVisible: false,
+                  headerTitle: () => <MikroIQ width={90} height={25}/>,
+                  drawerActiveBackgroundColor: colors.islembuttongray,
+                  drawerActiveTintColor: 'black',
+                  drawerInactiveTintColor: 'black',
+                  headerRight: () => (
+                    <TouchableOpacity
+                        onPress={() => {
+                        navigation.navigate("Sohbet");
+                        }}
+                    >
+                        {sohbetCount > 0 && (
+                        <View style={{backgroundColor: colors.red, position: 'absolute', borderRadius: 10, width: 15, height: 15,  top: -6,right: -5, zIndex: 1 }}>
+                          <Text style={{fontSize: 10,color: 'white', fontWeight: 'bold', textAlign: 'center' }}>{sohbetCount}</Text>
+                        </View>
+                      )}
+                        <SohbetIQ width={30} height={30}/>
+                        <Text style={{fontSize: 7, justifyContent: 'center', textAlign:'center', position: 'absolute', bottom: -7, backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: 5, paddingLeft:2, paddingRight:2, fontWeight:'bold', color: colors.red  }}>Sohbet</Text>
+                    </TouchableOpacity>
+                    ),
+                }}
             />
           <Stack.Screen
                 name="StokList"

@@ -11,6 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import { RNCamera } from 'react-native-camera';
 import { Camera, Nokta } from '../res/images';
 import FastImage from 'react-native-fast-image';
+import Button from '../components/Button';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -40,6 +41,25 @@ const SatisFaturasiProductList = () => {
   const [masrafData, setMasrafData] = useState([]); // Masraf verisi
   const [barkodData, setBarkodData] = useState([]); // Barkod verisi
   const [filteredData, setFilteredData] = useState([]); // Filtrelenmiş veriler
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const pickerItems = [
+    { label: 'Stok Adı', value: 'Stok_Ad' },
+    { label: 'Stok Kodu', value: 'Stok_Kod' },
+    { label: 'Marka', value: 'Marka' },
+    { label: 'Alt Grup', value: 'AltGrup' },
+    { label: 'Ana Grup', value: 'AnaGrup' },
+    { label: 'Reyon', value: 'Reyon' },
+    { label: 'Barkod', value: 'Barkod' },
+    { label: 'Hizmet', value: 'Hizmet' },
+    { label: 'Masraf', value: 'Masraf' },
+  ];
+
+  // Function to get label based on selected value
+  const getLabelForValue = (value) => {
+    const selectedItem = pickerItems.find((item) => item.value === value);
+    return selectedItem ? selectedItem.label : 'Kriter Seçin';
+  };
 
   const fetchProductData = useCallback(async () => {
     setLoading(true);
@@ -220,13 +240,49 @@ const SatisFaturasiProductList = () => {
     <View style={MainStyles.irsaliyeContainer}>
       <View style={MainStyles.pageTop}>
       <View style={MainStyles.inputStyle}>
+        {Platform.OS === 'ios' ? (
+        <>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+            {getLabelForValue(searchCriteria)}
+            </Text>
+          </TouchableOpacity>
+
+          {/* iOS Modal */}
+          <Modal visible={isModalVisible} animationType="slide" transparent>
+            <View style={MainStyles.modalContainerPicker}>
+              <View style={MainStyles.modalContentPicker}>
+                <Picker
+                  selectedValue={searchCriteria}
+                  onValueChange={(itemValue) => {
+                    setSearchCriteria(itemValue);
+                  }}
+                >
+                  <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
+                  <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
+                  <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
+                  <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
+                  <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
+                  <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
+                  <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
+                  <Picker.Item label="Hizmet" value="Hizmet" style={MainStyles.textStyle}  />
+                  <Picker.Item label="Masraf" value="Masraf" style={MainStyles.textStyle}  />
+                </Picker>
+                <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+              </View>
+            </View>
+          </Modal>
+        </>
+      ) : (
+        // Android Picker renders directly without modal
         <Picker
           selectedValue={searchCriteria}
-          onValueChange={handlePickerChange}
-          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
+          onValueChange={(itemValue) => setSearchCriteria(itemValue)}
+          itemStyle={{ height: 40, fontSize: 12 }}
+          style={{ marginHorizontal: -10 }}
         >
-          <Picker.Item label="Stok Ad" value="Stok_Ad" style={MainStyles.textStyle} />
-          <Picker.Item label="Stok Kod" value="Stok_Kod" style={MainStyles.textStyle}  />
+          <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
+          <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
           <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
           <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
           <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
@@ -235,6 +291,7 @@ const SatisFaturasiProductList = () => {
           <Picker.Item label="Hizmet" value="Hizmet" style={MainStyles.textStyle}  />
           <Picker.Item label="Masraf" value="Masraf" style={MainStyles.textStyle}  />
         </Picker>
+      )}
         </View>
       </View>
       <View style={MainStyles.inputContainer}>

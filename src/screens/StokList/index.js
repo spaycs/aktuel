@@ -11,6 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import { RNCamera } from 'react-native-camera';
 import { Camera, Nokta, Down } from '../../res/images';
 import FastImage from 'react-native-fast-image';
+import Button from '../../components/Button';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -35,6 +36,24 @@ const StokList = ({navigation}) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const pickerItems = [
+    { label: 'Stok Adı', value: 'Stok_Ad' },
+    { label: 'Stok Kodu', value: 'Stok_Kod' },
+    { label: 'Marka', value: 'Marka' },
+    { label: 'Alt Grup', value: 'AltGrup' },
+    { label: 'Ana Grup', value: 'AnaGrup' },
+    { label: 'Reyon', value: 'Reyon' },
+    { label: 'Barkod', value: 'Barkod' },
+  ];
+
+  // Function to get label based on selected value
+  const getLabelForValue = (value) => {
+    const selectedItem = pickerItems.find((item) => item.value === value);
+    return selectedItem ? selectedItem.label : 'Kriter Seçin';
+  };
+
 
   const fetchProductData = useCallback(async () => {
     setLoading(true); // Start loading
@@ -174,20 +193,54 @@ const StokList = ({navigation}) => {
     <View style={MainStyles.slContainer}>
       <View style={MainStyles.pageTop}>
         <View style={MainStyles.inputStyle}>
-          <Picker
-            itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-            selectedValue={searchCriteria}
-            itemStyle={{ height:50 }}
-            onValueChange={(itemValue) => setSearchCriteria(itemValue)}
-          >
-            <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
-            <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
-            <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
-            <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
-            <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
-            <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
-            <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
-          </Picker>
+        {Platform.OS === 'ios' ? (
+        <>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+            {getLabelForValue(searchCriteria)}
+            </Text>
+          </TouchableOpacity>
+
+          {/* iOS Modal */}
+          <Modal visible={isModalVisible} animationType="slide" transparent>
+            <View style={MainStyles.modalContainerPicker}>
+              <View style={MainStyles.modalContentPicker}>
+                <Picker
+                  selectedValue={searchCriteria}
+                  onValueChange={(itemValue) => {
+                    setSearchCriteria(itemValue);
+                  }}
+                >
+                  <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
+                  <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
+                  <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
+                  <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
+                  <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
+                  <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
+                  <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
+                </Picker>
+                <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+              </View>
+            </View>
+          </Modal>
+        </>
+      ) : (
+        // Android Picker renders directly without modal
+        <Picker
+          selectedValue={searchCriteria}
+          onValueChange={(itemValue) => setSearchCriteria(itemValue)}
+          itemStyle={{ height: 40, fontSize: 12 }}
+          style={{ marginHorizontal: -10 }}
+        >
+          <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
+          <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
+          <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
+          <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
+          <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
+          <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
+          <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
+        </Picker>
+      )}
         </View>
       </View>
       <View style={MainStyles.inputContainer}>

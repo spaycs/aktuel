@@ -6,8 +6,10 @@ import { Picker } from '@react-native-picker/picker';
 import { DataTable } from 'react-native-paper';
 import { Filtre } from '../../../res/images';
 import { Grid, Row, Col } from 'react-native-easy-grid';
+import { useAuthDefault } from '../../../components/DefaultUser';
 
 const YillikRapor = () => {
+  const { defaults } = useAuthDefault();
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
   const [personelList, setPersonelList] = useState([]); 
@@ -17,6 +19,8 @@ const YillikRapor = () => {
   const [error, setError] = useState('');
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const IQ_MikroPersKod = defaults[0]?.IQ_MikroPersKod || '';
+  const IQ_Admin = defaults[0]?.IQ_Admin || '';
 
   const [filters, setFilters] = useState({
     Cari: '',
@@ -54,7 +58,19 @@ const YillikRapor = () => {
     }
   };
 
-  const fetchData = async () => {
+  useEffect(() => {
+    // Sayfa açılır açılmaz verileri çek
+    if (IQ_Admin) {
+      fetchData();
+    }
+  
+    // Personel listesini sayfa açıldığında çek
+    if (IQ_Admin === 1) {
+      fetchPersonelList();
+    }
+  }, [IQ_Admin, selectedPersonel]);
+
+  const fetchData2 = async () => {
     setLoading(true);
     setError('');
     setSearchClicked(true);
@@ -67,6 +83,41 @@ const YillikRapor = () => {
       setLoading(false);
     }
   };
+
+  // API'den veri çekme fonksiyonu
+const fetchData = async () => {
+  if (!IQ_MikroPersKod) {
+    setError('IQ_MikroPersKod değeri bulunamadı.');
+    return;
+  }
+
+  setLoading(true);
+  setError('');
+  setSearchClicked(true);
+  try {
+    let apiUrl = '';
+
+    if (IQ_Admin === 1) {
+      // SRV ise Picker'dan seçilen personeli API'ye gönder
+      if (!selectedPersonel) {
+        setError('Lütfen bir personel seçin.');
+        setLoading(false);
+        return;
+      }
+      apiUrl = `/Api/Raporlar/YillikRapor?yil=${year}&personel=${encodeURIComponent(selectedPersonel)}}`;
+    } else {
+      // SRV değilse IQ_MikroPersKod'u direkt gönder
+      apiUrl = `/Api/Raporlar/YillikRapor?yil=${year}&personel=${IQ_MikroPersKod}`;
+    }
+
+    const response = await axiosLinkMain.get(apiUrl);
+    setData(response.data);
+  } catch (error) {
+    setError('Veri çekme hatası: ' + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   
   
@@ -158,6 +209,7 @@ const YillikRapor = () => {
         </View>
       </View>
 
+      {IQ_Admin === 1 && (
       <View style={styles.pickerContainer}>
       <View style={styles.datePickerContainer}>
         <Text style={styles.pickerLabel}>Personel Seçimi</Text>
@@ -175,6 +227,7 @@ const YillikRapor = () => {
         </View>
       </View>
       </View>
+        )}
     </View>
       <TouchableOpacity onPress={fetchData} style={styles.buttonSearch}>
         <Text style={styles.buttonText}>Listele</Text>

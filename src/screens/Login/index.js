@@ -215,7 +215,7 @@ const Login = ({ navigation }) => {
                     updateAuthData('OrijinalSifre', sifreStandart);
                     updateAuthData('selectedUser', selectedUser);
 
-                    navigation.navigate("DrawerNavigator");
+                    navigation.navigate("Home");
                 } else {
                     retrieveServiceSettings();
                     Alert.alert('Hata', 'Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
