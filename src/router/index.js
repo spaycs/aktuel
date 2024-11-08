@@ -284,6 +284,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: "Stok Listesi",
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -297,6 +298,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Raporlar",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
