@@ -114,7 +114,7 @@ const SorumlulukBazindaBekleyenSiparis = () => {
     
     setLoading(true);
     try {
-      const response = await axiosLinkMain.get(`/Api/Raporlar/SorumlulukBazindaBekleyenSiparis?temsilci=${cariKodu}`);
+      const response = await axiosLinkMain.get(`/Api/Raporlar/SorumlulukBazindaBekleyenSiparis?cari=${cariKodu}`);
      //const response = await axios.get(`http://195.214.168.228:8083/Api/Raporlar/CariBakiyeYasladirmaCoklu?temsilci=ZEYNEP%20ARDIL`);
       // Verinin beklenen formatta olup olmadığını kontrol edin
       if (Array.isArray(response.data)) {

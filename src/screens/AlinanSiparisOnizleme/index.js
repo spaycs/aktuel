@@ -427,6 +427,7 @@ const AlinanSiparisOnizleme = () => {
               sip_musteri_kod: faturaBilgileri.sip_musteri_kod,
               sip_adresno: faturaBilgileri.sip_adresno,
               sip_stok_sormerk: faturaBilgileri.sip_stok_sormerk,
+              sip_cari_sormerk: faturaBilgileri.sip_stok_sormerk,
               sip_projekodu: faturaBilgileri.sip_projekodu,
               sip_miktar: product.sth_miktar,
               sip_birim_pntr: product.sth_birim_pntr,
