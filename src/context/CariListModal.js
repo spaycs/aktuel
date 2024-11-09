@@ -26,7 +26,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
       setLoading(true);
       const personelKodu = defaults[0]?.IQ_MikroPersKod || '';
       const response = await axiosLinkMain.get(`/Api/Cari/CariListesi?temsilci=${personelKodu}`);
-
+  
       // Tüm veriyi sakla
       setAllData(response.data || []);
       setFilteredCaris(response.data || []);
@@ -37,6 +37,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
       setLoading(false);
     }
   }, [defaults]);
+  
 
   useEffect(() => {
     if (isVisible) {
@@ -117,7 +118,8 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
                       Ünvan: item.Ünvan,
                       Bakiye: item.Bakiye,
                       Adres: item.Adres,
-                      cari_odemeplan_no: item.cari_odemeplan_no
+                      cari_odemeplan_no: item.cari_odemeplan_no,
+                      cari_VarsayilanCikisDepo: item.cari_VarsayilanCikisDepo
                     })}
                   >
                     <View style={styles.itemRow}>

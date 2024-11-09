@@ -506,7 +506,7 @@ const AlinanSiparisOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler 
+    {/* Apiye Giden Değerler */}
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_seri: {faturaBilgileri.sip_evrakno_seri}</Text>
         <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_sira: {faturaBilgileri.sip_evrakno_sira}</Text>
@@ -518,7 +518,7 @@ const AlinanSiparisOnizleme = () => {
         <Text style={MainStyles.faturaBilgileriText}>sip_adresno: {faturaBilgileri.sip_adresno}</Text>
         <Text style={MainStyles.faturaBilgileriText}>sip_projekodu: {faturaBilgileri.sip_projekodu}</Text>
         <Text style={MainStyles.faturaBilgileriText}>sip_opno: {faturaBilgileri.sip_opno}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_stok_sormerk: {faturaBilgileri.sip_stok_sormerk}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_depono: {faturaBilgileri.sip_depono}</Text>
       </View>
     {/* Apiye Giden Değerler */}
 

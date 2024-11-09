@@ -64,6 +64,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [pickerEditable, setPickerEditable] = useState(true);
 
+
   // Datatable
   const [data, setData] = useState([]); 
   const [loading, setLoading] = useState(false); 
@@ -97,14 +98,61 @@ const AlinanSiparisFaturaBilgisi = () => {
   ];
 // Tüm Değişken Değerleri
 
-  // Değiştirilebilir Alanlar 
-    useEffect(() => {
-      if (defaults && defaults[0]) {
-        const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
-        setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
-        setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
+   // Değiştirilebilir Alanlar 
+   useEffect(() => {
+    if (defaults && defaults[0]) {
+      const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
+      setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
+      setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
+    }
+  }, [defaults]);
+  
+  const updateDepoSelection = async (cari) => {
+    if (defaults && defaults[0]) {
+      const selectedCariDepoNo = cari.cari_VarsayilanCikisDepo;
+      console.log('Seçilen Cari Depo No:', selectedCariDepoNo);
+      console.log('IQ_CikisDepoNo:', defaults[0].IQ_CikisDepoNo);
+    
+      // defaults[0] içindeki gerekli verileri al
+      const { IQ_CikisDepoCaridenGelsin, IQ_CikisDepoNo } = defaults[0];
+    
+      // Eğer cari_VarsayilanCikisDepo 0 ise, IQ_CikisDepoNo'daki depo numarasını kullan
+      if (selectedCariDepoNo === 0) {
+        const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
+        if (defaultDepo) {
+          // Varsayılan depo bulunduysa, state'i güncelle ve picker'da seçili hale getir
+          setSip_depono(defaultDepo.No.toString());
+          setFaturaBilgileri(prevState => ({
+            ...prevState,
+            sip_depono: defaultDepo.No.toString(),
+          }));
+        }
+      } else {
+        // Eğer cari'nin varsayılan depo numarası varsa, onu kullan
+        if (selectedCariDepoNo) {
+          setSip_depono(selectedCariDepoNo.toString());
+          setFaturaBilgileri(prevState => ({
+            ...prevState,
+            sip_depono: selectedCariDepoNo.toString(),
+          }));
+        }
       }
-    }, [defaults]);
+  
+      // Depo bilgisi dışarıdan geliyorsa, varsayılan depo numarasını kullan
+      if (IQ_CikisDepoCaridenGelsin === 0) {
+        const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
+        if (defaultDepo) {
+          setSip_depono(defaultDepo.No.toString());
+          setFaturaBilgileri(prevState => ({
+            ...prevState,
+            sip_depono: defaultDepo.No.toString(),
+          }));
+        }
+      }
+    }
+  };
+  
+  
   // Değiştirilebilir Alanlar 
 
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
@@ -292,7 +340,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           console.error("Odeme planı fetch edilirken hata:", error);
         }
       }
-
+      await updateDepoSelection(cari);
       setIsCariListModalVisible(false);
     };
 
@@ -509,17 +557,8 @@ const AlinanSiparisFaturaBilgisi = () => {
         const depoData = response.data;
         setDepoList(depoData);
     
-        const defaultDepo = depoData.find(depo => depo.No === defaults[0]?.IQ_CikisDepoNo);
-    
-        if (defaultDepo) {
-          setSip_depono(defaultDepo.No.toString());
-          setFaturaBilgileri((prev) => ({
-            ...prev,
-            sip_depono: defaultDepo.No.toString(),
-          }));
-        }
       } catch (error) {
-        console.error('Bağlantı Hatası Döviz list:', error);
+        console.error('Bağlantı Hatası Depo List:', error);
       }
     };
 
@@ -666,7 +705,6 @@ const AlinanSiparisFaturaBilgisi = () => {
           setIsCariDetayVisible(true); // Modalı aç
       }
   };
-  
     
   // Api Bağlantıları
 
@@ -755,7 +793,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         </View>
         
         <Text style={MainStyles.formTitle}>Tip </Text> 
-        <View style={MainStyles.inputStyleAlinanSiparis}>
+      <View style={MainStyles.inputStyleAlinanSiparis}>
         {Platform.OS === 'ios' ? (
           <>
             <TouchableOpacity onPress={() => setIsEvrakTipModalVisible(true)}>
@@ -797,7 +835,7 @@ const AlinanSiparisFaturaBilgisi = () => {
             ))}
           </Picker>
         )}
-        </View>
+      </View>
        
         <Text style={MainStyles.formTitle}>Cari Seçimi </Text> 
         <View style={MainStyles.inputContainer}>
@@ -880,8 +918,7 @@ const AlinanSiparisFaturaBilgisi = () => {
                                 </Text>
                                 {teminatTutariData.map((item, index) => (
                                     <View key={index}>
-                                        <Text style={MainStyles.modalCariDetayText}>{item.SrmBakiye}</Text>
-                                        <Text style={MainStyles.modalCariDetayText}>{item.Vade}</Text>
+                                        <Text style={MainStyles.modalCariDetayText}>{item.Tanımlı_Limit}</Text>
                                     </View>
                                 ))}
                             </View>
@@ -923,7 +960,7 @@ const AlinanSiparisFaturaBilgisi = () => {
             </View>
         {/* Adres */}
 
-        <View style={MainStyles.teksirabirlestir}>
+      <View style={MainStyles.teksirabirlestir}>
         {/* Doviz Seçim */}
           <View style={{ width: '35%' }}>
             <Text style={MainStyles.formTitle}>Döviz</Text>
@@ -979,7 +1016,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           </Picker>
         )}
             </View>
-          </View>
+      </View>
         {/* Doviz Seçim */}
 
         {/* Depo Seçim */}
@@ -1002,6 +1039,7 @@ const AlinanSiparisFaturaBilgisi = () => {
                     selectedValue={sip_depono}
                     onValueChange={handleDepoChange}
                     style={MainStyles.picker}
+                    enabled={pickerEditable}
                   >
                     <Picker.Item label="Depo Seçin" value="" />
                     {depoList.map((depo) => (
@@ -1034,6 +1072,8 @@ const AlinanSiparisFaturaBilgisi = () => {
               </View>
           </View>
         {/* Depo Seçim */}
+
+
       </View>
         {/* Vade */}
         <Text style={MainStyles.formTitle}>Vade</Text> 

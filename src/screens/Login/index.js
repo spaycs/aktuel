@@ -82,7 +82,7 @@ const Login = ({ navigation }) => {
         .catch(() => {
           setAxiosLinkStatus('Kapalı');
         });
-    }, 3000); // 3 saniye
+    }, 300220); // 3 saniye
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
@@ -101,7 +101,7 @@ const Login = ({ navigation }) => {
         .catch(() => {
           setAxiosLinkMainStatus('Kapalı');
         });
-    }, 3000); // 3 saniye
+    }, 302200); // 3 saniye
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
