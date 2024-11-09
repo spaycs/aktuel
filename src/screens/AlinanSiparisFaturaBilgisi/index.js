@@ -35,6 +35,11 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [sip_adresno, setSip_adresno] = useState('');
   const [sip_projekodu, setSip_projekodu] = useState('');
   const [sip_opno, setSip_opno] = useState('');
+  const [cariDetayData, setCariDetayData] = useState([]);
+  const [tedarikciSiparisData, setTedarikciSiparisData] = useState('');
+  const [ortalamaVadeBakiyeData, setOrtalamaVadeBakiyeData] = useState('');
+  const [teminatTutariData, setTeminatTutariData] = useState('');
+
 
   // Listeler
   const [dovizList, setDovizList] = useState([]);
@@ -77,6 +82,8 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isEvrakTipModalVisible, setIsEvrakTipModalVisible] = useState(false); 
   const [isDovizModalVisible, setIsDovizModalVisible] = useState(false);
   const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
+  const [isCariDetayVisible, setIsCariDetayVisible] = useState(false);
+  
 
   const getSelectedDovizAd = () => {
     const selectedDoviz = dovizList.find(doviz => doviz.Doviz_Cins.toString() === sip_doviz_cinsi);
@@ -632,9 +639,41 @@ const AlinanSiparisFaturaBilgisi = () => {
         Alert.alert('Hata', 'PDF alınırken bir sorun oluştu.');
       }
     };
-    
+
+    const fetchCariDetayData = async (sip_musteri_kod) => {
+      setLoading(true); // Yükleniyor state'i aktif et
+      try {
+          // İlk API'yi çağır
+          const response1 = await axiosLinkMain.get(`/api/Raporlar/TedarikciBazindaBekleyenSiparis?cari=${sip_musteri_kod}`);
+          const data1 = response1.data || []; // Hata durumunda boş dizi döner
+  
+          // İkinci API'yi çağır
+          const response2 = await axiosLinkMain.get(`/api/Raporlar/SorumlulukBazindaOrtVadeBakiye?cari=${sip_musteri_kod}`);
+          const data2 = response2.data || []; // Hata durumunda boş dizi döner
+  
+          // Üçüncü API'yi çağır (Teminat Tutarı)
+          const response3 = await axiosLinkMain.get(`/api/Raporlar/TeminatTutari?cari=${sip_musteri_kod}`);
+          const data3 = response3.data || []; // Hata durumunda boş dizi döner
+  
+          // Verileri state'lere ata
+          setTedarikciSiparisData(data1);
+          setOrtalamaVadeBakiyeData(data2);
+          setTeminatTutariData(data3);
+      } catch (error) {
+          console.error('Bağlantı Hatası Cari Detay:', error);
+      } finally {
+          setLoading(false); // Yükleniyor state'ini kaldır
+          setIsCariDetayVisible(true); // Modalı aç
+      }
+  };
+  
     
   // Api Bağlantıları
+
+  const closeModal = () => {
+    setIsCariDetayVisible(false);
+    setCariDetayData(null);
+  };
 
   // Sorumluluk Merkezi Listele
     const renderSorumlulukMerkeziItem = ({ item }) => (
@@ -784,6 +823,87 @@ const AlinanSiparisFaturaBilgisi = () => {
             <Ara />
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+                style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
+                onPress={() => fetchCariDetayData(sip_musteri_kod)}
+            >
+                <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
+            </TouchableOpacity>
+
+            <Modal
+        visible={isCariDetayVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeModal}
+    >
+        <View style={[MainStyles.modalBackground]}>
+            <View style={MainStyles.modalCariDetayContent}>
+                {loading ? (
+                    <ActivityIndicator size="large" color={colors.primary} />
+                ) : (
+                    <>
+                        {/* Tedarikçi Bazında Bekleyen Sipariş Modal */}
+                        {tedarikciSiparisData && tedarikciSiparisData.length > 0 && (
+                            <View>
+                                <Text style={MainStyles.modalCariDetayTextTitle}>
+                                    Tedarikçi Bazında Bekleyen Sipariş
+                                </Text>
+                                {tedarikciSiparisData.map((item, index) => (
+                                    <View key={index}>
+                                        <Text style={MainStyles.modalCariDetayText}>{item.Tedarikci}</Text>
+                                        <Text style={MainStyles.modalCariDetayText}>{item.tutar}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+
+                        {/* Ortalama Vade Bakiye Modal */}
+                        {ortalamaVadeBakiyeData && ortalamaVadeBakiyeData.length > 0 && (
+                            <View>
+                                <Text style={MainStyles.modalCariDetayTextTitle}>
+                                    Ortalama Vade Bakiye
+                                </Text>
+                                {ortalamaVadeBakiyeData.map((item, index) => (
+                                    <View key={index} >
+                                        <Text style={MainStyles.modalCariDetayText}>{item.SrmBakiye} - {item.Vade}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+
+                        {/* Teminat Tutarı Modal */}
+                        {teminatTutariData && teminatTutariData.length > 0 && (
+                            <View>
+                                <Text style={MainStyles.modalCariDetayTextTitle}>
+                                    Teminat Tutarı
+                                </Text>
+                                {teminatTutariData.map((item, index) => (
+                                    <View key={index}>
+                                        <Text style={MainStyles.modalCariDetayText}>{item.SrmBakiye}</Text>
+                                        <Text style={MainStyles.modalCariDetayText}>{item.Vade}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+
+                        {/* Veri bulunamadı durumu */}
+                        {(tedarikciSiparisData.length === 0 && ortalamaVadeBakiyeData.length === 0 && teminatTutariData.length === 0) && (
+                            <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                        )}
+                    </>
+                )}
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                    <Text style={MainStyles.closeButtonText}>X</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    </Modal>
+
+
+
+
+
 
         {/* Adres */}
         <Text style={MainStyles.formTitle}>Adres</Text> 

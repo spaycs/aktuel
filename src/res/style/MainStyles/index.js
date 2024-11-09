@@ -883,12 +883,28 @@ export const MainStyles = {
       backgroundColor: colors.white,
       padding: 10,
     },
+    modalBackground: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Hafif siyah arkaplan
+      justifyContent: 'center',
+  },
     modalContent: {
       width: '100%',
       backgroundColor: colors.white,
       borderRadius: 10,
       position: 'relative',
       marginTop: 10,
+    },
+    modalCariDetayContent:{
+      backgroundColor: colors.white,
+      borderRadius: 10,
+      padding: 20,
+      justifyContent: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 5,
     },
     modalTitle: {
       fontSize: 16,
@@ -987,6 +1003,26 @@ export const MainStyles = {
       marginBottom: 10,
       color: colors.black,
     },
+    modalCariDetayText: {
+      fontSize: 12,
+      color: colors.black,
+    },
+    modalCariDetayTextTitle: {
+      fontSize: 12,
+      color: colors.black,
+      fontWeight: 'bold',
+    },
+    modalCariDetayRow: {
+      flexDirection: 'row', // Yatayda hizalama
+      justifyContent: 'space-between', // Hücreler arasında boşluk bırak
+      marginBottom: 10, // Satırların arasına boşluk
+  },
+  modalCariDetayCell: {
+    flex: 1, // Hücreler eşit genişlikte olsun
+    textAlign: 'left', // Soldan hizalama
+    fontSize: 14, // Yazı boyutu
+    paddingVertical: 5, // Hücre içi dikey padding
+},
     picker: {
       height: 200,
       borderColor: colors.gray,
