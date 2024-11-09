@@ -52,8 +52,31 @@ const Drawer = createDrawerNavigator();
 */
 
 function DrawerNavigator() {
+  const navigation = useNavigation();
+  const [sohbetCount, setSohbetCount] = useState(0);
+  const { defaults } = useAuthDefault();
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const temsilciId =  defaults[0].IQ_Kod;
+        const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
+        const data = response.data;
+        if (Array.isArray(data) && data.length > 0) {
+          setSohbetCount(data.length); 
+        } else {
+          setSohbetCount(0); 
+        }
+      } catch (error) {
+        console.error('API çağrısı başarısız oldu:', error);
+      }
+    }, 20000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
     return (
-    <Drawer.Navigator
+      <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           drawerStyle: {
@@ -137,7 +160,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-      }} />
+    }} />
         <Drawer.Screen name="Alınan Sipariş Fişi"  component={AlinanSiparis}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -147,7 +170,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-     }} />
+    }} />
         <Drawer.Screen name="Satış İrsaliyesi"  component={SatisIrsaliyesi}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -157,7 +180,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
        
-      }} />
+    }} />
         <Drawer.Screen name="Satış Faturası"  component={SatisFaturasi}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -167,7 +190,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-      }} />
+    }} />
         <Drawer.Screen name="Tahsilat Tediye"  component={TahsilatTediye}
        options={{
         drawerItemStyle: { display: 'none' },
@@ -177,7 +200,7 @@ function DrawerNavigator() {
           fontSize: 16,
         },
         
-      }} />
+    }} />
         <Drawer.Screen name="Alış İrsaliyesi"  component={AlisIrsaliyesi}
         options={{
           drawerItemStyle: { display: 'none' },
@@ -197,39 +220,19 @@ function DrawerNavigator() {
           fontSize: 16,
         },
       
-     }} />
+    }} />
       </Drawer.Navigator>
     );
   }
   
 
 const Router = () => {
-  const navigation = useNavigation();
-  const [sohbetCount, setSohbetCount] = useState(0);
-  const { defaults } = useAuthDefault();
-
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      try {
-        const temsilciId =  defaults[0].IQ_Kod;
-        console.log('temsilid', temsilciId);
-        const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
-        const data = response.data;
-        if (Array.isArray(data) && data.length > 0) {
-          setSohbetCount(data.length); 
-        } else {
-          setSohbetCount(0); 
-        }
-      } catch (error) {
-        console.error('API çağrısı2 başarısız oldu:', error);
-      }
-    }, 20000);
-
-    return () => clearInterval(intervalId);
-  }, [defaults]);
-
     return(
         <Stack.Navigator >
+
+
+           
+           
              <Stack.Screen
                 name="GetStarted"
                 component={GetStarted}
@@ -249,35 +252,22 @@ const Router = () => {
                     })}
             />
           
-         
+          <Stack.Screen
+                name="DrawerNavigator"
+                component={DrawerNavigator}
+                options={{headerShown: false, tabBarVisible: true,}}
+            />
             
             <Stack.Screen
                 name="Home"
                 component={Home}
-                options={{
-                  headerTitleAlign: 'center',
-                  drawerItemStyle: { display: 'none' },
-                  headerBackVisible: false,
-                  headerTitle: () => <MikroIQ width={90} height={25}/>,
-                  drawerActiveBackgroundColor: colors.islembuttongray,
-                  drawerActiveTintColor: 'black',
-                  drawerInactiveTintColor: 'black',
-                  headerRight: () => (
-                    <TouchableOpacity
-                        onPress={() => {
-                        navigation.navigate("Sohbet");
-                        }}
-                    >
-                        {sohbetCount > 0 && (
-                        <View style={{backgroundColor: colors.red, position: 'absolute', borderRadius: 10, width: 15, height: 15,  top: -6,right: -5, zIndex: 1 }}>
-                          <Text style={{fontSize: 10,color: 'white', fontWeight: 'bold', textAlign: 'center' }}>{sohbetCount}</Text>
-                        </View>
-                      )}
-                        <SohbetIQ width={30} height={30}/>
-                        <Text style={{fontSize: 7, justifyContent: 'center', textAlign:'center', position: 'absolute', bottom: -7, backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: 5, paddingLeft:2, paddingRight:2, fontWeight:'bold', color: colors.red  }}>Sohbet</Text>
-                    </TouchableOpacity>
-                    ),
-                }}
+                options={({ navigation, route }) => ({
+                    headerBackVisible:false,
+                    
+                    headerTitle: () => (
+                        <MikroIQ/>
+                        ),
+                    })}
             />
           <Stack.Screen
                 name="StokList"
@@ -311,6 +301,7 @@ const Router = () => {
                 component={CariBakiyeYaslandirmaAylik}
                 options={({ navigation, route }) => ({
                     headerTitle: "Cari Bakiye Yaşladırma Aylık",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -322,6 +313,7 @@ const Router = () => {
                 component={CariBakiyeYasladirmaCoklu}
                 options={({ navigation, route }) => ({
                     headerTitle: "Cari Bakiye Yaşladırma Tekli",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -333,6 +325,7 @@ const Router = () => {
                 component={ExtreFoy}
                 options={({ navigation, route }) => ({
                     headerTitle: "ExtreFoy",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -344,6 +337,7 @@ const Router = () => {
                 component={KredilerOzet}
                 options={({ navigation, route }) => ({
                     headerTitle: "Krediler Özet",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -355,6 +349,7 @@ const Router = () => {
                 component={CekSenetListesi}
                 options={({ navigation, route }) => ({
                     headerTitle: "Çek Senet Listesi",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -366,6 +361,7 @@ const Router = () => {
                 component={EnvanterMaliyet}
                 options={({ navigation, route }) => ({
                     headerTitle: "Envanter Maliyet",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -377,6 +373,7 @@ const Router = () => {
                 component={KasaBorc}
                 options={({ navigation, route }) => ({
                     headerTitle: "Kasa Borç",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -388,6 +385,7 @@ const Router = () => {
                 component={KasaAlacak}
                 options={({ navigation, route }) => ({
                     headerTitle: "Kasa Alacak",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -399,6 +397,7 @@ const Router = () => {
                 component={BankaBakiyeleri}
                 options={({ navigation, route }) => ({
                     headerTitle: "Banka Bakiyeleri",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -410,6 +409,7 @@ const Router = () => {
                 component={NelerSattik}
                 options={({ navigation, route }) => ({
                     headerTitle: "Neler Sattık",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -421,6 +421,7 @@ const Router = () => {
                 component={PatronEkrani}
                 options={({ navigation, route }) => ({
                     headerTitle: "PatronEkrani",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -432,6 +433,7 @@ const Router = () => {
                 component={YillikRapor}
                 options={({ navigation, route }) => ({
                     headerTitle: "Yıllık Rapor",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -443,6 +445,7 @@ const Router = () => {
                 component={SiparisKarsilama}
                 options={({ navigation, route }) => ({
                     headerTitle: "Sipariş Karşılama",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -454,6 +457,7 @@ const Router = () => {
                 component={SorumlulukBazindaBekleyenSiparis}
                 options={({ navigation, route }) => ({
                     headerTitle: "Sorumluluk Bazında Bekleyen Sipariş",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -465,6 +469,7 @@ const Router = () => {
                 component={TedarikciBazindaSatisKarsilama}
                 options={({ navigation, route }) => ({
                     headerTitle: "Tedarikçi Bazında Satış Karşılaştırma",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -477,6 +482,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: "center",
                     headerTitle: "Cari Listesi",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -489,6 +495,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Satış Faturası',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -500,6 +507,7 @@ const Router = () => {
               component={SatisFaturasiOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -508,6 +516,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Alınan Sipariş',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -519,6 +528,7 @@ const Router = () => {
                 component={AlinanSiparisOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -527,6 +537,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Tahsilat Tediye',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -537,6 +548,7 @@ const Router = () => {
                 component={TahsilatTediyeOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -545,6 +557,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Satış İrsaliyesi',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -555,6 +568,7 @@ const Router = () => {
                 component={SatisIrsaliyesiOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -563,6 +577,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Stok Ekle',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -574,6 +589,7 @@ const Router = () => {
                 component={StokEklemeOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -582,6 +598,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Cari Ekle',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -593,6 +610,7 @@ const Router = () => {
                 component={CariEklemeOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -601,6 +619,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Alış İrsaliyesi',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -612,6 +631,7 @@ const Router = () => {
                 component={AlisIrsaliyesiOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -620,6 +640,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Depo Sayım',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -631,6 +652,7 @@ const Router = () => {
                 component={DepoSayimOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -639,6 +661,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Depolar Arası Sevk Fişi',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -650,6 +673,7 @@ const Router = () => {
                 component={DepolarArasiSevkFisiOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -658,6 +682,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Sarf Malzeme',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -669,6 +694,7 @@ const Router = () => {
                 component={SarfMalzemeOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -677,6 +703,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                   headerTitleAlign: 'center',
                   headerTitle: 'Teklif Fişi',
+                  headerBackTitleVisible: false,
                   headerTitleStyle: {
                     fontSize: 16,
                   },
@@ -688,6 +715,7 @@ const Router = () => {
                 component={TeklifFisiOnizleme}
                 options={({ navigation, route }) => ({
                     headerTitle: "Önizleme",
+                    headerBackTitleVisible: false,
                     })}
             />
             <Stack.Screen
@@ -696,6 +724,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Patron Raporu",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -708,6 +737,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Sohbet",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                         fontSize: 16,
                       },
@@ -719,6 +749,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Cari Hareket Föyü",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -731,6 +762,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Stok Hareket Föyü",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },
@@ -743,6 +775,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Cari Sipariş Föyü",
+                    headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,
                     },

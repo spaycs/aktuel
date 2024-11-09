@@ -61,6 +61,7 @@ import Nokta from "./nokta.svg"
 import Ekle from "./ekle.svg"
 import SarfMalzeme from "./sarfmalzeme.svg"
 import MikroIqTek from "./mikroiqtek.svg"
+import Quit from "./quit.svg"
 
 export {
     Kartlas,
@@ -125,6 +126,7 @@ export {
     Nokta,
     Ekle,
     SarfMalzeme,
-    MikroIqTek
+    MikroIqTek,
+    Quit
 
 }

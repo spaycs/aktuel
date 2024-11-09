@@ -129,223 +129,29 @@ const CustomDrawerContent = (props) => {
        
         </View>
        
-      <View style={{paddingVertical: 10, flexDirection :'row', paddingHorizontal: 10, borderBottomWidth: 1, borderColor: colors.textInputBg }}>
-        <View style={{justifyContent: 'center'}}>
-          <Patron width={50} height={30}/>
-        </View>
-        <View>
+      <View style={{paddingVertical: 10, flexDirection :'row', paddingHorizontal: 10, }}>
+      
+        <View style={{flex:1}}>
+          <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
          
-          <Text style={{ fontSize: 11 }}><Text style={{ fontSize: 11, fontWeight: 'bold' }}>Veri Tabanı:</Text> {defaults.length > 0 ? defaults[0].IQ_Database : '---'}</Text>
-          <Text style={{ fontSize: 11 }}><Text style={{ fontSize: 11, fontWeight: 'bold' }}>Mali Yılı:</Text> {defaults.length > 0 ? defaults[0].IQ_MaliYıl : '---'}</Text>
-          <Text style={{ fontSize: 11 }}><Text style={{ fontSize: 11, fontWeight: 'bold' }}>Kullanıcı:</Text> {defaults.length > 0 ? defaults[0].Adi : '---'}</Text>
+          <Text style={{ fontSize: 12 }}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Veri Tabanı:</Text>  {defaults.length > 0 ? defaults[0].IQ_Database : '---'}
+            </Text>
+          </View>
+          <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
          
+          <Text style={{ fontSize: 12 }}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Mali Yılı: </Text> 
+            {defaults.length > 0 ? defaults[0].IQ_MaliYıl : '---'}</Text>
+            </View>
+            <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
+           
+          <Text style={{ fontSize: 12 }}> <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Kullanıcı: </Text> 
+            {defaults.length > 0 ? defaults[0].Adi : '---'}</Text>
+            </View>
         </View>
       </View>
-       <TouchableOpacity onPress={() => props.navigation.navigate ('Anasayfa')}>
-        <View style={styles.category}>
-          <Text style={styles.categoryMainTitle}>Anasayfa</Text>
-        </View>
-      </TouchableOpacity>
-      {/* Stok Yönetimi Category */}
-      <TouchableOpacity
-        style={styles.category}
-        onPress={() => setIsStokExpanded(!isStokExpanded)}
-      >
         
-        <View style={styles.categoryHeader}>
-        <View style={styles.leftContainer}>
-          <SMStokYonetimi width={16} height={16} />
-          <Text style={styles.categoryTitle}>Stok Yönetimi</Text>
-        </View>
-          {isStokExpanded ? <Down width={16} height={16} /> : <Right width={16} height={16} />}
-        </View>
-      </TouchableOpacity>
-      {isStokExpanded && (
-        <View style={styles.subItems}>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigationWithReset(props.navigation, 'Fiyat Gör')}
-          >
-            <View style={styles.iconContainer}>
-              <View style={styles.iconDetail}><SMFiyatGor width={16} height={16} /></View>
-              <View><Text style={styles.categoryTitle}>Fiyat Gör</Text></View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Depo Sayım', 'IQM_DepoSayim')}
-          >
-            <View style={styles.iconContainer}>
-              <View style={styles.iconDetail}><SMDepoSayim width={16} height={16} /></View>
-              <View><Text style={styles.categoryTitle}>Depo Sayım</Text></View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Depolar Arası Sevk Fişi', 'IQM_DepolarASF')}
-          >
-            <View style={styles.iconContainer}>
-              <View style={styles.iconDetail}><SMDepolarArasiSevkFisi width={16} height={16} /></View>
-              <View><Text style={styles.categoryTitle}>Depolar Arası Sevk Fişi</Text></View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Stok Listesi', 'IQM_StokListesi')}
-          >
-            <View style={styles.iconContainer}>
-              <View style={styles.iconDetail}><SMStokListele width={16} height={16} /></View>
-              <View><Text style={styles.categoryTitle}>Stok Listesi</Text></View>
-            </View>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Satış Yönetimi */}
-      <TouchableOpacity
-        style={styles.category}
-        onPress={() => setIsSatisExpanded(!isSatisExpanded)}
-      >
-        <View style={styles.categoryHeader}>
-        <View style={styles.leftContainer}>
-        <SMSatisYonetimi width={16} height={16} />
-          <Text style={styles.categoryTitle}>Satış Yönetimi</Text>
-          </View>
-          {isSatisExpanded ? <Down width={16} height={16} /> : <Right width={16} height={16} />}
-        </View>
-      </TouchableOpacity>
-      {isSatisExpanded && (
-        <View style={styles.subItems}>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Alınan Sipariş Fişi', 'IQM_AlınanSiparis')}
-          >
-             <View style={styles.iconContainer}>
-             <View style={styles.iconDetail}><SMAlinanSiparisFisi width={16} height={16}/></View>
-              <View><Text style={styles.categoryTitle}>Alınan Sipariş Fişi</Text></View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Satış İrsaliyesi', 'IQM_SatisIrsaliyesi')}
-          >
-            <View style={styles.iconContainer}>
-            <View style={styles.iconDetail}><SMAlinanSiparisFisi width={16} height={16}/></View>
-              <View><Text style={styles.categoryTitle}>Satış İrsaliyesi</Text></View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Satış Faturası', 'IQM_SatisFaturasi')}
-          >
-            <View style={styles.iconContainer}>
-            <View style={styles.iconDetail}><SMAlinanSiparisFisi width={16} height={16}/></View>
-              <View><Text style={styles.categoryTitle}>Satış Faturası</Text></View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'TeklifFisi', 'IQM_TeklifFisi')}
-          >
-            <View style={styles.iconContainer}>
-            <View style={styles.iconDetail}><SMAlinanSiparisFisi width={16} height={16}/></View>
-              <View><Text style={styles.categoryTitle}>Teklif Fişi</Text></View>
-            </View>
-          </TouchableOpacity>
-        </View>
-      )}
-
-
-      {/* Finans Yönetimi */}
-      <TouchableOpacity
-        style={styles.category}
-        onPress={() => setIsFinansxpanded(!isFinansExpanded)}
-      >
-        <View style={styles.categoryHeader}>
-        <View style={styles.leftContainer}>
-        <SMFiyatYonetimi width={16} height={16} />
-          <Text style={styles.categoryTitle}>Finans Yönetimi</Text>
-          </View>
-          {isFinansExpanded ? <Down width={16} height={16} /> : <Right width={16} height={16} />}
-        </View>
-      </TouchableOpacity>
-      {isFinansExpanded && (
-        <View style={styles.subItems}>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Tahsilat Tediye', 'IQM_TahsilatTediye')}
-          >
-             <View style={styles.iconContainer}>
-             <View style={styles.iconDetail}><SMTahsilatTediye width={16} height={16}/></View>
-              <View><Text style={styles.categoryTitle}>Tahsilat Tediye</Text></View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        
-      )}
-
-      {/* Satın Alma Yönetimi */}
-      <TouchableOpacity
-        style={styles.category}
-        onPress={() => setIsSatinAlmaxpanded(!isSatinAlmaExpanded)}
-      >
-        <View style={styles.categoryHeader}>
-        <View style={styles.leftContainer}>
-        <SMSatinAlmaYonetimi width={16} height={16} />
-          <Text style={styles.categoryTitle}>Satın Alma Yönetimi</Text>
-          </View>
-          {isSatinAlmaExpanded ? <Down width={16} height={16} /> : <Right width={16} height={16} />}
-        </View>
-      </TouchableOpacity>
-      {isSatinAlmaExpanded && (
-        <View style={styles.subItems}>
-          <TouchableOpacity
-            style={styles.subItem}
-            onPress={() => handleNavigation(props.navigation, 'Alış İrsaliyesi', 'IQM_AlisIrsaliyesi')}
-          >
-            <View style={styles.iconContainer}>
-            <View style={styles.iconDetail}><SMAlinanSiparisFisi width={16} height={16}/></View>
-              <View><Text style={styles.categoryTitle}>Alış İrsaliyesi</Text></View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        
-      )}
-
-      {/* Raporlar */}
-        <TouchableOpacity
-          style={styles.category}
-          onPress={() => setIsRaporlarExpanded(!isRaporlarExpanded)}
-        >
-          <View style={styles.categoryHeader}>
-          <View style={styles.leftContainer}>
-          <SMRaporlar width={16} height={16} />
-            <Text style={styles.categoryTitle}>Raporlar</Text>
-            </View>
-            {isRaporlarExpanded ? <Down width={16} height={16} /> : <Right width={16} height={16} />}
-          </View>
-        </TouchableOpacity>
-        {isRaporlarExpanded && (
-          <View style={styles.subItems}>
-            <TouchableOpacity
-              style={styles.subItem}
-              onPress={() => handleNavigation(props.navigation, 'Raporlar', 'IQM_Raporlar')}
-            >
-              <View style={styles.iconContainer}>
-              <View style={styles.iconDetail}><SMRapor width={16} height={16}/></View>
-                <View><Text style={styles.categoryTitle}>Raporlar</Text></View>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-        
-      )}
-
      {/* Çıkış Yap */}
       <TouchableOpacity
         style={styles.categoryCikisYap}

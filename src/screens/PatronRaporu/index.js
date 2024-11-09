@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: colors.white,
-    width: '%50'
   },
   dateText: {
     fontSize: 13,

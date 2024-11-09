@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button,  TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button,  TextInput, Alert, SafeAreaView } from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
