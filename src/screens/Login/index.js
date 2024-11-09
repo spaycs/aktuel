@@ -52,6 +52,8 @@ const Login = ({ navigation }) => {
   const [FirmaNo, setFirmaNo] = useState(0);
   const [SubeNo, setSubeNo] = useState(0);
   const [isConnected, setIsConnected] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
@@ -80,7 +82,7 @@ const Login = ({ navigation }) => {
         .catch(() => {
           setAxiosLinkStatus('Kapalı');
         });
-    }, 10000); // 3 saniye
+    }, 3000); // 3 saniye
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
@@ -99,7 +101,7 @@ const Login = ({ navigation }) => {
         .catch(() => {
           setAxiosLinkMainStatus('Kapalı');
         });
-    }, 10000); // 3 saniye
+    }, 3000); // 3 saniye
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
@@ -458,17 +460,49 @@ useEffect(() => {
       </View>
     <View style={MainStyles.paddingHorizontal15}>
     <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Kullanıcı Seçin</Text>
-      <View style={[MainStyles.borderRadius5, MainStyles.borderWidth1, MainStyles.borderColor, MainStyles.marginBottom10, MainStyles.backgroundColorWhite]}>
-      <Picker
-      itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-          selectedValue={selectedUser}
-          onValueChange={(itemValue) => handleUserChange(itemValue)}
-        >
-          <Picker.Item  style={{fontSize: 12}} color='black' label="Kullanıcı seçin" value="" />
-          {users.map((user) => (
-            <Picker.Item style={{fontSize: 12}} key={user.KOD} label={`${user.AD}`} value={user} />
-          ))}
-        </Picker>
+      <View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
+      {Platform.OS === 'ios' ? (
+          <>
+            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+              <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
+                {selectedUser ? selectedUser.AD : 'Kullanıcı seçin'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* iOS Modal */}
+            <Modal visible={isModalVisible} animationType="slide" transparent>
+              <View style={MainStyles.modalContainerPicker}>
+                <View style={MainStyles.modalContentPicker}>
+                  <Picker
+                    selectedValue={selectedUser}
+                    onValueChange={(itemValue) => {
+                      handleUserChange(itemValue);
+                    }}
+                    style={MainStyles.picker}
+                  >
+                    <Picker.Item label="Kullanıcı seçin" value="" />
+                    {users.map((user) => (
+                      <Picker.Item key={user.KOD} label={user.AD} value={user} />
+                    ))}
+                  </Picker>
+                  <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                </View>
+                </View>
+            </Modal>
+          </>
+        ) : (
+          // Android Picker
+          <Picker
+          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
+            selectedValue={selectedUser}
+            onValueChange={(itemValue) => handleUserChange(itemValue)}
+          >
+            <Picker.Item label="Kullanıcı seçin" value="" />
+            {users.map((user) => (
+              <Picker.Item key={user.KOD} label={user.AD} value={user} />
+            ))}
+          </Picker>
+        )}
       </View>
 
       <View>

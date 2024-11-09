@@ -175,7 +175,8 @@ const CariList = ({ navigation }) => {
       <FlatList
         data={filteredCaris}
         renderItem={renderItem}
-        keyExtractor={(item) => item.Cari_Kod}
+        keyExtractor={(item, index) => `${item.Cari_Kod}-${index}`}
+
       />
        </>
       )}

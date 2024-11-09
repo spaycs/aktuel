@@ -1,6 +1,6 @@
 // AdresListModal.js
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import { MainStyles } from '../res/style';
 import { Left } from '../res/images';
 
@@ -19,21 +19,23 @@ const AdresListModal = ({ isVisible, onClose, adresList, onSelect }) => {
       animationType="slide"
       onRequestClose={onClose}
     >
-    <View style={[MainStyles.modalContainer, MainStyles.marginBottom10]}>
-        <View>
-            <Text style={[MainStyles.fontSize16, MainStyles.fontWeightBold, MainStyles.textAlignCenter, MainStyles.textColorBlack]}>Adres Listesi</Text>
-        </View>
-        <TouchableOpacity style={{ position: 'absolute',marginTop: 25, marginLeft: 10}} onPress={onClose}>
-        <Left width={17} height={17}/>
-        </TouchableOpacity>
-        <View style={[MainStyles.modalContainer, MainStyles.marginBottom10]}>
+      <SafeAreaView style={MainStyles.modalContainer}>
+                <View style={MainStyles.modalContent}>
+                    <View >
+                      <Text style={MainStyles.modalTitle}>Adres Listesi</Text>
+                    </View>
+                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={onClose}>
+                    <Left width={17} height={17}/>
+                    </TouchableOpacity>
+                  <View style={MainStyles.modalContent}>
           <FlatList
             data={adresList}
             renderItem={renderAdresItem}
             keyExtractor={item => item.Adres_No.toString()} 
           />
         </View>
-      </View>
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 };

@@ -212,6 +212,7 @@ const Router = () => {
     const intervalId = setInterval(async () => {
       try {
         const temsilciId =  defaults[0].IQ_Kod;
+        console.log('temsilid', temsilciId);
         const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
         const data = response.data;
         if (Array.isArray(data) && data.length > 0) {
@@ -220,12 +221,12 @@ const Router = () => {
           setSohbetCount(0); 
         }
       } catch (error) {
-        console.error('API çağrısı başarısız oldu:', error);
+        console.error('API çağrısı2 başarısız oldu:', error);
       }
     }, 20000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [defaults]);
 
     return(
         <Stack.Navigator >

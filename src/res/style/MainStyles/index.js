@@ -892,10 +892,8 @@ export const MainStyles = {
     },
     modalTitle: {
       fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      color: colors.black,
-      marginBottom: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
     },
     modalTitleAciklama: {
       fontSize: 16,

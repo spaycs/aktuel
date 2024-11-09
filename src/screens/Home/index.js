@@ -21,6 +21,43 @@ const Home = ({ navigation }) => {
   const [menuIzinleri, setMenuIzinleri] = useState(null); // Menü izinleri için state
   const [hasAccess, setHasAccess] = useState(true); // Erişim izni kontrolü
   const [gunlukKazancVerileri, setGunlukKazancVerileri] = useState([]); 
+  const [sohbetCount, setSohbetCount] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const temsilciId =  defaults[0].IQ_Kod;
+        const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
+        const data = response.data;
+        if (Array.isArray(data) && data.length > 0) {
+          setSohbetCount(data.length); 
+        } else {
+          setSohbetCount(0); 
+        }
+      } catch (error) {
+        console.error('API2 çağrısı başarısız oldu:', error);
+      }
+    }, 20000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    const fetchMenuIzinleri = async () => {
+      try {
+        if (defaults.length > 0) {
+          const temsilciKod = defaults[0].IQ_Kod;
+          const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
+          const izinData = response.data[0];
+          setMenuIzinleri(izinData);
+        }
+      } catch (error) {
+        console.error('Menü izinleri alınırken hata oluştu:', error);
+      }
+    };
+
+    fetchMenuIzinleri();
+  }, [defaults]);
 
   useFocusEffect(
     useCallback(() => {
