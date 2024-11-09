@@ -168,7 +168,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
     }, [sip_evrakno_seri,sip_evrakno_sira,sip_musteri_kod, sip_cari_unvan1, sip_depono] );
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
-
+/* 
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -176,7 +176,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       };
     }, [])
   );
-
+  */
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();

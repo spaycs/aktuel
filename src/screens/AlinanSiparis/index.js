@@ -38,6 +38,7 @@ const AlinanSiparis = ({navigation}) => {
     onizleme: AlinanSiparisOnizleme,
   });
 
+  /* 
    useFocusEffect(
     useCallback(() => {
       const onBeforeRemove = (e) => {
@@ -51,7 +52,7 @@ const AlinanSiparis = ({navigation}) => {
       };
     }, [navigation, setFaturaBilgileri])
   );
-  
+  */
   const validateFields = () => {
     if (!faturaBilgileri.sip_musteri_kod|| !faturaBilgileri.sip_cari_unvan1) {
       Alert.alert(

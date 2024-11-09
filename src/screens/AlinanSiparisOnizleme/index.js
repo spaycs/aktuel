@@ -12,6 +12,7 @@ import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Realm } from '@realm/react';
 
 const AlinanSiparisOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -28,6 +29,52 @@ const AlinanSiparisOnizleme = () => {
   const [explanations, setExplanations] = useState(Array(10).fill(''));
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
+
+  // REALM HAFIZADA BARINDIRMA ALANI
+// Schema tanımlaması
+const ProductSchema = {
+  name: 'Product',
+  properties: {
+    Stok_Kod: 'string',
+    sth_miktar: 'double',
+    sth_tutar: 'double',
+    sth_vergi: 'double',
+    sth_iskonto1: 'double',
+    // Diğer gerekli alanlar...
+  },
+};
+
+const FaturaBilgileriSchema = {
+  name: 'FaturaBilgileri',
+  properties: {
+    sip_tarih: 'string',
+    sip_tip: 'string',
+    sip_cins: 'string',
+    // Diğer gerekli alanlar...
+  },
+};
+
+// Realm bağlantısı kurma
+const realmConfig = {
+  path: 'myrealm.realm',  // Veritabanı yolu
+  schema: [ProductSchema, FaturaBilgileriSchema],
+};
+
+const realm = new Realm(realmConfig);
+
+const saveDataToRealm = (addedProducts, faturaBilgileri) => {
+  realm.write(() => {
+    // Ürün verilerini kaydet
+    addedProducts.forEach((product) => {
+      realm.create('Product', product);
+    });
+
+    // Fatura bilgilerini kaydet
+    realm.create('FaturaBilgileri', faturaBilgileri);
+  });
+};
+
+  // REALM HAFIZADA BARINDIRMA ALANI
 
   useEffect(() => {
     if (defaults && defaults[0].IQ_MikroPersKod) {
