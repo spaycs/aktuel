@@ -337,9 +337,9 @@ const calculateTotalQuantity = () => {
         visible={explanationModalVisible}
         onRequestClose={closeExplanationModal}
       >
-        <View style={MainStyles.modalContainerAciklama}>
+        <SafeAreaView style={MainStyles.modalContainerAciklama}>
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitle}>Açıklamalar</Text>
+            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
             {Array.from({ length: 10 }, (_, index) => (
               <TextInput
                 key={index}
@@ -356,7 +356,7 @@ const calculateTotalQuantity = () => {
               <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     {/* Açıklama Ekleme */}
     {/* Kaydet İptal Seçim */}

@@ -595,32 +595,32 @@ const AlisIrsaliyesiOnizleme = () => {
         </TouchableOpacity>
 
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={explanationModalVisible}
-          onRequestClose={closeExplanationModal}
-        >
-          <View style={MainStyles.modalContainerAciklama}>
-            <View style={MainStyles.modalContent}>
-              <Text style={MainStyles.modalTitle}>Açıklamalar</Text>
-              {Array.from({ length: 10 }, (_, index) => (
-                <TextInput
-                  key={index}
-                  style={MainStyles.textInput}
-                  placeholder={`Açıklama ${index + 1}`}
-                  value={explanations[index] || ""} // Her zaman 10 açıklama alanı olmasını sağla
-                  onChangeText={(text) => handleExplanationChange(index, text)}
-                />
-              ))}
-              <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
-                <Text style={MainStyles.addButtonText}>Ekle</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeExplanationModal} style={MainStyles.closeOnizlemeButton}>
-                <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
-              </TouchableOpacity>
-            </View>
+        animationType="slide"
+        transparent={true}
+        visible={explanationModalVisible}
+        onRequestClose={closeExplanationModal}
+      >
+        <SafeAreaView style={MainStyles.modalContainerAciklama}>
+          <View style={MainStyles.modalContent}>
+            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
+            {Array.from({ length: 10 }, (_, index) => (
+              <TextInput
+                key={index}
+                style={MainStyles.textInput}
+                placeholder={`Açıklama ${index + 1}`}
+                value={explanations[index] || ""} // Her zaman 10 açıklama alanı olmasını sağla
+                onChangeText={(text) => handleExplanationChange(index, text)}
+              />
+            ))}
+            <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
+              <Text style={MainStyles.addButtonText}>Ekle</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={closeExplanationModal} style={MainStyles.closeOnizlemeButton}>
+              <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+        </SafeAreaView>
+      </Modal>
     {/* Açıklama Ekleme */}
 
     {/* Kaydet İptal Seçim */}

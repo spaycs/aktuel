@@ -11,6 +11,7 @@ import axiosLinkMain from '../../utils/axiosMain';
 import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AlinanSiparisOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -598,9 +599,9 @@ const AlinanSiparisOnizleme = () => {
         visible={explanationModalVisible}
         onRequestClose={closeExplanationModal}
       >
-        <View style={MainStyles.modalContainerAciklama}>
+        <SafeAreaView style={MainStyles.modalContainerAciklama}>
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitle}>Açıklamalar</Text>
+            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
             {Array.from({ length: 10 }, (_, index) => (
               <TextInput
                 key={index}
@@ -617,7 +618,7 @@ const AlinanSiparisOnizleme = () => {
               <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     {/* Açıklama Ekleme */}
     
