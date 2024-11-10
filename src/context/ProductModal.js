@@ -79,6 +79,11 @@ const ProductModal = ({
   }, [modalVisible, selectedProduct, birimListesi]);
 
   useEffect(() => {
+  console.log("Fatura Bilgileri:", faturaBilgileri);
+}, [faturaBilgileri]);
+
+
+  useEffect(() => {
     if (modalVisible && selectedProduct) {
       const fetchSatisFiyati = async () => {
         const cari = faturaBilgileri.sth_cari_kodu || faturaBilgileri.sip_musteri_kod  || faturaBilgileri.cha_kod;
@@ -600,11 +605,18 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
-
+              <View style={MainStyles.modalInfoDoviz}>
+                  <Text style={MainStyles.inputtip}>BekleyenSiparis : {faturaBilgileri.BekleyenSiparis}</Text>
+                </View>
+              <View style={MainStyles.modalInfoDoviz}>
+                  <Text style={MainStyles.inputtip}>StokVade : {faturaBilgileri.StokVade}</Text>
+                </View>
             <View style={MainStyles.modalInfoContainer}>
+          
               <View style={MainStyles.modalInfoDoviz}>
                   <Text style={MainStyles.inputtip}>Döviz : {DovizIsmi}</Text>
                 </View>
+               
                 <View style={MainStyles.modalInfoKdv}>
                   <Text style={MainStyles.inputtip}>Kdv : {KDV}</Text>
                 </View>

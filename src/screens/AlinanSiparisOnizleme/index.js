@@ -481,7 +481,7 @@ const AlinanSiparisOnizleme = () => {
               sip_b_fiyat : product.sth_tutar,
               sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
               sip_depono: faturaBilgileri.sip_depono,
-              sip_opno: faturaBilgileri.sip_opno,
+              sip_opno: faturaBilgileri.Vade === 0 ?   faturaBilgileri.sip_opno: faturaBilgileri.Vade,
               sip_satici_kod : sip_satici_kod ,
               sip_aciklama: product.aciklama,
               seriler: "",
@@ -543,6 +543,7 @@ const AlinanSiparisOnizleme = () => {
               <Text>Miktar: {product.sth_miktar}</Text>
               <Text>Fiyat: {product.sth_tutar}</Text>
               <Text>Vergi: {product.sth_vergi}</Text>
+              <Text>StokVade: {product.StokVade}</Text>
               {/* Diğer ürün bilgilerini ekleyebilirsiniz */}
             </View>
           ))
@@ -554,14 +555,11 @@ const AlinanSiparisOnizleme = () => {
       <Text>Fatura Bilgileri:</Text>
       {faturaBilgileri ? (
         <View>
-          <Text>Sipariş Tarihi: {faturaBilgileri.sip_tarih}</Text>
-          <Text>Sipariş Tipi: {faturaBilgileri.sip_tip}</Text>
-          <Text>Sipariş Cinsi: {faturaBilgileri.sip_cins}</Text>
-          <Text>Müşteri Kodu: {faturaBilgileri.sip_musteri_kod}</Text>
-          <Text>sip_projekodu: {faturaBilgileri.sip_projekodu}</Text>
-          <Text>sip_stok_sormerk: {faturaBilgileri.sip_stok_sormerk}</Text>
+        
           <Text>sip_opno: {faturaBilgileri.sip_opno}</Text>
           <Text>sip_adresno: {faturaBilgileri.sip_adresno}</Text>
+          <Text>sip_OnaylayanKulNo: {faturaBilgileri.sip_OnaylayanKulNo}</Text>
+          <Text>StokVade: {faturaBilgileri.StokVade}</Text>
           {/* Diğer fatura bilgilerini ekleyebilirsiniz */}
         </View>
       ) : (

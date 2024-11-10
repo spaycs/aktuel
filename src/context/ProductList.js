@@ -17,7 +17,7 @@ const normalizeText = (text) => {
 
 const ProductList = () => {
   const { authData } = useAuth();
-  const { addedProducts, setAddedProducts } = useContext(ProductContext);
+  const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -74,6 +74,8 @@ const ProductList = () => {
           AltGrup: item.AltGrup,
           AnaGrup: item.AnaGrup,
           Reyon: item.Reyon,
+          BekleyenSiparis: item.BekleyenSiparis,
+          Vade: item.Vade,
         }));
   
         setData(filteredData);
@@ -101,6 +103,8 @@ const ProductList = () => {
             AltGrup: item.AltGrup,
             AnaGrup: item.AnaGrup,
             Reyon: item.Reyon,
+            BekleyenSiparis: item.BekleyenSiparis,
+            Vade: item.Vade,
           }));
   
         setData(filteredData);
@@ -111,31 +115,49 @@ const ProductList = () => {
   }, [stokListesi]);
   
   // Stok listesini API'den çek ve belleğe al
-  const fetchStokListesi = useCallback(async () => {
-    try {
-      const response = await axiosLinkMain.get('/Api/Stok/StokListesi');
-      const data = response.data;
-  
-      setStokListesi(data); // stokListesi belleğe alındı
-  
-      // Aynı zamanda filtre seçeneklerini de oluşturuyoruz
-      const markaSet = new Set(data.map(item => item.Marka).filter(marka => marka));
-      const stokAdSet = new Set(data.map(item => item.Stok_Ad).filter(ad => ad));
-      const stokKodSet = new Set(data.map(item => item.Stok_Kod).filter(kod => kod));
-      const altGrupSet = new Set(data.map(item => item.AltGrup).filter(grup => grup));
-      const anaGrupSet = new Set(data.map(item => item.AnaGrup).filter(grup => grup));
-      const reyonSet = new Set(data.map(item => item.Reyon).filter(reyon => reyon));
-  
-      setMarkaOptions(Array.from(markaSet));
-      setStokAdOptions(Array.from(stokAdSet));
-      setStokKodOptions(Array.from(stokKodSet));
-      setAltGrupOptions(Array.from(altGrupSet));
-      setAnaGrupOptions(Array.from(anaGrupSet));
-      setReyonOptions(Array.from(reyonSet));
-    } catch (err) {
-      Alert.alert('Hata', 'Stok verileri yüklenirken bir hata oluştu.');
+  // Stok listesini API'den çek ve belleğe al
+const fetchStokListesi = useCallback(async () => {
+  if (!faturaBilgileri.sip_musteri_kod) return; // Müşteri kodu olmadan isteği yapma
+
+  try {
+    const response = await axiosLinkMain.get(`/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}`);
+    const data = response.data;
+
+    setStokListesi(data);
+
+    // Filtre seçeneklerini oluştur
+    const markaSet = new Set(data.map(item => item.Marka).filter(marka => marka));
+    const stokAdSet = new Set(data.map(item => item.Stok_Ad).filter(ad => ad));
+    const stokKodSet = new Set(data.map(item => item.Stok_Kod).filter(kod => kod));
+    const altGrupSet = new Set(data.map(item => item.AltGrup).filter(grup => grup));
+    const anaGrupSet = new Set(data.map(item => item.AnaGrup).filter(grup => grup));
+    const reyonSet = new Set(data.map(item => item.Reyon).filter(reyon => reyon));
+
+    setMarkaOptions(Array.from(markaSet));
+    setStokAdOptions(Array.from(stokAdSet));
+    setStokKodOptions(Array.from(stokKodSet));
+    setAltGrupOptions(Array.from(altGrupSet));
+    setAnaGrupOptions(Array.from(anaGrupSet));
+    setReyonOptions(Array.from(reyonSet));
+
+    // Vade değerini kontrol et ve sadece 0'dan farklıysa faturaBilgileri'ni güncelle
+    const StokVade = data.find(item => item.Vade !== undefined)?.Vade || 0;
+    console.log('BekleyenSiparis', StokVade);
+
+    if (StokVade !== 0) {
+      setFaturaBilgileri(prev => ({
+        ...prev,
+        StokVade: StokVade, // Vade değeri 0 değilse güncellenir
+      }));
     }
-  }, []);
+    
+  } catch (err) {
+    Alert.alert('Hata', 'Stok verileri yüklenirken bir hata oluştu.');
+  }
+}, [faturaBilgileri.sip_musteri_kod, setFaturaBilgileri]);
+
+  
+
   
   useEffect(() => {
     fetchStokListesi(); // Uygulama başlarken stok listesini bir kez API'den çek
@@ -202,12 +224,15 @@ const ProductList = () => {
           <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
           <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
           <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>BekleyenSiparis: {item.BekleyenSiparis}</Text>
+          <Text style={MainStyles.itemTextPL}>Vade: {item.Vade}</Text>
         </View>
         <View style={MainStyles.rightDetails}>
           <Text style={MainStyles.itemTextPL}>Vergi: {item.sth_vergi}</Text>
           <Text style={MainStyles.itemTextPL}>Ana Grup: {item.AnaGrup}</Text>
           <Text style={MainStyles.itemTextPL}>Alt Grup: {item.AltGrup}</Text>
           <Text style={MainStyles.itemTextPL}>Reyon: {item.Reyon}</Text>
+          
         </View>
       </View>
     </View>

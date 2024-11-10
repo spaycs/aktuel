@@ -27,7 +27,6 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Bilgi Sayfası
   const [sip_evrakno_seri, setSip_evrakno_seri] = useState('');
   const [sip_evrakno_sira, setSip_evrakno_sira] = useState('');
-  const [sip_OnaylayanKulNo, setSip_OnaylayanKulNo] = useState(null);
   const [sip_musteri_kod, setSip_musteri_kod] = useState('');
   const [sip_cari_unvan1, setSip_cari_unvan1] = useState('');
   const [sip_doviz_cinsi, setSip_doviz_cinsi] = useState('');
@@ -65,6 +64,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Kurallar 
   const [isEditable, setIsEditable] = useState(false);
   const [pickerEditable, setPickerEditable] = useState(true);
+  const [vadeEditable, setVadeEditable] = useState(true);
 
 
   // Datatable
@@ -110,6 +110,29 @@ const AlinanSiparisFaturaBilgisi = () => {
             console.log('Proje kodu bulunamadı');
           }
         }
+      }
+    } catch (error) {
+      console.error('Error loading data from AsyncStorage:', error);
+    }
+  };
+
+  const loadOnaysizDataFromAsyncStorage = async () => {
+    try {
+      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      if (savedFaturaBilgileri) {
+        // IQ_SipOnaysizKaydedilsin'e göre işlem
+        const onaysizKaydedilsin = defaults[0].IQ_SipOnaysizKaydedilsin;
+        const mikroPersKod = defaults[0].IQ_MikroPersKod;
+
+        // sip_OnaylayanKulNo değerini belirleme
+        let sip_OnaylayanKulNoValue = onaysizKaydedilsin === 1 ? 0 : mikroPersKod;
+
+            setFaturaBilgileri(prev => ({
+              ...prev,
+              sip_OnaylayanKulNo: sip_OnaylayanKulNoValue, // Vade değeri 0 değilse güncellenir
+            }));
+
+        await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(sip_OnaylayanKulNoValue)); // AsyncStorage'a kaydet
       }
     } catch (error) {
       console.error('Error loading data from AsyncStorage:', error);
@@ -206,6 +229,115 @@ const AlinanSiparisFaturaBilgisi = () => {
       console.error('Error loading address from AsyncStorage:', error);
     }
   };
+
+  const loadDepoFromAsyncStorage = async () => {
+    try {
+      const savedDepo = await AsyncStorage.getItem('selectedDepo');
+      
+      if (savedDepo) {
+        const depoNo = JSON.parse(savedDepo);
+        setSip_depono(depoNo);
+  
+        // Fatura bilgilerini güncelle
+        setFaturaBilgileri((prev) => ({
+          ...prev,
+          sip_depono: depoNo,
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading depo from AsyncStorage:', error);
+    }
+  };
+  
+  const loadDovizFromAsyncStorage = async () => {
+    try {
+      const savedDoviz = await AsyncStorage.getItem('selectedDoviz');
+      
+      if (savedDoviz) {
+        const dovizNo = JSON.parse(savedDoviz);
+        setSip_depono(dovizNo);
+  
+        // Fatura bilgilerini güncelle
+        setFaturaBilgileri((prev) => ({
+          ...prev,
+          sip_doviz_cinsi: dovizNo,
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading depo from AsyncStorage:', error);
+    }
+  };
+
+  const loadIrsaliyeTipiFromAsyncStorage = async () => {
+    try {
+      const savedIrsaliyeTipi = await AsyncStorage.getItem('selectedIrsaliyeTipi');
+  
+      if (savedIrsaliyeTipi) {
+        const irsaliyeTipiValue = JSON.parse(savedIrsaliyeTipi);
+        setIrsaliyeTipi(irsaliyeTipiValue);
+  
+        // İlgili değerleri fatura bilgilerine yükle
+        let sip_tip = 0;
+        let sip_cins = 0;
+  
+        switch (irsaliyeTipiValue) {
+          case 'Çok Dövizli':
+            sip_tip = 0;
+            sip_cins = 0;
+            break;
+          case 'Konsinye':
+            sip_tip = 0;
+            sip_cins = 1;
+            break;
+          case 'Satın Alma':
+            sip_tip = 1;
+            sip_cins = 0;
+            break;
+          default:
+            break;
+        }
+  
+        setFaturaBilgileri(prevState => ({
+          ...prevState,
+          sip_tip,
+          sip_cins,
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading irsaliyeTipi from AsyncStorage:', error);
+    }
+  };
+  
+  const loadDateFromAsyncStorage = async () => {
+    try {
+      const savedDate = await AsyncStorage.getItem('selectedDate');
+      const currentDate = new Date();
+      const initialDate = savedDate ? new Date(JSON.parse(savedDate)) : currentDate;
+      setDate(initialDate);
+      
+      // Kaydedilmiş tarihi formatlayıp fatura bilgilerine ekleyin
+      const formattedDate = formatDate(initialDate);
+      setFaturaBilgileri(prevState => ({
+        ...prevState,
+        sip_tarih: formattedDate,
+      }));
+    } catch (error) {
+      console.error('Error loading date from AsyncStorage:', error);
+    }
+  };
+
+  const loadEvrakNoFromAsyncStorage = async () => {
+    try {
+      const savedEvrakNo = await AsyncStorage.getItem('evrakNo');
+      const savedGirisDepoNo = await AsyncStorage.getItem('girisDepoNo');
+      if (savedEvrakNo !== null) {
+        setSip_evrakno_seri(savedEvrakNo);
+      }
+      if (savedGirisDepoNo !== null) setSth_giris_depo_no(savedGirisDepoNo);
+    } catch (error) {
+      console.error('Error loading Evrak No from AsyncStorage:', error);
+    }
+  };
   
   
   useEffect(() => {
@@ -254,6 +386,12 @@ const AlinanSiparisFaturaBilgisi = () => {
     loadVadeFromAsyncStorage();
     loadCariFromAsyncStorage();
     loadAddressFromAsyncStorage();
+    loadDepoFromAsyncStorage();
+    loadDovizFromAsyncStorage();
+    loadIrsaliyeTipiFromAsyncStorage();
+    loadDateFromAsyncStorage();
+    loadEvrakNoFromAsyncStorage();
+    loadOnaysizDataFromAsyncStorage();
   }, []);
 
   const saveAddressToAsyncStorage = async (selectedAddress) => {
@@ -288,76 +426,62 @@ const AlinanSiparisFaturaBilgisi = () => {
   ];
 // Tüm Değişken Değerleri
 
-   // Değiştirilebilir Alanlar 
+  // Değiştirilebilir Alanlar 
    useEffect(() => {
     if (defaults && defaults[0]) {
-      const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
+      const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin } = defaults[0];
       setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
-      setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
+      setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1); 
+      setVadeEditable(IQ_VadePasifGelsin === 1); 
     }
-  }, [defaults]);
+    }, [defaults]);
 
-  useEffect(() => {
-    if (defaults) {
-      const onaysizKaydedilsin = defaults[0].IQ_SipOnaysizKaydedilsin;
-      const mikroPersKod = defaults[0].IQ_MikroPersKod;
-      console.log('onaysizKaydedilsin',onaysizKaydedilsin);
-      console.log('IQ_MikroPersKod',mikroPersKod);
+  
+    const updateDepoSelection = async (cari) => {
+      if (defaults && defaults[0]) {
+        const selectedCariDepoNo = cari.cari_VarsayilanCikisDepo;
+        console.log('Seçilen Cari Depo No:', selectedCariDepoNo);
+        console.log('IQ_CikisDepoNo:', defaults[0].IQ_CikisDepoNo);
       
-      if (onaysizKaydedilsin === 1) {
-        setSip_OnaylayanKulNo(0);
-      } else if (onaysizKaydedilsin === 0) {
-        setSip_OnaylayanKulNo(mikroPersKod);
-      }
-    }
-  }, [defaults]);
-  
-  const updateDepoSelection = async (cari) => {
-    if (defaults && defaults[0]) {
-      const selectedCariDepoNo = cari.cari_VarsayilanCikisDepo;
-      console.log('Seçilen Cari Depo No:', selectedCariDepoNo);
-      console.log('IQ_CikisDepoNo:', defaults[0].IQ_CikisDepoNo);
+        // defaults[0] içindeki gerekli verileri al
+        const { IQ_CikisDepoCaridenGelsin, IQ_CikisDepoNo } = defaults[0];
+      
+        // Eğer cari_VarsayilanCikisDepo 0 ise, IQ_CikisDepoNo'daki depo numarasını kullan
+        if (selectedCariDepoNo === 0) {
+          const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
+          if (defaultDepo) {
+            // Varsayılan depo bulunduysa, state'i güncelle ve picker'da seçili hale getir
+            setSip_depono(defaultDepo.No.toString());
+            setFaturaBilgileri(prevState => ({
+              ...prevState,
+              sip_depono: defaultDepo.No.toString(),
+            }));
+          }
+        } else {
+          // Eğer cari'nin varsayılan depo numarası varsa, onu kullan
+          if (selectedCariDepoNo) {
+            setSip_depono(selectedCariDepoNo.toString());
+            setFaturaBilgileri(prevState => ({
+              ...prevState,
+              sip_depono: selectedCariDepoNo.toString(),
+            }));
+          }
+        }
     
-      // defaults[0] içindeki gerekli verileri al
-      const { IQ_CikisDepoCaridenGelsin, IQ_CikisDepoNo } = defaults[0];
+        // Depo bilgisi dışarıdan geliyorsa, varsayılan depo numarasını kullan
+        if (IQ_CikisDepoCaridenGelsin === 0) {
+          const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
+          if (defaultDepo) {
+            setSip_depono(defaultDepo.No.toString());
+            setFaturaBilgileri(prevState => ({
+              ...prevState,
+              sip_depono: defaultDepo.No.toString(),
+            }));
+          }
+        }
+      }
+    };
     
-      // Eğer cari_VarsayilanCikisDepo 0 ise, IQ_CikisDepoNo'daki depo numarasını kullan
-      if (selectedCariDepoNo === 0) {
-        const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
-        if (defaultDepo) {
-          // Varsayılan depo bulunduysa, state'i güncelle ve picker'da seçili hale getir
-          setSip_depono(defaultDepo.No.toString());
-          setFaturaBilgileri(prevState => ({
-            ...prevState,
-            sip_depono: defaultDepo.No.toString(),
-          }));
-        }
-      } else {
-        // Eğer cari'nin varsayılan depo numarası varsa, onu kullan
-        if (selectedCariDepoNo) {
-          setSip_depono(selectedCariDepoNo.toString());
-          setFaturaBilgileri(prevState => ({
-            ...prevState,
-            sip_depono: selectedCariDepoNo.toString(),
-          }));
-        }
-      }
-  
-      // Depo bilgisi dışarıdan geliyorsa, varsayılan depo numarasını kullan
-      if (IQ_CikisDepoCaridenGelsin === 0) {
-        const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
-        if (defaultDepo) {
-          setSip_depono(defaultDepo.No.toString());
-          setFaturaBilgileri(prevState => ({
-            ...prevState,
-            sip_depono: defaultDepo.No.toString(),
-          }));
-        }
-      }
-    }
-  };
-  
-  
   // Değiştirilebilir Alanlar 
 
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
@@ -389,7 +513,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   }, []);
 
   // İrsaliye Tipi Varsayılan Seçim
-    const handleIrsaliyeTipiChange = (itemValue) => {
+    const handleIrsaliyeTipiChange = async (itemValue) => {
       setIrsaliyeTipi(itemValue);
       let sip_tip = 0;
       let sip_cins = 0;
@@ -416,6 +540,14 @@ const AlinanSiparisFaturaBilgisi = () => {
       sip_tip,
       sip_cins,
     }));
+
+    try {
+      // İrsaliye tipi bilgisini AsyncStorage'a kaydet
+      await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
+    } catch (error) {
+      console.error('Error saving irsaliyeTipi to AsyncStorage:', error);
+    }
+
     };
   // İrsaliye Tipi Varsayılan Seçim
 
@@ -430,7 +562,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
     }, []);
 
-    const handleDateChange = (event, selectedDate) => {
+    const handleDateChange = async (event, selectedDate) => {
       setShowDatePicker(false);
       const newDate = selectedDate || date;
       setDate(newDate);
@@ -440,6 +572,13 @@ const AlinanSiparisFaturaBilgisi = () => {
         ...prevState,
         sip_tarih: formattedDate,
       }));
+
+      try {
+        // Seçilen tarihi AsyncStorage'a kaydet
+        await AsyncStorage.setItem('selectedDate', JSON.stringify(newDate));
+      } catch (error) {
+        console.error('Error saving date to AsyncStorage:', error);
+      }
     };
 
     const formatDate = (date) => {
@@ -567,28 +706,46 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Cari Seçim
 
   // Depo Seçim
-    const handleDepoChange = (itemValue) => {
+    const handleDepoChange = async (itemValue) => {
       setSip_depono(itemValue);
       setFaturaBilgileri((prev) => ({
         ...prev,
         sip_depono: itemValue,
       }));
+    
+      try {
+        // Depo bilgisini AsyncStorage'a kaydet
+        await AsyncStorage.setItem('selectedDepo', JSON.stringify(itemValue));
+      } catch (error) {
+        console.error('Error saving depo to AsyncStorage:', error);
+      }
     };
   // Depo Seçim
 
   // Döviz Seçim
-    const handleDovizChange = (itemValue) => {
+    const handleDovizChange = async (itemValue) => {
       setSip_doviz_cinsi(itemValue);
       setFaturaBilgileri((prev) => ({
         ...prev,
         sip_doviz_cinsi: itemValue,
       }));
+      try {
+        // Depo bilgisini AsyncStorage'a kaydet
+        await AsyncStorage.setItem('selectedDoviz', JSON.stringify(itemValue));
+      } catch (error) {
+        console.error('Error saving depo to AsyncStorage:', error);
+      }
     };
   // Döviz Seçim
 
   // Evrak No Değişim Alanı
-    const handleEvrakNo = (text) => {
+    const handleEvrakNo = async (text) => {
       setSip_evrakno_seri(text);
+    try {
+      await AsyncStorage.setItem('evrakNo', text);
+    } catch (error) {
+      console.error('Error saving Evrak No to AsyncStorage:', error);
+    }
     };
     const handleAddProduct = () => {
       handleClose();
@@ -1057,7 +1214,6 @@ const AlinanSiparisFaturaBilgisi = () => {
       </View>
        
         <Text style={MainStyles.formTitle}>Cari Seçimi </Text> 
-        <Text>Sip Onaylayan KulNo: {sip_OnaylayanKulNo}</Text>
         <View style={MainStyles.inputContainer}>
           <TextInput
             style={MainStyles.inputCariKodu}
@@ -1303,15 +1459,16 @@ const AlinanSiparisFaturaBilgisi = () => {
               placeholder="Vade"
               value={sip_opno ? sip_opno.toString() : ''}
               onFocus={handleVadeClick} 
+              editable={vadeEditable === 0 || vadeEditable === null}
               placeholderTextColor={colors.placeholderTextColor}
             />
-            <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade}>
+            <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade} disabled={!(vadeEditable === 0 || vadeEditable === null)}>
             <Ara />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG}>
+            <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG} disabled={!(vadeEditable === 0 || vadeEditable === null)}>
               <Text style={MainStyles.buttonbuttonVadeGText}>-</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT}>
+            <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT} disabled={!(vadeEditable === 0 || vadeEditable === null)}>
                 <TakvimVade />
               </TouchableOpacity>
 
