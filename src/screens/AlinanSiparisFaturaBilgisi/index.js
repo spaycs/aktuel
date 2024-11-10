@@ -16,6 +16,7 @@ import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 import AdresListModal from '../../context/AdresListModal';
 import Button from '../../components/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AlinanSiparisFaturaBilgisi = () => {
   const { authData } = useAuth();
@@ -26,6 +27,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Bilgi Sayfası
   const [sip_evrakno_seri, setSip_evrakno_seri] = useState('');
   const [sip_evrakno_sira, setSip_evrakno_sira] = useState('');
+  const [sip_OnaylayanKulNo, setSip_OnaylayanKulNo] = useState(null);
   const [sip_musteri_kod, setSip_musteri_kod] = useState('');
   const [sip_cari_unvan1, setSip_cari_unvan1] = useState('');
   const [sip_doviz_cinsi, setSip_doviz_cinsi] = useState('');
@@ -84,7 +86,195 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isDovizModalVisible, setIsDovizModalVisible] = useState(false);
   const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
   const [isCariDetayVisible, setIsCariDetayVisible] = useState(false);
+
+  // AsyncStorage'dan veriyi yükle
+   const loadDataFromAsyncStorage = async () => {
+    try {
+      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      
+      if (savedFaturaBilgileri) {
+        const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
+        setFaturaBilgileri(parsedFaturaBilgileri);
+        
+        const savedProjeKodu = parsedFaturaBilgileri.sip_projekodu;
+    
+        if (savedProjeKodu) {
+          setSip_projekodu(savedProjeKodu);  // Kod değerini state'e kaydediyoruz
+          
+          // Proje kodu ile ilişkili ismi bulmak için API'den alınan proje kodları listesi ile eşleşme yapıyoruz
+          console.log(projeKoduList.map(item => item.Kod)); // Kodları kontrol et
+          const selectedProje = projeKoduList.find(item => JSON.stringify(item.Kod) === JSON.stringify(savedProjeKodu));
+          if (selectedProje) {
+            setSip_projekodu(selectedProje.Isim); // Proje ismini set et
+          } else {
+            console.log('Proje kodu bulunamadı');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading data from AsyncStorage:', error);
+    }
+  };
+
+  const loadSorumlulukMerkeziFromAsyncStorage = async () => {
+    try {
+      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      
+      if (savedFaturaBilgileri) {
+        const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
+        setFaturaBilgileri(parsedFaturaBilgileri);
+        
+        const savedSorumlulukMerkeziKodu = parsedFaturaBilgileri.sip_stok_sormerk;
+        console.log('savedSorumlulukMerkeziKodu', savedSorumlulukMerkeziKodu);
+      
+        if (savedSorumlulukMerkeziKodu) {
+          setSip_stok_sormerk(savedSorumlulukMerkeziKodu);  // Kod değerini state'e kaydediyoruz
+          
+          // Sorumluluk merkezi kodu ile ilişkili ismi bulmak için API'den alınan listede eşleşme yapıyoruz
+          console.log(sorumlulukMerkeziList.map(item => item.Kod)); // Kodları kontrol et
+          const selectedSorumlulukMerkezi = sorumlulukMerkeziList.find(item => JSON.stringify(item.Kod) === JSON.stringify(savedSorumlulukMerkeziKodu));
+          if (selectedSorumlulukMerkezi) {
+            setSip_stok_sormerk(selectedSorumlulukMerkezi.Isim); // İsim değerini set et
+          } else {
+            console.log('Sorumluluk merkezi kodu bulunamadı');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading data from AsyncStorage:', error);
+    }
+  };
+
+  const loadVadeFromAsyncStorage = async () => {
+    try {
+      const savedVade = await AsyncStorage.getItem('faturaBilgileri');
+      if (savedVade) {
+        const parsedVade = JSON.parse(savedVade);
+        console.log('Gelen Vade Verisi:', parsedVade);  // Veriyi doğru yazdırdığınızı kontrol edin
+        setSip_opno(parsedVade.sip_opno);
+        setSelectedVadeNo(parsedVade.selectedVadeNo);
+      }
+    } catch (error) {
+      console.error('Error loading vade data from AsyncStorage:', error);
+    }
+  };
+
+  const loadCariFromAsyncStorage = async () => {
+    try {
+      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      
+      if (savedFaturaBilgileri) {
+        const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
+        setFaturaBilgileri(parsedFaturaBilgileri);
   
+        // Cari kodu ve ünvanı set et
+        setSip_musteri_kod(parsedFaturaBilgileri.sip_musteri_kod);
+        setSip_cari_unvan1(parsedFaturaBilgileri.sip_cari_unvan1);
+      }
+    } catch (error) {
+      console.error('Cari bilgileri AsyncStorage\'dan yüklenirken hata:', error);
+    }
+  };
+  
+  const loadAddressFromAsyncStorage = async () => {
+    try {
+      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      
+      if (savedFaturaBilgileri) {
+        const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
+        const savedAddressNo = parsedFaturaBilgileri.sip_adresno;
+  
+        if (savedAddressNo) {
+          setSip_adresno(savedAddressNo); // Adres numarasını state'e kaydediyoruz
+          
+          // Adres listesinde adres numarası ile eşleşen adresi bulmak için
+          const fetchedAdresList = await fetchAdresList(parsedFaturaBilgileri.sip_musteri_kod);
+          const selectedAddress = fetchedAdresList.find(item => item.Adres_No === savedAddressNo);
+          
+          if (selectedAddress) {
+            setSip_adresno(selectedAddress.Adres); // Adres değerini set et
+            setFaturaBilgileri(prevState => ({
+              ...prevState,
+              sip_adresno: selectedAddress.Adres_No,
+            }));
+          } else {
+            console.log('Adres numarasına göre adres bulunamadı');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading address from AsyncStorage:', error);
+    }
+  };
+  
+  
+  useEffect(() => {
+    if (projeKoduList.length === 0) {
+      fetchProjeKoduList(); // Listeyi API'den al
+    } else {
+      loadDataFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
+    }
+  }, [projeKoduList]); // Liste değiştiğinde çalışacak
+
+   // Veriyi AsyncStorage'a kaydet
+  const saveDataToAsyncStorage = async () => {
+    try {
+      await AsyncStorage.setItem('sip_projekodu', sip_projekodu); // Kod'u kaydediyoruz
+      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri)); // Fatura bilgilerini kaydediyoruz
+    } catch (error) {
+      console.error('Error saving data to AsyncStorage:', error);
+    }
+  };
+
+  const saveSorumlulukMerkeziToAsyncStorage = async () => {
+    try {
+      await AsyncStorage.setItem('sip_stok_sormerk', sip_stok_sormerk); // Kod'u kaydediyoruz
+      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri)); // Fatura bilgilerini kaydediyoruz
+    } catch (error) {
+      console.error('Error saving data to AsyncStorage:', error);
+    }
+  };
+
+  const saveVadeToAsyncStorage = async () => {
+    try {
+      const vadeData = {
+        sip_opno,
+        selectedVadeNo,
+      };
+      console.log('Kaydedilen Vade Verisi:', vadeData); // Veriyi kontrol et
+      await AsyncStorage.setItem('vade', JSON.stringify(vadeData));
+    } catch (error) {
+      console.error('Error saving vade data to AsyncStorage:', error);
+    }
+  };
+  
+  useEffect(() => {
+    loadDataFromAsyncStorage();  // Uygulama açıldığında verileri AsyncStorage'dan yükle
+    loadSorumlulukMerkeziFromAsyncStorage();
+    loadVadeFromAsyncStorage();
+    loadCariFromAsyncStorage();
+    loadAddressFromAsyncStorage();
+  }, []);
+
+  const saveAddressToAsyncStorage = async (selectedAddress) => {
+    try {
+      const faturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      const parsedFaturaBilgileri = faturaBilgileri ? JSON.parse(faturaBilgileri) : {};
+  
+      const updatedFaturaBilgileri = {
+        ...parsedFaturaBilgileri,
+        sip_adresno: selectedAddress.Adres_No,
+      };
+  
+      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(updatedFaturaBilgileri));
+    } catch (error) {
+      console.error("Error saving address to AsyncStorage:", error);
+    }
+  };
+
+// Veriyi AsyncStorage'a kaydet
+   
+    
 
   const getSelectedDovizAd = () => {
     const selectedDoviz = dovizList.find(doviz => doviz.Doviz_Cins.toString() === sip_doviz_cinsi);
@@ -104,6 +294,21 @@ const AlinanSiparisFaturaBilgisi = () => {
       const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
       setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
       setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
+    }
+  }, [defaults]);
+
+  useEffect(() => {
+    if (defaults) {
+      const onaysizKaydedilsin = defaults[0].IQ_SipOnaysizKaydedilsin;
+      const mikroPersKod = defaults[0].IQ_MikroPersKod;
+      console.log('onaysizKaydedilsin',onaysizKaydedilsin);
+      console.log('IQ_MikroPersKod',mikroPersKod);
+      
+      if (onaysizKaydedilsin === 1) {
+        setSip_OnaylayanKulNo(0);
+      } else if (onaysizKaydedilsin === 0) {
+        setSip_OnaylayanKulNo(mikroPersKod);
+      }
     }
   }, [defaults]);
   
@@ -168,7 +373,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
     }, [sip_evrakno_seri,sip_evrakno_sira,sip_musteri_kod, sip_cari_unvan1, sip_depono] );
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
-/* 
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -176,7 +381,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       };
     }, [])
   );
-  */
+
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();
@@ -275,20 +480,28 @@ const AlinanSiparisFaturaBilgisi = () => {
 
     const handleCariSelect = async (cari) => {
       const selectedCariKodu = cari.Cari_Kod;
+      const selectedCariUnvan = cari.Ünvan;
     
       setSip_musteri_kod(selectedCariKodu);
-      setSip_cari_unvan1(cari.Ünvan);
+      setSip_cari_unvan1(selectedCariUnvan);
+      
+      // Fatura bilgilerini güncelle
       setFaturaBilgileri((prevState) => ({
         ...prevState,
         sip_musteri_kod: selectedCariKodu,
-        sip_cari_unvan1: cari.Ünvan,
+        sip_cari_unvan1: selectedCariUnvan,
       }));
-    
-      setSip_adresno('');
-      setFaturaBilgileri((prevState) => ({
-        ...prevState,
-        sip_adresno: null,
-      }));
+      
+      // AsyncStorage'a cari bilgilerini kaydediyoruz
+      try {
+        await AsyncStorage.setItem('faturaBilgileri', JSON.stringify({
+          ...faturaBilgileri,
+          sip_musteri_kod: selectedCariKodu,
+          sip_cari_unvan1: selectedCariUnvan,
+        }));
+      } catch (error) {
+        console.error('Cari bilgileri AsyncStorage\'a kaydedilirken hata:', error);
+      }
       
       fetchDovizList(selectedCariKodu);
       // Adres listesini tekrar API'den çek
@@ -398,6 +611,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         sip_projekodu: item.Kod,
       }));
       setIsProjeKoduModalVisible(false);
+      saveDataToAsyncStorage()
     };
   // Proje Kodu Seçim
 
@@ -414,6 +628,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         sip_stok_sormerk: item.Kod,
       }));
       setIsSorumlulukMerkeziModalVisible(false);
+      saveSorumlulukMerkeziToAsyncStorage();
     };
   // Sorumluluk Merkezi Seçim
 
@@ -424,13 +639,15 @@ const AlinanSiparisFaturaBilgisi = () => {
       setIsAdresListModalVisible(true); // Modalı göster
     };
   
-    const handleAdresSelect = (item) => {
+    const handleAdresSelect = async (item) => {
       setSip_adresno(item.Adres);
       setFaturaBilgileri(prevState => ({
         ...prevState,
         sip_adresno: item.Adres_No,
       }));
       setIsAdresListModalVisible(false);
+
+      await saveAddressToAsyncStorage(item);
     };
   // Adres Seçim
 
@@ -443,12 +660,14 @@ const AlinanSiparisFaturaBilgisi = () => {
     const handleVadeSelect = (item) => {
       setSip_opno(item.Isim); 
       setSelectedVadeNo(item.No); 
-      setIsVadeModalVisible(false);
+      saveVadeToAsyncStorage();
   
       setFaturaBilgileri(prevState => ({
         ...prevState,
         sip_opno: item.No,
       }));
+      
+      setIsVadeModalVisible(false);
     };
 
     const handleGClick = () => {
@@ -838,6 +1057,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       </View>
        
         <Text style={MainStyles.formTitle}>Cari Seçimi </Text> 
+        <Text>Sip Onaylayan KulNo: {sip_OnaylayanKulNo}</Text>
         <View style={MainStyles.inputContainer}>
           <TextInput
             style={MainStyles.inputCariKodu}
@@ -1081,7 +1301,7 @@ const AlinanSiparisFaturaBilgisi = () => {
             <TextInput
               style={MainStyles.inputVade}
               placeholder="Vade"
-              value={sip_opno}
+              value={sip_opno ? sip_opno.toString() : ''}
               onFocus={handleVadeClick} 
               placeholderTextColor={colors.placeholderTextColor}
             />
@@ -1248,7 +1468,7 @@ const AlinanSiparisFaturaBilgisi = () => {
               value={sip_projekodu}
               placeholder="Proje Kodu"
               placeholderTextColor={colors.placeholderTextColor}
-              onChangeText={setSip_projekodu}
+              onChangeText={(text) => setSip_projekodu(text)}
             />
             <TouchableOpacity onPress={handleProjeKoduClick} style={MainStyles.buttonCariKodu}>
             <Ara />

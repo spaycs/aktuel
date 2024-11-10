@@ -13,12 +13,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Realm } from '@realm/react';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const AlinanSiparisOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
   const { defaults } = useAuthDefault();
   const [sip_satici_kod , setSip_satici_kod ] = useState('');
-  const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
+  const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,52 +30,41 @@ const AlinanSiparisOnizleme = () => {
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
 
-  // REALM HAFIZADA BARINDIRMA ALANI
-// Schema tanımlaması
-const ProductSchema = {
-  name: 'Product',
-  properties: {
-    Stok_Kod: 'string',
-    sth_miktar: 'double',
-    sth_tutar: 'double',
-    sth_vergi: 'double',
-    sth_iskonto1: 'double',
-    // Diğer gerekli alanlar...
-  },
-};
+  const saveDataToAsyncStorage = async (addedProducts, faturaBilgileri) => {
+    try {
+      await AsyncStorage.setItem('addedProducts', JSON.stringify(addedProducts));
+      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri));
+      console.log("Data saved successfully to AsyncStorage.");
+    } catch (error) {
+      console.error("Failed to save data to AsyncStorage:", error);
+    }
+  };
 
-const FaturaBilgileriSchema = {
-  name: 'FaturaBilgileri',
-  properties: {
-    sip_tarih: 'string',
-    sip_tip: 'string',
-    sip_cins: 'string',
-    // Diğer gerekli alanlar...
-  },
-};
+  const loadDataFromAsyncStorage = async () => {
+    try {
+      const addedProductsData = await AsyncStorage.getItem('addedProducts');
+      const faturaBilgileriData = await AsyncStorage.getItem('faturaBilgileri');
 
-// Realm bağlantısı kurma
-const realmConfig = {
-  path: 'myrealm.realm',  // Veritabanı yolu
-  schema: [ProductSchema, FaturaBilgileriSchema],
-};
+      if (addedProductsData) {
+        setAddedProducts(JSON.parse(addedProductsData));
+      }
+      if (faturaBilgileriData) {
+        setFaturaBilgileri(JSON.parse(faturaBilgileriData));
+      }
+      console.log("Data loaded successfully from AsyncStorage.");
+    } catch (error) {
+      console.error("Failed to load data from AsyncStorage:", error);
+    }
+  };
 
-const realm = new Realm(realmConfig);
+  useEffect(() => {
+    loadDataFromAsyncStorage();
+  }, []);
 
-const saveDataToRealm = (addedProducts, faturaBilgileri) => {
-  realm.write(() => {
-    // Ürün verilerini kaydet
-    addedProducts.forEach((product) => {
-      realm.create('Product', product);
-    });
-
-    // Fatura bilgilerini kaydet
-    realm.create('FaturaBilgileri', faturaBilgileri);
-  });
-};
-
-  // REALM HAFIZADA BARINDIRMA ALANI
-
+  useEffect(() => {
+    saveDataToAsyncStorage(addedProducts, faturaBilgileri);
+  }, [addedProducts, faturaBilgileri]);
+  
   useEffect(() => {
     if (defaults && defaults[0].IQ_MikroPersKod) {
       setSip_satici_kod(defaults[0].IQ_MikroPersKod);
@@ -544,6 +533,41 @@ const saveDataToRealm = (addedProducts, faturaBilgileri) => {
 
   return (
   <View style={MainStyles.container}>
+     <View>
+      <Text>Added Products:</Text>
+      <View>
+        {addedProducts.length > 0 ? (
+          addedProducts.map((product, index) => (
+            <View key={index}>
+              <Text>Stok Kod: {product.Stok_Kod}</Text>
+              <Text>Miktar: {product.sth_miktar}</Text>
+              <Text>Fiyat: {product.sth_tutar}</Text>
+              <Text>Vergi: {product.sth_vergi}</Text>
+              {/* Diğer ürün bilgilerini ekleyebilirsiniz */}
+            </View>
+          ))
+        ) : (
+          <Text>No products found in AsyncStorage.</Text>
+        )}
+      </View>
+
+      <Text>Fatura Bilgileri:</Text>
+      {faturaBilgileri ? (
+        <View>
+          <Text>Sipariş Tarihi: {faturaBilgileri.sip_tarih}</Text>
+          <Text>Sipariş Tipi: {faturaBilgileri.sip_tip}</Text>
+          <Text>Sipariş Cinsi: {faturaBilgileri.sip_cins}</Text>
+          <Text>Müşteri Kodu: {faturaBilgileri.sip_musteri_kod}</Text>
+          <Text>sip_projekodu: {faturaBilgileri.sip_projekodu}</Text>
+          <Text>sip_stok_sormerk: {faturaBilgileri.sip_stok_sormerk}</Text>
+          <Text>sip_opno: {faturaBilgileri.sip_opno}</Text>
+          <Text>sip_adresno: {faturaBilgileri.sip_adresno}</Text>
+          {/* Diğer fatura bilgilerini ekleyebilirsiniz */}
+        </View>
+      ) : (
+        <Text>No invoice data found in AsyncStorage.</Text>
+      )}
+    </View>
       <View style={MainStyles.vadeContainer}>
           <Text style={MainStyles.vadeText}>Ortalama Vade: {vadeData ? new Date(vadeData).toLocaleDateString() : ''}</Text>
       </View>
@@ -553,7 +577,7 @@ const saveDataToRealm = (addedProducts, faturaBilgileri) => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler */}
+    {/* Apiye Giden Değerler 
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_seri: {faturaBilgileri.sip_evrakno_seri}</Text>
         <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_sira: {faturaBilgileri.sip_evrakno_sira}</Text>
