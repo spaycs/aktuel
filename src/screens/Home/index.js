@@ -10,6 +10,7 @@ import axiosLinkMain from '../../utils/axiosMain';
 import { useAuthDefault } from '../../components/DefaultUser';
 import { ScrollView } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.style = { color: colors.black };
@@ -190,6 +191,38 @@ const Home = ({ navigation }) => {
     );
   };
   
+  useEffect(() => {
+    const checkUnsubmittedOrder = async () => {
+      try {
+        const savedOrder = await AsyncStorage.getItem('alinanSiparis');
+        if (savedOrder) {
+          const parsedOrder = JSON.parse(savedOrder);
+          if (parsedOrder.sip_musteri_kod) { // Eğer `sip_musteri_kod` dolu ise
+            Alert.alert(
+              'Uyarı',
+              'Henüz kaydedilmemiş bir siparişin var',
+              [
+                {
+                  text: 'Siparişe Git',
+                  onPress: () => navigation.navigate('AlinanSiparis'),
+                },
+                {
+                  text: 'Kapat',
+                  onPress: () => console.log('Alert kapatıldı'),
+                  style: 'cancel',
+                },
+              ],
+              { cancelable: true }
+            );
+          }
+        }
+      } catch (error) {
+        console.error('Error checking unsubmitted order:', error);
+      }
+    };
+
+    checkUnsubmittedOrder();
+  }, [navigation]);
 
   return (
     <View style={[MainStyles.flex1, MainStyles.backgroundColorWhite, MainStyles.paddingHorizontal15, MainStyles.justifyContent]}>

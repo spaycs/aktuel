@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AlinanSiparisFaturaBilgisi = () => {
   const { authData } = useAuth();
   const { defaults } = useAuthDefault();
-  const { faturaBilgileri, setAddedProducts, setFaturaBilgileri } = useContext(ProductContext);
+  const { alinanSiparis, setAddedProducts, setAlinanSiparis } = useContext(ProductContext);
 
 // Tüm Değişken Değerleri
   // Bilgi Sayfası
@@ -92,11 +92,11 @@ const AlinanSiparisFaturaBilgisi = () => {
   // AsyncStorage'dan veriyi yükle
    const loadDataFromAsyncStorage = async () => {
     try {
-      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      const savedFaturaBilgileri = await AsyncStorage.getItem('alinanSiparis');
       
       if (savedFaturaBilgileri) {
         const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
-        setFaturaBilgileri(parsedFaturaBilgileri);
+        setAlinanSiparis(parsedFaturaBilgileri);
         
         const savedProjeKodu = parsedFaturaBilgileri.sip_projekodu;
     
@@ -120,7 +120,7 @@ const AlinanSiparisFaturaBilgisi = () => {
 
   const loadOnaysizDataFromAsyncStorage = async () => {
     try {
-      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      const savedFaturaBilgileri = await AsyncStorage.getItem('alinanSiparis');
       if (savedFaturaBilgileri) {
         const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
         const onaysizKaydedilsin = defaults[0].IQ_SipOnaysizKaydedilsin;
@@ -129,13 +129,13 @@ const AlinanSiparisFaturaBilgisi = () => {
         // sip_OnaylayanKulNo değerini belirleme
         let sip_OnaylayanKulNoValue = onaysizKaydedilsin === 1 ? 0 : mikroPersKod;
         
-        setFaturaBilgileri(prev => ({
+        setAlinanSiparis(prev => ({
           ...parsedFaturaBilgileri, // Kaydedilmiş diğer değerleri yükle
           sip_OnaylayanKulNo: sip_OnaylayanKulNoValue,
         }));
         
         // Güncellenmiş `faturaBilgileri` objesini AsyncStorage'a kaydet
-        await AsyncStorage.setItem('faturaBilgileri', JSON.stringify({
+        await AsyncStorage.setItem('alinanSiparis', JSON.stringify({
           ...parsedFaturaBilgileri,
           sip_OnaylayanKulNo: sip_OnaylayanKulNoValue,
         }));
@@ -148,36 +148,42 @@ const AlinanSiparisFaturaBilgisi = () => {
 
   const loadSorumlulukMerkeziFromAsyncStorage = async () => {
     try {
-      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
-      
-      if (savedFaturaBilgileri) {
-        const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
-        setFaturaBilgileri(parsedFaturaBilgileri);
-        
-        const savedSorumlulukMerkeziKodu = parsedFaturaBilgileri.sip_stok_sormerk;
-        //console.log('savedSorumlulukMerkeziKodu', savedSorumlulukMerkeziKodu);
-      
-        if (savedSorumlulukMerkeziKodu) {
-          setSip_stok_sormerk(savedSorumlulukMerkeziKodu);  // Kod değerini state'e kaydediyoruz
-          
-          // Sorumluluk merkezi kodu ile ilişkili ismi bulmak için API'den alınan listede eşleşme yapıyoruz
-          //console.log(sorumlulukMerkeziList.map(item => item.Kod)); // Kodları kontrol et
-          const selectedSorumlulukMerkezi = sorumlulukMerkeziList.find(item => JSON.stringify(item.Kod) === JSON.stringify(savedSorumlulukMerkeziKodu));
-          if (selectedSorumlulukMerkezi) {
-            setSip_stok_sormerk(selectedSorumlulukMerkezi.Isim); // İsim değerini set et
-          } else {
-            console.log('Sorumluluk merkezi kodu bulunamadı');
-          }
+        const savedFaturaBilgileri = await AsyncStorage.getItem('alinanSiparis');
+
+        if (savedFaturaBilgileri) {
+            const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
+            setAlinanSiparis(parsedFaturaBilgileri);
+
+            const savedSorumlulukMerkeziKodu = parsedFaturaBilgileri.sip_stok_sormerk;
+
+            if (savedSorumlulukMerkeziKodu) {
+                setSip_stok_sormerk(savedSorumlulukMerkeziKodu);
+
+                // Sorumluluk merkezi listesinde kodu arıyoruz
+                const selectedSorumlulukMerkezi = sorumlulukMerkeziList.find(
+                    item => String(item.Kod) === String(savedSorumlulukMerkeziKodu)
+                );
+
+                // Eğer eşleşen sorumluluk merkezi bulunduysa, ismini ayarlıyoruz
+                if (selectedSorumlulukMerkezi) {
+                    console.log('Bulunan Sorumluluk Merkezi:', selectedSorumlulukMerkezi);  // Kontrol için log
+
+                    // İsim değerini al ve TextInput'a ekle
+                    setSip_stok_sormerk(selectedSorumlulukMerkezi.İsim);
+                } else {
+                    console.log('Sorumluluk merkezi kodu bulunamadı');
+                }
+            }
         }
-      }
     } catch (error) {
-      console.error('Error loading data from AsyncStorage:', error);
+        console.error('Error loading data from AsyncStorage:', error);
     }
-  };
+};
+
 
   const loadVadeFromAsyncStorage = async () => {
     try {
-      const savedVade = await AsyncStorage.getItem('faturaBilgileri');
+      const savedVade = await AsyncStorage.getItem('alinanSiparis');
       if (savedVade) {
         const parsedVade = JSON.parse(savedVade);
         //console.log('Gelen Vade Verisi:', parsedVade);  // Veriyi doğru yazdırdığınızı kontrol edin
@@ -191,11 +197,11 @@ const AlinanSiparisFaturaBilgisi = () => {
 
   const loadCariFromAsyncStorage = async () => {
     try {
-      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      const savedFaturaBilgileri = await AsyncStorage.getItem('alinanSiparis');
       
       if (savedFaturaBilgileri) {
         const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
-        setFaturaBilgileri(parsedFaturaBilgileri);
+        setAlinanSiparis(parsedFaturaBilgileri);
   
         // Cari kodu ve ünvanı set et
         setSip_musteri_kod(parsedFaturaBilgileri.sip_musteri_kod);
@@ -208,7 +214,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   
   const loadAddressFromAsyncStorage = async () => {
     try {
-      const savedFaturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
+      const savedFaturaBilgileri = await AsyncStorage.getItem('alinanSiparis');
       
       if (savedFaturaBilgileri) {
         const parsedFaturaBilgileri = JSON.parse(savedFaturaBilgileri);
@@ -223,7 +229,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           
           if (selectedAddress) {
             setSip_adresno(selectedAddress.Adres); // Adres değerini set et
-            setFaturaBilgileri(prevState => ({
+            setAlinanSiparis(prevState => ({
               ...prevState,
               sip_adresno: selectedAddress.Adres_No,
             }));
@@ -246,7 +252,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         setSip_depono(depoNo);
   
         // Fatura bilgilerini güncelle
-        setFaturaBilgileri((prev) => ({
+        setAlinanSiparis((prev) => ({
           ...prev,
           sip_depono: depoNo,
         }));
@@ -265,13 +271,26 @@ const AlinanSiparisFaturaBilgisi = () => {
         setSip_depono(dovizNo);
   
         // Fatura bilgilerini güncelle
-        setFaturaBilgileri((prev) => ({
+        setAlinanSiparis((prev) => ({
           ...prev,
           sip_doviz_cinsi: dovizNo,
         }));
       }
     } catch (error) {
       console.error('Error loading depo from AsyncStorage:', error);
+    }
+  };
+
+  const loadEvrakNoFromAsyncStorage = async () => {
+    try {
+      const savedEvrakNo = await AsyncStorage.getItem('evrakNo');
+      const savedGirisDepoNo = await AsyncStorage.getItem('girisDepoNo');
+      if (savedEvrakNo !== null) {
+        setSip_evrakno_seri(savedEvrakNo);
+      }
+      if (savedGirisDepoNo !== null) setSth_giris_depo_no(savedGirisDepoNo);
+    } catch (error) {
+      console.error('Error loading Evrak No from AsyncStorage:', error);
     }
   };
 
@@ -304,7 +323,7 @@ const AlinanSiparisFaturaBilgisi = () => {
             break;
         }
   
-        setFaturaBilgileri(prevState => ({
+        setAlinanSiparis(prevState => ({
           ...prevState,
           sip_tip,
           sip_cins,
@@ -324,7 +343,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       
       // Kaydedilmiş tarihi formatlayıp fatura bilgilerine ekleyin
       const formattedDate = formatDate(initialDate);
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_tarih: formattedDate,
       }));
@@ -333,29 +352,13 @@ const AlinanSiparisFaturaBilgisi = () => {
     }
   };
 
-  const loadEvrakNoFromAsyncStorage = async () => {
-    try {
-      const savedEvrakNo = await AsyncStorage.getItem('evrakNo');
-      const savedGirisDepoNo = await AsyncStorage.getItem('girisDepoNo');
-      if (savedEvrakNo !== null) {
-        setSip_evrakno_seri(savedEvrakNo);
-      }
-      if (savedGirisDepoNo !== null) setSth_giris_depo_no(savedGirisDepoNo);
-    } catch (error) {
-      console.error('Error loading Evrak No from AsyncStorage:', error);
-    }
-  };
   
-  useEffect(() => {
-    console.log("Fatura Bilgileri Güncellendi:", faturaBilgileri);  // Burada log ekleyin
-  }, [faturaBilgileri]);
- 
-
+  
    // Veriyi AsyncStorage'a kaydet
   const saveDataToAsyncStorage = async () => {
     try {
       await AsyncStorage.setItem('sip_projekodu', sip_projekodu); // Kod'u kaydediyoruz
-      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri)); // Fatura bilgilerini kaydediyoruz
+      await AsyncStorage.setItem('alinanSiparis', JSON.stringify(alinanSiparis)); // Fatura bilgilerini kaydediyoruz
     } catch (error) {
       console.error('Error saving data to AsyncStorage:', error);
     }
@@ -364,7 +367,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const saveCariToAsyncStorage = async () => {
     try {
       await AsyncStorage.setItem('sip_musteri_kod', sip_musteri_kod); // Cari kodunu kaydediyoruz
-      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri)); // Fatura bilgilerini kaydediyoruz
+      await AsyncStorage.setItem('alinanSiparis', JSON.stringify(alinanSiparis)); // Fatura bilgilerini kaydediyoruz
     } catch (error) {
       console.error('Error saving data to AsyncStorage:', error);
     }
@@ -373,7 +376,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const saveSorumlulukMerkeziToAsyncStorage = async () => {
     try {
       await AsyncStorage.setItem('sip_stok_sormerk', sip_stok_sormerk); // Kod'u kaydediyoruz
-      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri)); // Fatura bilgilerini kaydediyoruz
+      await AsyncStorage.setItem('alinanSiparis', JSON.stringify(alinanSiparis)); // Fatura bilgilerini kaydediyoruz
     } catch (error) {
       console.error('Error saving data to AsyncStorage:', error);
     }
@@ -394,20 +397,24 @@ const AlinanSiparisFaturaBilgisi = () => {
 
   const saveAddressToAsyncStorage = async (selectedAddress) => {
     try {
-      const faturaBilgileri = await AsyncStorage.getItem('faturaBilgileri');
-      const parsedFaturaBilgileri = faturaBilgileri ? JSON.parse(faturaBilgileri) : {};
+      const alinanSiparis = await AsyncStorage.getItem('alinanSiparis');
+      const parsedFaturaBilgileri = alinanSiparis ? JSON.parse(alinanSiparis) : {};
   
       const updatedFaturaBilgileri = {
         ...parsedFaturaBilgileri,
         sip_adresno: selectedAddress.Adres_No,
       };
   
-      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(updatedFaturaBilgileri));
+      await AsyncStorage.setItem('alinanSiparis', JSON.stringify(updatedFaturaBilgileri));
     } catch (error) {
       console.error("Error saving address to AsyncStorage:", error);
     }
   };
   
+  useEffect(() => {
+    console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
+  }, [alinanSiparis]);
+ 
   useEffect(() => {
     loadDataFromAsyncStorage();  // Uygulama açıldığında verileri AsyncStorage'dan yükle
     loadSorumlulukMerkeziFromAsyncStorage();
@@ -431,6 +438,22 @@ const AlinanSiparisFaturaBilgisi = () => {
     }
   }, [projeKoduList]); // Liste değiştiğinde çalışacak
 
+  useEffect(() => {
+    if (sorumlulukMerkeziList.length === 0) {
+      fetchSorumlulukMerkeziList(); // Listeyi API'den al
+    } else {
+      loadSorumlulukMerkeziFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
+    }
+  }, [sorumlulukMerkeziList]); // Liste değiştiğinde çalışacak
+
+  useEffect(() => {
+    if (vadeList.length === 0) {
+      fetchVadeList(); // Listeyi API'den al
+    } else {
+      loadVadeFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
+    }
+  }, [vadeList]); // Liste değiştiğinde çalışacak
+
 
 
 // Veriyi AsyncStorage'a kaydet
@@ -452,10 +475,10 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Değiştirilebilir Alanlar 
    useEffect(() => {
     if (defaults && defaults[0]) {
-      const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin } = defaults[0];
+      const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin, IQ_OPCaridenGelsin } = defaults[0];
       setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
       setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1); 
-      setVadeEditable(IQ_VadePasifGelsin === 1); 
+      setVadeEditable(IQ_VadePasifGelsin === 1 && IQ_VadePasifGelsin === null); 
     }
     }, [defaults]);
 
@@ -475,7 +498,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           if (defaultDepo) {
             // Varsayılan depo bulunduysa, state'i güncelle ve picker'da seçili hale getir
             setSip_depono(defaultDepo.No.toString());
-            setFaturaBilgileri(prevState => ({
+            setAlinanSiparis(prevState => ({
               ...prevState,
               sip_depono: defaultDepo.No.toString(),
             }));
@@ -484,7 +507,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           // Eğer cari'nin varsayılan depo numarası varsa, onu kullan
           if (selectedCariDepoNo) {
             setSip_depono(selectedCariDepoNo.toString());
-            setFaturaBilgileri(prevState => ({
+            setAlinanSiparis(prevState => ({
               ...prevState,
               sip_depono: selectedCariDepoNo.toString(),
             }));
@@ -496,7 +519,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           const defaultDepo = depoList.find(depo => depo.No === IQ_CikisDepoNo);
           if (defaultDepo) {
             setSip_depono(defaultDepo.No.toString());
-            setFaturaBilgileri(prevState => ({
+            setAlinanSiparis(prevState => ({
               ...prevState,
               sip_depono: defaultDepo.No.toString(),
             }));
@@ -509,7 +532,7 @@ const AlinanSiparisFaturaBilgisi = () => {
 
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
     useEffect(() => {
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_evrakno_seri: sip_evrakno_seri,
         sip_evrakno_sira: sip_evrakno_sira,
@@ -532,7 +555,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();
-    handleIrsaliyeTipiChange('Çok Dövizli');
+    //handleIrsaliyeTipiChange('Çok Dövizli');
   }, []);
 
   const closeModal = () => {
@@ -563,7 +586,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           break;
       }
       
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
       ...prevState,
       sip_tip,
       sip_cins,
@@ -584,7 +607,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       const currentDate = new Date();
       const formattedDate = formatDate(currentDate);
       setDate(currentDate);
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_tarih: formattedDate,
       }));
@@ -596,7 +619,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       setDate(newDate);
 
       const formattedDate = formatDate(newDate);
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_tarih: formattedDate,
       }));
@@ -653,26 +676,45 @@ const AlinanSiparisFaturaBilgisi = () => {
       setSip_cari_unvan1(selectedCariUnvan);
     
       // Fatura bilgilerini güncelle
-      setFaturaBilgileri((prevState) => ({
+      setAlinanSiparis((prevState) => ({
         ...prevState,
         sip_musteri_kod: selectedCariKodu,
         sip_cari_unvan1: selectedCariUnvan,
       }));
     
-      // AsyncStorage'a veri kaydetmeden önce kontrol et
-    if (selectedCariKodu !== undefined && selectedCariUnvan !== undefined) {
-      try {
-        await AsyncStorage.setItem('faturaBilgileri', JSON.stringify({
-          ...faturaBilgileri,
-          sip_musteri_kod: selectedCariKodu,
-          sip_cari_unvan1: selectedCariUnvan,
+    // IQ_OPCaridenGelsin kontrolü
+      const IQ_OPCaridenGelsin = defaults?.IQ_OPCaridenGelsin;
+      if (IQ_OPCaridenGelsin === 1) {
+        // IQ_OPCaridenGelsin 1 ise cari_odemeplan_no içindeki değeri al ve setSip_opno'yu güncelle
+        const selectedOdemePlanNo = cari.cari_odemeplan_no;
+        setSip_opno(selectedOdemePlanNo);
+        setAlinanSiparis((prevState) => ({
+          ...prevState,
+          sip_opno: selectedOdemePlanNo,
         }));
-        //console.log("Fatura bilgileri AsyncStorage'a kaydedildi.");
-      } catch (error) {
-        console.error('Cari bilgileri AsyncStorage\'a kaydedilirken hata:', error);
+      } else {
+        // IQ_OPCaridenGelsin 0 ise setSip_opno'yu 0 olarak ayarla
+        setSip_opno(0);
+        setAlinanSiparis((prevState) => ({
+          ...prevState,
+          sip_opno: 0,
+        }));
       }
-    } else {
-      console.error('Geçersiz değerler: Cari Kodu veya Ünvan bulunamadı.');
+          
+      // AsyncStorage'a veri kaydetmeden önce kontrol et
+      if (selectedCariKodu !== undefined && selectedCariUnvan !== undefined) {
+        try {
+          await AsyncStorage.setItem('alinanSiparis', JSON.stringify({
+            ...alinanSiparis,
+            sip_musteri_kod: selectedCariKodu,
+            sip_cari_unvan1: selectedCariUnvan,
+          }));
+          //console.log("Fatura bilgileri AsyncStorage'a kaydedildi.");
+        } catch (error) {
+          console.error('Cari bilgileri AsyncStorage\'a kaydedilirken hata:', error);
+        }
+      } else {
+        console.error('Geçersiz değerler: Cari Kodu veya Ünvan bulunamadı.');
     }
 
     await saveCariToAsyncStorage();
@@ -683,7 +725,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       if (adresList && adresList.length > 0) {
         const firstAddress = adresList[0];
         setSip_adresno(firstAddress.Adres);
-        setFaturaBilgileri((prevState) => ({
+        setAlinanSiparis((prevState) => ({
           ...prevState,
           sip_adresno: firstAddress.Adres_No,
         }));
@@ -691,16 +733,16 @@ const AlinanSiparisFaturaBilgisi = () => {
         console.log("Adres listesi boş geldi.");
       }
     
+    // Ödeme planını kontrol et
       if (cari.cari_odemeplan_no) {
         const odemePlanNo = cari.cari_odemeplan_no;
-    
         try {
           const odemePlanlariList = await fetchVadeList();
           if (odemePlanlariList && odemePlanlariList.length > 0) {
             const selectedOdemePlan = odemePlanlariList.find((plan) => plan.No === odemePlanNo);
             if (selectedOdemePlan) {
               setSip_opno(selectedOdemePlan.Isim);
-              setFaturaBilgileri(prevState => ({
+              setAlinanSiparis((prevState) => ({
                 ...prevState,
                 sip_opno: selectedOdemePlan.No,
               }));
@@ -714,7 +756,7 @@ const AlinanSiparisFaturaBilgisi = () => {
           console.error("Ödeme planı fetch edilirken hata:", error);
         }
       }
-    
+
       await updateDepoSelection(cari);
       setIsCariListModalVisible(false);
     };
@@ -731,7 +773,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Depo Seçim
     const handleDepoChange = async (itemValue) => {
       setSip_depono(itemValue);
-      setFaturaBilgileri((prev) => ({
+      setAlinanSiparis((prev) => ({
         ...prev,
         sip_depono: itemValue,
       }));
@@ -748,7 +790,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   // Döviz Seçim
     const handleDovizChange = async (itemValue) => {
       setSip_doviz_cinsi(itemValue);
-      setFaturaBilgileri((prev) => ({
+      setAlinanSiparis((prev) => ({
         ...prev,
         sip_doviz_cinsi: itemValue,
       }));
@@ -786,7 +828,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   
     const handleProjeKoduSelect = (item) => {
       setSip_projekodu(item.Isim);
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_projekodu: item.Kod,
       }));
@@ -803,7 +845,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   
     const handleSorumlulukMerkeziSelect = (item) => {
       setSip_stok_sormerk(item.İsim);
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_stok_sormerk: item.Kod,
       }));
@@ -821,7 +863,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   
     const handleAdresSelect = async (item) => {
       setSip_adresno(item.Adres);
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_adresno: item.Adres_No,
       }));
@@ -842,7 +884,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       setSelectedVadeNo(item.No); 
       saveVadeToAsyncStorage();
   
-      setFaturaBilgileri(prevState => ({
+      setAlinanSiparis(prevState => ({
         ...prevState,
         sip_opno: item.No,
       }));
@@ -862,7 +904,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       if (gValue) {
         const negativeGValue = `-${gValue}`; 
         setSip_opno(gValue); 
-        setFaturaBilgileri(prevState => ({
+        setAlinanSiparis(prevState => ({
           ...prevState,
           sip_opno: negativeGValue, 
         }));
@@ -891,7 +933,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         const formattedDateForAPI = formatDateForAPI(evrakDate); 
     
         setSip_opno(formattedDateForDisplay); 
-        setFaturaBilgileri(prevState => ({
+        setAlinanSiparis(prevState => ({
           ...prevState,
           sip_opno: formattedDateForAPI, 
         }));
@@ -939,7 +981,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         if (filteredDovizList.length > 0) {
           const firstDovizCins = filteredDovizList[0].Doviz_Cins.toString();
           setSip_doviz_cinsi(firstDovizCins);
-          setFaturaBilgileri((prev) => ({
+          setAlinanSiparis((prev) => ({
             ...prev,
             sip_doviz_cinsi: firstDovizCins,
           }));
@@ -1478,16 +1520,16 @@ const AlinanSiparisFaturaBilgisi = () => {
               placeholder="Vade"
               value={sip_opno ? sip_opno.toString() : ''}
               onFocus={handleVadeClick} 
-              editable={vadeEditable === 0 || vadeEditable === null}
+              editable={vadeEditable}
               placeholderTextColor={colors.placeholderTextColor}
             />
-            <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade} >
+            <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade} disabled={vadeEditable}>
             <Ara />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG} disabled={!(vadeEditable === 0 || vadeEditable === null)}>
+            <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG} disabled={vadeEditable}>
               <Text style={MainStyles.buttonbuttonVadeGText}>-</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT} disabled={!(vadeEditable === 0 || vadeEditable === null)}>
+            <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT} disabled={vadeEditable}>
                 <TakvimVade />
               </TouchableOpacity>
 

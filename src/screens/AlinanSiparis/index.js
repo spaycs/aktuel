@@ -14,7 +14,7 @@ const initialLayout = { width: Dimensions.get('window').width };
 
 const AlinanSiparis = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
+  const { addedAlinanSiparisProducts, setAddedAlinanSiparisProducts, alinanSiparis, setAlinanSiparis } = useContext(ProductContext);
   const [routes, setRoutes] = useState([
     { key: 'faturaBilgisi', title: 'Bilgi', icon: Bilgi   },
     { key: 'urunList', title: 'Ürün Listesi', icon: Liste  },
@@ -26,11 +26,11 @@ const AlinanSiparis = ({navigation}) => {
     setRoutes((prevRoutes) =>
       prevRoutes.map((route) =>
         route.key === 'onizleme'
-          ? { ...route, title: `Önizleme (${addedProducts.length})` }
+          ? { ...route, title: `Önizleme (${addedAlinanSiparisProducts.length})` }
           : route
       )
     );
-  }, [addedProducts]);
+  }, [addedAlinanSiparisProducts]);
 
   const renderScene = SceneMap({
     faturaBilgisi: AlinanSiparisFaturaBilgisi,
@@ -54,28 +54,28 @@ const AlinanSiparis = ({navigation}) => {
   );
   */
   const validateFields = () => {
-    if (!faturaBilgileri.sip_musteri_kod|| !faturaBilgileri.sip_cari_unvan1) {
+    if (!alinanSiparis.sip_musteri_kod|| !alinanSiparis.sip_cari_unvan1) {
       Alert.alert(
         "Uyarı",
         "Cari kodu ve cari ünvanı doldurmalısınız.",
         [{ text: "Tamam" }]
       );
       return false;
-    } else if (!faturaBilgileri.sip_adresno) {
+    } else if (!alinanSiparis.sip_adresno) {
       Alert.alert(
         "Uyarı",
         "Adres seçimi yapmalısınız.",
         [{ text: "Tamam" }]
       );
       return false;
-    } else if (!faturaBilgileri.sip_opno) {
+    } else if (!alinanSiparis.sip_opno) {
       Alert.alert(
         "Uyarı",
         "Vade seçimi yapmalısınız.",
         [{ text: "Tamam" }]
       );
       return false;
-    } else if (!faturaBilgileri.sip_stok_sormerk) {
+    } else if (!alinanSiparis.sip_stok_sormerk) {
       Alert.alert(
         "Uyarı",
         "Sorumluluk merkezi seçimi yapmalısınız.",

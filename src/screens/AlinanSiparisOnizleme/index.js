@@ -14,11 +14,12 @@ import { useAuthDefault } from '../../components/DefaultUser';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Realm } from '@realm/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditAlinanSiparisProductModal from '../../context/EditAlinanSiparisProductModal';
 const AlinanSiparisOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
   const { defaults } = useAuthDefault();
   const [sip_satici_kod , setSip_satici_kod ] = useState('');
-  const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
+  const { addedAlinanSiparisProducts, setAddedAlinanSiparisProducts, alinanSiparis, setAlinanSiparis } = useContext(ProductContext);
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,10 +31,10 @@ const AlinanSiparisOnizleme = () => {
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
 
-  const saveDataToAsyncStorage = async (addedProducts, faturaBilgileri) => {
+  const saveDataToAsyncStorage = async (addedAlinanSiparisProducts, alinanSiparis) => {
     try {
-      await AsyncStorage.setItem('addedProducts', JSON.stringify(addedProducts));
-      await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri));
+      await AsyncStorage.setItem('addedAlinanSiparisProducts', JSON.stringify(addedAlinanSiparisProducts));
+      await AsyncStorage.setItem('alinanSiparis', JSON.stringify(alinanSiparis));
       //console.log("Data saved successfully to AsyncStorage.");
     } catch (error) {
       console.error("Failed to save data to AsyncStorage:", error);
@@ -42,14 +43,14 @@ const AlinanSiparisOnizleme = () => {
 
   const loadDataFromAsyncStorage = async () => {
     try {
-      const addedProductsData = await AsyncStorage.getItem('addedProducts');
-      const faturaBilgileriData = await AsyncStorage.getItem('faturaBilgileri');
+      const addedProductsData = await AsyncStorage.getItem('addedAlinanSiparisProducts');
+      const faturaBilgileriData = await AsyncStorage.getItem('alinanSiparis');
 
       if (addedProductsData) {
-        setAddedProducts(JSON.parse(addedProductsData));
+        setAddedAlinanSiparisProducts(JSON.parse(addedProductsData));
       }
       if (faturaBilgileriData) {
-        setFaturaBilgileri(JSON.parse(faturaBilgileriData));
+        setAlinanSiparis(JSON.parse(faturaBilgileriData));
       }
       console.log("Data loaded successfully from AsyncStorage.");
     } catch (error) {
@@ -59,12 +60,13 @@ const AlinanSiparisOnizleme = () => {
 
   const clearAsyncStorage = async () => {
     try {
-      await AsyncStorage.removeItem('addedProducts');
-      await AsyncStorage.removeItem('faturaBilgileri');
-      setAddedProducts([]);
-      setFaturaBilgileri(prev =>
+      await AsyncStorage.removeItem('addedAlinanSiparisProducts');
+      await AsyncStorage.removeItem('alinanSiparis');
+      setAddedAlinanSiparisProducts([]);
+      setAlinanSiparis(prev =>
         Object.fromEntries(Object.keys(prev).map(key => [key, ""]))
       );
+      Alert.alert("Başarılı", "AsyncStorage içeriği temizlendi.");
     } catch (error) {
       console.error("Failed to clear data from AsyncStorage:", error);
       Alert.alert("Hata", "AsyncStorage temizlenirken bir hata oluştu.");
@@ -76,8 +78,8 @@ const AlinanSiparisOnizleme = () => {
   }, []);
 
   useEffect(() => {
-    saveDataToAsyncStorage(addedProducts, faturaBilgileri);
-  }, [addedProducts, faturaBilgileri]);
+    saveDataToAsyncStorage(addedAlinanSiparisProducts, alinanSiparis);
+  }, [addedAlinanSiparisProducts, alinanSiparis]);
   
   useEffect(() => {
     if (defaults && defaults[0].IQ_MikroPersKod) {
@@ -87,8 +89,8 @@ const AlinanSiparisOnizleme = () => {
 
   // Toplam Hesaplamalar
     useEffect(() => {
-      if (addedProducts.length > 0) {
-        const selectedProduct = addedProducts[0]; 
+      if (addedAlinanSiparisProducts.length > 0) {
+        const selectedProduct = addedAlinanSiparisProducts[0]; 
 
         if (selectedProduct) {
           const newQuantity = parseFloat(selectedProduct.sth_miktar.toString().replace(',', '.')) || 0;
@@ -100,12 +102,12 @@ const AlinanSiparisOnizleme = () => {
 
         }
       }
-    }, [addedProducts]); 
+    }, [addedAlinanSiparisProducts]); 
 
     const calculateIskonto = (selectedProductId = null) => {
       // Eğer belirli bir ürün için iskonto hesaplanacaksa
       if (selectedProductId) {
-        const product = addedProducts.find((p) => p.id === selectedProductId);
+        const product = addedAlinanSiparisProducts.find((p) => p.id === selectedProductId);
         if (product) {
           const iskonto1 = parseFloat(product.sth_iskonto1) || 0;
           const iskonto2 = parseFloat(product.sth_iskonto2) || 0;
@@ -121,7 +123,7 @@ const AlinanSiparisOnizleme = () => {
         return "0"; // Ürün bulunamazsa veya iskontolar yoksa 0 döndür
       } else {
         // Eğer tüm ürünler için toplam iskonto hesaplanacaksa
-        const totalDiscount = addedProducts.reduce((sum, product) => {
+        const totalDiscount = addedAlinanSiparisProducts.reduce((sum, product) => {
           const iskonto1 = parseFloat(product.sth_iskonto1) || 0;
           const iskonto2 = parseFloat(product.sth_iskonto2) || 0;
           const iskonto3 = parseFloat(product.sth_iskonto3) || 0;
@@ -162,7 +164,7 @@ const AlinanSiparisOnizleme = () => {
     const calculateTotalTax = () => {
       let totalTax = 0;
 
-      addedProducts.forEach((product) => {
+      addedAlinanSiparisProducts.forEach((product) => {
         // KDV değerini yüzde işaretini kaldırarak sayısal değere dönüştür
         const kdvRate = parseFloat(product.sth_vergi.replace('%', '').replace(',', '.')) / 100;
         
@@ -187,7 +189,7 @@ const AlinanSiparisOnizleme = () => {
     const calculateSubTotal = () => {
       // Ara Toplam hesaplama
       let araToplam = 0;
-      addedProducts.forEach((product) => {
+      addedAlinanSiparisProducts.forEach((product) => {
         araToplam += product.sth_miktar * product.sth_tutar;
       });
       return araToplam;
@@ -195,7 +197,7 @@ const AlinanSiparisOnizleme = () => {
 
     const calculateTax = () => {
       let vergiToplam = 0;
-      addedProducts.forEach((product) => {
+      addedAlinanSiparisProducts.forEach((product) => {
         const kdvRate = parseFloat(product.sth_vergi.replace('%', '').replace(',', '.')) / 100;
 
         // Her ürün için toplam indirimi hesapla
@@ -242,7 +244,7 @@ const AlinanSiparisOnizleme = () => {
 
     const editProduct = (productId) => {
       // Seçilen ürünü benzersiz ID'ye göre bul
-      const productToEdit = addedProducts.find(product => product.id === productId);
+      const productToEdit = addedAlinanSiparisProducts.find(product => product.id === productId);
       if (!productToEdit) return;
     
       // Seçili ürünü state'e kaydet
@@ -256,8 +258,8 @@ const AlinanSiparisOnizleme = () => {
     const deleteProduct = () => {
       if (!selectedProduct) return;
     
-      const updatedProducts = addedProducts.filter(product => product.id !== selectedProduct.id);
-      setAddedProducts(updatedProducts);
+      const updatedProducts = addedAlinanSiparisProducts.filter(product => product.id !== selectedProduct.id);
+      setAddedAlinanSiparisProducts(updatedProducts);
       closeModal();
     };
 
@@ -375,10 +377,10 @@ const AlinanSiparisOnizleme = () => {
 
   // Ortalama Vade Hesabı
     useEffect(() => {
-      if (faturaBilgileri.sip_musteri_kod) {
+      if (alinanSiparis.sip_musteri_kod) {
         const fetchVadeData = async () => {
           try {
-            const response = await axiosLinkMain.get(`/Api/Cari/CariOrtalamaVade?cari=${faturaBilgileri.sip_musteri_kod}`);
+            const response = await axiosLinkMain.get(`/Api/Cari/CariOrtalamaVade?cari=${alinanSiparis.sip_musteri_kod}`);
             const data = response.data;
     
             if (Array.isArray(data) && data.length > 0) {
@@ -393,7 +395,7 @@ const AlinanSiparisOnizleme = () => {
     
         fetchVadeData();
       }
-    }, [faturaBilgileri.sip_musteri_kod]);
+    }, [alinanSiparis.sip_musteri_kod]);
   // Ortalama Vade Hesabı
 
 
@@ -407,7 +409,7 @@ const AlinanSiparisOnizleme = () => {
 
   const handleSave = async () => {
 
-    if (addedProducts.length === 0) {
+    if (addedAlinanSiparisProducts.length === 0) {
       Alert.alert(
           "Uyarı",
           "Kaydetmeden önce en az bir ürün eklemelisiniz.",
@@ -419,7 +421,7 @@ const AlinanSiparisOnizleme = () => {
     const apiURL = `/Api/apiMethods/SiparisKaydetV2`;
 
      // Tüm ürünler için iskonto ve vergi hesaplamalarını yapıyoruz
-     const productsWithCalculatedValues = addedProducts.map((product) => {
+     const productsWithCalculatedValues = addedAlinanSiparisProducts.map((product) => {
       // Ürün başına iskonto toplamını hesaplayan fonksiyon
       const calculateItemDiscount = () => {
         const discountRates = [
@@ -470,16 +472,16 @@ const AlinanSiparisOnizleme = () => {
           {
             evrak_aciklamalari: formatExplanations(),
             satirlar: productsWithCalculatedValues.map((product) => ({
-              sip_tarih: faturaBilgileri.sip_tarih,
-              sip_tip: faturaBilgileri.sip_tip,
-              sip_cins: faturaBilgileri.sip_cins,
-              sip_evrakno_seri: faturaBilgileri.sip_evrakno_seri,
+              sip_tarih: alinanSiparis.sip_tarih,
+              sip_tip: alinanSiparis.sip_tip,
+              sip_cins: alinanSiparis.sip_cins,
+              sip_evrakno_seri: alinanSiparis.sip_evrakno_seri,
               sip_stok_kod: product.Stok_Kod,
-              sip_musteri_kod: faturaBilgileri.sip_musteri_kod,
-              sip_adresno: faturaBilgileri.sip_adresno,
-              sip_stok_sormerk: faturaBilgileri.sip_stok_sormerk,
-              sip_cari_sormerk: faturaBilgileri.sip_stok_sormerk,
-              sip_projekodu: faturaBilgileri.sip_projekodu,
+              sip_musteri_kod: alinanSiparis.sip_musteri_kod,
+              sip_adresno: alinanSiparis.sip_adresno,
+              sip_stok_sormerk: alinanSiparis.sip_stok_sormerk,
+              sip_cari_sormerk: alinanSiparis.sip_stok_sormerk,
+              sip_projekodu: alinanSiparis.sip_projekodu,
               sip_miktar: product.sth_miktar,
               sip_birim_pntr: product.sth_birim_pntr,
               sip_tutar: product.total,
@@ -493,9 +495,9 @@ const AlinanSiparisOnizleme = () => {
               sip_iskonto_5: product.sth_iskonto5,
               sip_iskonto_6: product.sth_iskonto6,
               sip_b_fiyat : product.sth_tutar,
-              sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
-              sip_depono: faturaBilgileri.sip_depono,
-              sip_opno: faturaBilgileri.sip_opno,
+              sth_giris_depo_no: alinanSiparis.sth_giris_depo_no,
+              sip_depono: alinanSiparis.sip_depono,
+              sip_opno: alinanSiparis.sip_opno,
               sip_satici_kod : sip_satici_kod ,
               sip_aciklama: product.aciklama,
               seriler: "",
@@ -552,14 +554,14 @@ const AlinanSiparisOnizleme = () => {
      <View>
       <Text>Added Products:</Text>
       <View>
-        {addedProducts.length > 0 ? (
-          addedProducts.map((product, index) => (
+        {addedAlinanSiparisProducts.length > 0 ? (
+          addedAlinanSiparisProducts.map((product, index) => (
             <View key={index}>
               <Text>Stok Kod: {product.Stok_Kod}</Text>
               <Text>Miktar: {product.sth_miktar}</Text>
               <Text>Fiyat: {product.sth_tutar}</Text>
               <Text>Vergi: {product.sth_vergi}</Text>
-              <Text>StokVade: {faturaBilgileri.StokVade}</Text>
+              <Text>StokVade: {product.StokVade}</Text>
               {/* Diğer ürün bilgilerini ekleyebilirsiniz */}
             </View>
           ))
@@ -569,13 +571,13 @@ const AlinanSiparisOnizleme = () => {
       </View>
 
       <Text>Fatura Bilgileri:</Text>
-      {faturaBilgileri ? (
+      {alinanSiparis ? (
         <View>
         
-          <Text>sip_opno: {faturaBilgileri.sip_opno}</Text>
-          <Text>sip_adresno: {faturaBilgileri.sip_adresno}</Text>
-          <Text>sip_OnaylayanKulNo: {faturaBilgileri.sip_OnaylayanKulNo}</Text>
-          <Text>StokVade: {faturaBilgileri.StokVade}</Text>
+          <Text>sip_opno: {alinanSiparis.sip_opno}</Text>
+          <Text>sip_adresno: {alinanSiparis.sip_adresno}</Text>
+          <Text>sip_OnaylayanKulNo: {alinanSiparis.sip_OnaylayanKulNo}</Text>
+          <Text>StokVade: {alinanSiparis.StokVade}</Text>
           {/* Diğer fatura bilgilerini ekleyebilirsiniz */}
         </View>
       ) : (
@@ -591,7 +593,7 @@ const AlinanSiparisOnizleme = () => {
           <Text style={MainStyles.vadeText}>Ortalama Vade: {vadeData ? new Date(vadeData).toLocaleDateString() : ''}</Text>
       </View>
       <FlatList
-        data={addedProducts}
+        data={addedAlinanSiparisProducts}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
@@ -633,11 +635,11 @@ const AlinanSiparisOnizleme = () => {
           </View>
         </Modal>
         
-        <EditProductModal
+        <EditAlinanSiparisProductModal
           selectedProduct={selectedProduct}
           modalVisible={editModalVisible}
           setModalVisible={setEditModalVisible}
-          setAddedProducts={setAddedProducts}
+          setAddedAlinanSiparisProducts={setAddedAlinanSiparisProducts}
         />
       </View>
     {/* Ürün İşlem Seçim */}
@@ -646,7 +648,7 @@ const AlinanSiparisOnizleme = () => {
     <View style={MainStyles.containerstf}>
     <View style={MainStyles.summaryContainer}>
       <Text style={MainStyles.headerText}>Sipariş Özeti</Text>
-      <Text style={MainStyles.totalText}>Satır Sayısı: {addedProducts.length}</Text>
+      <Text style={MainStyles.totalText}>Satır Sayısı: {addedAlinanSiparisProducts.length}</Text>
     </View>
     
     <View style={MainStyles.totalsContainer}>
