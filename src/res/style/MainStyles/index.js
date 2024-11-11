@@ -896,10 +896,10 @@ export const MainStyles = {
       marginTop: 10,
     },
     modalCariDetayContent:{
+      height: '90%',
       backgroundColor: colors.white,
       borderRadius: 10,
       padding: 20,
-      justifyContent: 'center',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.3,
@@ -1007,6 +1007,21 @@ export const MainStyles = {
       fontSize: 12,
       color: colors.black,
     },
+    modalAlinanSiparisItem: {
+      justifyContent: 'space-between',
+      backgroundColor: colors.textinputgray,
+      paddingVertical: 10,
+      paddingHorizontal: 5,
+      marginBottom: 5,
+      marginTop: 5,
+      shadowColor: colors.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 3,
+      borderRadius: 5,
+
+    },
     modalCariDetayTextTitle: {
       fontSize: 12,
       color: colors.black,
@@ -1057,7 +1072,7 @@ export const MainStyles = {
     closeButtonText: {
       color: colors.black,
       textAlign: 'center',
-      fontSize: 20,
+      fontSize: 15,
     },
     closeOnizlemeButton: {
       backgroundColor: colors.red,
@@ -1369,6 +1384,7 @@ export const MainStyles = {
       borderColor: colors.red,
 
     },
+
     modalItemText: {
       fontSize: 10,
     },

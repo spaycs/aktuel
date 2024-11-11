@@ -12,6 +12,7 @@ import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAuthDefault } from '../../components/DefaultUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SatisIrsaliyesiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -362,6 +363,20 @@ const SatisIrsaliyesiOnizleme = () => {
     };
   // Geri gitme işlemi
 
+  const clearAsyncStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('addedProducts');
+      await AsyncStorage.removeItem('faturaBilgileri');
+      setAddedProducts([]);
+      setFaturaBilgileri(prev =>
+        Object.fromEntries(Object.keys(prev).map(key => [key, ""]))
+      );
+    } catch (error) {
+      console.error("Failed to clear data from AsyncStorage:", error);
+      Alert.alert("Hata", "AsyncStorage temizlenirken bir hata oluştu.");
+    }
+  };
+
   const handleSave = async () => {
 
     if (addedProducts.length === 0) {
@@ -494,6 +509,7 @@ const SatisIrsaliyesiOnizleme = () => {
       const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
   
       if (StatusCode === 200) {
+        await clearAsyncStorage();
         Alert.alert(
             "Başarılı",
             "Veriler başarıyla kaydedildi.",

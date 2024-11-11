@@ -113,55 +113,49 @@ const ProductList = () => {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }, [stokListesi]);
+  const updateFaturaBilgileri = useCallback((newValues) => {
+    setFaturaBilgileri(prev => ({
+      ...prev,
+      ...newValues,
+    }));
+  }, [setFaturaBilgileri]);
+  // Stok listesini API'den çek ve belleğe al
+  const fetchStokListesi = useCallback(async () => {
+    if (!faturaBilgileri.sip_musteri_kod) return; // Müşteri kodu olmadan isteği yapma
   
-  // Stok listesini API'den çek ve belleğe al
-  // Stok listesini API'den çek ve belleğe al
-const fetchStokListesi = useCallback(async () => {
-  if (!faturaBilgileri.sip_musteri_kod) return; // Müşteri kodu olmadan isteği yapma
-
-  try {
-    const response = await axiosLinkMain.get(`/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}`);
-    const data = response.data;
-
-    setStokListesi(data);
-
-    // Filtre seçeneklerini oluştur
-    const markaSet = new Set(data.map(item => item.Marka).filter(marka => marka));
-    const stokAdSet = new Set(data.map(item => item.Stok_Ad).filter(ad => ad));
-    const stokKodSet = new Set(data.map(item => item.Stok_Kod).filter(kod => kod));
-    const altGrupSet = new Set(data.map(item => item.AltGrup).filter(grup => grup));
-    const anaGrupSet = new Set(data.map(item => item.AnaGrup).filter(grup => grup));
-    const reyonSet = new Set(data.map(item => item.Reyon).filter(reyon => reyon));
-
-    setMarkaOptions(Array.from(markaSet));
-    setStokAdOptions(Array.from(stokAdSet));
-    setStokKodOptions(Array.from(stokKodSet));
-    setAltGrupOptions(Array.from(altGrupSet));
-    setAnaGrupOptions(Array.from(anaGrupSet));
-    setReyonOptions(Array.from(reyonSet));
-
-    // Vade değerini kontrol et ve sadece 0'dan farklıysa faturaBilgileri'ni güncelle
-    const StokVade = data.find(item => item.Vade !== undefined)?.Vade || 0;
-    console.log('BekleyenSiparis', StokVade);
-
-    if (StokVade !== 0) {
-      setFaturaBilgileri(prev => ({
-        ...prev,
-        StokVade: StokVade, // Vade değeri 0 değilse güncellenir
-      }));
-    }
+    try {
+      const response = await axiosLinkMain.get(
+        `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}`
+      );
+  
+      const data = response.data;
+      setStokListesi(data);
+  
+      // StokVade ve BekleyenSiparis değerlerini kontrol et
+      const stokVadeValue = data.find(item => item.Vade !== undefined)?.Vade;
+      const bekleyenSiparisValue = data.find(item => item.BekleyenSiparis !== undefined)
+        ? data.find(item => item.BekleyenSiparis !== undefined).BekleyenSiparis
+        : 0; // Varsayılan değer olarak 0 atandı
+  
+      updateFaturaBilgileri({
+        StokVade: stokVadeValue && stokVadeValue !== "0" ? stokVadeValue : faturaBilgileri.StokVade,
+        BekleyenSiparis: bekleyenSiparisValue,
+      });
     
-  } catch (err) {
-    Alert.alert('Hata', 'Stok verileri yüklenirken bir hata oluştu.');
-  }
-}, [faturaBilgileri.sip_musteri_kod, setFaturaBilgileri]);
+    } catch (err) {
+      Alert.alert('Hata', 'Stok verileri yüklenirken bir hata oluştu.');
+    }
+  }, [faturaBilgileri.sip_musteri_kod, updateFaturaBilgileri]);
+  
 
   
 
   
   useEffect(() => {
-    fetchStokListesi(); // Uygulama başlarken stok listesini bir kez API'den çek
-  }, [fetchStokListesi]);
+    if (faturaBilgileri.sip_musteri_kod) {
+      fetchStokListesi(); // Sadece müşteri kodu varsa stok listesini API'den çek
+    }
+  }, [fetchStokListesi, faturaBilgileri.sip_musteri_kod]);
   
   useEffect(() => {
     fetchProductData(searchTerm, searchCriteria, selectedMarka); // TextInput'a yazıldıkça arama yap

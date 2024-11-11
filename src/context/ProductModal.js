@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from '@react-native-community/checkbox';
@@ -38,6 +38,7 @@ const ProductModal = ({
   const [sth_isk4, setSth_isk4] = useState(''); 
   const [sth_isk5, setSth_isk5] = useState(''); 
   const [sth_isk6, setSth_isk6] = useState(''); 
+  const [stokDetayData, setStokDetayData] = useState(''); 
   const [birimListesi, setBirimListesi] = useState([]);
   const [katsayi, setKatsayi] = useState({});
   const [isEditable, setIsEditable] = useState(false);
@@ -53,7 +54,8 @@ const ProductModal = ({
   const [Carpan, setCarpan] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
   const [toplam_vergi, setToplam_vergi] = useState();
-
+  const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -78,9 +80,28 @@ const ProductModal = ({
     }
   }, [modalVisible, selectedProduct, birimListesi]);
 
-  useEffect(() => {
-  console.log("Fatura Bilgileri:", faturaBilgileri);
-}, [faturaBilgileri]);
+  const fetchStokDetayData = async () => {
+    if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
+  
+    setLoading(true); // Yükleniyor state'i aktif et
+    try {
+      // API'yi çağır
+      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=1`);
+      const data = response.data || []; // Hata durumunda boş dizi döner
+  
+      // Veriyi state'e ata
+      setStokDetayData(data);
+    } catch (error) {
+      console.error('Bağlantı Hatası Stok Detay:', error);
+    } finally {
+      setLoading(false); // Yükleniyor state'ini kaldır
+      setIsStokDetayVisible(true); // Modalı aç
+    }
+  };
+  
+  const closeModal = () => {
+    setIsStokDetayVisible(false);
+  };
 
 
   useEffect(() => {
@@ -605,11 +626,59 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
+           <TouchableOpacity
+            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
+            onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
+          >
+            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Bilgi Detay</Text>
+          </TouchableOpacity>
+
+
+          <Modal
+  visible={isStokDetayVisible}
+  transparent={true}
+  animationType="slide"
+  onRequestClose={closeModal}
+>
+  <View style={[MainStyles.modalBackground]}>
+    <View style={MainStyles.modalCariDetayContent}>
+      {loading ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : (
+        <>
+          {/* Stok Detay Verisi Modal */}
+          {stokDetayData && stokDetayData.length > 0 ? (
+            <View>
+              <Text style={MainStyles.modalCariDetayTextTitle}>
+                Depo Durum Detayı
+              </Text>
+              {stokDetayData.map((item, index) => (
+                <View key={index} style={MainStyles.modalAlinanSiparisItem}>
+                  <Text style={MainStyles.modalCariDetayText}>Depo No: {item.dep_no} -  Depo Adı: {item.dep_adi} - Depo Miktar {item.DepoMiktarı}</Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            // Veri bulunamadı durumu
+            <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+          )}
+        </>
+      )}
+      <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+        <Text style={MainStyles.closeButtonText}>X</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+
+
+            <View style={MainStyles.modalInfoContainer}>
               <View style={MainStyles.modalInfoDoviz}>
                   <Text style={MainStyles.inputtip}>BekleyenSiparis : {faturaBilgileri.BekleyenSiparis}</Text>
                 </View>
-              <View style={MainStyles.modalInfoDoviz}>
+              <View style={MainStyles.modalInfoKdv}>
                   <Text style={MainStyles.inputtip}>StokVade : {faturaBilgileri.StokVade}</Text>
+                </View>
                 </View>
             <View style={MainStyles.modalInfoContainer}>
           

@@ -34,7 +34,7 @@ const AlinanSiparisOnizleme = () => {
     try {
       await AsyncStorage.setItem('addedProducts', JSON.stringify(addedProducts));
       await AsyncStorage.setItem('faturaBilgileri', JSON.stringify(faturaBilgileri));
-      console.log("Data saved successfully to AsyncStorage.");
+      //console.log("Data saved successfully to AsyncStorage.");
     } catch (error) {
       console.error("Failed to save data to AsyncStorage:", error);
     }
@@ -54,6 +54,20 @@ const AlinanSiparisOnizleme = () => {
       console.log("Data loaded successfully from AsyncStorage.");
     } catch (error) {
       console.error("Failed to load data from AsyncStorage:", error);
+    }
+  };
+
+  const clearAsyncStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('addedProducts');
+      await AsyncStorage.removeItem('faturaBilgileri');
+      setAddedProducts([]);
+      setFaturaBilgileri(prev =>
+        Object.fromEntries(Object.keys(prev).map(key => [key, ""]))
+      );
+    } catch (error) {
+      console.error("Failed to clear data from AsyncStorage:", error);
+      Alert.alert("Hata", "AsyncStorage temizlenirken bir hata oluştu.");
     }
   };
 
@@ -481,7 +495,7 @@ const AlinanSiparisOnizleme = () => {
               sip_b_fiyat : product.sth_tutar,
               sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
               sip_depono: faturaBilgileri.sip_depono,
-              sip_opno: faturaBilgileri.Vade === 0 ?   faturaBilgileri.sip_opno: faturaBilgileri.Vade,
+              sip_opno: faturaBilgileri.sip_opno,
               sip_satici_kod : sip_satici_kod ,
               sip_aciklama: product.aciklama,
               seriler: "",
@@ -506,6 +520,7 @@ const AlinanSiparisOnizleme = () => {
       
     
       if (StatusCode === 200) {
+        await clearAsyncStorage();
         Alert.alert(
             "Başarılı",
             "Veriler başarıyla kaydedildi.",
@@ -522,7 +537,7 @@ const AlinanSiparisOnizleme = () => {
       } else {
         Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
       }
-  
+      
       console.log("apiURL",response);
       console.log(response.data);
     } catch (error) {
@@ -533,6 +548,7 @@ const AlinanSiparisOnizleme = () => {
 
   return (
   <View style={MainStyles.container}>
+    <ScrollView>
      <View>
       <Text>Added Products:</Text>
       <View>
@@ -543,7 +559,7 @@ const AlinanSiparisOnizleme = () => {
               <Text>Miktar: {product.sth_miktar}</Text>
               <Text>Fiyat: {product.sth_tutar}</Text>
               <Text>Vergi: {product.sth_vergi}</Text>
-              <Text>StokVade: {product.StokVade}</Text>
+              <Text>StokVade: {faturaBilgileri.StokVade}</Text>
               {/* Diğer ürün bilgilerini ekleyebilirsiniz */}
             </View>
           ))
@@ -566,6 +582,11 @@ const AlinanSiparisOnizleme = () => {
         <Text>No invoice data found in AsyncStorage.</Text>
       )}
     </View>
+    </ScrollView>
+    <TouchableOpacity onPress={clearAsyncStorage} style={{ backgroundColor: 'red', padding: 10, marginTop: 20, borderRadius: 5 }}>
+        <Text style={{ color: 'white', textAlign: 'center' }}>AsyncStorage'ı Temizle</Text>
+      </TouchableOpacity>
+
       <View style={MainStyles.vadeContainer}>
           <Text style={MainStyles.vadeText}>Ortalama Vade: {vadeData ? new Date(vadeData).toLocaleDateString() : ''}</Text>
       </View>
