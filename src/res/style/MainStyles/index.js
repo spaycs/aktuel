@@ -1861,5 +1861,22 @@ export const MainStyles = {
       backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20
     },
 
-   
+
+    tableHeader: {
+      backgroundColor: '#f3f3f3', // Başlık arka plan rengi
+      borderWidth: 1,
+      borderColor: colors.textInputBg,
+      maxHeight: 50 
+    },
+    tableCell: {
+      borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
+      borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
+      justifyContent: 'left', // Hücrelerin içeriğini ortalamak
+      paddingHorizontal: 10,
+      
+    },
+    colTitle:{
+      paddingVertical: 15,
+      fontSize: 12,
+    },
 }

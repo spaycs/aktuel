@@ -11,6 +11,7 @@ import { ProductContext } from '../context/ProductContext';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { Left,Down } from '../res/images';
+import { Col, Grid, Row } from 'react-native-easy-grid';
 
 const AlinanSiparisProductModal = ({
   selectedProduct,
@@ -626,50 +627,76 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
+          <View style={{flexDirection: 'row',}}>
            <TouchableOpacity
-            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
+            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
             onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
           >
             <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Bilgi Detay</Text>
           </TouchableOpacity>
-
+          <TouchableOpacity
+            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, paddingHorizontal: 5, marginBottom: 10,marginLeft: 2, borderRadius: 5, width: '49%' }}
+            //onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
+          >
+            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
+          </TouchableOpacity>
+          </View>
 
           <Modal
-  visible={isStokDetayVisible}
-  transparent={true}
-  animationType="slide"
-  onRequestClose={closeModal}
->
-  <View style={[MainStyles.modalBackground]}>
-    <View style={MainStyles.modalCariDetayContent}>
-      {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
-      ) : (
-        <>
-          {/* Stok Detay Verisi Modal */}
-          {stokDetayData && stokDetayData.length > 0 ? (
-            <View>
-              <Text style={MainStyles.modalCariDetayTextTitle}>
-                Depo Durum Detayı
-              </Text>
-              {stokDetayData.map((item, index) => (
-                <View key={index} style={MainStyles.modalAlinanSiparisItem}>
-                  <Text style={MainStyles.modalCariDetayText}>Depo No: {item.dep_no} -  Depo Adı: {item.dep_adi} - Depo Miktar {item.DepoMiktarı}</Text>
+            visible={isStokDetayVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={closeModal}
+        >
+            <View style={MainStyles.modalBackground}>
+                <View style={MainStyles.modalCariDetayContent}>
+                    {loading ? (
+                        <ActivityIndicator size="large" color={colors.primary} />
+                    ) : (
+                        <>
+                            {stokDetayData && stokDetayData.length > 0 ? (
+                                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                                    <Grid>
+                                        {/* Başlık Satırı */}
+                                        <Row style={MainStyles.tableHeader}>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo No</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Adı</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 120 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Miktar</Text>
+                                            </Col>
+                                        </Row>
+
+                                        {/* Veri Satırları */}
+                                        {stokDetayData.map((item, index) => (
+                                            <Row key={index} style={MainStyles.tableRow}>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.dep_no}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                    <Text style={MainStyles.colText}>{item.dep_adi}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 120 }]}>
+                                                    <Text style={MainStyles.colText}>{item.DepoMiktarı}</Text>
+                                                </Col>
+                                            </Row>
+                                        ))}
+                                    </Grid>
+                                </ScrollView>
+                            ) : (
+                                <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                            )}
+                        </>
+                    )}
+                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                        <Text style={MainStyles.closeButtonText}>X</Text>
+                    </TouchableOpacity>
                 </View>
-              ))}
             </View>
-          ) : (
-            // Veri bulunamadı durumu
-            <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
-          )}
-        </>
-      )}
-      <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-        <Text style={MainStyles.closeButtonText}>X</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
+        </Modal>
 
 
             <View style={MainStyles.modalInfoContainer}>

@@ -120,7 +120,7 @@ const AlinanSiparisProductList = () => {
       ...newValues,
     }));
   }, [setAlinanSiparis]);
-  
+
   // Stok listesini API'den çek ve belleğe al
   const fetchStokListesi = useCallback(async () => {
     if (!alinanSiparis.sip_musteri_kod) return; // Müşteri kodu olmadan isteği yapma
@@ -128,6 +128,7 @@ const AlinanSiparisProductList = () => {
     try {
       const response = await axiosLinkMain.get(
         `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}`
+        
       );
       const data = response.data;
       setStokListesi(data);

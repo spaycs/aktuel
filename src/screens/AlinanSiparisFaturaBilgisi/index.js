@@ -17,6 +17,7 @@ import FastImage from 'react-native-fast-image';
 import AdresListModal from '../../context/AdresListModal';
 import Button from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Col, Grid, Row } from 'react-native-easy-grid';
 
 const AlinanSiparisFaturaBilgisi = () => {
   const { authData } = useAuth();
@@ -60,6 +61,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [tValue, setTValue] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedVadeNo, setSelectedVadeNo] = useState(null); 
+  const [selectedValue, setSelectedValue] = useState(null); 
 
   // Kurallar 
   const [isEditable, setIsEditable] = useState(false);
@@ -189,6 +191,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         //console.log('Gelen Vade Verisi:', parsedVade);  // Veriyi doğru yazdırdığınızı kontrol edin
         setSip_opno(parsedVade.sip_opno);
         setSelectedVadeNo(parsedVade.selectedVadeNo);
+        console.log('Gelen Vade Verisi:', parsedVade.sip_opno);
       }
     } catch (error) {
       console.error('Error loading vade data from AsyncStorage:', error);
@@ -412,7 +415,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   };
   
   useEffect(() => {
-    console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
+    //console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
   }, [alinanSiparis]);
  
   useEffect(() => {
@@ -683,10 +686,12 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
     
     // IQ_OPCaridenGelsin kontrolü
-      const IQ_OPCaridenGelsin = defaults?.IQ_OPCaridenGelsin;
+      const IQ_OPCaridenGelsin = defaults[0].IQ_OPCaridenGelsin;
+      console.log('IQ_OPCaridenGelsin',IQ_OPCaridenGelsin )
       if (IQ_OPCaridenGelsin === 1) {
         // IQ_OPCaridenGelsin 1 ise cari_odemeplan_no içindeki değeri al ve setSip_opno'yu güncelle
         const selectedOdemePlanNo = cari.cari_odemeplan_no;
+        console.log('selectedOdemePlanNo',selectedOdemePlanNo )
         setSip_opno(selectedOdemePlanNo);
         setAlinanSiparis((prevState) => ({
           ...prevState,
@@ -1120,32 +1125,113 @@ const AlinanSiparisFaturaBilgisi = () => {
       }
     };
 
-    const fetchCariDetayData = async (sip_musteri_kod) => {
-      setLoading(true); // Yükleniyor state'i aktif et
-      try {
-          // İlk API'yi çağır
-          const response1 = await axiosLinkMain.get(`/api/Raporlar/TedarikciBazindaBekleyenSiparis?cari=${sip_musteri_kod}`);
-          const data1 = response1.data || []; // Hata durumunda boş dizi döner
+    const fetchCariDetayData = async (sip_musteri_kod, pickerValue) => {
+    setLoading(true);
+    try {
+        // Cari Detay - siparis veya vadeBakiye
+        if (pickerValue === "siparis") {
+            const response1 = await axiosLinkMain.get(`/api/Raporlar/TedarikciBazindaBekleyenSiparis?cari=${sip_musteri_kod}`);
+            const tedarikciData = response1.data || [];
+            setTedarikciSiparisData(tedarikciData);
+        } else if (pickerValue === "vadeBakiye") {
+            const response2 = await axiosLinkMain.get(`/api/Raporlar/SorumlulukBazindaOrtVadeBakiye?cari=${sip_musteri_kod}`);
+            const vadeBakiyeData = response2.data || [];
+            setOrtalamaVadeBakiyeData(vadeBakiyeData);
+        } 
+        // Teminat Tutari için ayrı çağrı
+        else if (pickerValue === "teminatTutari") {
+            const response3 = await axiosLinkMain.get(`/api/Raporlar/TeminatTutari?cari=${sip_musteri_kod}`);
+            const teminatData = response3.data || [];
+            setTeminatTutariData(teminatData);
+        }
+    } catch (error) {
+        console.error('Bağlantı Hatası Cari Detay:', error);
+    } finally {
+        setLoading(false);
+        setIsCariDetayVisible(true);
+    }
+};
+
   
-          // İkinci API'yi çağır
-          const response2 = await axiosLinkMain.get(`/api/Raporlar/SorumlulukBazindaOrtVadeBakiye?cari=${sip_musteri_kod}`);
-          const data2 = response2.data || []; // Hata durumunda boş dizi döner
-  
-          // Üçüncü API'yi çağır (Teminat Tutarı)
-          const response3 = await axiosLinkMain.get(`/api/Raporlar/TeminatTutari?cari=${sip_musteri_kod}`);
-          const data3 = response3.data || []; // Hata durumunda boş dizi döner
-  
-          // Verileri state'lere ata
-          setTedarikciSiparisData(data1);
-          setOrtalamaVadeBakiyeData(data2);
-          setTeminatTutariData(data3);
-      } catch (error) {
-          console.error('Bağlantı Hatası Cari Detay:', error);
-      } finally {
-          setLoading(false); // Yükleniyor state'ini kaldır
-          setIsCariDetayVisible(true); // Modalı aç
-      }
-  };
+  const renderSelectedData = () => {
+    switch (selectedValue) {
+        case "siparis":
+            return (
+                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                    <Grid>
+                        <Row style={MainStyles.tableHeader}>
+                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                <Text style={MainStyles.colTitle}>TEDARİKÇİ</Text>
+                            </Col>
+                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                <Text style={MainStyles.colTitle}>TUTAR</Text>
+                            </Col>
+                        </Row>
+                        {tedarikciSiparisData.map((item, index) => (
+                            <Row key={index} style={MainStyles.tableRow}>
+                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                    <Text style={MainStyles.colText}>{item.Tedarikci}</Text>
+                                </Col>
+                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                    <Text style={MainStyles.colText}>{item.tutar}</Text>
+                                </Col>
+                            </Row>
+                        ))}
+                    </Grid>
+                </ScrollView>
+            );
+
+        case "vadeBakiye":
+            return (
+                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                    <Grid>
+                        <Row style={MainStyles.tableHeader}>
+                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                <Text style={MainStyles.colTitle}>SRM BAKİYE</Text>
+                            </Col>
+                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                <Text style={MainStyles.colTitle}>VADE</Text>
+                            </Col>
+                        </Row>
+                        {ortalamaVadeBakiyeData.map((item, index) => (
+                            <Row key={index} style={MainStyles.tableRow}>
+                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                    <Text style={MainStyles.colText}>{item.SrmBakiye}</Text>
+                                </Col>
+                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                    <Text style={MainStyles.colText}>{item.Vade}</Text>
+                                </Col>
+                            </Row>
+                        ))}
+                    </Grid>
+                </ScrollView>
+            );
+
+        case "teminatTutari":
+            return (
+                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                    <Grid>
+                        <Row style={MainStyles.tableHeader}>
+                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                <Text style={MainStyles.colTitle}>TANIMLI LİMİT</Text>
+                            </Col>
+                        </Row>
+                        {teminatTutariData.map((item, index) => (
+                            <Row key={index} style={MainStyles.tableRow}>
+                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                    <Text style={MainStyles.colText}>{item.Tanımlı_Limit}</Text>
+                                </Col>
+                            </Row>
+                        ))}
+                    </Grid>
+                </ScrollView>
+            );
+            
+        default:
+            return <Text>Veri bulunamadı.</Text>;
+    }
+};
+
     
   // Api Bağlantıları
 
@@ -1300,79 +1386,68 @@ const AlinanSiparisFaturaBilgisi = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-                style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
-                onPress={() => fetchCariDetayData(sip_musteri_kod)}
-            >
-                <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
-            </TouchableOpacity>
-
-            <Modal
-        visible={isCariDetayVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={closeModal}
+        <View style={{flexDirection: 'row',}}>
+    <TouchableOpacity
+        style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
+        onPress={() => {
+            setSelectedValue('siparis');  // veya 'vadeBakiye' değerleri
+            fetchCariDetayData(sip_musteri_kod, 'siparis'); // ya da 'vadeBakiye'
+        }}
     >
-        <View style={[MainStyles.modalBackground]}>
-            <View style={MainStyles.modalCariDetayContent}>
-                {loading ? (
-                    <ActivityIndicator size="large" color={colors.primary} />
-                ) : (
-                    <>
-                        {/* Tedarikçi Bazında Bekleyen Sipariş Modal */}
-                        {tedarikciSiparisData && tedarikciSiparisData.length > 0 && (
-                            <View>
-                                <Text style={MainStyles.modalCariDetayTextTitle}>
-                                    Tedarikçi Bazında Bekleyen Sipariş
-                                </Text>
-                                {tedarikciSiparisData.map((item, index) => (
-                                    <View key={index} style={MainStyles.modalAlinanSiparisItem}>
-                                        <Text style={MainStyles.modalCariDetayText}>{item.Tedarikci} - {item.tutar}</Text>
-                                    </View>
-                                ))}
-                            </View>
-                        )}
+        <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+        style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
+        onPress={() => {
+            setSelectedValue('teminatTutari'); // Teminat Tutari
+            fetchCariDetayData(sip_musteri_kod, 'teminatTutari');
+        }}
+    >
+        <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
+    </TouchableOpacity>
+</View>
 
-                        {/* Ortalama Vade Bakiye Modal */}
-                        {ortalamaVadeBakiyeData && ortalamaVadeBakiyeData.length > 0 && (
-                            <View >
-                                <Text style={MainStyles.modalCariDetayTextTitle}>
-                                    Ortalama Vade Bakiye
-                                </Text>
-                                {ortalamaVadeBakiyeData.map((item, index) => (
-                                    <View key={index} style={MainStyles.modalAlinanSiparisItem} >
-                                        <Text style={MainStyles.modalCariDetayText}>{item.SrmBakiye} - {item.Vade}</Text>
-                                    </View>
-                                ))}
-                            </View>
+<Modal
+    visible={isCariDetayVisible}
+    transparent={true}
+    animationType="slide"
+    onRequestClose={closeModal}
+>
+    <View style={[MainStyles.modalBackground]}>
+        <View style={MainStyles.modalCariDetayContent}>
+            {loading ? (
+                <ActivityIndicator size="large" color="blue" />
+            ) : (
+                <>
+                    <Picker
+                        selectedValue={selectedValue}
+                        onValueChange={(value) => {
+                            setSelectedValue(value);
+                            fetchCariDetayData(sip_musteri_kod, value);
+                        }}
+                        style={{ marginHorizontal: -10 }}
+                        itemStyle={{ height: 40, fontSize: 12 }}
+                    >
+                        <Picker.Item label="Seçiniz..." value={null} />
+                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
+                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
+                        {/* Buradaki `teminatTutari` seçeneği, yalnızca "Özel Alan" modunda görünsün */}
+                        {selectedValue === "teminatTutari" && (
+                            <Picker.Item label="Teminat Tutarı" value="teminatTutari" />
                         )}
+                    </Picker>
 
-                        {/* Teminat Tutarı Modal */}
-                        {teminatTutariData && teminatTutariData.length > 0 && (
-                            <View>
-                                <Text style={MainStyles.modalCariDetayTextTitle}>
-                                    Özel Alanlar
-                                </Text>
-                                {teminatTutariData.map((item, index) => (
-                                    <View key={index} style={MainStyles.modalAlinanSiparisItem}>
-                                        <Text style={MainStyles.modalCariDetayText}>{item.Tanımlı_Limit}</Text>
-                                    </View>
-                                ))}
-                            </View>
-                        )}
-
-                        {/* Veri bulunamadı durumu */}
-                        {(tedarikciSiparisData.length === 0 && ortalamaVadeBakiyeData.length === 0 && teminatTutariData.length === 0) && (
-                            <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
-                        )}
-                    </>
-                )}
-                <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-                    <Text style={MainStyles.closeButtonText}>X</Text>
-                </TouchableOpacity>
-            </View>
+                    {/* Seçili değere göre veri gösterme */}
+                    {renderSelectedData()}
+                </>
+            )}
+            <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                <Text style={MainStyles.closeButtonText}>X</Text>
+            </TouchableOpacity>
         </View>
-    </Modal>
+    </View>
+</Modal>
+
 
 
 
@@ -1454,7 +1529,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         )}
             </View>
       </View>
-        {/* Doviz Seçim */}
+      {/* Doviz Seçim */}
 
         {/* Depo Seçim */}
           <View style={{ width: '65%' }}>
@@ -1508,7 +1583,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         )}
               </View>
           </View>
-        {/* Depo Seçim */}
+      {/* Depo Seçim */}
 
 
       </View>

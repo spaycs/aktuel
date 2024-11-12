@@ -591,6 +591,7 @@ const AlinanSiparisOnizleme = () => {
 
       <View style={MainStyles.vadeContainer}>
           <Text style={MainStyles.vadeText}>Ortalama Vade: {vadeData ? new Date(vadeData).toLocaleDateString() : ''}</Text>
+          <Text style={MainStyles.faturaBilgileriText}>sip_opno: {alinanSiparis.sip_opno}</Text>
       </View>
       <FlatList
         data={addedAlinanSiparisProducts}
