@@ -199,7 +199,7 @@ const ExtreFoy = () => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
-      <ScrollView style={styles.scrollView}>
+      <ScrollView >
       <ScrollView horizontal={true} style={styles.horizontalScroll}>
         <Grid>
           {/* Header Row */}

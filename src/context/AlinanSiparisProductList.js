@@ -11,6 +11,7 @@ import { RNCamera } from 'react-native-camera';
 import { Camera, Nokta } from '../res/images';
 import Button from '../components/Button';
 import AlinanSiparisProductModal from './AlinanSiparisProductModal';
+import { useAuthDefault } from '../components/DefaultUser';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -18,6 +19,7 @@ const normalizeText = (text) => {
 
 const AlinanSiparisProductList = () => {
   const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { addedAlinanSiparisProducts, setAddedAlinanSiparisProducts, alinanSiparis, setAlinanSiparis } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
@@ -120,7 +122,7 @@ const AlinanSiparisProductList = () => {
       ...newValues,
     }));
   }, [setAlinanSiparis]);
-
+  
   // Stok listesini API'den çek ve belleğe al
   const fetchStokListesi = useCallback(async () => {
     if (!alinanSiparis.sip_musteri_kod) return; // Müşteri kodu olmadan isteği yapma
@@ -128,11 +130,17 @@ const AlinanSiparisProductList = () => {
     try {
       const response = await axiosLinkMain.get(
         `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}`
-        
       );
+  
       const data = response.data;
       setStokListesi(data);
   
+      // StokVade ve BekleyenSiparis değerlerini kontrol et
+      const stokVadeValue = data.find(item => item.Vade)?.Vade;
+      updatealinanSiparis({
+        StokVade: stokVadeValue && stokVadeValue !== "0" ? stokVadeValue : alinanSiparis.StokVade,
+      });
+    
     } catch (err) {
       Alert.alert('Hata', 'Stok verileri yüklenirken bir hata oluştu.');
     }
@@ -177,6 +185,33 @@ const AlinanSiparisProductList = () => {
     fetchProductData(data, 'Barkod'); 
   };
 
+  const fetchStockDetails = useCallback(async (productCode) => {
+    try {
+      const response = await axiosLinkMain.get(
+        `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}`
+      );
+      const stokData = response.data;
+  
+      const selectedProduct = stokData.find(item => item.Stok_Kod === productCode);
+      const IQ_OPCaridenGelsin = defaults[0]?.IQ_OPCaridenGelsin;
+      console.log("IQ_OPCaridenGelsin",IQ_OPCaridenGelsin)
+      
+      if (selectedProduct) {
+        const vade = selectedProduct.Vade;
+        
+        if (IQ_OPCaridenGelsin === 0) {
+          updatealinanSiparis({ StokVade: vade, sip_opno: vade });
+        }
+      } else {
+        console.log('Selected product not found!');
+      }
+    } catch (error) {
+      console.error('Error fetching stock details:', error);
+      Alert.alert('Hata', 'Stok detayları yüklenirken bir hata oluştu.');
+    }
+  }, [alinanSiparis.sip_musteri_kod, defaults, updatealinanSiparis]);
+  
+
   const handleItemClick = (item) => {
     const existingProductCount = addedAlinanSiparisProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
 
@@ -184,7 +219,7 @@ const AlinanSiparisProductList = () => {
       Alert.alert('Uyarı', 'Bu ürün zaten 2 kez eklenmiştir, daha fazla ekleyemezsiniz.');
       return;
     }
-
+    fetchStockDetails(item.Stok_Kod);
     setSelectedProduct(item);
     setModalVisible(true);
   };

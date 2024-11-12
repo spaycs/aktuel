@@ -1783,9 +1783,10 @@ export const MainStyles = {
       padding: 10,
     },
     tableRow: {
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: colors.textInputBg,
+      height: 30,
     },
     evenRow: {
       backgroundColor: '#f9f9f9', // Çift satırlara açık gri renk
@@ -1864,19 +1865,18 @@ export const MainStyles = {
 
     tableHeader: {
       backgroundColor: '#f3f3f3', // Başlık arka plan rengi
-      borderWidth: 1,
-      borderColor: colors.textInputBg,
-      maxHeight: 50 
+      height: 15
     },
     tableCell: {
-      borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
-      borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-      justifyContent: 'left', // Hücrelerin içeriğini ortalamak
-      paddingHorizontal: 10,
-      
+      borderWidth: 1, // Hücreler arasına dikey çizgi ekler
+      borderColor: '#e0e0e0', // Hücre dikey çizgi rengi
+      justifyContent: 'center', // Hücrelerin içeriğini ortalamak
+      paddingHorizontal: 5,
     },
     colTitle:{
-      paddingVertical: 15,
-      fontSize: 12,
+      fontSize: 9,
+    },
+    colText:{
+      fontSize: 9,
     },
 }

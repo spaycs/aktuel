@@ -66,7 +66,6 @@ const AlinanSiparisOnizleme = () => {
       setAlinanSiparis(prev =>
         Object.fromEntries(Object.keys(prev).map(key => [key, ""]))
       );
-      Alert.alert("Başarılı", "AsyncStorage içeriği temizlendi.");
     } catch (error) {
       console.error("Failed to clear data from AsyncStorage:", error);
       Alert.alert("Hata", "AsyncStorage temizlenirken bir hata oluştu.");
@@ -401,11 +400,10 @@ const AlinanSiparisOnizleme = () => {
 
   
 
-  // Geri gitme işlemi
-    const handleCancel = () => {
-      navigation.goBack(); 
-    };
-  // Geri gitme işlemi
+  const handleCancel = async () => {
+    await clearAsyncStorage(); // AsyncStorage temizle
+    navigation.goBack();       // Geri git
+};
 
   const handleSave = async () => {
 
@@ -497,7 +495,7 @@ const AlinanSiparisOnizleme = () => {
               sip_b_fiyat : product.sth_tutar,
               sth_giris_depo_no: alinanSiparis.sth_giris_depo_no,
               sip_depono: alinanSiparis.sip_depono,
-              sip_opno: alinanSiparis.sip_opno,
+              sip_opno: defaults[0]?.IQ_OPCaridenGelsin === 1 ? alinanSiparis.sip_opno : product.sip_opno,
               sip_satici_kod : sip_satici_kod ,
               sip_aciklama: product.aciklama,
               seriler: "",
@@ -561,7 +559,7 @@ const AlinanSiparisOnizleme = () => {
               <Text>Miktar: {product.sth_miktar}</Text>
               <Text>Fiyat: {product.sth_tutar}</Text>
               <Text>Vergi: {product.sth_vergi}</Text>
-              <Text>StokVade: {product.StokVade}</Text>
+              <Text>sip_opno: {product.sip_opno}</Text>
               {/* Diğer ürün bilgilerini ekleyebilirsiniz */}
             </View>
           ))
@@ -577,7 +575,6 @@ const AlinanSiparisOnizleme = () => {
           <Text>sip_opno: {alinanSiparis.sip_opno}</Text>
           <Text>sip_adresno: {alinanSiparis.sip_adresno}</Text>
           <Text>sip_OnaylayanKulNo: {alinanSiparis.sip_OnaylayanKulNo}</Text>
-          <Text>StokVade: {alinanSiparis.StokVade}</Text>
           {/* Diğer fatura bilgilerini ekleyebilirsiniz */}
         </View>
       ) : (
@@ -591,7 +588,6 @@ const AlinanSiparisOnizleme = () => {
 
       <View style={MainStyles.vadeContainer}>
           <Text style={MainStyles.vadeText}>Ortalama Vade: {vadeData ? new Date(vadeData).toLocaleDateString() : ''}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sip_opno: {alinanSiparis.sip_opno}</Text>
       </View>
       <FlatList
         data={addedAlinanSiparisProducts}

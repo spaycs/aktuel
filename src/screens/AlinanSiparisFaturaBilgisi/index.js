@@ -88,6 +88,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isDovizModalVisible, setIsDovizModalVisible] = useState(false);
   const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
   const [isCariDetayVisible, setIsCariDetayVisible] = useState(false);
+  const [isOzelAlanDetayVisible, setIsOzelAlanVisible] = useState(false);
 
 // Tümü 
 
@@ -271,7 +272,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       
       if (savedDoviz) {
         const dovizNo = JSON.parse(savedDoviz);
-        setSip_depono(dovizNo);
+        setSip_doviz_cinsi(dovizNo);
   
         // Fatura bilgilerini güncelle
         setAlinanSiparis((prev) => ({
@@ -415,7 +416,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   };
   
   useEffect(() => {
-    //console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
+    console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
   }, [alinanSiparis]);
  
   useEffect(() => {
@@ -481,7 +482,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       const { IQ_AlisSiparisSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin, IQ_OPCaridenGelsin } = defaults[0];
       setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
       setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1); 
-      setVadeEditable(IQ_VadePasifGelsin === 1 && IQ_VadePasifGelsin === null); 
+      setVadeEditable(IQ_VadePasifGelsin === 1); 
     }
     }, [defaults]);
 
@@ -563,6 +564,7 @@ const AlinanSiparisFaturaBilgisi = () => {
 
   const closeModal = () => {
     setIsCariDetayVisible(false);
+    setIsOzelAlanVisible(false);
     setCariDetayData(null);
   };
 
@@ -699,11 +701,6 @@ const AlinanSiparisFaturaBilgisi = () => {
         }));
       } else {
         // IQ_OPCaridenGelsin 0 ise setSip_opno'yu 0 olarak ayarla
-        setSip_opno(0);
-        setAlinanSiparis((prevState) => ({
-          ...prevState,
-          sip_opno: 0,
-        }));
       }
           
       // AsyncStorage'a veri kaydetmeden önce kontrol et
@@ -1126,31 +1123,50 @@ const AlinanSiparisFaturaBilgisi = () => {
     };
 
     const fetchCariDetayData = async (sip_musteri_kod, pickerValue) => {
+      setLoading(true);
+      try {
+          // Cari Detay - siparis veya vadeBakiye
+          if (pickerValue === "siparis") {
+              const response1 = await axiosLinkMain.get(`/api/Raporlar/TedarikciBazindaBekleyenSiparis?cari=${sip_musteri_kod}`);
+              const tedarikciData = response1.data || [];
+              setTedarikciSiparisData(tedarikciData);
+          } else if (pickerValue === "vadeBakiye") {
+              const response2 = await axiosLinkMain.get(`/api/Raporlar/SorumlulukBazindaOrtVadeBakiye?cari=${sip_musteri_kod}`);
+              const vadeBakiyeData = response2.data || [];
+              setOrtalamaVadeBakiyeData(vadeBakiyeData);
+          } 
+      } catch (error) {
+          console.error('Bağlantı Hatası Cari Detay:', error);
+      } finally {
+          setLoading(false);
+          setIsCariDetayVisible(true);
+      }
+  };
+
+  const fetchOzelAlanData = async (sip_musteri_kod, pickerValue) => {
     setLoading(true);
     try {
-        // Cari Detay - siparis veya vadeBakiye
-        if (pickerValue === "siparis") {
-            const response1 = await axiosLinkMain.get(`/api/Raporlar/TedarikciBazindaBekleyenSiparis?cari=${sip_musteri_kod}`);
-            const tedarikciData = response1.data || [];
-            setTedarikciSiparisData(tedarikciData);
-        } else if (pickerValue === "vadeBakiye") {
-            const response2 = await axiosLinkMain.get(`/api/Raporlar/SorumlulukBazindaOrtVadeBakiye?cari=${sip_musteri_kod}`);
-            const vadeBakiyeData = response2.data || [];
-            setOrtalamaVadeBakiyeData(vadeBakiyeData);
-        } 
-        // Teminat Tutari için ayrı çağrı
-        else if (pickerValue === "teminatTutari") {
-            const response3 = await axiosLinkMain.get(`/api/Raporlar/TeminatTutari?cari=${sip_musteri_kod}`);
+        if (pickerValue === "teminatTutari") {
+            const response3 = await axiosLinkMain.get(`/api/Raporlar/CariOzelAlan?cari=${sip_musteri_kod}&userno=${defaults[0].IQ_MikroPersKod}`);
+            console.log("CariOzelAlan API Yanıtı:", response3.data); // API yanıtını kontrol edin
             const teminatData = response3.data || [];
             setTeminatTutariData(teminatData);
-        }
+        } 
     } catch (error) {
         console.error('Bağlantı Hatası Cari Detay:', error);
     } finally {
         setLoading(false);
-        setIsCariDetayVisible(true);
+        setIsOzelAlanVisible(true);
     }
 };
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('tr-TR', {
+    style: 'decimal',
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
+  }).format(price);
+  };
 
   
   const renderSelectedData = () => {
@@ -1173,7 +1189,7 @@ const AlinanSiparisFaturaBilgisi = () => {
                                     <Text style={MainStyles.colText}>{item.Tedarikci}</Text>
                                 </Col>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                    <Text style={MainStyles.colText}>{item.tutar}</Text>
+                                    <Text style={MainStyles.colText}>{formatPrice(item.tutar)}</Text>
                                 </Col>
                             </Row>
                         ))}
@@ -1207,31 +1223,43 @@ const AlinanSiparisFaturaBilgisi = () => {
                 </ScrollView>
             );
 
-        case "teminatTutari":
-            return (
-                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
-                    <Grid>
-                        <Row style={MainStyles.tableHeader}>
-                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                <Text style={MainStyles.colTitle}>TANIMLI LİMİT</Text>
-                            </Col>
-                        </Row>
-                        {teminatTutariData.map((item, index) => (
-                            <Row key={index} style={MainStyles.tableRow}>
-                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                    <Text style={MainStyles.colText}>{item.Tanımlı_Limit}</Text>
-                                </Col>
-                            </Row>
-                        ))}
-                    </Grid>
-                </ScrollView>
-            );
-            
         default:
             return <Text>Veri bulunamadı.</Text>;
     }
 };
+const renderOzelAlanSelectedData = () => {
+  switch (selectedValue) {
+      case "teminatTutari":
+          return (
+              <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                  <Grid>
+                      <Row style={MainStyles.tableHeader}>
+                          <Col style={[MainStyles.tableCell, { width: 300, alignItems: 'center' }]} >
+                              <Text style={MainStyles.colTitle}>Özel Alanlar</Text>
+                          </Col>
+                      </Row>
+                      {teminatTutariData.length > 0 ? (
+                          teminatTutariData.map((item, index) => (
+                              <Row key={index} style={MainStyles.tableRow}>
+                                  <Col style={[MainStyles.tableCell, { width: 150 }]} >
+                                      <Text style={MainStyles.colTitle}>{item.Tip}</Text>
+                                  </Col>
+                                  <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                      <Text style={MainStyles.colText}>{item.Deger}</Text>
+                                  </Col>
+                              </Row>
+                          ))
+                      ) : (
+                          <Text>Veri bulunamadı.</Text>
+                      )}
+                  </Grid>
+              </ScrollView>
+          );
 
+      default:
+          return <Text>Veri bulunamadı.</Text>;
+  }
+};
     
   // Api Bağlantıları
 
@@ -1400,7 +1428,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
         onPress={() => {
             setSelectedValue('teminatTutari'); // Teminat Tutari
-            fetchCariDetayData(sip_musteri_kod, 'teminatTutari');
+            fetchOzelAlanData(sip_musteri_kod, 'teminatTutari');
         }}
     >
         <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
@@ -1431,10 +1459,6 @@ const AlinanSiparisFaturaBilgisi = () => {
                         <Picker.Item label="Seçiniz..." value={null} />
                         <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
                         <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
-                        {/* Buradaki `teminatTutari` seçeneği, yalnızca "Özel Alan" modunda görünsün */}
-                        {selectedValue === "teminatTutari" && (
-                            <Picker.Item label="Teminat Tutarı" value="teminatTutari" />
-                        )}
                     </Picker>
 
                     {/* Seçili değere göre veri gösterme */}
@@ -1448,6 +1472,42 @@ const AlinanSiparisFaturaBilgisi = () => {
     </View>
 </Modal>
 
+<Modal
+    visible={isOzelAlanDetayVisible}
+    transparent={true}
+    animationType="slide"
+    onRequestClose={closeModal}
+>
+    <View style={[MainStyles.modalBackground]}>
+        <View style={MainStyles.modalCariDetayContent}>
+            {loading ? (
+                <ActivityIndicator size="large" color="blue" />
+            ) : (
+                <>
+                    <Picker
+                        selectedValue={selectedValue}
+                        onValueChange={(value) => {
+                            setSelectedValue(value);
+                            if (value === "teminatTutari") {
+                                fetchOzelAlanData(sip_musteri_kod, value);
+                            }
+                        }}
+                        style={{ marginHorizontal: -10 }}
+                        itemStyle={{ height: 40, fontSize: 12 }}
+                    >
+                        <Picker.Item label="Seçiniz..." value={null} />
+                        <Picker.Item label="Özel Alanlar" value="teminatTutari" />
+                    </Picker>
+                    {/* Seçili değere göre veri gösterme */}
+                    {renderOzelAlanSelectedData()}
+                </>
+            )}
+            <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                <Text style={MainStyles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
+</Modal>
 
 
 
@@ -1595,7 +1655,7 @@ const AlinanSiparisFaturaBilgisi = () => {
               placeholder="Vade"
               value={sip_opno ? sip_opno.toString() : ''}
               onFocus={handleVadeClick} 
-              editable={vadeEditable}
+              editable={!vadeEditable}
               placeholderTextColor={colors.placeholderTextColor}
             />
             <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade} disabled={vadeEditable}>
