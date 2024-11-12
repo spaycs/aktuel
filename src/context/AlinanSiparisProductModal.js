@@ -726,7 +726,7 @@ const validateQuantity = (quantity) => {
                             )}
                         </>
                     )}
-                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
                         <Text style={MainStyles.closeButtonText}>X</Text>
                     </TouchableOpacity>
                 </View>

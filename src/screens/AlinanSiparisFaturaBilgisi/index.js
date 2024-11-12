@@ -89,6 +89,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
   const [isCariDetayVisible, setIsCariDetayVisible] = useState(false);
   const [isOzelAlanDetayVisible, setIsOzelAlanVisible] = useState(false);
+  const [isPickerModalVisible, setIsPickerModalVisible] = useState(false);
 
 // Tümü 
 
@@ -1435,42 +1436,80 @@ const renderOzelAlanSelectedData = () => {
     </TouchableOpacity>
 </View>
 
-<Modal
-    visible={isCariDetayVisible}
-    transparent={true}
-    animationType="slide"
-    onRequestClose={closeModal}
->
-    <View style={[MainStyles.modalBackground]}>
-        <View style={MainStyles.modalCariDetayContent}>
-            {loading ? (
-                <ActivityIndicator size="large" color="blue" />
-            ) : (
-                <>
-                    <Picker
-                        selectedValue={selectedValue}
-                        onValueChange={(value) => {
-                            setSelectedValue(value);
-                            fetchCariDetayData(sip_musteri_kod, value);
-                        }}
-                        style={{ marginHorizontal: -10 }}
-                        itemStyle={{ height: 40, fontSize: 12 }}
-                    >
-                        <Picker.Item label="Seçiniz..." value={null} />
-                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
-                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
-                    </Picker>
+      <Modal
+            visible={isCariDetayVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={closeModal}
+        >
+            <View style={[MainStyles.modalBackground]}>
+                <View style={MainStyles.modalCariDetayContent}>
+                    {loading ? (
+                        <ActivityIndicator size="large" color="blue" />
+                    ) : (
+                        <>
+                            <Text style={MainStyles.formTitle}>Tip</Text>
+                            <View style={MainStyles.inputStyleAlinanSiparis}>
+                                {Platform.OS === 'ios' ? (
+                                    <>
+                                        <TouchableOpacity onPress={() => setIsPickerModalVisible(true)}>
+                                            <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                                                {selectedValue ? selectedValue : 'Tipini Seçin'}
+                                            </Text>
+                                        </TouchableOpacity>
 
-                    {/* Seçili değere göre veri gösterme */}
-                    {renderSelectedData()}
-                </>
-            )}
-            <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-                <Text style={MainStyles.closeButtonText}>X</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
-</Modal>
+                                        {/* iOS için Modal */}
+                                        <Modal
+                                            visible={isPickerModalVisible}
+                                            animationType="slide"
+                                            transparent
+                                        >
+                                            <View style={MainStyles.modalContainerPicker}>
+                                                <View style={MainStyles.modalContentPicker}>
+                                                    <Picker
+                                                        selectedValue={selectedValue}
+                                                        onValueChange={(value) => {
+                                                            setSelectedValue(value);
+                                                            fetchCariDetayData(sip_musteri_kod, value);
+                                                        }}
+                                                        style={MainStyles.picker}
+                                                    >
+                                                        <Picker.Item label="Tipini Seçin" value={null} />
+                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
+                                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
+                                                    </Picker>
+                                                    <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
+                                                </View>
+                                            </View>
+                                        </Modal>
+                                    </>
+                                ) : (
+                                    // Android için doğrudan Picker
+                                    <Picker
+                                        selectedValue={selectedValue}
+                                        onValueChange={(value) => {
+                                            setSelectedValue(value);
+                                            fetchCariDetayData(sip_musteri_kod, value);
+                                        }}
+                                        style={{ marginHorizontal: -10 }}
+                                        itemStyle={{ height: 40, fontSize: 12 }}
+                                    >
+                                        <Picker.Item label="Tipini Seçin" value={null} />
+                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
+                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
+                                    </Picker>
+                                )}
+                            </View>
+                            {/* Seçili değere göre veri gösterme */}
+                            {renderSelectedData && renderSelectedData()}
+                        </>
+                    )}
+                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>X</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
 
 <Modal
     visible={isOzelAlanDetayVisible}
@@ -1502,7 +1541,7 @@ const renderOzelAlanSelectedData = () => {
                     {renderOzelAlanSelectedData()}
                 </>
             )}
-            <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+            <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
                 <Text style={MainStyles.closeButtonText}>X</Text>
             </TouchableOpacity>
         </View>

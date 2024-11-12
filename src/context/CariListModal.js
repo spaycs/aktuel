@@ -67,6 +67,14 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
     onClose();
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'decimal',
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(price);
+    };
+
   return (
     <Modal
       transparent={true}
@@ -125,7 +133,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
                     <View style={styles.itemRow}>
                       <Text style={styles.itemColumn}>{item.Cari_Kod}</Text>
                       <Text style={styles.itemColumn2}>{item.Ünvan}</Text>
-                      <Text style={styles.itemColumn3}>{item.Bakiye}</Text>
+                      <Text style={styles.itemColumn3}>{formatPrice(item.Bakiye)}</Text>
                       <Text style={styles.itemColumn4}>{item.Adres}</Text>
                     </View>
                   </TouchableOpacity>

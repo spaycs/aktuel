@@ -548,44 +548,6 @@ const AlinanSiparisOnizleme = () => {
 
   return (
   <View style={MainStyles.container}>
-    <ScrollView>
-     <View>
-      <Text>Added Products:</Text>
-      <View>
-        {addedAlinanSiparisProducts.length > 0 ? (
-          addedAlinanSiparisProducts.map((product, index) => (
-            <View key={index}>
-              <Text>Stok Kod: {product.Stok_Kod}</Text>
-              <Text>Miktar: {product.sth_miktar}</Text>
-              <Text>Fiyat: {product.sth_tutar}</Text>
-              <Text>Vergi: {product.sth_vergi}</Text>
-              <Text>sip_opno: {product.sip_opno}</Text>
-              {/* Diğer ürün bilgilerini ekleyebilirsiniz */}
-            </View>
-          ))
-        ) : (
-          <Text>No products found in AsyncStorage.</Text>
-        )}
-      </View>
-
-      <Text>Fatura Bilgileri:</Text>
-      {alinanSiparis ? (
-        <View>
-        
-          <Text>sip_opno: {alinanSiparis.sip_opno}</Text>
-          <Text>sip_adresno: {alinanSiparis.sip_adresno}</Text>
-          <Text>sip_OnaylayanKulNo: {alinanSiparis.sip_OnaylayanKulNo}</Text>
-          {/* Diğer fatura bilgilerini ekleyebilirsiniz */}
-        </View>
-      ) : (
-        <Text>No invoice data found in AsyncStorage.</Text>
-      )}
-    </View>
-    </ScrollView>
-    <TouchableOpacity onPress={clearAsyncStorage} style={{ backgroundColor: 'red', padding: 10, marginTop: 20, borderRadius: 5 }}>
-        <Text style={{ color: 'white', textAlign: 'center' }}>AsyncStorage'ı Temizle</Text>
-      </TouchableOpacity>
-
       <View style={MainStyles.vadeContainer}>
           <Text style={MainStyles.vadeText}>Ortalama Vade: {vadeData ? new Date(vadeData).toLocaleDateString() : ''}</Text>
       </View>
@@ -595,19 +557,19 @@ const AlinanSiparisOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler 
+    {/* Apiye Giden Değerler */}
       <View style={MainStyles.faturaBilgileriContainer}>
-        <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_seri: {faturaBilgileri.sip_evrakno_seri}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_sira: {faturaBilgileri.sip_evrakno_sira}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_tip: {faturaBilgileri.sip_tip}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_cins: {faturaBilgileri.sip_cins}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_tarih: {faturaBilgileri.sip_tarih}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_musteri_kod: {faturaBilgileri.sip_musteri_kod}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_cari_unvan1: {faturaBilgileri.sip_cari_unvan1}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_adresno: {faturaBilgileri.sip_adresno}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_projekodu: {faturaBilgileri.sip_projekodu}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_opno: {faturaBilgileri.sip_opno}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_depono: {faturaBilgileri.sip_depono}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_tip: {alinanSiparis.sip_tip}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_cins: {alinanSiparis.sip_cins}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_tarih: {alinanSiparis.sip_tarih}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_musteri_kod: {alinanSiparis.sip_musteri_kod}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_cari_unvan1: {alinanSiparis.sip_cari_unvan1}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_adresno: {alinanSiparis.sip_adresno}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_projekodu: {alinanSiparis.sip_projekodu}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_opno: {alinanSiparis.sip_opno}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>sip_depono: {alinanSiparis.sip_depono}</Text>
       </View>
     {/* Apiye Giden Değerler */}
 

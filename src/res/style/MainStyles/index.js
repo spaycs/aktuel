@@ -1069,6 +1069,15 @@ export const MainStyles = {
       padding: 10,
       borderRadius: 5,
     },
+    closeAlinanProductButton: {
+      backgroundColor: colors.white,
+      height: 40,
+      position: 'absolute',
+      top: -20,
+      right: 10,
+      padding: 10,
+      borderRadius: 5,
+    },
     closeButtonText: {
       color: colors.black,
       textAlign: 'center',
