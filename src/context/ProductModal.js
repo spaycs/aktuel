@@ -86,7 +86,7 @@ const ProductModal = ({
     setLoading(true); // Yükleniyor state'i aktif et
     try {
       // API'yi çağır
-      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=1`);
+      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=${defaults[0].IQ_MikroPersKod}`);
       const data = response.data || []; // Hata durumunda boş dizi döner
   
       // Veriyi state'e ata

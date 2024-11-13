@@ -370,11 +370,12 @@ useEffect(() => {
     }, [navigation])
   );
 
-  const handleUserChange = (user) => {
-    setSelectedUser(user);
-    setSifre(''); 
-    setSifreStandart(''); 
-  };
+  const handleUserChange = (itemValue) => {
+  setSelectedUser(itemValue); // Seçilen kullanıcıyı güncelle
+  setKullaniciKodu(itemValue.KOD); // Kullanıcının KOD'unu TextInput'a yazdır
+  setSifre(''); 
+  setSifreStandart(''); 
+};
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);

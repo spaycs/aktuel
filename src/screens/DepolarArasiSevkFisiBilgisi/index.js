@@ -126,7 +126,6 @@ const DepolarArasiSevkFisiBilgisi = () => {
   
         if (satisIrsaliyeSerino.trim()) {
           const responseSira = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${satisIrsaliyeSerino}&tip=IRSALIYE`);
-          console.log(responseSira);
           const { Sira } = responseSira.data;
           setSth_evrakno_sira(Sira.toString());
         }

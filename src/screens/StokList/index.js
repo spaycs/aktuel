@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
+import React, { useState, useCallback, useEffect, useContext, useRef } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import { MainStyles } from '../../res/style';
 import axiosLinkMain from '../../utils/axiosMain';
@@ -12,6 +12,8 @@ import { RNCamera } from 'react-native-camera';
 import { Camera, Nokta, Down } from '../../res/images';
 import FastImage from 'react-native-fast-image';
 import Button from '../../components/Button';
+import debounce from 'lodash.debounce';
+import { useAuthDefault } from '../../components/DefaultUser';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -19,6 +21,7 @@ const normalizeText = (text) => {
 
 const StokList = ({navigation}) => {
   const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
@@ -37,91 +40,56 @@ const StokList = ({navigation}) => {
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const searchTimeoutRef = useRef(null);
 
   const pickerItems = [
-    { label: 'Stok Adı', value: 'Stok_Ad' },
-    { label: 'Stok Kodu', value: 'Stok_Kod' },
-    { label: 'Marka', value: 'Marka' },
-    { label: 'Alt Grup', value: 'AltGrup' },
-    { label: 'Ana Grup', value: 'AnaGrup' },
-    { label: 'Reyon', value: 'Reyon' },
-    { label: 'Barkod', value: 'Barkod' },
+    { label: 'Stok Adı', value: 'Stok_Ad', tip: 1 },
+    { label: 'Stok Kodu', value: 'Stok_Kod', tip: 2 },
+    { label: 'Marka', value: 'Marka', tip: 3 },
+    { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
+    { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
+    { label: 'Reyon', value: 'Reyon', tip: 6 },
+    { label: 'Barkod', value: 'Barkod', tip: 7 },
   ];
 
-  // Function to get label based on selected value
-  const getLabelForValue = (value) => {
+  const getTipForValue = (value) => {
     const selectedItem = pickerItems.find((item) => item.value === value);
-    return selectedItem ? selectedItem.label : 'Kriter Seçin';
+    return selectedItem ? selectedItem.tip : 1;
   };
 
-
-  const fetchProductData = useCallback(async () => {
-    setLoading(true); // Start loading
+  const fetchProductData = async (term, criteria) => {
+    setLoading(true);
     try {
-      const response = await axiosLinkMain.get('/Api/Stok/StokListesi');
-      const data = response.data;
-
-      // Save all data to state
-      setAllData(data);
-
-      const filteredData = data.map(item => ({
-        Stok_Ad: item.Stok_Ad,
-        Stok_Kod: item.Stok_Kod,
-        Liste_Fiyatı: item.Liste_Fiyatı,
-        Depodaki_Miktar: item.Depodaki_Miktar,
-        Depo1Miktar: item.Depo1Miktar,
-        Depo2Miktar: item.Depo2Miktar,
-        Vergi: item.Vergi,
-        Doviz: item.Doviz,
-        Birim: item.Birim,
-        Marka: item.Marka,
-        AltGrup: item.AltGrup,
-        AnaGrup: item.AnaGrup,
-        Reyon: item.Reyon,
-      }));
-
-      setData(filteredData);
+      const tip = getTipForValue(criteria);
+      const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${term}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`);
+      setData(response.data);
     } catch (err) {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
-      setLoading(false); // Stop loading
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchProductData();
-  }, [fetchProductData]);
-
-  const filterData = async () => {
-    const normalizedSearchTerm = normalizeText(searchTerm).toLowerCase().split(' ');
-  
-    if (searchCriteria === 'Barkod') {
-      // Barkod araması için API çağrısı yap
-      try {
-        const response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${searchTerm}`);
-        const data = response.data;
-  
-        setData(data);
-      } catch (err) {
-        Alert.alert('Hata', 'Barkod ile ürün bulma sırasında hata oluştu.');
-      }
-    } else {
-      const filteredData = allData.filter(item => {
-        const normalizedItemText = normalizeText(item[searchCriteria] || '').toLowerCase();
-        return normalizedSearchTerm.every(term => normalizedItemText.includes(term));
-      });
-  
-      setData(filteredData);
+      setLoading(false);
     }
   };
-  
-  useEffect(() => {
-    filterData(); 
-  }, [searchTerm]);
+
+  const handleSearchTermChange = (text) => {
+    setSearchTerm(text);
+
+    // Eğer daha önceki timeout varsa, onu temizle
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Yeni bir timeout ayarla
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchProductData(text, searchCriteria); // Gecikmeli API çağrısı
+    }, 500); // 30 salise sonra API çağrısı yapılacak
+  };
 
   useEffect(() => {
-    fetchProductData();
-  }, [fetchProductData]);
+    fetchProductData(searchTerm, ); // TextInput'a yazıldıkça arama yap
+  }, []);
+
+ 
+
 
   const openModal = (item) => {
     setSelectedItem(item);
@@ -194,53 +162,40 @@ const StokList = ({navigation}) => {
       <View style={MainStyles.pageTop}>
         <View style={MainStyles.inputStyle}>
         {Platform.OS === 'ios' ? (
-        <>
-          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-          <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-            {getLabelForValue(searchCriteria)}
-            </Text>
-          </TouchableOpacity>
-
-          {/* iOS Modal */}
-          <Modal visible={isModalVisible} animationType="slide" transparent>
-            <View style={MainStyles.modalContainerPicker}>
-              <View style={MainStyles.modalContentPicker}>
-                <Picker
-                  selectedValue={searchCriteria}
-                  onValueChange={(itemValue) => {
-                    setSearchCriteria(itemValue);
-                  }}
-                >
-                  <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
-                  <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
-                  <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
-                  <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
-                  <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
-                  <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
-                  <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
-                </Picker>
-                <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
-              </View>
-            </View>
-          </Modal>
-        </>
-      ) : (
-        // Android Picker renders directly without modal
-        <Picker
-          selectedValue={searchCriteria}
-          onValueChange={(itemValue) => setSearchCriteria(itemValue)}
-          itemStyle={{ height: 40, fontSize: 12 }}
-          style={{ marginHorizontal: -10 }}
-        >
-          <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
-          <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
-          <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
-          <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
-          <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
-          <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
-          <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
-        </Picker>
-      )}
+            <>
+              <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                  {pickerItems.find(item => item.value === searchCriteria)?.label || 'Kriter Seçin'}
+                </Text>
+              </TouchableOpacity>
+              <Modal visible={isModalVisible} animationType="slide" transparent>
+                <View style={MainStyles.modalContainerPicker}>
+                  <View style={MainStyles.modalContentPicker}>
+                    <Picker
+                      selectedValue={searchCriteria}
+                      onValueChange={(itemValue) => setSearchCriteria(itemValue)}
+                    >
+                      {pickerItems.map((item) => (
+                        <Picker.Item key={item.value} label={item.label} value={item.value} style={MainStyles.textStyle} />
+                      ))}
+                    </Picker>
+                    <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                  </View>
+                </View>
+              </Modal>
+            </>
+          ) : (
+            <Picker
+              selectedValue={searchCriteria}
+              onValueChange={(itemValue) => setSearchCriteria(itemValue)}
+              itemStyle={{ height: 40, fontSize: 12 }}
+              style={{ marginHorizontal: -10 }}
+            >
+              {pickerItems.map((item) => (
+                <Picker.Item key={item.value} label={item.label} value={item.value} style={MainStyles.textStyle} />
+              ))}
+            </Picker>
+          )}
         </View>
       </View>
       <View style={MainStyles.inputContainer}>
@@ -249,7 +204,7 @@ const StokList = ({navigation}) => {
           placeholder="Ürün kodu veya adı ile ara"
           placeholderTextColor={colors.placeholderTextColor}
           value={searchTerm}
-          onChangeText={setSearchTerm}
+          onChangeText={handleSearchTermChange}
         />
         <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
           <Camera/>
@@ -292,10 +247,11 @@ const StokList = ({navigation}) => {
      />
       ) : (
         <>
-      <FlatList
+       <FlatList
         data={data}
+        keyExtractor={(item) => item.Stok_Kod.toString()}
         renderItem={renderItem}
-        keyExtractor={(item) => item.Stok_Kod}
+        ListEmptyComponent={() => <Text style={MainStyles.emptyText}>Arama sonucuna uygun veri bulunamadı</Text>}
       />
       </>
       )}

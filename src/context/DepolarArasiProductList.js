@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
+import React, { useState, useCallback, useEffect, useContext, useRef } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal } from 'react-native';
 import { MainStyles } from '../res/style';
 import axiosLinkMain from '../utils/axiosMain';
@@ -12,6 +12,7 @@ import DepolarArasiProductModal from './DepolarArasiProductModal';
 import { RNCamera } from 'react-native-camera';
 import { Camera, Nokta, Down } from '../res/images';
 import Button from '../components/Button';
+import { useAuthDefault } from '../components/DefaultUser';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -19,6 +20,7 @@ const normalizeText = (text) => {
 
 const DepolarArasiProductList = () => {
   const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
@@ -36,32 +38,38 @@ const DepolarArasiProductList = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [stokListesi, setStokListesi] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const searchTimeoutRef = useRef(null);
 
   const pickerItems = [
-    { label: 'Stok Adı', value: 'Stok_Ad' },
-    { label: 'Stok Kodu', value: 'Stok_Kod' },
-    { label: 'Marka', value: 'Marka' },
-    { label: 'Alt Grup', value: 'AltGrup' },
-    { label: 'Ana Grup', value: 'AnaGrup' },
-    { label: 'Reyon', value: 'Reyon' },
-    { label: 'Barkod', value: 'Barkod' },
+    { label: 'Stok Adı', value: 'Stok_Ad', tip: 1 },
+    { label: 'Stok Kodu', value: 'Stok_Kod', tip: 2 },
+    { label: 'Marka', value: 'Marka', tip: 3 },
+    { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
+    { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
+    { label: 'Reyon', value: 'Reyon', tip: 6 },
+    { label: 'Barkod', value: 'Barkod', tip: 7 },
   ];
 
   // Function to get label based on selected value
-  const getLabelForValue = (value) => {
+  const getTipForValue = (value) => {
     const selectedItem = pickerItems.find((item) => item.value === value);
-    return selectedItem ? selectedItem.label : 'Kriter Seçin';
+    return selectedItem ? selectedItem.tip : 1;
   };
 
-  const fetchProductData = useCallback(async (searchTerm = '', searchCriteria = 'Stok_Ad', marka = '') => {
-    try {
-      let response;
+
+  const fetchProductData = useCallback(
+    async (searchTerm = '', searchCriteria = 'Stok_Ad') => {
+      try {
+        const deger = searchTerm || ''; // TextInput'a yazılan değer, boşsa boş olarak gönderilecek
+        const tip = getTipForValue(searchCriteria);
   
-      // Eğer barkod araması yapılıyorsa barkod API'sine gidiyoruz
-      if (searchCriteria === 'Barkod') {
-        response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${searchTerm}`);
+        const response = await axiosLinkMain.get(
+          `/Api/Stok/StokListesi?deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`
+        );
+  
         const data = response.data;
   
+        // Gelen veriyi filteredData formatına dönüştürme
         const filteredData = data.map(item => ({
           Stok_Ad: item.Stok_Ad,
           Stok_Kod: item.Stok_Kod,
@@ -75,77 +83,41 @@ const DepolarArasiProductList = () => {
           AltGrup: item.AltGrup,
           AnaGrup: item.AnaGrup,
           Reyon: item.Reyon,
+          BekleyenSiparis: item.BekleyenSiparis,
+          Vade: item.Vade,
         }));
   
-        setData(filteredData);
-      } else {
-        // Bellekteki stok listesinden arama yap
-        const normalizedSearchTerm = normalizeText(searchTerm).toLowerCase().split(' ');
+        setData(filteredData); // filteredData'yı setData ile ayarlayın
   
-        const filteredData = stokListesi // stokListesi, bellekte tutulan stok verisi
-          .filter(item => {
-            const normalizedItemText = normalizeText(item[searchCriteria] || '').toLowerCase();
-            const matchesSearchTerm = normalizedSearchTerm.every(term => normalizedItemText.includes(term));
-            const matchesMarka = marka ? item.Marka === marka : true;
-            return matchesSearchTerm && matchesMarka;
-          })
-          .map(item => ({
-            Stok_Ad: item.Stok_Ad,
-            Stok_Kod: item.Stok_Kod,
-            Liste_Fiyatı: item.Liste_Fiyatı,
-            Depodaki_Miktar: item.Depodaki_Miktar,
-            Depo1Miktar: item.Depo1Miktar,
-            Depo2Miktar: item.Depo2Miktar,
-            sth_vergi: item.Vergi,
-            Birim: item.Birim,
-            Marka: item.Marka,
-            AltGrup: item.AltGrup,
-            AnaGrup: item.AnaGrup,
-            Reyon: item.Reyon,
-          }));
+        // StokVade ve BekleyenSiparis değerlerini kontrol et
+        const stokVadeValue = filteredData.find((item) => item.Vade)?.Vade;
   
-        setData(filteredData);
+        // Vade değerini sadece stok listesi verisi varsa güncelle
+        if (stokVadeValue && stokVadeValue !== '0') {
+          updatealinanSiparis({
+            StokVade: stokVadeValue,
+          });
+        }
+      } catch (err) {
+        Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
       }
-    } catch (err) {
-      Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
-    }
-  }, [stokListesi]);
+    },
+    []
+  );
 
-  // Stok listesini API'den çek ve belleğe al
-  const fetchStokListesi = useCallback(async () => {
-    try {
-      const response = await axiosLinkMain.get('/Api/Stok/StokListesi');
-      const data = response.data;
+  const handleSearchTermChange = (text) => {
+    setSearchTerm(text);
   
-      setStokListesi(data); // stokListesi belleğe alındı
-  
-      // Aynı zamanda filtre seçeneklerini de oluşturuyoruz
-      const markaSet = new Set(data.map(item => item.Marka).filter(marka => marka));
-      const stokAdSet = new Set(data.map(item => item.Stok_Ad).filter(ad => ad));
-      const stokKodSet = new Set(data.map(item => item.Stok_Kod).filter(kod => kod));
-      const altGrupSet = new Set(data.map(item => item.AltGrup).filter(grup => grup));
-      const anaGrupSet = new Set(data.map(item => item.AnaGrup).filter(grup => grup));
-      const reyonSet = new Set(data.map(item => item.Reyon).filter(reyon => reyon));
-  
-      setMarkaOptions(Array.from(markaSet));
-      setStokAdOptions(Array.from(stokAdSet));
-      setStokKodOptions(Array.from(stokKodSet));
-      setAltGrupOptions(Array.from(altGrupSet));
-      setAnaGrupOptions(Array.from(anaGrupSet));
-      setReyonOptions(Array.from(reyonSet));
-    } catch (err) {
-      Alert.alert('Hata', 'Stok verileri yüklenirken bir hata oluştu.');
+    // Eğer daha önceki timeout varsa, onu temizle
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
-  }, []);
   
-  useEffect(() => {
-    fetchStokListesi(); // Uygulama başlarken stok listesini bir kez API'den çek
-  }, [fetchStokListesi]);
-  
-  useEffect(() => {
-    fetchProductData(searchTerm, searchCriteria, selectedMarka); // TextInput'a yazıldıkça arama yap
-  }, [searchTerm, searchCriteria, selectedMarka, fetchProductData]);
-
+    // Yeni bir timeout ayarla
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchProductData(text, searchCriteria); // Gecikmeli API çağrısı
+    }, 500); // 500 ms sonra API çağrısı yapılacak
+  };
  
   const handleItemClick = (item) => {
     const existingProductCount = addedProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
@@ -173,6 +145,10 @@ const DepolarArasiProductList = () => {
     setSearchTerm(data); 
     fetchProductData(data, 'Barkod'); 
   };
+
+  useEffect(() => {
+    fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
+  }, []);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemClick(item)} style={MainStyles.itemContainerPL}>
@@ -266,7 +242,7 @@ const DepolarArasiProductList = () => {
           placeholder="Ürün kodu veya adı ile ara"
           placeholderTextColor={colors.placeholderTextColor}
           value={searchTerm}
-          onChangeText={setSearchTerm}
+          onChangeText={handleSearchTermChange}
         />
         <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
           <Camera/>

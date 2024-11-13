@@ -24,6 +24,7 @@
     "@realm/react": "^0.11.0",
     "axios": "^1.7.2",
     "link": "^2.1.1",
+    "lodash.debounce": "^4.0.8",
     "react": "18.2.0",
     "react-native": "^0.74.6",
     "react-native-camera": "^4.2.1",

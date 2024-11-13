@@ -89,7 +89,7 @@ const AlinanSiparisProductModal = ({
     setLoading(true); // Yükleniyor state'i aktif et
     try {
       // API'yi çağır
-      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=1`);
+      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=${defaults[0].IQ_MikroPersKod}`);
       const data = response.data || []; // Hata durumunda boş dizi döner
   
       // Veriyi state'e ata
@@ -135,7 +135,6 @@ const AlinanSiparisProductModal = ({
         const stok = selectedProduct?.Stok_Kod;
         const somkod = alinanSiparis.sth_stok_srm_merkezi || alinanSiparis.sip_stok_sormerk || alinanSiparis.cha_srmrkkodu;
         const odpno = alinanSiparis.sth_odeme_op || alinanSiparis.sip_opno  || alinanSiparis.cha_vade;
-        console.log('sip_opno', alinanSiparis.sip_opno)
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
         
         try {
@@ -325,6 +324,7 @@ const validateQuantity = (quantity) => {
 
   const handleAddProduct = async () => {
     const calculatedQuantity = handleMiktarChange(sth_miktar);
+    
     if (validateQuantity(sth_miktar)) {
       const existingProduct = addedAlinanSiparisProducts.find(
         (product) => product.Stok_Kod === selectedProduct?.Stok_Kod
@@ -333,6 +333,7 @@ const validateQuantity = (quantity) => {
       const newTotalPrice = calculateTotal(); // Toplam tutar hesaplandı
       const newTotalMiktarPrice = (newQuantity * newTotalPrice).toFixed(2);
   
+   
       try {
         // İlk API çağrısı - mevcut iskontoları hesaplamak için
         const apiUrl = `/Api/Iskonto/IskontoHesapla?tutar=${newTotalPrice}&isk1=${sth_iskonto1 || 0}&isk2=${sth_iskonto2 || 0}&isk3=${sth_iskonto3 || 0}&isk4=${sth_iskonto4 || 0}&isk5=${sth_iskonto5 || 0}&isk6=${sth_iskonto6 || 0}`;
@@ -340,9 +341,7 @@ const validateQuantity = (quantity) => {
         const result = response.data;
         const { İsk1, İsk2, İsk3, İsk4, İsk5, İsk6 } = result; // İlk API'den dönen iskontolar
        // İkinci API çağrısı - Vade değerini almak için
-       const stokResponse = await axiosLinkMain.get(
-        `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}`
-      );
+      
 
         if (existingProduct) {
           // Eklenen ürünün iskonto değerlerini karşılaştır
@@ -392,7 +391,6 @@ const validateQuantity = (quantity) => {
                               sth_iskonto6: updatedİsk6.toFixed(2),
                               total: calculateTotal(),
                               modalId: 0,
-                              sip_opno, 
                           }
                           : product
                   );
@@ -434,7 +432,6 @@ const validateQuantity = (quantity) => {
                       sth_isk6: sth_iskonto6,
                       total: calculateTotal(),
                       modalId: 0,
-                      sip_opno: alinanSiparis.sip_opno,
                     },
                   ]);
   
@@ -482,7 +479,6 @@ const validateQuantity = (quantity) => {
                       sth_isk6: sth_iskonto6,
                       total: calculateTotal(),
                       modalId: 0,
-                      sip_opno: alinanSiparis.sip_opno,
                     },
                   ]);
   
@@ -528,7 +524,6 @@ const validateQuantity = (quantity) => {
               sth_isk6: sth_iskonto6,
               total: calculateTotal(),
               modalId: 0,
-              sip_opno: alinanSiparis.sip_opno,
             },
           ]);
   

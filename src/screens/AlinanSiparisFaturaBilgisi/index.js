@@ -170,8 +170,6 @@ const AlinanSiparisFaturaBilgisi = () => {
 
                 // Eğer eşleşen sorumluluk merkezi bulunduysa, ismini ayarlıyoruz
                 if (selectedSorumlulukMerkezi) {
-                    console.log('Bulunan Sorumluluk Merkezi:', selectedSorumlulukMerkezi);  // Kontrol için log
-
                     // İsim değerini al ve TextInput'a ekle
                     setSip_stok_sormerk(selectedSorumlulukMerkezi.İsim);
                 } else {
@@ -193,7 +191,6 @@ const AlinanSiparisFaturaBilgisi = () => {
         //console.log('Gelen Vade Verisi:', parsedVade);  // Veriyi doğru yazdırdığınızı kontrol edin
         setSip_opno(parsedVade.sip_opno);
         setSelectedVadeNo(parsedVade.selectedVadeNo);
-        console.log('Gelen Vade Verisi:', parsedVade.sip_opno);
       }
     } catch (error) {
       console.error('Error loading vade data from AsyncStorage:', error);
@@ -352,13 +349,16 @@ const AlinanSiparisFaturaBilgisi = () => {
         ...prevState,
         sip_tarih: formattedDate,
       }));
+
+       if (!savedDate) {
+        await AsyncStorage.setItem('selectedDate', JSON.stringify(currentDate));
+      }
+
     } catch (error) {
       console.error('Error loading date from AsyncStorage:', error);
     }
   };
 
-  
-  
    // Veriyi AsyncStorage'a kaydet
   const saveDataToAsyncStorage = async () => {
     try {
@@ -421,25 +421,28 @@ const AlinanSiparisFaturaBilgisi = () => {
   }, [alinanSiparis]);
  
   useEffect(() => {
-    loadDataFromAsyncStorage();  // Uygulama açıldığında verileri AsyncStorage'dan yükle
-    loadSorumlulukMerkeziFromAsyncStorage();
-    loadVadeFromAsyncStorage();
-    loadCariFromAsyncStorage();
-    loadAddressFromAsyncStorage();
-    loadDepoFromAsyncStorage();
-    loadDovizFromAsyncStorage();
-    loadIrsaliyeTipiFromAsyncStorage();
-    loadDateFromAsyncStorage();
-    loadEvrakNoFromAsyncStorage();
-    loadOnaysizDataFromAsyncStorage();
+    
+         //loadDataFromAsyncStorage();  // 1. Verileri AsyncStorage'dan yükler
+         //loadSorumlulukMerkeziFromAsyncStorage(); // 2. Sorumluluk merkezi yükler
+         //loadVadeFromAsyncStorage(); // 3. Vade bilgisi yükler
+        //loadCariFromAsyncStorage(); // 4. Cari bilgisi yükler
+         //loadAddressFromAsyncStorage(); // 5. Adres bilgisi yükler
+         //loadDepoFromAsyncStorage(); // 6. Depo bilgisi yükler
+        // loadDovizFromAsyncStorage(); // 7. Döviz bilgisi yükler
+        //loadIrsaliyeTipiFromAsyncStorage(); // 8. İrsaliye tipi yükler
+         loadDateFromAsyncStorage(); // 9. Tarih bilgisi yükler
+        // loadEvrakNoFromAsyncStorage(); // 10. Evrak no bilgisi yükler
+        // loadOnaysizDataFromAsyncStorage(); // 11. Onaysız data yükler
+    
   }, []);
+  
 
    
   useEffect(() => {
     if (projeKoduList.length === 0) {
       fetchProjeKoduList(); // Listeyi API'den al
     } else {
-      loadDataFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
+      //loadDataFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
     }
   }, [projeKoduList]); // Liste değiştiğinde çalışacak
 
@@ -447,7 +450,7 @@ const AlinanSiparisFaturaBilgisi = () => {
     if (sorumlulukMerkeziList.length === 0) {
       fetchSorumlulukMerkeziList(); // Listeyi API'den al
     } else {
-      loadSorumlulukMerkeziFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
+      //loadSorumlulukMerkeziFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
     }
   }, [sorumlulukMerkeziList]); // Liste değiştiğinde çalışacak
 
@@ -455,7 +458,7 @@ const AlinanSiparisFaturaBilgisi = () => {
     if (vadeList.length === 0) {
       fetchVadeList(); // Listeyi API'den al
     } else {
-      loadVadeFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
+      //loadVadeFromAsyncStorage(); // Liste yüklendiyse AsyncStorage'dan veriyi yükle
     }
   }, [vadeList]); // Liste değiştiğinde çalışacak
 
@@ -560,7 +563,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();
-    //handleIrsaliyeTipiChange('Çok Dövizli');
+    handleIrsaliyeTipiChange('Çok Dövizli Sipariş');
   }, []);
 
   const closeModal = () => {
@@ -609,34 +612,38 @@ const AlinanSiparisFaturaBilgisi = () => {
   // İrsaliye Tipi Varsayılan Seçim
 
   // Evrak Tarih Alanı
-    useEffect(() => {
-      const currentDate = new Date();
-      const formattedDate = formatDate(currentDate);
-      setDate(currentDate);
-      setAlinanSiparis(prevState => ({
-        ...prevState,
-        sip_tarih: formattedDate,
-      }));
-    }, []);
-
-    const handleDateChange = async (event, selectedDate) => {
-      setShowDatePicker(false);
-      const newDate = selectedDate || date;
-      setDate(newDate);
-
-      const formattedDate = formatDate(newDate);
-      setAlinanSiparis(prevState => ({
-        ...prevState,
-        sip_tarih: formattedDate,
-      }));
-
-      try {
-        // Seçilen tarihi AsyncStorage'a kaydet
-        await AsyncStorage.setItem('selectedDate', JSON.stringify(newDate));
-      } catch (error) {
-        console.error('Error saving date to AsyncStorage:', error);
-      }
-    };
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDate = formatDate(currentDate);
+    setDate(currentDate);
+    setAlinanSiparis(prevState => ({
+      ...prevState,
+      sip_tarih: formattedDate,
+    }));
+  }, []);
+  
+  
+  // Tarih değiştirildiğinde güncelleyip kaydeden fonksiyon
+  const handleDateChange = async (event, selectedDate) => {
+    setShowDatePicker(false);
+    const newDate = selectedDate || date;
+    setDate(newDate);
+  
+    const formattedDate = formatDate(newDate);
+  
+    // alinansiparis state'ini güncelle
+    setAlinanSiparis(prevState => ({
+      ...prevState,
+      sip_tarih: formattedDate,
+    }));
+  
+    try {
+      // Yeni tarihi AsyncStorage'a kaydet
+      await AsyncStorage.setItem('selectedDate', JSON.stringify(newDate));
+    } catch (error) {
+      console.error('Error saving date to AsyncStorage:', error);
+    }
+  };
 
     const formatDate = (date) => {
       const day = date.getDate().toString().padStart(2, '0');
@@ -720,7 +727,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         console.error('Geçersiz değerler: Cari Kodu veya Ünvan bulunamadı.');
     }
 
-    await saveCariToAsyncStorage();
+    //await saveCariToAsyncStorage();
     
       fetchDovizList(selectedCariKodu);
     

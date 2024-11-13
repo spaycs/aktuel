@@ -87,7 +87,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const fetchGunlukDurum = async () => {
       try {
-        const temsilciId =  defaults[0].IQ_Kod; // authData'dan temsilci ID'yi alın
+        const temsilciId =  defaults[0].IQ_MikroPersKod; // authData'dan temsilci ID'yi alın
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
         setGunlukDurum(response.data[0]); // Gelen ilk veriyi state'e set edin
       } catch (error) {
@@ -113,7 +113,7 @@ const Home = ({ navigation }) => {
 
     const fetchGunlukKazancVerileri = async () => {
       try {
-        const temsilciId = defaults[0].IQ_Kod; // Temsilci ID'yi al
+        const temsilciId = defaults[0].IQ_MikroPersKod; // Temsilci ID'yi al
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
         const apiData = response.data; // API'den gelen tüm veriyi al
     
@@ -190,7 +190,7 @@ const Home = ({ navigation }) => {
       </TouchableOpacity>
     );
   };
-  
+  {/* 
   useEffect(() => {
     const checkUnsubmittedOrder = async () => {
       try {
@@ -223,7 +223,7 @@ const Home = ({ navigation }) => {
 
     checkUnsubmittedOrder();
   }, [navigation]);
-
+*/}
   return (
     <View style={[MainStyles.flex1, MainStyles.backgroundColorWhite, MainStyles.paddingHorizontal15, MainStyles.justifyContent]}>
        <View style={MainStyles.marginTop5}><Text style={[MainStyles.fontSize14, MainStyles.fontWeightBold, MainStyles.marginBottom10]}>Günlük Durum</Text></View>

@@ -62,10 +62,11 @@ const AlinanSiparisOnizleme = () => {
     try {
       await AsyncStorage.removeItem('addedAlinanSiparisProducts');
       await AsyncStorage.removeItem('alinanSiparis');
+      await AsyncStorage.removeItem('selectedDepo');
+      await AsyncStorage.removeItem('selectedIrsaliyeTipi');
+      await AsyncStorage.removeItem('selectedDoviz');
       setAddedAlinanSiparisProducts([]);
-      setAlinanSiparis(prev =>
-        Object.fromEntries(Object.keys(prev).map(key => [key, ""]))
-      );
+      setAlinanSiparis([]);
     } catch (error) {
       console.error("Failed to clear data from AsyncStorage:", error);
       Alert.alert("Hata", "AsyncStorage temizlenirken bir hata oluştu.");
@@ -73,7 +74,7 @@ const AlinanSiparisOnizleme = () => {
   };
 
   useEffect(() => {
-    loadDataFromAsyncStorage();
+    //loadDataFromAsyncStorage();
   }, []);
 
   useEffect(() => {
@@ -198,7 +199,6 @@ const AlinanSiparisOnizleme = () => {
       let vergiToplam = 0;
       addedAlinanSiparisProducts.forEach((product) => {
         const kdvRate = parseFloat(product.sth_vergi.replace('%', '').replace(',', '.')) / 100;
-
         // Her ürün için toplam indirimi hesapla
         const productDiscount = parseFloat(calculateIskonto(product.id));
 
@@ -515,7 +515,6 @@ const AlinanSiparisOnizleme = () => {
     console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
     try {
       const response = await axiosLink.post(apiURL, jsonPayload);
-      console.log("apiURL",response);
       const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
       
     
@@ -557,19 +556,19 @@ const AlinanSiparisOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler */}
+    {/* Apiye Giden Değerler
       <View style={MainStyles.faturaBilgileriContainer}>
-        <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_tip: {alinanSiparis.sip_tip}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_cins: {alinanSiparis.sip_cins}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_tarih: {alinanSiparis.sip_tarih}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_musteri_kod: {alinanSiparis.sip_musteri_kod}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_cari_unvan1: {alinanSiparis.sip_cari_unvan1}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_adresno: {alinanSiparis.sip_adresno}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_projekodu: {alinanSiparis.sip_projekodu}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_opno: {alinanSiparis.sip_opno}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sip_depono: {alinanSiparis.sip_depono}</Text>
+        <Text style={MainStyles.fontSize11}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
+        <Text style={MainStyles.fontSize11}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>
+        <Text style={MainStyles.fontSize11}>sip_tip: {alinanSiparis.sip_tip}</Text>
+        <Text style={MainStyles.fontSize11}>sip_cins: {alinanSiparis.sip_cins}</Text>
+        <Text style={MainStyles.fontSize11}>sip_tarih: {alinanSiparis.sip_tarih}</Text>
+        <Text style={MainStyles.fontSize11}>sip_musteri_kod: {alinanSiparis.sip_musteri_kod}</Text>
+        <Text style={MainStyles.fontSize11}>sip_cari_unvan1: {alinanSiparis.sip_cari_unvan1}</Text>
+        <Text style={MainStyles.fontSize11}>sip_adresno: {alinanSiparis.sip_adresno}</Text>
+        <Text style={MainStyles.fontSize11}>sip_projekodu: {alinanSiparis.sip_projekodu}</Text>
+        <Text style={MainStyles.fontSize11}>sip_opno: {alinanSiparis.sip_opno}</Text>
+        <Text style={MainStyles.fontSize11}>sip_depono: {alinanSiparis.sip_depono}</Text>
       </View>
     {/* Apiye Giden Değerler */}
 
