@@ -50,6 +50,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [adresList, setAdresList] = useState([]);
   const [projeKoduList, setProjeKoduList] = useState([]);
   const [vadeList, setVadeList] = useState([]);
+  const [odemeText, setOdemeText] = useState('');
 
   // Seçimler
   const [irsaliyeTipi, setIrsaliyeTipi] = useState('Çok Dövizli');
@@ -390,8 +391,8 @@ const AlinanSiparisFaturaBilgisi = () => {
   const saveVadeToAsyncStorage = async () => {
     try {
       const vadeData = {
-        sip_opno,
-        selectedVadeNo,
+        //sip_opno,
+        //selectedVadeNo,
       };
       //console.log('Kaydedilen Vade Verisi:', vadeData); // Veriyi kontrol et
       await AsyncStorage.setItem('vade', JSON.stringify(vadeData));
@@ -418,6 +419,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   
   useEffect(() => {
     console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
+  
   }, [alinanSiparis]);
  
   useEffect(() => {
@@ -429,11 +431,10 @@ const AlinanSiparisFaturaBilgisi = () => {
          //loadAddressFromAsyncStorage(); // 5. Adres bilgisi yükler
          //loadDepoFromAsyncStorage(); // 6. Depo bilgisi yükler
         // loadDovizFromAsyncStorage(); // 7. Döviz bilgisi yükler
-        //loadIrsaliyeTipiFromAsyncStorage(); // 8. İrsaliye tipi yükler
+        loadIrsaliyeTipiFromAsyncStorage(); // 8. İrsaliye tipi yükler
          loadDateFromAsyncStorage(); // 9. Tarih bilgisi yükler
         // loadEvrakNoFromAsyncStorage(); // 10. Evrak no bilgisi yükler
         // loadOnaysizDataFromAsyncStorage(); // 11. Onaysız data yükler
-    
   }, []);
   
 
@@ -563,7 +564,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();
-    handleIrsaliyeTipiChange('Çok Dövizli Sipariş');
+    handleIrsaliyeTipiChange('Çok Dövizli');
   }, []);
 
   const closeModal = () => {
@@ -603,7 +604,7 @@ const AlinanSiparisFaturaBilgisi = () => {
 
     try {
       // İrsaliye tipi bilgisini AsyncStorage'a kaydet
-      await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
+     // await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
     } catch (error) {
       console.error('Error saving irsaliyeTipi to AsyncStorage:', error);
     }
@@ -684,67 +685,40 @@ const AlinanSiparisFaturaBilgisi = () => {
     const handleCariSelect = async (cari) => {
       const selectedCariKodu = cari.Cari_Kod;
       const selectedCariUnvan = cari.Ünvan;
-      
+    
       setSip_musteri_kod(selectedCariKodu);
       setSip_cari_unvan1(selectedCariUnvan);
     
-      // Fatura bilgilerini güncelle
       setAlinanSiparis((prevState) => ({
         ...prevState,
         sip_musteri_kod: selectedCariKodu,
         sip_cari_unvan1: selectedCariUnvan,
       }));
     
-    // IQ_OPCaridenGelsin kontrolü
+      // Check IQ_OPCaridenGelsin and set sip_opno and odemeText accordingly
       const IQ_OPCaridenGelsin = defaults[0].IQ_OPCaridenGelsin;
-      console.log('IQ_OPCaridenGelsin',IQ_OPCaridenGelsin )
-      if (IQ_OPCaridenGelsin === 1) {
-        // IQ_OPCaridenGelsin 1 ise cari_odemeplan_no içindeki değeri al ve setSip_opno'yu güncelle
-        const selectedOdemePlanNo = cari.cari_odemeplan_no;
-        console.log('selectedOdemePlanNo',selectedOdemePlanNo )
-        setSip_opno(selectedOdemePlanNo);
+      console.log('IQ_OPCaridenGelsin', IQ_OPCaridenGelsin);
+      const selectedOdemePlanNo = cari.cari_odemeplan_no;
+      console.log('selectedOdemePlanNo', selectedOdemePlanNo);
+    
+   if (selectedOdemePlanNo === 0) {
+        setSip_opno("PEŞİN");
+    
         setAlinanSiparis((prevState) => ({
           ...prevState,
-          sip_opno: selectedOdemePlanNo,
+          sip_opno: 0,
         }));
-      } else {
-        // IQ_OPCaridenGelsin 0 ise setSip_opno'yu 0 olarak ayarla
-      }
-          
-      // AsyncStorage'a veri kaydetmeden önce kontrol et
-      if (selectedCariKodu !== undefined && selectedCariUnvan !== undefined) {
-        try {
-          await AsyncStorage.setItem('alinanSiparis', JSON.stringify({
-            ...alinanSiparis,
-            sip_musteri_kod: selectedCariKodu,
-            sip_cari_unvan1: selectedCariUnvan,
-          }));
-          //console.log("Fatura bilgileri AsyncStorage'a kaydedildi.");
-        } catch (error) {
-          console.error('Cari bilgileri AsyncStorage\'a kaydedilirken hata:', error);
-        }
-      } else {
-        console.error('Geçersiz değerler: Cari Kodu veya Ünvan bulunamadı.');
-    }
+        
+      } else if (selectedOdemePlanNo < 0) {
+        const gunSayisi = Math.abs(selectedOdemePlanNo);
+    const textIcerik = `${gunSayisi} GÜN`;
+    setSip_opno(textIcerik);
 
-    //await saveCariToAsyncStorage();
-    
-      fetchDovizList(selectedCariKodu);
-    
-      const adresList = await fetchAdresList(selectedCariKodu);
-      if (adresList && adresList.length > 0) {
-        const firstAddress = adresList[0];
-        setSip_adresno(firstAddress.Adres);
-        setAlinanSiparis((prevState) => ({
-          ...prevState,
-          sip_adresno: firstAddress.Adres_No,
-        }));
-      } else {
-        console.log("Adres listesi boş geldi.");
-      }
-    
-    // Ödeme planını kontrol et
-      if (cari.cari_odemeplan_no) {
+    setAlinanSiparis((prevState) => ({
+      ...prevState,
+      sip_opno: selectedOdemePlanNo,
+    }));
+      } else if (selectedOdemePlanNo > 0) {
         const odemePlanNo = cari.cari_odemeplan_no;
         try {
           const odemePlanlariList = await fetchVadeList();
@@ -766,10 +740,24 @@ const AlinanSiparisFaturaBilgisi = () => {
           console.error("Ödeme planı fetch edilirken hata:", error);
         }
       }
-
+    
+      fetchDovizList(selectedCariKodu);
+      const adresList = await fetchAdresList(selectedCariKodu);
+      if (adresList && adresList.length > 0) {
+        const firstAddress = adresList[0];
+        setSip_adresno(firstAddress.Adres);
+        setAlinanSiparis((prevState) => ({
+          ...prevState,
+          sip_adresno: firstAddress.Adres_No,
+        }));
+      } else {
+        console.log("Adres listesi boş geldi.");
+      }
+    
       await updateDepoSelection(cari);
       setIsCariListModalVisible(false);
     };
+    
 
     useEffect(() => {
       if (sip_musteri_kod) {
@@ -1642,7 +1630,7 @@ const renderOzelAlanSelectedData = () => {
             <Text style={MainStyles.formTitle}>Depo</Text>
               <View style={MainStyles.inputStyle}>
               {Platform.OS === 'ios' ? (
-          <>
+            <>
             <TouchableOpacity onPress={() => setIsDepoModalVisible(true)}>
               <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
                 {sip_depono ? depoList.find(depo => depo.No.toString() === sip_depono)?.Adı : 'Depo Seçin'}
@@ -1672,22 +1660,22 @@ const renderOzelAlanSelectedData = () => {
                 </View>
               </View>
             </Modal>
-          </>
-        ) : (
-          // Android için doğrudan Picker
+            </>
+          ) : (
+            // Android için doğrudan Picker
           <Picker
           itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
           selectedValue={sip_depono}
           onValueChange={handleDepoChange}
           enabled={pickerEditable}
-        >
-          <Picker.Item label="Depo Seçin" style={MainStyles.textStyle} value="" />
-          {depoList.map((depo) => (
-            <Picker.Item key={depo.No} style={MainStyles.textStyle} label={depo.Adı} value={depo.No.toString()} />
-          ))}
-        </Picker>
-        )}
-              </View>
+          >
+            <Picker.Item label="Depo Seçin" style={MainStyles.textStyle} value="" />
+            {depoList.map((depo) => (
+              <Picker.Item key={depo.No} style={MainStyles.textStyle} label={depo.Adı} value={depo.No.toString()} />
+            ))}
+          </Picker>
+          )}
+                </View>
           </View>
       {/* Depo Seçim */}
 
@@ -1700,6 +1688,7 @@ const renderOzelAlanSelectedData = () => {
               style={MainStyles.inputVade}
               placeholder="Vade"
               value={sip_opno ? sip_opno.toString() : ''}
+              //value={odemeText}
               onFocus={handleVadeClick} 
               editable={!vadeEditable}
               placeholderTextColor={colors.placeholderTextColor}

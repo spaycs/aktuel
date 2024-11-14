@@ -19,10 +19,10 @@ let axiosLink = axios.create({
 
 export const AuthProvider = ({ children }) => {
   const [authData, setAuthData] = useState({
-    KullaniciKodu: "",
+    KullaniciKodu: "SRV",
     Sifre: "",
     OrijinalSifre: "",
-    FirmaKodu: "GUCLU2024",
+    FirmaKodu: "DENEMESD",
     FirmaApiUrl: "http://213.14.109.246:8094",
     MikroApiUrl: "http://213.14.109.246:8084",
     CalismaYili: "2024",

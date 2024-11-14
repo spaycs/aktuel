@@ -62,6 +62,7 @@ const StokList = ({navigation}) => {
     try {
       const tip = getTipForValue(criteria);
       const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${term}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`);
+      console.log(response);
       setData(response.data);
     } catch (err) {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');

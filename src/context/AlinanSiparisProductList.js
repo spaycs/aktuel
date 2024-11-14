@@ -12,6 +12,7 @@ import { Camera, Nokta } from '../res/images';
 import Button from '../components/Button';
 import AlinanSiparisProductModal from './AlinanSiparisProductModal';
 import { useAuthDefault } from '../components/DefaultUser';
+import FastImage from 'react-native-fast-image';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -57,6 +58,7 @@ const AlinanSiparisProductList = () => {
 
   const fetchProductData = useCallback(
     async (searchTerm = '', searchCriteria = 'Stok_Ad') => {
+      setLoading(true);
       try {
         const deger = searchTerm || ''; // TextInput'a yazılan değer, boşsa boş olarak gönderilecek
         const tip = getTipForValue(searchCriteria);
@@ -99,6 +101,8 @@ const AlinanSiparisProductList = () => {
         }
       } catch (err) {
         Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+      }finally {
+        setLoading(false);
       }
     },
     [alinanSiparis.sip_musteri_kod, updatealinanSiparis]
@@ -331,7 +335,7 @@ const AlinanSiparisProductList = () => {
       </Modal>
 
       {loading ? ( // Show loading indicator if loading
-       <FastImaga
+       <FastImage
         style={MainStyles.loadingGif}
         source={require('../res/images/image/pageloading.gif')}
         resizeMode={FastImage.resizeMode.contain}

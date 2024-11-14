@@ -26,6 +26,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
       setLoading(true);
       const personelKodu = defaults[0]?.IQ_MikroPersKod || '';
       const response = await axiosLinkMain.get(`/Api/Cari/CariListesi?temsilci=${personelKodu}`);
+      console.log(personelKodu);
   
       // Tüm veriyi sakla
       setAllData(response.data || []);
