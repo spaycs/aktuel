@@ -30,6 +30,7 @@ const AlinanSiparisOnizleme = () => {
   const [explanations, setExplanations] = useState(Array(10).fill(''));
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
+  const { isSaved, setIsSaved } = useContext(ProductContext);
 
   const saveDataToAsyncStorage = async (addedAlinanSiparisProducts, alinanSiparis) => {
     try {
@@ -520,6 +521,7 @@ const AlinanSiparisOnizleme = () => {
     
       if (StatusCode === 200) {
         await clearAsyncStorage();
+        setIsSaved(true);
         Alert.alert(
             "Başarılı",
             "Veriler başarıyla kaydedildi.",
@@ -556,7 +558,7 @@ const AlinanSiparisOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler
+    {/* Apiye Giden Değerler*/}
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.fontSize11}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
         <Text style={MainStyles.fontSize11}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>
@@ -569,6 +571,7 @@ const AlinanSiparisOnizleme = () => {
         <Text style={MainStyles.fontSize11}>sip_projekodu: {alinanSiparis.sip_projekodu}</Text>
         <Text style={MainStyles.fontSize11}>sip_opno: {alinanSiparis.sip_opno}</Text>
         <Text style={MainStyles.fontSize11}>sip_depono: {alinanSiparis.sip_depono}</Text>
+        <Text style={MainStyles.fontSize11}>sip_stok_sormerk: {alinanSiparis.sip_stok_sormerk}</Text>
       </View>
     {/* Apiye Giden Değerler */}
 

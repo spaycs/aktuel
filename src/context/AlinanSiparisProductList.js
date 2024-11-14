@@ -162,6 +162,10 @@ const AlinanSiparisProductList = () => {
   
 
   const handleItemClick = (item) => {
+    if (!alinanSiparis.sip_musteri_kod) {
+      Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
+      return; // Boşsa fonksiyonu sonlandırın
+    }
     const existingProductCount = addedAlinanSiparisProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
 
     if (existingProductCount >= 2) {

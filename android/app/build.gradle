@@ -76,29 +76,29 @@ android {
 
     namespace "com.mikroiq"
     defaultConfig {
-        applicationId "com2.mikroiq"
+        applicationId "com.mikroiq"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "3.0"
+        versionCode 5
+        versionName "2.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
-        release {
-            storeFile file('release.keystore')
-            storePassword '121212'
-            keyAlias 'your-key-alias'
-            keyPassword '121212'
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
         }
     }
     buildTypes {
-        release {
-            signingConfig signingConfigs.release
+        debug {
+            signingConfig signingConfigs.debug
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

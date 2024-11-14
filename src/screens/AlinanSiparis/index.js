@@ -14,6 +14,7 @@ const initialLayout = { width: Dimensions.get('window').width };
 
 const AlinanSiparis = ({navigation}) => {
   const [index, setIndex] = useState(0);
+  const { isSaved, setIsSaved } = useContext(ProductContext);
   const { addedAlinanSiparisProducts, setAddedAlinanSiparisProducts, alinanSiparis, setAlinanSiparis } = useContext(ProductContext);
   const [routes, setRoutes] = useState([
     { key: 'faturaBilgisi', title: 'Bilgi', icon: Bilgi   },
@@ -38,21 +39,40 @@ const AlinanSiparis = ({navigation}) => {
     onizleme: AlinanSiparisOnizleme,
   });
 
-  /* 
-   useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
       const onBeforeRemove = (e) => {
-        setFaturaBilgileri({});
-        setAddedProducts([]);
-        navigation.dispatch(e.data.action); 
+        if (isSaved) {
+          setIsSaved(false); // Uyarıdan sonra durumu sıfırla
+          return;
+        }
+
+        e.preventDefault(); 
+
+        Alert.alert(
+          "Uyarı",
+          "Sayfadan çıkmak istediğinize emin misiniz? ",
+          [
+            {
+              text: "Evet",
+              onPress: () => {
+                navigation.dispatch(e.data.action);
+              }
+            },
+            {
+              text: "Hayır",
+              onPress: () => {},
+              style: "cancel"
+            }
+          ]
+        );
       };
-      const unsubscribe = navigation.addListener('beforeRemove', onBeforeRemove);
-      return () => {
-        unsubscribe();
-      };
-    }, [navigation, setFaturaBilgileri])
+     const unsubscribe = navigation.addListener('beforeRemove', onBeforeRemove);
+      return () => unsubscribe();
+    }, [navigation, isSaved])
   );
-  */
+
+  
   const validateFields = () => {
     if (!alinanSiparis.sip_musteri_kod|| !alinanSiparis.sip_cari_unvan1) {
       Alert.alert(

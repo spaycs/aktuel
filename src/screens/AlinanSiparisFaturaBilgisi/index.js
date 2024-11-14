@@ -172,7 +172,7 @@ const AlinanSiparisFaturaBilgisi = () => {
                 // Eğer eşleşen sorumluluk merkezi bulunduysa, ismini ayarlıyoruz
                 if (selectedSorumlulukMerkezi) {
                     // İsim değerini al ve TextInput'a ekle
-                    setSip_stok_sormerk(selectedSorumlulukMerkezi.İsim);
+                    setSip_stok_sormerk(selectedSorumlulukMerkezi.Kod);
                 } else {
                     console.log('Sorumluluk merkezi kodu bulunamadı');
                 }
@@ -552,15 +552,13 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
     }, [sip_evrakno_seri,sip_evrakno_sira,sip_musteri_kod, sip_cari_unvan1, sip_depono] );
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
-/*
   useFocusEffect(
     React.useCallback(() => {
       return () => {
-        setFaturaBilgileri({});
+        setAlinanSiparis({});
       };
     }, [])
   );
-*/
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();

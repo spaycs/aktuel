@@ -135,7 +135,7 @@ const CustomDrawerContent = (props) => {
           <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
          
           <Text style={{ fontSize: 12 }}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Veri Tabanı:</Text>  {defaults.length > 0 ? defaults[0].IQ_Database : '---'}
+          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Veri Tabanı:</Text>  {defaults.length > 0 ? authData.FirmaKodu : '---'}
             </Text>
           </View>
           <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>

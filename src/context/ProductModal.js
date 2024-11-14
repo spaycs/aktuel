@@ -584,7 +584,7 @@ const validateQuantity = (quantity) => {
           </View>
           <View style={MainStyles.inputRow}>
           <View style={MainStyles.inputGroup}>
-              <Text style={MainStyles.inputtip}>Satış Fiyatı:</Text>
+              <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
               <TextInput
                 style={MainStyles.productModalMiktarInput}
                 placeholderTextColor={colors.placeholderTextColor}

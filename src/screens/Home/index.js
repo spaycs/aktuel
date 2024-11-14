@@ -150,7 +150,7 @@ const Home = ({ navigation }) => {
     
     { key: '13', title: 'Stok Ekle', icon: <Ekle width={25} height={25} />, screen: 'StokEkleme', izinKey: 'IQM_StokEkle', color: '#D6D6D6' },
     { key: '14', title: 'Cari Ekle', icon: <Ekle width={25} height={25} />, screen: 'CariEkleme', izinKey: 'IQM_CariEkle', color: '#D6D6D6' },
-    { key: '11', title: 'Patron Raporu', icon: <GunlukDurum width={25} height={25} />, screen: 'PatronRaporu', izinKey: 'IQM_GunlukDurum', color: '#D6D6D6' },
+    { key: '11', title: 'Patron Raporu', icon: <GunlukDurum width={25} height={25} />, screen: 'PatronRaporu', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
 
   ];
   

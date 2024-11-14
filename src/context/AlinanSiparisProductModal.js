@@ -136,6 +136,7 @@ const AlinanSiparisProductModal = ({
         const somkod = alinanSiparis.sth_stok_srm_merkezi || alinanSiparis.sip_stok_sormerk || alinanSiparis.cha_srmrkkodu;
         const odpno = alinanSiparis.sth_odeme_op || alinanSiparis.sip_opno  || alinanSiparis.cha_vade;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
+        console.log(apiUrl);
         
         try {
           const response = await axiosLinkMain.get(apiUrl);
@@ -210,7 +211,7 @@ const AlinanSiparisProductModal = ({
   
       fetchSatisFiyati();
     }
-  }, [modalVisible, selectedProduct]);
+  }, [modalVisible, selectedProduct,]);
 
 // Miktar geçerliliğini kontrol eden fonksiyon
 const validateQuantity = (quantity) => {
@@ -613,7 +614,7 @@ const validateQuantity = (quantity) => {
           </View>
           <View style={MainStyles.inputRow}>
           <View style={MainStyles.inputGroup}>
-              <Text style={MainStyles.inputtip}>Satış Fiyatı:</Text>
+              <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
               <TextInput
                 style={MainStyles.productModalMiktarInput}
                 placeholderTextColor={colors.placeholderTextColor}

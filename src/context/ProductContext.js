@@ -7,6 +7,7 @@ export const ProductProvider = ({ children }) => {
   const [addedAlinanSiparisProducts, setAddedAlinanSiparisProducts] = useState([]);
   const [faturaBilgileri, setFaturaBilgileri] = useState([]);
   const [alinanSiparis, setAlinanSiparis] = useState([]);
+  const [isSaved, setIsSaved] = useState(false);
 
   return (
     <ProductContext.Provider
@@ -19,7 +20,8 @@ export const ProductProvider = ({ children }) => {
         setFaturaBilgileri,
         alinanSiparis,
         setAlinanSiparis,
-        
+        isSaved,
+        setIsSaved
       }}
     >
       {children}
