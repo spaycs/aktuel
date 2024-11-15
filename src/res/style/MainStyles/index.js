@@ -1380,6 +1380,7 @@ export const MainStyles = {
    
     modalContentUrunDetay: {
       width: '100%',
+      paddingHorizontal: 15,
       backgroundColor: colors.white,
     },
     modalProductContent: {

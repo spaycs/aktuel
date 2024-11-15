@@ -6,9 +6,11 @@ import { colors } from '../res/colors';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { ProductContext } from '../context/ProductContext';
+import { useAuthDefault } from '../components/DefaultUser';
 
 const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModalVisible, setAddedAlinanSiparisProducts }) => {
   const { alinanSiparis } = useContext(ProductContext);
+  const { defaults } = useAuthDefault();
   const [updatedProduct, setUpdatedProduct] = useState(selectedProduct || {});
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
@@ -23,6 +25,12 @@ const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModal
   const [vat, setVat] = useState(0);
   const [isEditable, setIsEditable] = useState(true);
   const [isIskontoEditable, setIsIskontoEditable] = useState(true);
+  const [isIskonto1Edit, setIsIskonto1Edit] = useState(false);
+  const [isIskonto2Edit, setIsIskonto2Edit] = useState(false);
+  const [isIskonto3Edit, setIsIskonto3Edit] = useState(false);
+  const [isIskonto4Edit, setIsIskonto4Edit] = useState(false);
+  const [isIskonto5Edit, setIsIskonto5Edit] = useState(false);
+  const [isIskonto6Edit, setIsIskonto6Edit] = useState(false);
   const [birimListesi, setBirimListesi] = useState([]);
   const [sthBirimPntr, setSthBirimPntr] = useState('');
   const [sth_birim_pntr, setSth_birim_pntr] = useState('AD');
@@ -30,6 +38,20 @@ const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModal
   const [DovizIsmi, setDovizIsmi] = useState(null);
   const [Carpan, setCarpan] = useState('');
   const [KDV, setKDV] = useState('');
+
+  useEffect(() => {
+    if (defaults && defaults[0]) {
+      const { IQ_SiparisFiyatiDegistirebilir, IQ_SiparisIskontosu1Degistirebilir, IQ_SiparisIskontosu2Degistirebilir, IQ_SiparisIskontosu3Degistirebilir, IQ_SiparisIskontosu4Degistirebilir, IQ_SiparisIskontosu5Degistirebilir, IQ_SiparisIskontosu6Degistirebilir } = defaults[0];
+  
+      setIsEditable(IQ_SiparisFiyatiDegistirebilir === 1);
+      setIsIskonto1Edit(IQ_SiparisIskontosu1Degistirebilir === 1);
+      setIsIskonto2Edit(IQ_SiparisIskontosu2Degistirebilir === 1);
+      setIsIskonto3Edit(IQ_SiparisIskontosu3Degistirebilir === 1);
+      setIsIskonto4Edit(IQ_SiparisIskontosu4Degistirebilir === 1);
+      setIsIskonto5Edit(IQ_SiparisIskontosu5Degistirebilir === 1);
+      setIsIskonto6Edit(IQ_SiparisIskontosu6Degistirebilir === 1);
+    }
+  }, [defaults]);
 
   useEffect(() => {
     if (selectedProduct) {
@@ -423,9 +445,9 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalIskontoInput}
                   keyboardType="numeric"
                   value={sthIskonto1}
+                  editable={isIskonto1Edit} 
                   placeholderTextColor={colors.placeholderTextColor}
                   onChangeText={setSthIskonto1}
-                  editable={isIskontoEditable}
                 />
               </View>
               <View style={MainStyles.inputIskontoGroup}>
@@ -434,9 +456,9 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalIskontoInput}
                   keyboardType="numeric"
                   value={sthIskonto2}
+                  editable={isIskonto2Edit} 
                   placeholderTextColor={colors.placeholderTextColor}
                   onChangeText={setSthIskonto2}
-                  editable={isIskontoEditable}
                 />
               </View>
               <View style={MainStyles.inputIskontoGroup}>
@@ -445,9 +467,9 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalIskontoInput}
                   keyboardType="numeric"
                   value={sthIskonto3}
+                  editable={isIskonto3Edit} 
                   placeholderTextColor={colors.placeholderTextColor}
                   onChangeText={setSthIskonto3}
-                  editable={isIskontoEditable}
                 />
               </View>
             </View>
@@ -458,9 +480,9 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalIskontoInput}
                   keyboardType="numeric"
                   value={sthIskonto4}
+                  editable={isIskonto4Edit} 
                   placeholderTextColor={colors.placeholderTextColor}
                   onChangeText={setSthIskonto4}
-                  editable={isIskontoEditable}
                 />
               </View>
               <View style={MainStyles.inputIskontoGroup}>
@@ -469,9 +491,9 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalIskontoInput}
                   keyboardType="numeric"
                   value={sthIskonto5}
+                  editable={isIskonto5Edit} 
                   placeholderTextColor={colors.placeholderTextColor}
                   onChangeText={setSthIskonto5}
-                  editable={isIskontoEditable}
                 />
               </View>
               <View style={MainStyles.inputIskontoGroup}>
@@ -480,9 +502,9 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalIskontoInput}
                   keyboardType="numeric"
                   value={sthIskonto6}
+                  editable={isIskonto6Edit} 
                   placeholderTextColor={colors.placeholderTextColor}
                   onChangeText={setSthIskonto6}
-                  editable={isIskontoEditable}
                 />
               </View>
             </View>

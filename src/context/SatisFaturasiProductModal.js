@@ -54,15 +54,15 @@ const SatisFaturasiProductModal = ({
 
   useEffect(() => {
     if (defaults && defaults[0]) {
-      const { IQ_IrsaliyeFiyatiDegistirebilir, IQ_IrsaliyeIskontosu1Degistirebilir, IQ_IrsaliyeIskontosu2Degistirebilir, IQ_IrsaliyeIskontosu3Degistirebilir, IQ_IrsaliyeIskontosu4Degistirebilir, IQ_IrsaliyeIskontosu5Degistirebilir, IQ_IrsaliyeIskontosu6Degistirebilir } = defaults[0];
+      const { IQ_SatisFaturaSeriNoDegistirebilir, IQ_FaturaIskontosu1Degistirebilir, IQ_FaturaIskontosu2Degistirebilir, IQ_FaturaIskontosu3Degistirebilir, IQ_FaturaIskontosu4Degistirebilir, IQ_FaturaIskontosu5Degistirebilir, IQ_FaturaIskontosu6Degistirebilir } = defaults[0];
   
-      setIsEditable(IQ_IrsaliyeFiyatiDegistirebilir === 1);
-      setIsIskonto1Edit(IQ_IrsaliyeIskontosu1Degistirebilir === 1);
-      setIsIskonto2Edit(IQ_IrsaliyeIskontosu2Degistirebilir === 1);
-      setIsIskonto3Edit(IQ_IrsaliyeIskontosu3Degistirebilir === 1);
-      setIsIskonto4Edit(IQ_IrsaliyeIskontosu4Degistirebilir === 1);
-      setIsIskonto5Edit(IQ_IrsaliyeIskontosu5Degistirebilir === 1);
-      setIsIskonto6Edit(IQ_IrsaliyeIskontosu6Degistirebilir === 1);
+      setIsEditable(IQ_SatisFaturaSeriNoDegistirebilir === 1);
+      setIsIskonto1Edit(IQ_FaturaIskontosu1Degistirebilir === 1);
+      setIsIskonto2Edit(IQ_FaturaIskontosu2Degistirebilir === 1);
+      setIsIskonto3Edit(IQ_FaturaIskontosu3Degistirebilir === 1);
+      setIsIskonto4Edit(IQ_FaturaIskontosu4Degistirebilir === 1);
+      setIsIskonto5Edit(IQ_FaturaIskontosu5Degistirebilir === 1);
+      setIsIskonto6Edit(IQ_FaturaIskontosu6Degistirebilir === 1);
     }
   }, [defaults]);
 

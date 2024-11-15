@@ -32,6 +32,7 @@ import SiparisKarsilama from "../screens/Raporlar/SiparisKarsilama";
 import SorumlulukBazindaBekleyenSiparis from "../screens/Raporlar/SorumlulukBazindaBekleyenSiparis";
 import TedarikciBazindaSatisKarsilama from "../screens/Raporlar/TedarikciBazindaSatisKarsilama";
 import CariListModal from "../context/CariListModal";
+import StokDepoDurum from "../screens/StokDepoDurum";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -229,7 +230,7 @@ function DrawerNavigator() {
 
 const Router = () => {
     return(
-        <Stack.Navigator screenOptions={{ presentation: 'modal' }}>
+        <Stack.Navigator >
 
 
            
@@ -771,6 +772,19 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Stok Hareket Föyü",
+                    headerBackTitleVisible: false,
+                    headerTitleStyle: {
+                      fontSize: 16,
+                    },
+                   
+                    })}
+            />
+            <Stack.Screen
+                name="StokDepoDurum"
+                component={StokDepoDurum}
+                options={({ navigation, route }) => ({
+                    headerTitleAlign: 'center',
+                    headerTitle: "Stok Depo Durum",
                     headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,

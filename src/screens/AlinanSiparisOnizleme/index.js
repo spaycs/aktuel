@@ -12,7 +12,6 @@ import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Realm } from '@realm/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditAlinanSiparisProductModal from '../../context/EditAlinanSiparisProductModal';
 const AlinanSiparisOnizleme = () => {

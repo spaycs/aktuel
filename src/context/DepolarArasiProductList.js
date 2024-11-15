@@ -27,7 +27,7 @@ const DepolarArasiProductList = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
-  const [searchCriteria, setSearchCriteria] = useState('Stok_Ad');
+  const [searchCriteria, setSearchCriteria] = useState('Stok Ad');
   const [markaOptions, setMarkaOptions] = useState([]);
   const [selectedMarka, setSelectedMarka] = useState('');
   const [stokAdOptions, setStokAdOptions] = useState([]);
@@ -41,8 +41,8 @@ const DepolarArasiProductList = () => {
   const searchTimeoutRef = useRef(null);
 
   const pickerItems = [
-    { label: 'Stok Adı', value: 'Stok_Ad', tip: 1 },
-    { label: 'Stok Kodu', value: 'Stok_Kod', tip: 2 },
+    { label: 'Stok Adı', value: 'Stok Ad', tip: 1 },
+    { label: 'Stok Kodu', value: 'Stok Kod', tip: 2 },
     { label: 'Marka', value: 'Marka', tip: 3 },
     { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
     { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
@@ -58,7 +58,7 @@ const DepolarArasiProductList = () => {
 
 
   const fetchProductData = useCallback(
-    async (searchTerm = '', searchCriteria = 'Stok_Ad') => {
+    async (searchTerm = '', searchCriteria = 'Stok Ad') => {
       try {
         const deger = searchTerm || ''; // TextInput'a yazılan değer, boşsa boş olarak gönderilecek
         const tip = getTipForValue(searchCriteria);
@@ -190,7 +190,7 @@ const DepolarArasiProductList = () => {
         <>
           <TouchableOpacity onPress={() => setIsModalVisible(true)}>
           <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-            {getLabelForValue(searchCriteria)}
+            {searchCriteria}
             </Text>
           </TouchableOpacity>
 
@@ -204,8 +204,8 @@ const DepolarArasiProductList = () => {
                     setSearchCriteria(itemValue);
                   }}
                 >
-                  <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
-                  <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
+                  <Picker.Item label="Stok Adı" value="Stok Ad" style={MainStyles.textStyle} />
+                  <Picker.Item label="Stok Kodu" value="Stok Kod" style={MainStyles.textStyle} />
                   <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
                   <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
                   <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
@@ -225,8 +225,8 @@ const DepolarArasiProductList = () => {
           itemStyle={{ height: 40, fontSize: 12 }}
           style={{ marginHorizontal: -10 }}
         >
-          <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
-          <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
+          <Picker.Item label="Stok Adı" value="Stok Ad" style={MainStyles.textStyle} />
+          <Picker.Item label="Stok Kodu" value="Stok Kod" style={MainStyles.textStyle} />
           <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
           <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
           <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />

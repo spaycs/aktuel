@@ -28,7 +28,7 @@ const StokList = ({navigation}) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
-  const [searchCriteria, setSearchCriteria] = useState('Stok_Ad');
+  const [searchCriteria, setSearchCriteria] = useState('Stok Ad');
   const [markaOptions, setMarkaOptions] = useState([]);
   const [selectedMarka, setSelectedMarka] = useState('');
   const [stokAdOptions, setStokAdOptions] = useState([]);
@@ -43,8 +43,8 @@ const StokList = ({navigation}) => {
   const searchTimeoutRef = useRef(null);
 
   const pickerItems = [
-    { label: 'Stok Adı', value: 'Stok_Ad', tip: 1 },
-    { label: 'Stok Kodu', value: 'Stok_Kod', tip: 2 },
+    { label: 'Stok Adı', value: 'Stok Ad', tip: 1 },
+    { label: 'Stok Kodu', value: 'Stok Kod', tip: 2 },
     { label: 'Marka', value: 'Marka', tip: 3 },
     { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
     { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
@@ -152,6 +152,13 @@ const StokList = ({navigation}) => {
   const navigateToStokHareketFoyu = () => {
     if (selectedItem) {
       navigation.navigate('StokHareketFoyu', { Stok_Kod: selectedItem.Stok_Kod });
+    } else {
+      Alert.alert('Hata', 'Stok seçimi yapılmadı.');
+    }
+  };
+  const navigateToStokDepoDurum = () => {
+    if (selectedItem) {
+      navigation.navigate('StokDepoDurum', { Stok_Kod: selectedItem.Stok_Kod });
     } else {
       Alert.alert('Hata', 'Stok seçimi yapılmadı.');
     }
@@ -267,6 +274,9 @@ const StokList = ({navigation}) => {
                 </View>
                 <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={navigateToStokHareketFoyu}>
                   <Text style={MainStyles.cariButtonText}>Stok Hareket Föyü</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={navigateToStokDepoDurum}>
+                  <Text style={MainStyles.cariButtonText}>Stok Depo Durum</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={closeModal} style={MainStyles.buttonCariModalDetail}>
                   <Text style={MainStyles.buttonTextKapat}>Kapat</Text>

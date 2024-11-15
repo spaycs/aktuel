@@ -22,7 +22,7 @@ const FiyatGor = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
-  const [searchCriteria, setSearchCriteria] = useState('Stok_Ad');
+  const [searchCriteria, setSearchCriteria] = useState('Stok Ad');
   const [markaOptions, setMarkaOptions] = useState([]);
   const [selectedMarka, setSelectedMarka] = useState('');
   const [stokAdOptions, setStokAdOptions] = useState([]);
@@ -32,7 +32,7 @@ const FiyatGor = () => {
   const [reyonOptions, setReyonOptions] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const fetchProductData = useCallback(async (searchTerm = '', searchCriteria = 'Stok_Ad', marka = '') => {
+  const fetchProductData = useCallback(async (searchTerm = '', searchCriteria = 'Stok Ad', marka = '') => {
     try {
       let response;
 
@@ -164,8 +164,8 @@ const FiyatGor = () => {
             selectedValue={searchCriteria}
             onValueChange={(itemValue) => setSearchCriteria(itemValue)}
           >
-            <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
-            <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
+            <Picker.Item label="Stok Adı" value="Stok Ad" style={MainStyles.textStyle} />
+            <Picker.Item label="Stok Kodu" value="Stok Kod" style={MainStyles.textStyle} />
             <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
             <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
             <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />

@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     KullaniciKodu: "",
     Sifre: "",
     OrijinalSifre: "",
-    FirmaKodu: "DENEMESD",
+    FirmaKodu: "GUCLU2024",
     FirmaApiUrl: "http://213.14.109.246:8094",
     MikroApiUrl: "http://213.14.109.246:8084",
     CalismaYili: "2024",

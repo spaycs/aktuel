@@ -89,6 +89,7 @@ const Home = ({ navigation }) => {
       try {
         const temsilciId =  defaults[0].IQ_MikroPersKod; // authData'dan temsilci ID'yi alın
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
+        console.log(response);
         setGunlukDurum(response.data[0]); // Gelen ilk veriyi state'e set edin
       } catch (error) {
         console.error('Günlük durum verisi alınırken hata oluştu:', error);

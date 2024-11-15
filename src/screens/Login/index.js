@@ -178,7 +178,8 @@ const Login = ({ navigation }) => {
 
     try {
         updateAuthData("KullaniciKodu", KullaniciKodu);
-        const sifreStandart = FirmaKodu === 'DENEMESD' ? '2085' : Sifre;
+        //const sifreStandart = FirmaKodu === 'DENEMESD' ? '2085' : Sifre;
+        const sifreStandart = FirmaKodu === 'HilalMuhasebe' ? 'HK1905' : Sifre;
 
         const md5Response = await axiosLinkMain.get(`/Api/kullanici/MD5SifreDonustur?sifre=${sifreStandart}`);
         const hashedPassword = md5Response.data;

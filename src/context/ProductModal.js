@@ -626,13 +626,14 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
+          {/* 
            <TouchableOpacity
             style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
             onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
           >
             <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Bilgi Detay</Text>
           </TouchableOpacity>
-
+          */}
 
           <Modal
   visible={isStokDetayVisible}
