@@ -329,6 +329,18 @@ export const MainStyles = {
       color: colors.black,
       
     },
+    disabledMenuItem:{
+      opacity: 0.5,
+    },
+    iconActive: {
+      color: '#000',
+    },
+    iconDisabled: {
+      color: '#d3d3d3', // Gri renk
+    },
+    disabledTitle: {
+      color: '#a9a9a9', // Gri renk
+    },
   /* Home Sayfası */
 
   /* Stok List Sayfası */

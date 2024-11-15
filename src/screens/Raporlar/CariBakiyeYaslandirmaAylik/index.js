@@ -203,6 +203,7 @@ const fetchData = async () => {
 
 useEffect(() => {
   fetchPersonelList();
+  fetchData();
 }, []);
 
   return (

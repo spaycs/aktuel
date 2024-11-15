@@ -163,10 +163,12 @@ const Home = ({ navigation }) => {
   };
 
   const renderItem = ({ item }) => {
+    const hasAccess = menuIzinleri && menuIzinleri[item.izinKey] === 1;
+    const iconStyle = hasAccess ? MainStyles.iconActive : MainStyles.iconDisabled;
     return (
       <TouchableOpacity
         style={[
-          MainStyles.homeButtonContainer,
+          MainStyles.homeButtonContainer,!hasAccess && MainStyles.disabledMenuItem,
           {
             borderColor: item.color,
             borderWidth: 1,
@@ -179,13 +181,14 @@ const Home = ({ navigation }) => {
         ]}
         activeOpacity={0.7}
         onPress={() => handlePress(item)}
+        disabled={!hasAccess}
       >
          <View style={{ flexDirection: 'row', alignItems: 'center', height: 40 }}>
-          {item.icon}
+         {React.cloneElement(item.icon, { style: iconStyle })}
          
         </View>
         <View>
-        <Text style={MainStyles.homeButtonTitle}>{item.title}</Text>
+        <Text style={[MainStyles.homeButtonTitle, !hasAccess && MainStyles.disabledTitle]}>{item.title}</Text>
         </View>
       </TouchableOpacity>
     );
