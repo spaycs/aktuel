@@ -20,7 +20,7 @@ const DepolarArasiSevkFisiOnizleme = () => {
   const [explanationModalVisible, setExplanationModalVisible] = useState(false);
   const [explanations, setExplanations] = useState(Array(10).fill(''));
   const [savedExplanations, setSavedExplanations] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const calculateSubTotal = () => {
     return addedProducts.reduce((sum, product) => sum + parseFloat(product.total || 0), 0).toFixed(2);
   };
@@ -121,7 +121,7 @@ const DepolarArasiSevkFisiOnizleme = () => {
       );
       return; // Fonksiyonu burada durdur
     }
-    
+    setLoading(true);
     const apiURL = `/Api/apiMethods/DahiliStokHareketKaydetV2`;
     
     const jsonPayload = {
@@ -196,6 +196,8 @@ const DepolarArasiSevkFisiOnizleme = () => {
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    }finally {
+      setLoading(false); 
     }
   };
 

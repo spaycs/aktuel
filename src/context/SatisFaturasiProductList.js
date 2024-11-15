@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react';
+import React, { useState, useCallback, useContext, useEffect, useRef } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal } from 'react-native';
 import { MainStyles } from '../res/style';
 import axiosLinkMain from '../utils/axiosMain';
@@ -12,6 +12,7 @@ import { RNCamera } from 'react-native-camera';
 import { Camera, Nokta } from '../res/images';
 import FastImage from 'react-native-fast-image';
 import Button from '../components/Button';
+import { useAuthDefault } from '../components/DefaultUser';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -19,7 +20,8 @@ const normalizeText = (text) => {
 
 const SatisFaturasiProductList = () => {
   const { authData } = useAuth();
-  const { addedProducts, setAddedProducts } = useContext(ProductContext);
+  const { defaults } = useAuthDefault();
+  const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -42,114 +44,103 @@ const SatisFaturasiProductList = () => {
   const [barkodData, setBarkodData] = useState([]); // Barkod verisi
   const [filteredData, setFilteredData] = useState([]); // Filtrelenmiş veriler
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const searchTimeoutRef = useRef(null);
 
   const pickerItems = [
-    { label: 'Stok Adı', value: 'Stok_Ad' },
-    { label: 'Stok Kodu', value: 'Stok_Kod' },
-    { label: 'Marka', value: 'Marka' },
-    { label: 'Alt Grup', value: 'AltGrup' },
-    { label: 'Ana Grup', value: 'AnaGrup' },
-    { label: 'Reyon', value: 'Reyon' },
-    { label: 'Barkod', value: 'Barkod' },
-    { label: 'Hizmet', value: 'Hizmet' },
-    { label: 'Masraf', value: 'Masraf' },
+    { label: 'Stok Adı', value: 'Stok_Ad', tip: 1 },
+    { label: 'Stok Kodu', value: 'Stok_Kod', tip: 2 },
+    { label: 'Marka', value: 'Marka', tip: 3 },
+    { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
+    { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
+    { label: 'Reyon', value: 'Reyon', tip: 6 },
+    { label: 'Barkod', value: 'Barkod', tip: 7 },
+    { label: 'Hizmet', value: 'Hizmet', tip: 8 },
+    { label: 'Masraf', value: 'Masraf', tip: 9 },
   ];
 
-  // Function to get label based on selected value
-  const getLabelForValue = (value) => {
+  const getTipForValue = (value) => {
     const selectedItem = pickerItems.find((item) => item.value === value);
-    return selectedItem ? selectedItem.label : 'Kriter Seçin';
+    return selectedItem ? selectedItem.tip : 1;
   };
 
   const fetchProductData = useCallback(async () => {
     setLoading(true);
     try {
       let url;
-  
       // Seçilen kritere göre API URL'si belirleniyor
-      if (searchCriteria === 'Hizmet' && hizmetData.length === 0) {
+      const tip = getTipForValue(searchCriteria);
+      const depo = defaults[0].IQ_CikisDepoNo;
+  
+      if (tip >= 1 && tip <= 7) {
+        // Tip 1-7: StokListesiEvraklar API'si
+        url = `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}`;
+      } else if (tip === 8) {
+        // Tip 8: HizmetHesaplari API'si
         url = '/Api/Stok/HizmetHesaplari';
-      } else if (searchCriteria === 'Masraf' && masrafData.length === 0) {
+      } else if (tip === 9) {
+        // Tip 9: MasrafHesaplari API'si
         url = '/Api/Stok/MasrafHesaplari';
-      } else if (searchCriteria === 'Barkod') {
-        // Barkod API'si her seferinde çağrılacak ve searchTerm ile sorgu yapılacak
-        url = `/Api/Barkod/BarkodAra?barkod=${searchTerm}`;
-      } else if (stokListData.length === 0) {
-        url = '/Api/Stok/StokListesi';
       }
   
       if (url) {
         const response = await axiosLinkMain.get(url);
         const data = response.data;
   
-        // Gelen veriyi ilgili state'e atıyoruz
-        if (searchCriteria === 'Hizmet') {
-          setHizmetData(data);
-        } else if (searchCriteria === 'Masraf') {
-          setMasrafData(data);
-        } else if (searchCriteria === 'Barkod') {
-          // Barkod verisi her seferinde API'den alınacak
-          setBarkodData(data);
-          // Barkod verisi doğrudan kullanılacak, filtreleme yapmadan
-          setFilteredData(data);
-          setLoading(false);  // Barkod için geri dönüş sağlanmışsa işlem tamam
-          return;
+        // Filtreleme ve gösterim mantığı
+        let dataToFilter = [];
+  
+        if (tip === 8) {
+          dataToFilter = hizmetData.length > 0 ? hizmetData : data;
+          setHizmetData(dataToFilter); // Hizmet verisini kaydediyoruz
+        } else if (tip === 9) {
+          dataToFilter = masrafData.length > 0 ? masrafData : data;
+          setMasrafData(dataToFilter); // Masraf verisini kaydediyoruz
         } else {
-          setStokListData(data);
+          dataToFilter = stokListData.length > 0 ? stokListData : data;
+          setStokListData(dataToFilter); // Stok verisini kaydediyoruz
         }
+  
+        // Gelen veriyi filtreleyip düzenleme
+        const normalizedSearchTerm = normalizeText(searchTerm).toLowerCase().split(' ');
+        const filteredData = dataToFilter
+          .filter(item => {
+            const normalizedItemText = normalizeText(item.Isim || item[searchCriteria] || '').toLowerCase();
+            const matchesSearchTerm = normalizedSearchTerm.every(term => normalizedItemText.includes(term));
+            const matchesMarka = selectedMarka ? item.Marka === selectedMarka : true;
+            return matchesSearchTerm && matchesMarka;
+          })
+          .map(item => ({
+            Stok_Ad: item.Stok_Ad || item.Isim,
+            Stok_Kod: item.Stok_Kod || item.Kod,
+            sth_vergi: item.Vergi,
+            sth_vergi_pntr: item.Vergipntr,
+            Liste_Fiyatı: item.Liste_Fiyatı,
+            Birim: item.Birim,
+            Marka: item.Marka,
+            AltGrup: item.AltGrup,
+            AnaGrup: item.AnaGrup,
+            Reyon: item.Reyon,
+          }));
+  
+        // Filtrelenmiş veriyi ekrana gösterim için ayarla
+        setFilteredData(filteredData);
       }
-  
-      // Diğer kriterler için veri çekildikten sonra filtreleme işlemi yapılıyor
-      let dataToFilter = [];
-      if (searchCriteria === 'Hizmet') {
-        dataToFilter = hizmetData.length > 0 ? hizmetData : data;
-      } else if (searchCriteria === 'Masraf') {
-        dataToFilter = masrafData.length > 0 ? masrafData : data;
-      } else if (searchCriteria !== 'Barkod') {
-        dataToFilter = stokListData.length > 0 ? stokListData : data;
-      }
-  
-      const normalizedSearchTerm = normalizeText(searchTerm).toLowerCase().split(' ');
-      const filteredData = dataToFilter
-        .filter(item => {
-          const normalizedItemText = normalizeText(item.Isim || item[searchCriteria] || '').toLowerCase();
-          const matchesSearchTerm = normalizedSearchTerm.every(term => normalizedItemText.includes(term));
-          const matchesMarka = selectedMarka ? item.Marka === selectedMarka : true;
-          return matchesSearchTerm && matchesMarka;
-        })
-        .map(item => ({
-          Stok_Ad: item.Stok_Ad || item.Isim,
-          Stok_Kod: item.Stok_Kod || item.Kod,
-          sth_vergi: item.Vergi,
-          sth_vergi_pntr: item.Vergipntr,
-          Liste_Fiyatı: item.Liste_Fiyatı,
-          Birim: item.Birim,
-          Marka: item.Marka,
-          AltGrup: item.AltGrup,
-          AnaGrup: item.AnaGrup,
-          Reyon: item.Reyon,
-        }));
-  
-      setFilteredData(filteredData);
     } catch (err) {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
   }, [searchCriteria, searchTerm, selectedMarka, hizmetData, masrafData, stokListData]);
+  
 
-  const handleSearchTermChange = (term) => {
-    setSearchTerm(term);
-    if (searchCriteria === 'Barkod') {
-      // Barkod araması sırasında her seferinde API çağrısı yapılacak
-      fetchProductData();
-    }
+  const handlePickerChange = (itemValue) => {
+    setSearchCriteria(itemValue);
+    fetchProductData(); // Kriter değişince API çağrısı yap
   };
-
+  
   useEffect(() => {
-    if (searchCriteria !== 'Barkod') {
-      fetchProductData();
-    }
+    // Picker'dan yeni bir değer seçildiğinde veya ilk yüklemede fetchProductData çalıştırılır
+    fetchProductData();
   }, [fetchProductData, searchCriteria]);
 
   const handleItemClick = (item) => {
@@ -178,6 +169,20 @@ const SatisFaturasiProductList = () => {
     }
   };
 
+  const handleSearchTermChange = (text) => {
+    setSearchTerm(text);
+  
+    // Eğer daha önceki timeout varsa, onu temizle
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+  
+    // Yeni bir timeout ayarla
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchProductData(text, searchCriteria); // Gecikmeli API çağrısı
+    }, 500); // 500 ms sonra API çağrısı yapılacak
+  };
+
   const handleCameraOpen = () => {
     setCameraModalVisible(true); 
   };
@@ -193,10 +198,6 @@ const SatisFaturasiProductList = () => {
     fetchProductData(data, 'Barkod'); 
   };
 
-  const handlePickerChange = (itemValue) => {
-    setSearchCriteria(itemValue);
-    fetchProductData(searchTerm, itemValue, selectedMarka); // Yeni kriterle API'yi çağır
-  };
 
 
   const renderItem = ({ item }) => {

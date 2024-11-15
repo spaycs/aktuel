@@ -4,7 +4,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Ara, Left, Takvim, Down } from '../../res/images';
+import { Ara, Left, Takvim, Down, PDF } from '../../res/images';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
 import { ProductContext } from '../../context/ProductContext';
@@ -661,7 +661,7 @@ const SarfMalzemeBilgi = () => {
                             </DataTable.Cell>
                             <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
                               <TouchableOpacity onPress={() => handlePdfClick(item.Seri, item.Sıra)}>
-                                <Text>PDF</Text>
+                              <PDF width={25} height={25}/>
                               </TouchableOpacity>
                             </DataTable.Cell>
                           </DataTable.Row>

@@ -23,7 +23,7 @@ const StokEklemeOnizleme = () => {
   const [explanations, setExplanations] = useState(Array(10).fill(''));
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
-    
+  const [loading, setLoading] = useState(false);
   
   // Geri gitme işlemi
     const handleCancel = () => {
@@ -32,7 +32,7 @@ const StokEklemeOnizleme = () => {
   // Geri gitme işlemi
 
   const handleSave = async () => {
-    
+    setLoading(true);
     const apiURL = `/Api/apiMethods/CariKaydetV2`;
   
     // Check if faturaBilgileri is defined and not empty
@@ -137,6 +137,8 @@ const StokEklemeOnizleme = () => {
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    }finally {
+      setLoading(false); 
     }
   };
   

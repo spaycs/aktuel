@@ -110,10 +110,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
           ) : (
             <>
               <View style={styles.headerContainer}>
-                <Text style={styles.headerText}>Cari Kodu</Text>
-                <Text style={styles.headerText2}>Cari Ünvan</Text>
-                <Text style={styles.headerText3}>Bakiye</Text>
-                <Text style={styles.headerText4}>Adres</Text>
+                
               </View>
 
               <FlatList
@@ -127,15 +124,17 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
                       Ünvan: item.Ünvan,
                       Bakiye: item.Bakiye,
                       Adres: item.Adres,
+                      Temsilci: item.Temsilci,
                       cari_odemeplan_no: item.cari_odemeplan_no,
                       cari_VarsayilanCikisDepo: item.cari_VarsayilanCikisDepo
                     })}
                   >
                     <View style={styles.itemRow}>
-                      <Text style={styles.itemColumn}>{item.Cari_Kod}</Text>
-                      <Text style={styles.itemColumn2}>{item.Ünvan}</Text>
-                      <Text style={styles.itemColumn3}>{formatPrice(item.Bakiye)}</Text>
-                      <Text style={styles.itemColumn4}>{item.Adres}</Text>
+                      <Text style={styles.itemColumn}>Kod: {item.Cari_Kod}</Text>
+                      <Text style={styles.itemColumn}>Ünvan: {item.Ünvan}</Text>
+                      <Text style={styles.itemColumn}>Bakiye: {formatPrice(item.Bakiye)}</Text>
+                      <Text style={styles.itemColumn}>Adres: {item.Adres}</Text>
+                      <Text style={styles.itemColumn}>Temsilci: {item.Temsilci}</Text>
                     </View>
                   </TouchableOpacity>
                 )}
@@ -192,12 +191,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   headerContainer: {
-    marginTop: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 10,
-    backgroundColor: colors.red,
-    padding: 10,
   },
   headerText: {
     flex: 2,
@@ -235,9 +229,7 @@ const styles = StyleSheet.create({
     
   },
   itemRow: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     backgroundColor: colors.white,
     padding: 10,
     borderRadius: 5,
@@ -246,35 +238,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 3,
-    height: 65,
-    marginHorizontal: 15,
     borderLeftWidth: 3.5,
     borderColor: colors.red,
   },
   itemColumn: {
-    flex: 1,
-    fontSize: 9,
+    fontSize: 10,
     textAlign: 'left',
-    opacity: 0.6
-
-  },
-  itemColumn2: {
-    flex: 2,
-    marginHorizontal: 3,
-    fontSize: 9,
-    textAlign: 'left',
-  },
-  itemColumn3: {
-    flex: 1,
-    marginHorizontal: 3,
-    fontSize: 9,
-    textAlign: 'left',
-  },
-  itemColumn4: {
-    flex: 2,
-    fontSize: 9,
-    textAlign: 'left',
-    opacity: 0.6
   },
 });
 

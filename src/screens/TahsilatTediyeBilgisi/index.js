@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Ara, Left, Takvim, TakvimVade } from '../../res/images';
+import { Ara, Left, PDF, Takvim, TakvimVade } from '../../res/images';
 import { ProductContext } from '../../context/ProductContext';
 import { useAuthDefault } from '../../components/DefaultUser';
 import ProductModal from '../../context/ProductModal';
@@ -883,7 +883,7 @@ const TahsilatTediyeBilgisi = () => {
                             </DataTable.Cell>
                             <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
                           <TouchableOpacity onPress={() => handlePdfClick(item.Seri, item.Sıra)}>
-                            <Text>PDF</Text>
+                          <PDF width={25} height={25}/>
                           </TouchableOpacity>
                         </DataTable.Cell>
                           </DataTable.Row>

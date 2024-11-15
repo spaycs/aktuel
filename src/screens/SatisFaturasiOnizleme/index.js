@@ -30,6 +30,7 @@ const SatisFaturasiOnizleme = () => {
   const [calculatedTutar, setCalculatedTutar] = useState(0);
   const [editSatisFaturasiModalVisible, setEditSatisFaturasiModalVisible] = useState(false);
   const [editProductModalVisible, setEditProductModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // defaults içindeki IQ_MikroPersKod değerini sth_plasiyer_kodu'na atayın
@@ -367,7 +368,7 @@ const handleSave = async () => {
     );
     return; // Fonksiyonu burada durdur
   }
-  
+  setLoading(true);
   const apiURL = '/Api/APIMethods/FaturaKaydetV3';
 
   // Ürünleri ve hizmetleri filtreleyin
@@ -554,6 +555,8 @@ const detailedProducts = products.map((product) => {
       }
   } catch (error) {
       Alert.alert('Hata', 'API ile veri kaydedilirken bir sorun oluştu: ' + error.message);
+  }finally {
+    setLoading(false); 
   }
 };
 

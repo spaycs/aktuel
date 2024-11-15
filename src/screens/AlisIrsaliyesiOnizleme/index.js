@@ -28,6 +28,7 @@ const AlisIrsaliyesiOnizleme = () => {
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
   const [netfiyat, setNetFiyat] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // defaults içindeki IQ_MikroPersKod değerini sth_plasiyer_kodu'na atayın
@@ -363,6 +364,7 @@ const AlisIrsaliyesiOnizleme = () => {
       );
       return; // Fonksiyonu burada durdur
     }
+    setLoading(true);
     const apiURL = `/Api/apiMethods/IrsaliyeKaydetV2`;
     
      // Tüm ürünler için iskonto ve vergi hesaplamalarını yapıyoruz
@@ -488,6 +490,8 @@ const AlisIrsaliyesiOnizleme = () => {
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       Alert.alert('Hata', 'Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+    }finally {
+      setLoading(false); 
     }
   };
   

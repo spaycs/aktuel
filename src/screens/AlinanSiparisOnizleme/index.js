@@ -31,6 +31,7 @@ const AlinanSiparisOnizleme = () => {
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
   const { isSaved, setIsSaved } = useContext(ProductContext);
+  const [loading, setLoading] = useState(false);
 
   const saveDataToAsyncStorage = async (addedAlinanSiparisProducts, alinanSiparis) => {
     try {
@@ -416,7 +417,8 @@ const AlinanSiparisOnizleme = () => {
       );
       return; // Fonksiyonu burada durdur
     }
-    
+
+    setLoading(true);
     const apiURL = `/Api/apiMethods/SiparisKaydetV2`;
 
      // Tüm ürünler için iskonto ve vergi hesaplamalarını yapıyoruz
@@ -544,6 +546,8 @@ const AlinanSiparisOnizleme = () => {
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       Alert.alert('Hata', 'Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+    }finally {
+      setLoading(false); 
     }
   };
 
@@ -558,7 +562,7 @@ const AlinanSiparisOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler*/}
+    {/* Apiye Giden Değerler
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.fontSize11}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
         <Text style={MainStyles.fontSize11}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>

@@ -28,7 +28,7 @@ const TahsilatTediyeOnizleme = () => {
   const navigation = useNavigation();
   const [editTahsilatTediyeModalVisible, setEditTahsilatTediyeModalVisible] = useState(false);
   const [editTahsilatTediyeNakitKrediModalVisible, setEditTahsilatTediyeNakitKrediModalVisible] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
 
     // Açıklama Alanı
     const openExplanationModal = () => {
@@ -72,7 +72,7 @@ const TahsilatTediyeOnizleme = () => {
       );
       return; // Fonksiyonu burada durdur
     }
-    
+    setLoading(true);
     const apiURL = `/Api/apiMethods/TahsilatTediyeKaydetV3`;
     
       const jsonPayload = {
@@ -162,6 +162,8 @@ const TahsilatTediyeOnizleme = () => {
       } catch (error) {
         console.error("Error:", error.response ? error.response.data : error.message);
         Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+      }finally {
+        setLoading(false); 
       }
     };
     // Ürün Düzenleme modal

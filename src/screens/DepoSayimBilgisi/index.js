@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, ScrollView,
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Left, Takvim } from '../../res/images';
+import { Left, PDF, Takvim } from '../../res/images';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
 import { useAuth } from '../../components/userDetail/Id';
@@ -324,7 +324,7 @@ const DepoSayimBilgisi = () => {
                           </DataTable.Cell>
                           <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
                           <TouchableOpacity onPress={() => handlePdfClick(item.Evrak_No, item.Depo_No)}>
-                            <Text>PDF</Text>
+                          <PDF width={25} height={25}/>
                           </TouchableOpacity>
                         </DataTable.Cell>
                         </DataTable.Row>

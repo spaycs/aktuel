@@ -65,10 +65,8 @@ const Login = ({ navigation }) => {
 
     return () => unsubscribe(); // Cleanup on unmount
   }, []);
-  
 
-
- useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       axios.get('http://213.14.109.246:8084/Api/APIMethods/HealthCheck')
         .then((response) => {
@@ -106,22 +104,22 @@ const Login = ({ navigation }) => {
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
 
-    useEffect(() => {
-  // Üçüncü API çağrısı (axiosLinkMains)
-    axios.get('http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=1&database=HilalMuhasebe&maliyil=2024&firmano=0&subeno=3')
-    .then((response) => {
-      console.log('axiosLinkMains response:', response.data);
-      if (response.data) {
-        setAxiosLinkMainsStatus('Açık');
-        // Burada 'Açık' durumu için yapılacak işlemler
-      } else {
+  useEffect(() => {
+      // Üçüncü API çağrısı (axiosLinkMains)
+      axios.get('http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=1&database=HilalMuhasebe&maliyil=2024&firmano=0&subeno=3')
+      .then((response) => {
+        console.log('axiosLinkMains response:', response.data);
+        if (response.data) {
+          setAxiosLinkMainsStatus('Açık');
+          // Burada 'Açık' durumu için yapılacak işlemler
+        } else {
+          setAxiosLinkMainsStatus('Kapalı');
+          // Burada 'Kapalı' durumu için yapılacak işlemler
+        }
+      })
+      .catch(() => {
         setAxiosLinkMainsStatus('Kapalı');
-        // Burada 'Kapalı' durumu için yapılacak işlemler
-      }
-    })
-    .catch(() => {
-      setAxiosLinkMainsStatus('Kapalı');
-    });
+      });
 
   }, []);
 
@@ -157,9 +155,9 @@ const Login = ({ navigation }) => {
   
       // İlk kullanıcıyı otomatik olarak seç
       if (userList.length > 0) {
-        const firstUser = userList[0];
-        setSelectedUser(firstUser); // İlk kullanıcıyı seç
-        setKullaniciKodu(firstUser.KOD.toString()); // Kullanıcı kodunu ayarla
+        //const firstUser = userList[0];
+        //setSelectedUser(firstUser); // İlk kullanıcıyı seç
+        //setKullaniciKodu(firstUser.KOD.toString()); // Kullanıcı kodunu ayarla
       }
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -436,15 +434,20 @@ useEffect(() => {
     setModalVisible(false);
   };
 
+  useEffect(() => {
+    if (selectedUser && users.length > 0) {
+      // Hafızadan gelen kullanıcı `users` listesindeki bir kullanıcıyla eşleşiyor mu?
+      const matchedUser = users.find(user => user.KOD === selectedUser.KOD);
+      if (matchedUser) {
+        setSelectedUser(matchedUser); // Eşleşen kullanıcıyı ayarla
+      }
+    }
+  }, [selectedUser, users]);
+  
   
   return (
     <View style={[MainStyles.flex1, MainStyles.justifyContent, MainStyles.backgroundColorWhite]}>
-       <View style={[MainStyles.positionAbsolute, MainStyles.top50, MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5]}>
-       <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
-             <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
-            <Text style={{color: colors.black, fontSize: 11}}>Local: {axiosLinkMainStatus}</Text>
-            <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
-            </View>
+      
       <View style={[MainStyles.flexDirection, MainStyles.justifyContent, MainStyles.alignItems]}>
      
         <View>
@@ -616,6 +619,12 @@ useEffect(() => {
               onPress={handleModalSave}
             />
           </View>
+          <View style={[  MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5, MainStyles.borderRadius10, MainStyles.paddingHorizontal15]}>
+       <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
+             <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
+            <Text style={{color: colors.black, fontSize: 11}}>Local: {axiosLinkMainStatus}</Text>
+            <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
+            </View>
         </View>
       </Modal>
     </View>

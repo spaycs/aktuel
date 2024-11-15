@@ -134,7 +134,7 @@ const AlinanSiparisProductModal = ({
         const cari = alinanSiparis.sth_cari_kodu || alinanSiparis.sip_musteri_kod  || alinanSiparis.cha_kod;
         const stok = selectedProduct?.Stok_Kod;
         const somkod = alinanSiparis.sth_stok_srm_merkezi || alinanSiparis.sip_stok_sormerk || alinanSiparis.cha_srmrkkodu;
-        const odpno = alinanSiparis.sth_odeme_op || alinanSiparis.sip_opno  || alinanSiparis.cha_vade;
+        const odpno = alinanSiparis.sip_opno || alinanSiparis.sth_odeme_op  || alinanSiparis.cha_vade;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
         console.log(apiUrl);
         

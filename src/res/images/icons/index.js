@@ -62,6 +62,7 @@ import Ekle from "./ekle.svg"
 import SarfMalzeme from "./sarfmalzeme.svg"
 import MikroIqTek from "./mikroiqtek.svg"
 import Quit from "./quit.svg"
+import PDF from "./pdf.svg"
 
 export {
     Kartlas,
@@ -127,6 +128,7 @@ export {
     Ekle,
     SarfMalzeme,
     MikroIqTek,
-    Quit
+    Quit,
+    PDF
 
 }

@@ -25,6 +25,7 @@ const TeklifFisiOnizleme = () => {
   const [calculatedTutar, setCalculatedTutar] = useState(0);
   const [vadeData, setVadeData] = useState(null);
   const [netfiyat, setNetFiyat] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // Toplam Hesaplamalar
     useEffect(() => {
@@ -274,7 +275,7 @@ const TeklifFisiOnizleme = () => {
         );
         return; // Fonksiyonu burada durdur
       }
-      
+    setLoading(true);
     const apiURL = `/Api/apiMethods/VerilenTeklifKaydetV2`;
   
     // Tüm ürünler için iskonto ve vergi hesaplamalarını yapıyoruz
@@ -392,6 +393,8 @@ const TeklifFisiOnizleme = () => {
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    }finally {
+      setLoading(false); 
     }
   };
 

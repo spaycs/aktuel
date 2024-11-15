@@ -18,6 +18,7 @@ const DepoSayimOnizleme = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editedProduct, setEditedProduct] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const calculateSubTotal = () => {
     return addedProducts.reduce((sum, product) => sum + parseFloat(product.total || 0), 0).toFixed(2);
@@ -110,7 +111,7 @@ const DepoSayimOnizleme = () => {
       );
       return; // Fonksiyonu burada durdur
     }
-    
+    setLoading(true);
     const apiURL = `/Api/apiMethods/SayimSonuclariKaydetV2`;
   
     const jsonPayload = {
@@ -166,6 +167,8 @@ const DepoSayimOnizleme = () => {
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    }finally {
+      setLoading(false); 
     }
   };
 

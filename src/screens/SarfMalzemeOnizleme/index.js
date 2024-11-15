@@ -21,6 +21,7 @@ const SarfMalzemeOnizleme = () => {
   const [explanations, setExplanations] = useState(Array(10).fill(''));
   const [savedExplanations, setSavedExplanations] = useState([]);
   const [calculatedTutar, setCalculatedTutar] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // Toplam Hesaplamalar
 // Toplam Hesaplamalar
@@ -176,7 +177,7 @@ const calculateTotalQuantity = () => {
       );
       return; // Fonksiyonu burada durdur
     }
-    
+    setLoading(true);
     const apiURL = `/Api/apiMethods/DahiliStokHareketKaydetV2`;
     
     const jsonPayload = {
@@ -256,6 +257,8 @@ const calculateTotalQuantity = () => {
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    }finally {
+      setLoading(false); 
     }
   };
 

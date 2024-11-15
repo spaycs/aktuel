@@ -31,6 +31,7 @@ import { useAuthDefault } from '../components/DefaultUser';
 import SiparisKarsilama from "../screens/Raporlar/SiparisKarsilama";
 import SorumlulukBazindaBekleyenSiparis from "../screens/Raporlar/SorumlulukBazindaBekleyenSiparis";
 import TedarikciBazindaSatisKarsilama from "../screens/Raporlar/TedarikciBazindaSatisKarsilama";
+import CariListModal from "../context/CariListModal";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -228,7 +229,7 @@ function DrawerNavigator() {
 
 const Router = () => {
     return(
-        <Stack.Navigator >
+        <Stack.Navigator screenOptions={{ presentation: 'modal' }}>
 
 
            
@@ -489,6 +490,14 @@ const Router = () => {
                    
                     })}
             />
+            <Stack.Screen 
+        name="CariListModal" 
+        component={CariListModal} 
+        options={{
+          headerShown: true,
+          title: 'Cari Listesi',
+        }}
+      />
             <Stack.Screen
                 name="SatisFaturasi"
                 component={SatisFaturasi}
