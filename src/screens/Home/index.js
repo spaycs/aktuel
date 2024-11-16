@@ -27,18 +27,18 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const intervalId = setInterval(async () => {
       try {
-        const temsilciId =  defaults[0].IQ_Kod;
+        const temsilciId =  defaults[0].IQ_MikroUserId;
         const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
         const data = response.data;
         if (Array.isArray(data) && data.length > 0) {
           setSohbetCount(data.length); 
-        } else {
+        } else { 
           setSohbetCount(0); 
         }
       } catch (error) {
         console.error('API2 çağrısı başarısız oldu:', error);
       }
-    }, 20000);
+    }, 2000000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -47,7 +47,8 @@ const Home = ({ navigation }) => {
     const fetchMenuIzinleri = async () => {
       try {
         if (defaults.length > 0) {
-          const temsilciKod = defaults[0].IQ_Kod;
+          const temsilciKod = defaults[0].IQ_MikroUserId;
+          console.log(temsilciKod);
           const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
           const izinData = response.data[0];
           setMenuIzinleri(izinData);
@@ -87,53 +88,78 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const fetchGunlukDurum = async () => {
       try {
-        const temsilciId =  defaults[0].IQ_MikroPersKod; // authData'dan temsilci ID'yi alın
+        if (!defaults || !defaults[0]?.IQ_MikroPersKod) {
+          console.log('IQ_MikroPersKod değeri bulunamadı, API çağrısı yapılmadı.');
+          return;
+        }
+  
+        const temsilciId = defaults[0].IQ_MikroPersKod;
+        console.log('temsilciId', temsilciId);
+  
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
-        console.log(response);
         setGunlukDurum(response.data[0]); // Gelen ilk veriyi state'e set edin
       } catch (error) {
         console.error('Günlük durum verisi alınırken hata oluştu:', error);
       }
     };
-
+  
     const fetchMenuIzinleri = async () => {
       try {
-        const temsilciKod = defaults[0].IQ_Kod; // authData'dan IQ Kod alın
+        if (!defaults || !defaults[0]?.IQ_MikroUserId) {
+          console.log('IQ_MikroUserId değeri bulunamadı, API çağrısı yapılmadı.');
+          return;
+        }
+  
+        const temsilciKod = defaults[0].IQ_MikroUserId;
+        console.log('temsilciKod', temsilciKod);
+  
         const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
         const izinData = response.data[0]; // İlk gelen veriyi alıyoruz
         setMenuIzinleri(izinData);
-
+  
         // Eğer tüm menülere erişim izni 0 ise, erişim izni olmadığını belirleyelim
-        const hasAnyAccess = Object.values(izinData).some(value => value === 1);
+        const hasAnyAccess = Object.values(izinData).some((value) => value === 1);
         setHasAccess(hasAnyAccess);
       } catch (error) {
         console.error('Menü izinleri alınırken hata oluştu:', error);
         setHasAccess(false); // Hata durumunda erişim izni olmadığını belirleyelim
       }
     };
-
+  
     const fetchGunlukKazancVerileri = async () => {
       try {
-        const temsilciId = defaults[0].IQ_MikroPersKod; // Temsilci ID'yi al
+        if (!defaults || !defaults[0]?.IQ_MikroPersKod) {
+          console.log('IQ_MikroPersKod değeri bulunamadı, API çağrısı yapılmadı.');
+          return;
+        }
+  
+        const temsilciId = defaults[0].IQ_MikroPersKod;
+        console.log('temsilciId', temsilciId);
+  
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
         const apiData = response.data; // API'den gelen tüm veriyi al
-    
+  
         // API'den gelen veriyi uygun formata dönüştür
         const formattedData = apiData.map((item) => ({
-          Tip: item.Tip,     // Tip verisi
+          Tip: item.Tip, // Tip verisi
           Deger: item.Deger, // Deger verisi
         }));
-    
+  
         setGunlukKazancVerileri(formattedData); // Dönüştürülmüş veriyi state'e set et
       } catch (error) {
         console.error('Günlük kazanç verileri alınırken hata oluştu:', error);
       }
     };
-
-    fetchGunlukDurum(); // Component mount olduğunda API çağrısı yap
-    fetchMenuIzinleri(); // Menü izinlerini fetch et
-    fetchGunlukKazancVerileri();
-  }, [authData]);
+  
+    if (defaults && defaults[0]) {
+      fetchGunlukDurum(); // Component mount olduğunda API çağrısı yap
+      fetchMenuIzinleri(); // Menü izinlerini fetch et
+      fetchGunlukKazancVerileri(); // Günlük kazanç verilerini fetch et
+    } else {
+      console.log('Defaults henüz mevcut değil, API çağrısı yapılmadı.');
+    }
+  }, [defaults]);
+  
 
   const menuItems = [
     { key: '1', title: 'Stok Listesi', icon: <StokList width={25} height={25} />, screen: 'StokList', izinKey: 'IQM_StokListesi', color: '#D6D6D6' },

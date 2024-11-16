@@ -612,7 +612,7 @@ const getSelectedDovizAd = () => {
     useEffect(() => {
       const fetchSatisFaturasiSerino = async () => {
         try {
-          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.KullaniciKodu}`);
+          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.v}`);
           const satisFaturasiSerino = response.data[0].IQ_SatisFaturaSeriNo;
           const girisDepoNo = response.data[0].IQ_GirisDepoNo;
           setCha_evrakno_seri(satisFaturasiSerino);

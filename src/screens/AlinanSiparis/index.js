@@ -107,7 +107,7 @@ const AlinanSiparis = ({navigation}) => {
   };
 
   const handleTabChange = (tabIndex) => {
-    if (index === 10 ) {
+    if (index === 0 && !validateFields()) {
       // Hata mesajları validateFields içinde gösteriliyor
     } else {
       setIndex(tabIndex);

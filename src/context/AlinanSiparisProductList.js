@@ -62,10 +62,10 @@ const AlinanSiparisProductList = () => {
       try {
         const deger = searchTerm || ''; // TextInput'a yazılan değer, boşsa boş olarak gönderilecek
         const tip = getTipForValue(searchCriteria);
-  
         const response = await axiosLinkMain.get(
-          `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`
+          `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
         );
+        
   
         const data = response.data;
   
@@ -137,8 +137,9 @@ const AlinanSiparisProductList = () => {
     const deger = searchTerm || '';
     try {
       const response = await axiosLinkMain.get(
-        `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}`
+        `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
       );
+      console.log(response);
       const stokData = response.data;
   
       const selectedProduct = stokData.find(item => item.Stok_Kod === productCode);
@@ -204,10 +205,11 @@ const AlinanSiparisProductList = () => {
     fetchProductData(data, 'Barkod');
   };
   
+  {/*
   useEffect(() => {
     fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
   }, []);
-
+ */}
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemClick(item)} style={MainStyles.itemContainerPL}>
     <View style={MainStyles.itemContentPL}>

@@ -22,7 +22,7 @@ export const AuthDefaultProvider = ({ children }) => {
 
     const fetchDefaults = async () => {
         try {
-            const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.KullaniciKodu}`);
+            const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
             //const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.KullaniciKodu}`);
             const data = Array.isArray(response.data) ? response.data : [response.data];
             setDefaults(data);

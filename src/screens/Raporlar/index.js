@@ -16,7 +16,7 @@ const Raporlar = ({ navigation }) => {
   useEffect(() => {
     const fetchMenuIzinleri = async () => {
       try {
-        const temsilciKod = defaults[0].IQ_Kod; // authData'dan IQ Kod alın
+        const temsilciKod = defaults[0].IQ_MikroUserId; // authData'dan IQ Kod alın
         const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
         const izinData = response.data[0]; // İlk gelen veriyi alıyoruz
         setMenuIzinleri(izinData);
@@ -49,70 +49,70 @@ const Raporlar = ({ navigation }) => {
       style={styles.button}
       onPress={() => handlePress('CariBakiyeYaslandirmaAylik', 'IQM_CariBakiyeYasladirmaAylik')}
     >
-      <Text>Cari Bakiye Yaşlandırma Aylık</Text>
+      <Text style={styles.buttonText}>Cari Bakiye Yaşlandırma Aylık</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('CariBakiyeYasladirmaCoklu', 'IQM_CariBakiyeYasladirmaCoklu')}
     >
-      <Text>Cari Bakiye Yasladirma Tekli</Text>
+      <Text style={styles.buttonText}>Cari Bakiye Yasladirma Tekli</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('ExtreFoy', 'IQM_ExtreFoy')}
     >
-      <Text>Extre Föy</Text>
+      <Text style={styles.buttonText}>Extre Föy</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('NelerSattik', 'IQM_NelerSattik')}
     >
-      <Text>Neler Sattık</Text>
+      <Text style={styles.buttonText}>Neler Sattık</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('KredilerOzet', 'IQM_KredilerOzet')}
     >
-      <Text>Krediler Özet</Text>
+      <Text style={styles.buttonText}>Krediler Özet</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('CekSenetListesi', 'IQM_CekSenetListesi')}
     >
-      <Text>Çek Senet Listesi</Text>
+      <Text style={styles.buttonText}>Çek Senet Listesi</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('EnvanterMaliyet', 'IQM_EnvanterMaliyetRaporu')}
     >
-      <Text>Envanter Maliyet</Text>
+      <Text style={styles.buttonText}>Envanter Maliyet</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('KasaBorc', 'IQM_KasaRaporuBorc')}
     >
-      <Text>Kasa Borç</Text>
+      <Text style={styles.buttonText}>Kasa Borç</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('KasaAlacak', 'IQM_KasaRaporuAlacak')}
     >
-      <Text>Kasa Alacak</Text>
+      <Text style={styles.buttonText}>Kasa Alacak</Text>
     </TouchableOpacity>
 
     <TouchableOpacity
       style={styles.button}
       onPress={() => handlePress('BankaBakiyeleri', 'IQM_BankaBakiyeleri')}
     >
-      <Text>Banka Bakiyeleri</Text>
+      <Text style={styles.buttonText}>Banka Bakiyeleri</Text>
     </TouchableOpacity>
 
     {/* 
@@ -127,25 +127,25 @@ const Raporlar = ({ navigation }) => {
       style={styles.button}
       onPress={() => handlePress('YillikRapor', 'IQM_YillikRapor')}
     >
-      <Text>Yıllık Rapor</Text>
+      <Text style={styles.buttonText}>Yıllık Rapor</Text>
     </TouchableOpacity>
     <TouchableOpacity
       style={styles.button}
-      onPress={() => handlePress('SiparisKarsilama', 'IQM_YillikRapor')}
+      onPress={() => handlePress('SiparisKarsilama', 'IQM_SiparisKarsilama')}
     >
-      <Text>Sipariş Karşılama</Text>
+      <Text style={styles.buttonText}>Sipariş Karşılama</Text>
     </TouchableOpacity>
     <TouchableOpacity
       style={styles.button}
-      onPress={() => handlePress('SorumlulukBazindaBekleyenSiparis', 'IQM_YillikRapor')}
+      onPress={() => handlePress('SorumlulukBazindaBekleyenSiparis', 'IQM_SrmBazindaBekleyenSiparis')}
     >
-      <Text>Sorumluluk Bazında Bekleyen Sipariş</Text>
+      <Text style={styles.buttonText}>Sorumluluk Bazında Bekleyen Sipariş</Text>
     </TouchableOpacity>
     <TouchableOpacity
       style={styles.button}
-      onPress={() => handlePress('TedarikciBazindaSatisKarsilama', 'IQM_YillikRapor')}
+      onPress={() => handlePress('TedarikciBazindaSatisKarsilama', 'IQM_TdrkcBazindaSatisKarsilastirma')}
     >
-      <Text>Tedarikçi Bazında Satış Karşılama</Text>
+      <Text style={styles.buttonText}>Tedarikçi Bazında Satış Karşılama</Text>
     </TouchableOpacity>
     
   </ScrollView>
@@ -162,10 +162,13 @@ button: {
   height: 40,
   marginBottom: 10,
   borderRadius: 10,
-  backgroundColor: colors.textInputBg,
+  backgroundColor: "#444444",
   justifyContent: 'center',
   alignItems: 'center',
 },
+buttonText:{
+color: colors.white,
+}
 });
 
 export default Raporlar;

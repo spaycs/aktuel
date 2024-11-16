@@ -26,8 +26,9 @@ const CustomDrawerContent = (props) => {
     const fetchMenuIzinleri = async () => {
       try {
         if (defaults.length > 0) {
-          const temsilciKod = defaults[0].IQ_Kod;
+          const temsilciKod = defaults[0].IQ_MikroUserId;
           const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
+          console.log(temsilciKod);
           const izinData = response.data[0];
           setMenuIzinleri(izinData);
         }

@@ -172,7 +172,7 @@ const SarfMalzemeBilgi = () => {
   useEffect(() => {
     const fetchSatisIrsaliyeSerino = async () => {
       try {
-        const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.KullaniciKodu}`);
+        const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
         const satisIrsaliyeSerino = response.data[0].IQ_SarfSeriNo;
         setSth_evrakno_seri(satisIrsaliyeSerino);
   

@@ -28,7 +28,7 @@ const CariList = ({ navigation }) => {
 
   const fetchMenuIzinleri = useCallback(async () => {
     try {
-      const temsilciKod = defaults[0]?.IQ_Kod || ''; // IQ Kodunu al
+      const temsilciKod = defaults[0]?.IQ_MikroUserId || ''; // IQ Kodunu al
       const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
       setMenuIzinleri(response.data[0]); // İzinleri state'e kaydet
     } catch (error) {

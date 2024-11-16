@@ -49,6 +49,7 @@ const Login = ({ navigation }) => {
   const [KullaniciKodu, setKullaniciKodu] = useState('');
   const [Sifre, setSifre] = useState('');
   const [sifreStandart, setSifreStandart] = useState('');
+  const [IQ_MikroUserId, setIQ_MikroUserId] = useState('');
   const [FirmaNo, setFirmaNo] = useState(0);
   const [SubeNo, setSubeNo] = useState(0);
   const [isConnected, setIsConnected] = useState(true);
@@ -66,6 +67,7 @@ const Login = ({ navigation }) => {
     return () => unsubscribe(); // Cleanup on unmount
   }, []);
 
+  {/* 
   useEffect(() => {
     const interval = setInterval(() => {
       axios.get('http://213.14.109.246:8084/Api/APIMethods/HealthCheck')
@@ -122,6 +124,7 @@ const Login = ({ navigation }) => {
       });
 
   }, []);
+  */}
 
   useEffect(() => {
     retrieveRememberMe();
@@ -138,6 +141,7 @@ const Login = ({ navigation }) => {
       setApiKey1(authData.ApiKey1 || '');
       setApiKey2(authData.ApiKey2 || '');
       setKullaniciKodu(authData.KullaniciKodu || '');
+      setIQ_MikroUserId(authData.IQ_MikroUserId || '');
       setSifre(authData.Sifre || '');
       setSifreStandart(authData.OrijinalSifre || ''); 
       setFirmaNo(authData.FirmaNo || '');
@@ -194,6 +198,7 @@ const Login = ({ navigation }) => {
                 KullaniciKodu,
                 Sifre: hashedPassword,
                 sifreStandart,
+                IQ_MikroUserId,
                 FirmaNo,
                 SubeNo,
                 selectedUser
@@ -206,12 +211,14 @@ const Login = ({ navigation }) => {
 
                 if (responseData.result && responseData.result[0].StatusCode === 200) {
                     console.log('Başarılı giriş ApiKey ile yapıldı:', apiKey);
+                    console.log('IQ_MikroUserId:', IQ_MikroUserId);
                     updateAuthData("ApiKey", apiKey);
 
                     if (isRememberMeChecked) {
-                        storeRememberMe(KullaniciKodu, hashedPassword, selectedUser);
+                        storeRememberMe(KullaniciKodu, IQ_MikroUserId, hashedPassword, selectedUser);
                     }
                     updateAuthData('KullaniciKodu', KullaniciKodu);
+                    updateAuthData('IQ_MikroUserId', IQ_MikroUserId);
                     updateAuthData('Sifre', hashedPassword);
                     updateAuthData('OrijinalSifre', sifreStandart);
                     updateAuthData('selectedUser', selectedUser);
@@ -250,9 +257,9 @@ const Login = ({ navigation }) => {
   
   
 
-const storeRememberMe = async (KullaniciKodu, hashedPassword, selectedUser) => {
+const storeRememberMe = async (KullaniciKodu, IQ_MikroUserId, hashedPassword, selectedUser) => {
   try {
-    const authDataToStore = { KullaniciKodu, Sifre: hashedPassword, OrijinalSifre: sifreStandart, FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo, selectedUser };
+    const authDataToStore = { KullaniciKodu, Sifre: hashedPassword, OrijinalSifre: sifreStandart, IQ_MikroUserId, FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo, selectedUser };
     await AsyncStorage.setItem('authData', JSON.stringify(authDataToStore));
   } catch (error) {
     console.error('Error storing data:', error);
@@ -261,7 +268,7 @@ const storeRememberMe = async (KullaniciKodu, hashedPassword, selectedUser) => {
 
 const storeRememberMeAuthdata = async () => {
   try {
-    const authDataToStore = {FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo };
+    const authDataToStore = {FirmaKodu, FirmaApiUrl, MikroApiUrl, IQ_MikroUserId, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo };
     await AsyncStorage.setItem('authData', JSON.stringify(authDataToStore));
   } catch (error) {
     console.error('Error storing data:', error);
@@ -280,6 +287,7 @@ const retrieveRememberMe = async () => {
       setApiKey1(parsedAuthData.ApiKey1 || '');
       setApiKey2(parsedAuthData.ApiKey2 || '');
       setKullaniciKodu(parsedAuthData.KullaniciKodu || '');
+      setIQ_MikroUserId(parsedAuthData.IQ_MikroUserId || '');
       setSelectedUser(parsedAuthData.selectedUser || '');
       const originalPassword = parsedAuthData.OrijinalSifre || '';
       const hashedPassword = parsedAuthData.Sifre || '';
@@ -369,12 +377,27 @@ useEffect(() => {
     }, [navigation])
   );
 
-  const handleUserChange = (itemValue) => {
-  setSelectedUser(itemValue); // Seçilen kullanıcıyı güncelle
-  setKullaniciKodu(itemValue.KOD); // Kullanıcının KOD'unu TextInput'a yazdır
+ 
+const handleUserChange = async (selectedValue) => {
+  setSelectedUser(selectedValue); // Seçilen kullanıcıyı ayarla
+  setKullaniciKodu(selectedValue.KOD); // TextInput'a kullanıcının KOD'unu yazdır
   setSifre(''); 
   setSifreStandart(''); 
+  try {
+    // Kullanıcı adını eşleştirerek IQ_MikroUserId'yi bul
+    const user = users.find(user => user.AD === selectedValue.AD);
+    if (user) {
+      setIQ_MikroUserId(user.IQ_MikroUserId); // IQ_MikroUserId'yi güncelle
+    } else {
+      Alert.alert('Hata', 'Seçilen kullanıcı listede bulunamadı.');
+    }
+  } catch (error) {
+    console.error('Error fetching IQ_MikroUserId:', error);
+    Alert.alert('Hata', 'IQ_MikroUserId alınırken bir hata oluştu.');
+  }
 };
+
+
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);

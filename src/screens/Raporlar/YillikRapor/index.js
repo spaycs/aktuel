@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput } from 'react-native';
 import axiosLinkMain from '../../../utils/axiosMain'; 
 import { colors } from '../../../res/colors'; 
@@ -53,6 +53,7 @@ const YillikRapor = () => {
     try {
       const response = await axiosLinkMain.get('/Api/Kullanici/Personeller');
       setPersonelList(response.data);
+      console.log(response.data);
     } catch (error) {
       setError('Personel listesi çekme hatası: ' + error.message);
     }
@@ -77,6 +78,7 @@ const YillikRapor = () => {
     try {
       const response = await axiosLinkMain.get(`/Api/Raporlar/YillikRapor?yil=${year}&personel=${encodeURIComponent(selectedPersonel)}`);
       setData(response.data);
+      console.log(response);
     } catch (error) {
       setError('Veri çekme hatası: ' + error.message);
     } finally {
@@ -104,10 +106,13 @@ const fetchData = async () => {
         setLoading(false);
         return;
       }
-      apiUrl = `/Api/Raporlar/YillikRapor?yil=${year}&personel=${encodeURIComponent(selectedPersonel)}}`;
+      
+      apiUrl = `/Api/Raporlar/YillikRapor?yil=${year}&personel=01}`;
+      console.log(apiUrl);
     } else {
       // SRV değilse IQ_MikroPersKod'u direkt gönder
       apiUrl = `/Api/Raporlar/YillikRapor?yil=${year}&personel=${IQ_MikroPersKod}`;
+      console.log(apiUrl);
     }
 
     const response = await axiosLinkMain.get(apiUrl);
@@ -191,6 +196,40 @@ const fetchData = async () => {
     fetchPersonelList();
   }, []);
 
+  const scrollView1Ref = useRef(null);
+  const scrollView2Ref = useRef(null);
+  const [scrollViewActiveRef, setScrollViewActiveRef] = useState(null);
+
+  const handleScrollRef1 = (ref, event) => {
+    if (scrollViewActiveRef == null || scrollViewActiveRef == "scrollView1"){
+      setScrollViewActiveRef("scrollView1");
+    }
+    if(scrollViewActiveRef == "scrollView1")
+    {
+      const scrollX = event.nativeEvent.contentOffset.x;
+      if (ref.current) {
+        ref.current.scrollTo({ x: scrollX, animated: false });
+      }
+    }
+  };
+
+  const handleScrollRef2 = (ref, event) => {
+    if (scrollViewActiveRef == null || scrollViewActiveRef == "scrollView2"){
+      setScrollViewActiveRef("scrollView2");
+    }
+    if(scrollViewActiveRef == "scrollView2")
+    {
+      const scrollX = event.nativeEvent.contentOffset.x;
+      if (ref.current) {
+        ref.current.scrollTo({ x: scrollX, animated: false });
+      }
+    }
+  };
+
+  const handleScrollEnd = () => {
+    setScrollViewActiveRef(null); // Scroll işlemi bittiğinde sıfırla
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.containerTitle}>
@@ -241,8 +280,65 @@ const fetchData = async () => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
+        <>
+        <ScrollView style={styles.tableHeader} horizontal={true} ref={scrollView1Ref} 
+        onScroll={(event) => handleScrollRef1(scrollView2Ref, event)}
+        scrollEventThrottle={1}
+        //onMomentumScrollEnd={handleScrollEnd}
+        onScrollEndDrag={handleScrollEnd}>
+          <Grid>
+          <Row style={styles.tableHeader}>
+            <Col style={[styles.tableCell, { width: 120}]}>
+              <Text style={styles.colTitle}>Cari</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Ocak</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Şubat</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Mart</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Nisan</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Mayıs</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Haziran</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Temmuz</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Ağustos</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Eylül</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Ekim</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Kasım</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Aralık</Text>
+            </Col>
+            <Col style={[styles.tableCell, { width: 100 }]}>
+              <Text style={styles.colTitle}>Toplam</Text>
+            </Col>
+          </Row>
+          </Grid>
+        </ScrollView>
         <ScrollView style={styles.scrollView}>
-        <ScrollView horizontal={true} style={styles.horizontalScroll}>
+        <ScrollView horizontal={true} style={styles.horizontalScroll} ref={scrollView2Ref} 
+        onScroll={(event) => handleScrollRef2(scrollView1Ref, event)}
+        scrollEventThrottle={1}
+        //onMomentumScrollEnd={handleScrollEnd}
+        onScrollEndDrag={handleScrollEnd}>
         <Grid>
           {/* Header Row */}
           <Row style={styles.tableHeader}>
@@ -536,7 +632,7 @@ const fetchData = async () => {
         </Grid>
       </ScrollView>
       </ScrollView>
-      
+      </>
       ) : null}
     </View>
   );

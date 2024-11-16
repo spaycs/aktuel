@@ -58,11 +58,12 @@ function DrawerNavigator() {
   const [sohbetCount, setSohbetCount] = useState(0);
   const { defaults } = useAuthDefault();
 
+  {/* 
   useEffect(() => {
     const intervalId = setInterval(async () => {
       try {
         const temsilciId =  defaults[0].IQ_Kod;
-        const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
+       // const response = await axiosLinkMain.get(`/Api/Sohbet/SohbetVarmi?kod=${temsilciId}`);
         const data = response.data;
         if (Array.isArray(data) && data.length > 0) {
           setSohbetCount(data.length); 
@@ -76,7 +77,7 @@ function DrawerNavigator() {
 
     return () => clearInterval(intervalId);
   }, []);
-
+*/}
     return (
       <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerContent {...props} />}

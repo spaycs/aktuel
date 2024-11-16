@@ -10,7 +10,7 @@ import VersionCheck from 'react-native-version-check';
 
 function App() {
     const [isUpdateRequired, setIsUpdateRequired] = useState(false);
-
+{/* 
     useEffect(() => {
         const checkAppVersion = async () => {
             try {
@@ -71,7 +71,7 @@ function App() {
             </View>
         );
     }
-
+*/}
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <ProductProvider>

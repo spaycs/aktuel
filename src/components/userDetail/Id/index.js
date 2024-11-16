@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     KullaniciKodu: "",
     Sifre: "",
     OrijinalSifre: "",
-    FirmaKodu: "GUCLU2024",
+    FirmaKodu: "DENEMESD",
     FirmaApiUrl: "http://213.14.109.246:8094",
     MikroApiUrl: "http://213.14.109.246:8084",
     CalismaYili: "2024",
@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
     FirmaNo: "0",
     SubeNo: "0",
     selectedUser: "",
+    IQ_MikroUserId: "",
   });
 
   const updateAuthData = (key, value) => {
