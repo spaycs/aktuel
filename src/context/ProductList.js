@@ -63,7 +63,7 @@ const ProductList = () => {
         const tip = getTipForValue(searchCriteria);
   
         const response = await axiosLinkMain.get(
-          `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`
+          `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
         );
   
         const data = response.data;
@@ -135,7 +135,7 @@ const ProductList = () => {
     const deger = searchTerm || '';
     try {
       const response = await axiosLinkMain.get(
-        `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}`
+        `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
       );
       const stokData = response.data;
   

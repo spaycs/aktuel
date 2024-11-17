@@ -132,51 +132,87 @@ const AlinanSiparisProductList = () => {
 
 
 
-
   const fetchStockDetails = useCallback(async (productCode) => {
-    const deger = searchTerm || '';
     try {
       const response = await axiosLinkMain.get(
-        `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
+        `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${productCode}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
       );
-      console.log(response);
+  
       const stokData = response.data;
   
-      const selectedProduct = stokData.find(item => item.Stok_Kod === productCode);
-      const IQ_OPCaridenGelsin = defaults[0]?.IQ_OPCaridenGelsin;
-      //console.log("IQ_OPCaridenGelsin",IQ_OPCaridenGelsin)
-      
+      // Gelen veriler arasında productCode ile eşleşeni bul
+      const selectedProduct = stokData.find((item) => item.Stok_Kod === productCode);
+  
       if (selectedProduct) {
-        const vade = selectedProduct.Vade;
-        
-        if (IQ_OPCaridenGelsin === 0) {
-          updatealinanSiparis({ StokVade: vade, sip_opno: vade });
-        }
+        const vade = selectedProduct.Vade; // Vade değerini al
+        return vade; // Vade değerini döndür
       } else {
-        //console.log('Selected product not found!');
+        return null;
       }
     } catch (error) {
       console.error('Error fetching stock details:', error);
       Alert.alert('Hata', 'Stok detayları yüklenirken bir hata oluştu.');
+      return null;
     }
-  }, [alinanSiparis.sip_musteri_kod, defaults, updatealinanSiparis]);
+  }, [alinanSiparis.sip_musteri_kod, defaults, searchCriteria]);
+  
+  
+  
   
 
-  const handleItemClick = (item) => {
+  
+  
+
+  const handleItemClick = async (item) => {
     if (!alinanSiparis.sip_musteri_kod) {
       Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
-      return; // Boşsa fonksiyonu sonlandırın
+      return;
     }
-    const existingProductCount = addedAlinanSiparisProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
-
+  
+   const existingProductCount = addedAlinanSiparisProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
+  
     if (existingProductCount >= 2) {
       Alert.alert('Uyarı', 'Bu ürün zaten 2 kez eklenmiştir, daha fazla ekleyemezsiniz.');
       return;
     }
-    fetchStockDetails(item.Stok_Kod)
+  
+    // Stok detaylarını getir ve Vade bilgisini al
+    const vade = await fetchStockDetails(item.Stok_Kod);
+  
+    if (vade !== null) {
+      // Vade bilgisi ile birlikte ürünü ekle veya güncelle
+      setAddedAlinanSiparisProducts((prevProducts) => {
+        const productExists = prevProducts.some((product) => product.Stok_Kod === item.Stok_Kod);
+  
+        if (productExists) {
+          // Mevcut ürünü güncelle
+          return prevProducts.map((product) =>
+            product.Stok_Kod === item.Stok_Kod
+              ? { ...product, StokVade: vade }
+              : product
+          );
+        } else {
+          // Yeni ürünü ekle
+          return [
+            ...prevProducts,
+            {
+              ...item, // Tüm ürün bilgilerini taşı
+              StokVade: vade, // Vade bilgisini StokVade olarak ekle
+            },
+          ];
+        }
+      });
+  
+      console.log(`Added or updated product with StokVade: ${vade}`);
+    }
+  
+    // Modalı aç ve seçilen ürünü ayarla
     setSelectedProduct(item);
     setModalVisible(true);
   };
+  
+  
+  
 
   
 

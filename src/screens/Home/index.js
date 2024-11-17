@@ -48,7 +48,6 @@ const Home = ({ navigation }) => {
       try {
         if (defaults.length > 0) {
           const temsilciKod = defaults[0].IQ_MikroUserId;
-          console.log(temsilciKod);
           const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
           const izinData = response.data[0];
           setMenuIzinleri(izinData);
@@ -94,7 +93,6 @@ const Home = ({ navigation }) => {
         }
   
         const temsilciId = defaults[0].IQ_MikroPersKod;
-        console.log('temsilciId', temsilciId);
   
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
         setGunlukDurum(response.data[0]); // Gelen ilk veriyi state'e set edin
@@ -111,7 +109,6 @@ const Home = ({ navigation }) => {
         }
   
         const temsilciKod = defaults[0].IQ_MikroUserId;
-        console.log('temsilciKod', temsilciKod);
   
         const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
         const izinData = response.data[0]; // İlk gelen veriyi alıyoruz
@@ -134,7 +131,6 @@ const Home = ({ navigation }) => {
         }
   
         const temsilciId = defaults[0].IQ_MikroPersKod;
-        console.log('temsilciId', temsilciId);
   
         const response = await axiosLinkMain.get(`/Api/Raporlar/GunlukDurum?temsilci=${temsilciId}`);
         const apiData = response.data; // API'den gelen tüm veriyi al

@@ -10,10 +10,11 @@ import FastImage from 'react-native-fast-image';
 import { Filtre } from '../../../res/images';
 import { Grid, Row, Col } from 'react-native-easy-grid';
 import { MainStyles } from '../../../res/style';
-
+import { useAuthDefault } from '../../../components/DefaultUser';
 
 const SiparisKarsilama = () => {
   const [cariKodu, setCariKodu] = useState('');
+  const { defaults } = useAuthDefault();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [data, setData] = useState([]);
@@ -24,6 +25,7 @@ const SiparisKarsilama = () => {
   const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const IQ_MikroPersKod = defaults[0]?.IQ_MikroPersKod || '';
 
   const [filters, setFilters] = useState({
     Sipariş_Tarihi: '',
@@ -98,7 +100,7 @@ const SiparisKarsilama = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axiosLinkMain.get(`/Api/Raporlar/SiparisKarsilama?ilktarih=${formatDate(startDate)}&sontarih=${formatDate(endDate)}`);
+      const response = await axiosLinkMain.get(`/Api/Raporlar/SiparisKarsilama?ilktarih=${formatDate(startDate)}&sontarih=${formatDate(endDate)}&temsilci=${IQ_MikroPersKod}`);
       setData(response.data);
     } catch (error) {
       setError('Veri çekme hatası: ' + error.message);

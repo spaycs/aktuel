@@ -211,7 +211,6 @@ const Login = ({ navigation }) => {
 
                 if (responseData.result && responseData.result[0].StatusCode === 200) {
                     console.log('Başarılı giriş ApiKey ile yapıldı:', apiKey);
-                    console.log('IQ_MikroUserId:', IQ_MikroUserId);
                     updateAuthData("ApiKey", apiKey);
 
                     if (isRememberMeChecked) {

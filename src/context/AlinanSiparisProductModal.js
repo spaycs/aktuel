@@ -39,6 +39,7 @@ const AlinanSiparisProductModal = ({
   const [sth_isk4, setSth_isk4] = useState(''); 
   const [sth_isk5, setSth_isk5] = useState(''); 
   const [sth_isk6, setSth_isk6] = useState(''); 
+  const [StokVade, setStokVade] = useState(''); 
   const [stokDetayData, setStokDetayData] = useState(''); 
   const [birimListesi, setBirimListesi] = useState([]);
   const [katsayi, setKatsayi] = useState({});
@@ -132,9 +133,9 @@ const AlinanSiparisProductModal = ({
     if (modalVisible && selectedProduct) {
       const fetchSatisFiyati = async () => {
         const cari = alinanSiparis.sth_cari_kodu || alinanSiparis.sip_musteri_kod  || alinanSiparis.cha_kod;
-        const stok = selectedProduct?.Stok_Kod;
+        const stok = selectedProduct?.Stok_Kod ? selectedProduct.Stok_Kod.replace(/\s/g, '%20') : '';
         const somkod = alinanSiparis.sth_stok_srm_merkezi || alinanSiparis.sip_stok_sormerk || alinanSiparis.cha_srmrkkodu;
-        const odpno = alinanSiparis.sip_opno || alinanSiparis.sth_odeme_op  || alinanSiparis.cha_vade;
+        const odpno = alinanSiparis.sip_opno || alinanSiparis.sth_odeme_op  || alinanSiparis.cha_vade || addedAlinanSiparisProducts.StokVade || 0;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
         console.log(apiUrl);
         
@@ -145,13 +146,17 @@ const AlinanSiparisProductModal = ({
           if (Array.isArray(data) && data.length > 0) {
             const firstItem = data[0];
   
-            if (firstItem.fiyat) {
+            if (firstItem.fiyat !== undefined && firstItem.fiyat !== null) {
               setSth_tutar(firstItem.fiyat.toString());
             }
             
+            if (firstItem.fiyat !== undefined && firstItem.fiyat !== null) {
+              setBirimFiyat(firstItem.fiyat.toString());
+            }
             if (firstItem.fiyat) {
               setBirimFiyat(firstItem.fiyat.toString());
             }
+            
          
             if (firstItem.Birim_KDV) {
               setBirim_KDV(firstItem.Birim_KDV.toString());  
@@ -319,7 +324,16 @@ const validateQuantity = (quantity) => {
   };
 
   const handleClose = () => {
-    setModalVisible(false);
+    resetFields();
+    setSth_miktar('1');
+    setSth_iskonto1('');
+    setSth_iskonto2('');
+    setSth_iskonto3('');
+    setSth_iskonto4('');
+    setSth_iskonto5('');
+    setSth_iskonto6('');
+    setAciklama('');
+    setBirimFiyat('');
   };
 
 
@@ -392,6 +406,7 @@ const validateQuantity = (quantity) => {
                               sth_iskonto6: updatedİsk6.toFixed(2),
                               total: calculateTotal(),
                               modalId: 0,
+                              StokVade: StokVade,
                           }
                           : product
                   );
@@ -433,6 +448,7 @@ const validateQuantity = (quantity) => {
                       sth_isk6: sth_iskonto6,
                       total: calculateTotal(),
                       modalId: 0,
+                      StokVade: StokVade,
                     },
                   ]);
   
@@ -480,6 +496,7 @@ const validateQuantity = (quantity) => {
                       sth_isk6: sth_iskonto6,
                       total: calculateTotal(),
                       modalId: 0,
+                      StokVade: StokVade,
                     },
                   ]);
   
@@ -525,6 +542,7 @@ const validateQuantity = (quantity) => {
               sth_isk6: sth_iskonto6,
               total: calculateTotal(),
               modalId: 0,
+              StokVade: StokVade,
             },
           ]);
   
@@ -540,17 +558,20 @@ const validateQuantity = (quantity) => {
   };
   
   const resetFields = () => {
-    setSth_miktar('1');
+    setSth_miktar('1'); // Miktar sıfırla
     setSth_iskonto1('');
     setSth_iskonto2('');
     setSth_iskonto3('');
     setSth_iskonto4('');
     setSth_iskonto5('');
     setSth_iskonto6('');
-    setAciklama('');
-    setCarpan('');
-    setModalVisible(false);
+    setAciklama(''); // Açıklama sıfırla
+    setBirimFiyat(''); // Birim fiyat sıfırla
+    setCarpan(''); // Çarpan sıfırla
+    setSth_tutar(''); // Tutar sıfırla
+    setModalVisible(false); 
   };
+  
   
   return (
     <Modal

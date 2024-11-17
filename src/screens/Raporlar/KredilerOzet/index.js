@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -115,16 +115,6 @@ const KredilerOzet = () => {
     return `${month}-${day}-${year}`;
   };
 
-  const scrollView1Ref = useRef(null);
-  const scrollView2Ref = useRef(null);
-
-  const handleScroll = (ref, event) => {
-    const scrollX = event.nativeEvent.contentOffset.x;
-    if (ref.current) {
-      ref.current.scrollTo({ x: scrollX, animated: false });
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
@@ -180,59 +170,8 @@ const KredilerOzet = () => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
-        <>
-        <ScrollView horizontal={true} ref={scrollView1Ref} onScroll={(event) => handleScroll(scrollView2Ref, event)}
-        scrollEventThrottle={16}>
-          <Grid>
-          <Row style={styles.tableHeader}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <Text style={styles.colTitle}>SÖZLEŞME_KODU</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>BANKA_KODU</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>BANKA_ADI</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KREDİ_TUTARI</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KALAN_ANAPARA</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-          </Row>
-          </Grid>
-        </ScrollView>
-        <ScrollView style={styles.scrollView} ref={scrollView2Ref}>
-        <ScrollView horizontal={true} style={styles.horizontalScroll}  onScroll={(event) => handleScroll(scrollView1Ref, event)}
-        scrollEventThrottle={16}>
+        <ScrollView style={styles.scrollView}>
+      <ScrollView horizontal={true} style={styles.horizontalScroll}>
         <Grid>
           {/* Header Row */}
           <Row style={styles.tableHeader}>
@@ -250,30 +189,6 @@ const KredilerOzet = () => {
             </Col>
             <Col style={[styles.tableCell, { width: 100 }]}>
               <Text style={styles.colTitle}>KALAN_ANAPARA</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>KrediTipi</Text>
             </Col>
             <Col style={[styles.tableCell, { width: 100 }]}>
               <Text style={styles.colTitle}>KrediTipi</Text>
@@ -375,7 +290,7 @@ const KredilerOzet = () => {
         </Grid>
       </ScrollView>
       </ScrollView>
-      </>
+      
       ) : null}
 
       {/* Cari Seçim Modal'ı */}

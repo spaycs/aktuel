@@ -683,7 +683,10 @@ const AlinanSiparisFaturaBilgisi = () => {
     const handleCariSelect = async (cari) => {
       const selectedCariKodu = cari.Cari_Kod;
       const selectedCariUnvan = cari.Ünvan;
+      let selectedOdemePlanNo = cari.cari_odemeplan_no;
+      console.log(selectedOdemePlanNo);
     
+      // Cari kodu ve unvanını set et
       setSip_musteri_kod(selectedCariKodu);
       setSip_cari_unvan1(selectedCariUnvan);
     
@@ -693,40 +696,34 @@ const AlinanSiparisFaturaBilgisi = () => {
         sip_cari_unvan1: selectedCariUnvan,
       }));
     
-      // Check IQ_OPCaridenGelsin and set sip_opno and odemeText accordingly
-      const IQ_OPCaridenGelsin = defaults[0].IQ_OPCaridenGelsin;
-      console.log('IQ_OPCaridenGelsin', IQ_OPCaridenGelsin);
-      const selectedOdemePlanNo = cari.cari_odemeplan_no;
-      console.log('selectedOdemePlanNo', selectedOdemePlanNo);
-    
-   if (selectedOdemePlanNo === 0) {
+      // Ödeme plan numarasına göre işlem
+      if (selectedOdemePlanNo === 0) {
+        // Peşin ise
         setSip_opno("PEŞİN");
-    
         setAlinanSiparis((prevState) => ({
           ...prevState,
-          sip_opno: 0,
+          sip_opno: 0, // 0 gönderecek
         }));
-        
       } else if (selectedOdemePlanNo < 0) {
-        const gunSayisi = Math.abs(selectedOdemePlanNo);
-    const textIcerik = `${gunSayisi} GÜN`;
-    setSip_opno(textIcerik);
-
-    setAlinanSiparis((prevState) => ({
-      ...prevState,
-      sip_opno: selectedOdemePlanNo,
-    }));
+        // Negatif ise
+        const gunSayisi = Math.abs(selectedOdemePlanNo); // Negatif değeri pozitife çevir
+        const textIcerik = `${gunSayisi} GÜN`;
+        setSip_opno(textIcerik);
+        setAlinanSiparis((prevState) => ({
+          ...prevState,
+          sip_opno: selectedOdemePlanNo, // Negatif değeri gönderecek
+        }));
       } else if (selectedOdemePlanNo > 0) {
-        const odemePlanNo = cari.cari_odemeplan_no;
+        // Pozitif ise ödeme planları listesine bak
         try {
           const odemePlanlariList = await fetchVadeList();
           if (odemePlanlariList && odemePlanlariList.length > 0) {
-            const selectedOdemePlan = odemePlanlariList.find((plan) => plan.No === odemePlanNo);
+            const selectedOdemePlan = odemePlanlariList.find((plan) => plan.No === selectedOdemePlanNo);
             if (selectedOdemePlan) {
-              setSip_opno(selectedOdemePlan.Isim);
+              setSip_opno(selectedOdemePlan.Isim); // İsmini göster
               setAlinanSiparis((prevState) => ({
                 ...prevState,
-                sip_opno: selectedOdemePlan.No,
+                sip_opno: selectedOdemePlan.No, // Numarasını gönderecek
               }));
             } else {
               console.log("Eşleşen ödeme planı bulunamadı.");
@@ -739,7 +736,10 @@ const AlinanSiparisFaturaBilgisi = () => {
         }
       }
     
+      // Doviz listesi getir
       fetchDovizList(selectedCariKodu);
+    
+      // Adres listesi getir ve ilk adresi set et
       const adresList = await fetchAdresList(selectedCariKodu);
       if (adresList && adresList.length > 0) {
         const firstAddress = adresList[0];
@@ -752,17 +752,13 @@ const AlinanSiparisFaturaBilgisi = () => {
         console.log("Adres listesi boş geldi.");
       }
     
+      // Depo seçim güncelle
       await updateDepoSelection(cari);
+    
+      // Cari listesi modalını kapat
       setIsCariListModalVisible(false);
     };
     
-
-    useEffect(() => {
-      if (sip_musteri_kod) {
-        fetchDovizList(sip_musteri_kod);
-      }
-      fetchDepoList();
-    }, [sip_musteri_kod]);
 
   // Cari Seçim
 
@@ -1034,7 +1030,6 @@ const AlinanSiparisFaturaBilgisi = () => {
       const fetchSatisIrsaliyeSerino = async () => {
         try {
           const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
-          console.log(response);
           const satisIrsaliyeSerino = response.data[0].IQ_AlisSiparisSeriNo;
           const girisDepoNo = response.data[0].IQ_GirisDepoNo;
           setSip_evrakno_seri(satisIrsaliyeSerino);

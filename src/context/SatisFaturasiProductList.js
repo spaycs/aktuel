@@ -73,7 +73,7 @@ const SatisFaturasiProductList = () => {
   
       if (tip >= 1 && tip <= 7) {
         // Tip 1-7: StokListesiEvraklar API'si
-        url = `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}`;
+        url = `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`;
       } else if (tip === 8) {
         // Tip 8: HizmetHesaplari API'si
         url = '/Api/Stok/HizmetHesaplari';

@@ -32,6 +32,10 @@ const AlinanSiparisOnizleme = () => {
   const { isSaved, setIsSaved } = useContext(ProductContext);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    console.log('addedAlinanSiparisProducts', addedAlinanSiparisProducts);
+  }, []);
+
   const saveDataToAsyncStorage = async (addedAlinanSiparisProducts, alinanSiparis) => {
     try {
       await AsyncStorage.setItem('addedAlinanSiparisProducts', JSON.stringify(addedAlinanSiparisProducts));
@@ -75,7 +79,8 @@ const AlinanSiparisOnizleme = () => {
   };
 
   useEffect(() => {
-    //loadDataFromAsyncStorage();
+    loadDataFromAsyncStorage();
+    console.log("caridengelsin", defaults[0].IQ_OPCaridenGelsin);
   }, []);
 
   useEffect(() => {
@@ -302,6 +307,7 @@ const AlinanSiparisOnizleme = () => {
             <View style={MainStyles.stokContainer}>
               <Text style={MainStyles.productName}>Stok Adı: {item.Stok_Ad}</Text>
               <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
+              <Text style={MainStyles.productTitle}>Vade: {item.Vade}</Text>
             </View>
 
             <View style={MainStyles.rowContainer}>
@@ -408,6 +414,7 @@ const AlinanSiparisOnizleme = () => {
 
   const handleSave = async () => {
 
+    console.log("API yanı", addedAlinanSiparisProducts.StokVade);
     if (addedAlinanSiparisProducts.length === 0) {
       Alert.alert(
           "Uyarı",
@@ -497,7 +504,9 @@ const AlinanSiparisOnizleme = () => {
               sip_b_fiyat : product.sth_tutar,
               sth_giris_depo_no: alinanSiparis.sth_giris_depo_no,
               sip_depono: alinanSiparis.sip_depono,
-              sip_opno: defaults[0]?.IQ_OPCaridenGelsin === 1 ? alinanSiparis.sip_opno : product.sip_opno,
+              sip_opno: defaults[0]?.IQ_OPCaridenGelsin === 1 
+            ? alinanSiparis.sip_opno 
+            : product.StokVade || product.Vade,
               sip_satici_kod : sip_satici_kod ,
               sip_aciklama: product.aciklama,
               seriler: "",
@@ -561,7 +570,7 @@ const AlinanSiparisOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler
+    {/* Apiye Giden Değerler 
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.fontSize11}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
         <Text style={MainStyles.fontSize11}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>
