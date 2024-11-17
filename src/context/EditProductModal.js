@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../res/style/MainStyles';
 import { colors } from '../res/colors';
@@ -30,6 +30,8 @@ const EditProductModal = ({ selectedProduct, modalVisible, setModalVisible, setA
   const [DovizIsmi, setDovizIsmi] = useState(null);
   const [Carpan, setCarpan] = useState('');
   const [KDV, setKDV] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  
 
   useEffect(() => {
     if (selectedProduct) {
@@ -326,24 +328,72 @@ const handleUpdate = async () => {
               <View style={MainStyles.inputBirimGroup}>
                 <Text style={MainStyles.productModalText}>Birim:</Text>
                 <View style={MainStyles.productModalPickerContainer}>
-                <Picker
-                    selectedValue={sth_birim_pntr}
-                    itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-                    onValueChange={(itemValue) => {
-                      setSth_birim_pntr(itemValue);
-                      handleMiktarChangeEdit(quantity);
-                    }}
-                  >
-                    {birimListesi.map((birim, index) => (
-                      <Picker.Item
-                        key={index}
-                        style={MainStyles.productModalPicker}
-                        label={`${birim} (${index === 1 ? katsayi.sto_birim2_katsayi : index === 2 ? katsayi.sto_birim3_katsayi : katsayi.sto_birim4_katsayi})`}
-                        value={birim}
-                      />
-                    ))}
-                  </Picker>
+                {Platform.OS === 'ios' ? (
+  <>
+    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+      <Text style={MainStyles.pickerText}>
+        {sth_birim_pntr || 'Birim seçin'}
+      </Text>
+    </TouchableOpacity>
 
+    {/* iOS Modal */}
+    <Modal visible={isModalVisible} animationType="slide" transparent>
+      <View style={MainStyles.modalContainerPicker}>
+        <View style={MainStyles.modalContentPicker}>
+          <Picker
+            selectedValue={sth_birim_pntr}
+            onValueChange={(itemValue) => {
+              setSth_birim_pntr(itemValue);
+              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+              setIsModalVisible(false); // Modal'ı kapat
+            }}
+            style={MainStyles.picker}
+          >
+            {birimListesi.map((birim, index) => (
+              <Picker.Item
+                key={index}
+                label={`${birim} (${
+                  index === 1
+                    ? katsayi.sto_birim2_katsayi
+                    : index === 2
+                    ? katsayi.sto_birim3_katsayi
+                    : katsayi.sto_birim4_katsayi
+                })`}
+                value={birim}
+              />
+            ))}
+          </Picker>
+          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+        </View>
+      </View>
+    </Modal>
+  </>
+) : (
+  // Android için düz Picker
+  <Picker
+    selectedValue={sth_birim_pntr}
+    itemStyle={{ height: 40, fontSize: 10 }}
+    style={{ marginHorizontal: -10 }}
+    onValueChange={(itemValue) => {
+      setSth_birim_pntr(itemValue);
+      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+    }}
+  >
+    {birimListesi.map((birim, index) => (
+      <Picker.Item
+        key={index}
+        label={`${birim} (${
+          index === 1
+            ? katsayi.sto_birim2_katsayi
+            : index === 2
+            ? katsayi.sto_birim3_katsayi
+            : katsayi.sto_birim4_katsayi
+        })`}
+        value={birim}
+      />
+    ))}
+  </Picker>
+)}
                 </View>
               </View>
               <View style={MainStyles.inputBirimGroup}>
@@ -371,7 +421,7 @@ const handleUpdate = async () => {
             </View>
             <View style={MainStyles.inputRow}>
               <View style={MainStyles.inputGroup}>
-                <Text>Satış Fiyatı:</Text>
+                <Text>Birim Fiyatı:</Text>
                 <TextInput
                   style={MainStyles.productModalMiktarInput}
                   placeholderTextColor="#999"

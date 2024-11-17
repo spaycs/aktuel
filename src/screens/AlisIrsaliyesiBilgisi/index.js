@@ -608,7 +608,7 @@ const AlisIrsaliyesiBilgisi = () => {
     useEffect(() => {
       const fetchSatisIrsaliyeSerino = async () => {
         try {
-          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
+          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${defaults[0].IQ_MikroUserId}`);
           const satisIrsaliyeSerino = response.data[0].IQ_SatisIrsaliyeSeriNo;
           const girisDepoNo = response.data[0].IQ_GirisDepoNo;
           setSth_evrakno_seri(satisIrsaliyeSerino);

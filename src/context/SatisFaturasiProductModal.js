@@ -421,7 +421,7 @@ const SatisFaturasiProductModal = ({
 
             </View>
             <View style={MainStyles.inputGroup}>
-              <Text>Satış Fiyatı:</Text>
+              <Text>Birim Fiyatı:</Text>
               <TextInput
                 style={MainStyles.productModalMiktarInput}
                 placeholderTextColor={colors.placeholderTextColor}

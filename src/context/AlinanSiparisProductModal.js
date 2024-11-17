@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator, Button } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from '@react-native-community/checkbox';
@@ -60,6 +60,7 @@ const AlinanSiparisProductModal = ({
   const [isStokOzelDetayVisible, setIsStokOzelDetayVisible] = useState(false);
   const [loading, setLoading] = useState(false); 
   const [stokDetayOzelAlanData, setStokDetayOzelAlanData] = useState(''); 
+  const [isModalVisible, setIsModalVisible] = useState(false); 
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -591,24 +592,73 @@ const validateQuantity = (quantity) => {
             <View style={MainStyles.inputBirimGroup}>
               <Text style={MainStyles.inputtip}>Birim:</Text>
               <View style={MainStyles.productModalPickerContainer}>
-              <Picker
-                  selectedValue={sth_birim_pntr}
-                  itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-                  onValueChange={(itemValue) => {
-                    setSth_birim_pntr(itemValue);
-                    // Miktar değiştiğinde katsayıyı göz önünde bulundur
-                    handleMiktarChange(sth_miktar);
-                  }}
-                >
-                  {birimListesi.map((birim, index) => (
-                    <Picker.Item
-                      itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10, fontSize: 12 }} 
-                      key={index}
-                      label={`${birim} (${index === 1 ? katsayi.sto_birim2_katsayi : index === 2 ? katsayi.sto_birim3_katsayi : katsayi.sto_birim4_katsayi})`}
-                      value={birim}
-                    />
-                  ))}
-                </Picker>
+              {Platform.OS === 'ios' ? (
+  <>
+    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+      <Text style={MainStyles.pickerText}>
+        {sth_birim_pntr || 'Birim seçin'}
+      </Text>
+    </TouchableOpacity>
+
+    {/* iOS Modal */}
+    <Modal visible={isModalVisible} animationType="slide" transparent>
+      <View style={MainStyles.modalContainerPicker}>
+        <View style={MainStyles.modalContentPicker}>
+          <Picker
+            selectedValue={sth_birim_pntr}
+            onValueChange={(itemValue) => {
+              setSth_birim_pntr(itemValue);
+              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+              setIsModalVisible(false); // Modal'ı kapat
+            }}
+            style={MainStyles.picker}
+          >
+            {birimListesi.map((birim, index) => (
+              <Picker.Item
+                key={index}
+                label={`${birim} (${
+                  index === 1
+                    ? katsayi.sto_birim2_katsayi
+                    : index === 2
+                    ? katsayi.sto_birim3_katsayi
+                    : katsayi.sto_birim4_katsayi
+                })`}
+                value={birim}
+              />
+            ))}
+          </Picker>
+          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+        </View>
+      </View>
+    </Modal>
+  </>
+) : (
+  // Android için düz Picker
+  <Picker
+    selectedValue={sth_birim_pntr}
+    itemStyle={{ height: 40, fontSize: 10 }}
+    style={{ marginHorizontal: -10 }}
+    onValueChange={(itemValue) => {
+      setSth_birim_pntr(itemValue);
+      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+    }}
+  >
+    {birimListesi.map((birim, index) => (
+      <Picker.Item
+        key={index}
+        label={`${birim} (${
+          index === 1
+            ? katsayi.sto_birim2_katsayi
+            : index === 2
+            ? katsayi.sto_birim3_katsayi
+            : katsayi.sto_birim4_katsayi
+        })`}
+        value={birim}
+      />
+    ))}
+  </Picker>
+)}
+
               </View>
             </View>
             <View style={MainStyles.inputBirimGroup}>

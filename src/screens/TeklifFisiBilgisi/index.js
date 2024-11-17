@@ -534,7 +534,7 @@ const TeklifFisiBilgisi = () => {
     useEffect(() => {
       const fetchSatisIrsaliyeSerino = async () => {
         try {
-          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
+          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${defaults[0].IQ_MikroUserId}`);
           const IQ_VerilenTSeriNo = response.data[0].IQ_VerilenTSeriNo;
           setSth_evrakno_seri(IQ_VerilenTSeriNo);
     

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../res/style/MainStyles';
 import { colors } from '../res/colors';
@@ -7,6 +7,7 @@ import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { ProductContext } from '../context/ProductContext';
 import { useAuthDefault } from '../components/DefaultUser';
+import { Col, Grid, Row } from 'react-native-easy-grid';
 
 const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModalVisible, setAddedAlinanSiparisProducts }) => {
   const { alinanSiparis } = useContext(ProductContext);
@@ -38,6 +39,12 @@ const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModal
   const [DovizIsmi, setDovizIsmi] = useState(null);
   const [Carpan, setCarpan] = useState('');
   const [KDV, setKDV] = useState('');
+  const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
+  const [isStokOzelDetayVisible, setIsStokOzelDetayVisible] = useState(false);
+  const [loading, setLoading] = useState(false); 
+  const [stokDetayOzelAlanData, setStokDetayOzelAlanData] = useState(''); 
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [stokDetayData, setStokDetayData] = useState(''); 
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -80,6 +87,49 @@ const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModal
     }
   }, [modalVisible, selectedProduct, birimListesi]);
 
+  const fetchStokDetayData = async () => {
+    if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
+  
+    setLoading(true); // Yükleniyor state'i aktif et
+    try {
+      // API'yi çağır
+      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=${defaults[0].IQ_MikroPersKod}`);
+      const data = response.data || []; // Hata durumunda boş dizi döner
+  
+      // Veriyi state'e ata
+      setStokDetayData(data);
+    } catch (error) {
+      console.error('Bağlantı Hatası Stok Detay:', error);
+    } finally {
+      setLoading(false); // Yükleniyor state'ini kaldır
+      setIsStokDetayVisible(true); // Modalı aç
+    }
+  };
+
+  const fetchStokOzelAlanDetayData = async () => {
+    if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
+  
+    setLoading(true); // Yükleniyor state'i aktif et
+    try {
+      // API'yi çağır
+      const cari = alinanSiparis.sth_cari_kodu || alinanSiparis.sip_musteri_kod  || alinanSiparis.cha_kod;
+      const response = await axiosLinkMain.get(`/api/Raporlar/StokOzelAlan?stok=${selectedProduct.Stok_Kod}&cari=${cari}&userno=${defaults[0].IQ_MikroPersKod}`);
+      const data = response.data || []; // Hata durumunda boş dizi döner
+  
+      // Veriyi state'e ata
+      setStokDetayOzelAlanData(data);
+    } catch (error) {
+      console.error('Bağlantı Hatası Stok Detay:', error);
+    } finally {
+      setLoading(false); // Yükleniyor state'ini kaldır
+      setIsStokOzelDetayVisible(true); // Modalı aç
+    }
+  };
+  
+  const closeModal = () => {
+    setIsStokDetayVisible(false);
+    setIsStokOzelDetayVisible(false);
+  };
 
   useEffect(() => {
     if (modalVisible && selectedProduct) {
@@ -87,8 +137,9 @@ const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModal
         const cari = alinanSiparis?.sth_cari_kodu || alinanSiparis?.sip_musteri_kod || alinanSiparis?.cha_kod ;
         const stok = selectedProduct?.Stok_Kod;
         const somkod = alinanSiparis?.sth_stok_srm_merkezi || alinanSiparis?.sip_stok_sormerk || alinanSiparis?.cha_srmrkkodu ;
-        const odpno = alinanSiparis?.sth_odeme_op || alinanSiparis?.sip_opno || alinanSiparis?.cha_vade;
+        const odpno = alinanSiparis?.sth_odeme_op || alinanSiparis?.sip_opno || alinanSiparis?.cha_vade|| 0;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
+        console.log(apiUrl);
   
         try {
           const response = await axiosLinkMain.get(apiUrl);
@@ -348,24 +399,72 @@ const handleUpdate = async () => {
               <View style={MainStyles.inputBirimGroup}>
                 <Text style={MainStyles.productModalText}>Birim:</Text>
                 <View style={MainStyles.productModalPickerContainer}>
-                <Picker
-                    selectedValue={sth_birim_pntr}
-                    itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-                    onValueChange={(itemValue) => {
-                      setSth_birim_pntr(itemValue);
-                      handleMiktarChangeEdit(quantity);
-                    }}
-                  >
-                    {birimListesi.map((birim, index) => (
-                      <Picker.Item
-                        key={index}
-                        style={MainStyles.productModalPicker}
-                        label={`${birim} (${index === 1 ? katsayi.sto_birim2_katsayi : index === 2 ? katsayi.sto_birim3_katsayi : katsayi.sto_birim4_katsayi})`}
-                        value={birim}
-                      />
-                    ))}
-                  </Picker>
+                {Platform.OS === 'ios' ? (
+  <>
+    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+      <Text style={MainStyles.pickerText}>
+        {sth_birim_pntr || 'Birim seçin'}
+      </Text>
+    </TouchableOpacity>
 
+    {/* iOS Modal */}
+    <Modal visible={isModalVisible} animationType="slide" transparent>
+      <View style={MainStyles.modalContainerPicker}>
+        <View style={MainStyles.modalContentPicker}>
+          <Picker
+            selectedValue={sth_birim_pntr}
+            onValueChange={(itemValue) => {
+              setSth_birim_pntr(itemValue);
+              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+              setIsModalVisible(false); // Modal'ı kapat
+            }}
+            style={MainStyles.picker}
+          >
+            {birimListesi.map((birim, index) => (
+              <Picker.Item
+                key={index}
+                label={`${birim} (${
+                  index === 1
+                    ? katsayi.sto_birim2_katsayi
+                    : index === 2
+                    ? katsayi.sto_birim3_katsayi
+                    : katsayi.sto_birim4_katsayi
+                })`}
+                value={birim}
+              />
+            ))}
+          </Picker>
+          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+        </View>
+      </View>
+    </Modal>
+  </>
+) : (
+  // Android için düz Picker
+  <Picker
+    selectedValue={sth_birim_pntr}
+    itemStyle={{ height: 40, fontSize: 10 }}
+    style={{ marginHorizontal: -10 }}
+    onValueChange={(itemValue) => {
+      setSth_birim_pntr(itemValue);
+      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+    }}
+  >
+    {birimListesi.map((birim, index) => (
+      <Picker.Item
+        key={index}
+        label={`${birim} (${
+          index === 1
+            ? katsayi.sto_birim2_katsayi
+            : index === 2
+            ? katsayi.sto_birim3_katsayi
+            : katsayi.sto_birim4_katsayi
+        })`}
+        value={birim}
+      />
+    ))}
+  </Picker>
+)}
                 </View>
               </View>
               <View style={MainStyles.inputBirimGroup}>
@@ -393,14 +492,25 @@ const handleUpdate = async () => {
             </View>
             <View style={MainStyles.inputRow}>
               <View style={MainStyles.inputGroup}>
-                <Text>Satış Fiyatı:</Text>
+              <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
                 <TextInput
                   style={MainStyles.productModalMiktarInput}
                   placeholderTextColor="#999"
                   keyboardType="numeric"
                   value={price}
                   editable={isEditable}
-                  onChangeText={(value) => setPrice(value)}
+                  onChangeText={(value) => {
+                    // Virgülü noktaya çevir
+                    const formattedValue = value.replace(',', '.');
+  
+                    // Sadece rakamlar ve . (nokta) karakteri kabul edilsin
+                    const validValue = formattedValue.replace(/[^0-9.]/g, '');
+  
+                    // Eğer birden fazla . (nokta) varsa, sonrasını kabul etme
+                    const finalValue = validValue.split('.').length > 2 ? validValue.slice(0, -1) : validValue;
+  
+                    setPrice(finalValue);
+                  }}
                 />
               </View>
               <View style={MainStyles.inputGroup}>
@@ -410,6 +520,7 @@ const handleUpdate = async () => {
                   placeholderTextColor="#999"
                   editable={false}
                   value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithoutDiscount())}
+                  keyboardType="numeric"  
                 />
               </View>
             </View>
@@ -421,20 +532,158 @@ const handleUpdate = async () => {
               onChangeText={(text) => setUpdatedProduct({ ...updatedProduct, aciklama: text })}
               numberOfLines={1}
             />
-             <View style={MainStyles.modalInfoContainer}>
-              <View style={MainStyles.modalInfoDoviz}>
-                  <Text>Döviz : {DovizIsmi}</Text>
+             <View style={{flexDirection: 'row',}}>
+           <TouchableOpacity
+            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
+            onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
+          >
+            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Depo Detayları</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, paddingHorizontal: 5, marginBottom: 10,marginLeft: 2, borderRadius: 5, width: '49%' }}
+            onPress={fetchStokOzelAlanDetayData} // sip_musteri_kod kaldırıldı
+          >
+            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
+          </TouchableOpacity>
+          </View>
+
+          <Modal
+            visible={isStokDetayVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={closeModal}
+        >
+            <View style={MainStyles.modalBackground}>
+                <View style={MainStyles.modalCariDetayContent}>
+                    {loading ? (
+                        <ActivityIndicator size="large" color={colors.primary} />
+                    ) : (
+                        <>
+                            {stokDetayData && stokDetayData.length > 0 ? (
+                              <ScrollView >
+                                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                                    <Grid>
+                                        {/* Başlık Satırı */}
+                                        <Row style={MainStyles.tableHeader}>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo No</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Adı</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Miktar</Text>
+                                            </Col>
+                                        </Row>
+
+                                        {/* Veri Satırları */}
+                                        {stokDetayData.map((item, index) => (
+                                            <Row key={index} style={MainStyles.tableRow}>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.dep_no}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                    <Text style={MainStyles.colText}>{item.dep_adi}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.DepoMiktarı}</Text>
+                                                </Col>
+                                            </Row>
+                                        ))}
+                                    </Grid>
+                                </ScrollView>
+                                </ScrollView>
+                            ) : (
+                                <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                            )}
+                        </>
+                    )}
+                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>X</Text>
+                    </TouchableOpacity>
                 </View>
+            </View>
+        </Modal>
+
+          <Modal
+            visible={isStokOzelDetayVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={closeModal}
+        >
+            <View style={MainStyles.modalBackground}>
+                <View style={MainStyles.modalCariDetayContent}>
+                    {loading ? (
+                        <ActivityIndicator size="large" color={colors.primary} />
+                    ) : (
+                        <>
+                            {stokDetayOzelAlanData && stokDetayOzelAlanData.length > 0 ? (
+                              <ScrollView >
+                                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                                    <Grid>
+                                        {/* Başlık Satırı */}
+                                        <Row style={MainStyles.tableHeader}>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo No</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Adı</Text>
+                                            </Col>
+                                          
+                                        </Row>
+
+                                        {/* Veri Satırları */}
+                                        {stokDetayOzelAlanData.map((item, index) => (
+                                            <Row key={index} style={MainStyles.tableRow}>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.Tip}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                    <Text style={MainStyles.colText}>{item.Deger}</Text>
+                                                </Col>
+                                              
+                                            </Row>
+                                        ))}
+                                    </Grid>
+                                </ScrollView>
+                                </ScrollView>
+                            ) : (
+                                <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                            )}
+                        </>
+                    )}
+                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                        <Text style={MainStyles.closeButtonText}>X</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+
+
+            <View style={MainStyles.modalInfoContainer}>
+              <View style={MainStyles.modalInfoDoviz}>
+                  <Text style={MainStyles.inputtip}>BekleyenSiparis : {selectedProduct?.BekleyenSiparis}</Text>
+                </View>
+              <View style={MainStyles.modalInfoKdv}>
+                  <Text style={MainStyles.inputtip}>StokVade : {selectedProduct?.Vade}</Text>
+                </View>
+                </View>
+            <View style={MainStyles.modalInfoContainer}>
+          
+              <View style={MainStyles.modalInfoDoviz}>
+                  <Text style={MainStyles.inputtip}>Döviz : {DovizIsmi}</Text>
+                </View>
+               
                 <View style={MainStyles.modalInfoKdv}>
-                  <Text style={MainStyles.kdvText}>Kdv : {KDV}</Text>
+                  <Text style={MainStyles.inputtip}>Kdv : {KDV}</Text>
                 </View>
               </View>
               <View style={MainStyles.modalInfoContainer}>
                 <View style={MainStyles.modalInfoDoviz}>
-                  <Text>Depo :</Text>
+                  <Text style={MainStyles.inputtip}>Depo :</Text>
                 </View>
                 <View style={MainStyles.modalInfoKdv}>
-                  <Text style={MainStyles.kdvText}>Çarpan : {Carpan}</Text>
+                  <Text style={MainStyles.inputtip}>Çarpan : {Carpan}</Text>
                 </View>
             </View>
 

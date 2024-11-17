@@ -1085,7 +1085,7 @@ export const MainStyles = {
       backgroundColor: colors.white,
       height: 40,
       position: 'absolute',
-      top: -20,
+      top: -10,
       right: 10,
       padding: 10,
       borderRadius: 5,

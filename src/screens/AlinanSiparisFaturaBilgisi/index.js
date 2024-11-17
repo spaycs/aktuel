@@ -1029,7 +1029,7 @@ const AlinanSiparisFaturaBilgisi = () => {
     useEffect(() => {
       const fetchSatisIrsaliyeSerino = async () => {
         try {
-          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
+          const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${defaults[0].IQ_MikroUserId}`);
           const satisIrsaliyeSerino = response.data[0].IQ_AlisSiparisSeriNo;
           const girisDepoNo = response.data[0].IQ_GirisDepoNo;
           setSip_evrakno_seri(satisIrsaliyeSerino);

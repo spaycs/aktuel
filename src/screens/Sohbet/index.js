@@ -23,7 +23,7 @@ const Sohbet = () => {
     useEffect(() => {
         const fetchSohbetKullanicino = async () => {
           try {
-            const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
+            const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${defaults[0].IQ_MikroUserId}`);
             const kullanicikodu = response.data[0].IQ_Kod;
             setKullanicikodu(kullanicikodu);
       

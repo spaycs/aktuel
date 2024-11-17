@@ -87,7 +87,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const fetchGunlukDurum = async () => {
       try {
-        if (!defaults || !defaults[0]?.IQ_MikroPersKod) {
+        if (!defaults || !defaults[0].IQ_MikroPersKod) {
           console.log('IQ_MikroPersKod değeri bulunamadı, API çağrısı yapılmadı.');
           return;
         }
@@ -103,7 +103,8 @@ const Home = ({ navigation }) => {
   
     const fetchMenuIzinleri = async () => {
       try {
-        if (!defaults || !defaults[0]?.IQ_MikroUserId) {
+        if (!defaults || !defaults[0].IQ_MikroUserId) {
+          console.log('test', defaults[0].IQ_MikroUserId)
           console.log('IQ_MikroUserId değeri bulunamadı, API çağrısı yapılmadı.');
           return;
         }
@@ -125,7 +126,7 @@ const Home = ({ navigation }) => {
   
     const fetchGunlukKazancVerileri = async () => {
       try {
-        if (!defaults || !defaults[0]?.IQ_MikroPersKod) {
+        if (!defaults || !defaults[0].IQ_MikroPersKod) {
           console.log('IQ_MikroPersKod değeri bulunamadı, API çağrısı yapılmadı.');
           return;
         }
@@ -152,7 +153,7 @@ const Home = ({ navigation }) => {
       fetchMenuIzinleri(); // Menü izinlerini fetch et
       fetchGunlukKazancVerileri(); // Günlük kazanç verilerini fetch et
     } else {
-      console.log('Defaults henüz mevcut değil, API çağrısı yapılmadı.');
+      console.log('Defaults2 henüz mevcut değil, API çağrısı yapılmadı.');
     }
   }, [defaults]);
   

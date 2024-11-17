@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity,ScrollView, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity,ScrollView, FlatList, ActivityIndicator, Modal, Button } from 'react-native';
 import axiosLinkMain from '../../../utils/axiosMain';
 import { colors } from '../../../res/colors'; 
 import { Ara } from '../../../res/images';
@@ -19,6 +19,7 @@ const CariBakiyeYaslandirmaAylik = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); 
   const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
   const [personelList, setPersonelList] = useState([]); 
   const IQ_MikroPersKod = defaults[0]?.IQ_MikroPersKod || '';
@@ -154,19 +155,58 @@ const renderItem = ({ item }) => {
     {IQ_Admin === 1 && (
       <View style={styles.pickerContainer}>
         <Text style={styles.pickerLabel}>Personel Seçimi</Text>
-        <View style={styles.inputStyle}>
-          <Picker
-            selectedValue={selectedPersonel}
-            itemStyle={{height:40, fontSize: 10 }} style={{ marginHorizontal: -10 }} 
-            onValueChange={(itemValue) => setSelectedPersonel(itemValue)}
-          >
-            <Picker.Item label="Personel seçin" value="" />
-            {personelList.map((personel) => (
-              <Picker.Item key={personel.No} label={personel.Adi} value={personel.No} />
-            ))}
-          </Picker>
-        </View>
-        <View style={styles.filterRow}>
+        <View style={MainStyles.inputStyle}>
+        {Platform.OS === 'ios' ? (
+        <>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+              {selectedPersonel
+                ? personelList.find(personel => personel.No === selectedPersonel)?.Adi || 'Personel Seçin'
+                : 'Personel Seçin'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* iOS Modal */}
+          <Modal visible={isModalVisible} animationType="slide" transparent>
+          <View style={MainStyles.modalContainerPicker}>
+            <View style={MainStyles.modalContentPicker}>
+                <Picker
+                  selectedValue={selectedPersonel}
+                  onValueChange={(itemValue) => {
+                    setSelectedPersonel(itemValue);
+                    setIsModalVisible(false); // Modal'ı kapat
+                  }}
+                  style={MainStyles.picker}
+                >
+                  <Picker.Item label="Personel Seçin" value="" />
+                  {personelList.map((personel) => (
+                    <Picker.Item key={personel.No} label={personel.Adi} value={personel.No} />
+                  ))}
+                </Picker>
+                <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+              </View>
+            </View>
+          </Modal>
+        </>
+      ) : (
+        // Android için doğrudan Picker
+        <Picker
+          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
+          selectedValue={selectedPersonel}
+          onValueChange={(itemValue) => setSelectedPersonel(itemValue)}
+        >
+          <Picker.Item label="Personel Seçin" style={MainStyles.textStyle} value="" />
+          {personelList.map((personel) => (
+            <Picker.Item key={personel.No} label={personel.Adi} value={personel.No} />
+          ))}
+        </Picker>
+      )}
+    </View>
+
+      </View>
+    )}
+
+<View style={styles.filterRow}>
         <TextInput
           style={styles.filterInput}
           placeholder="Filtrele..."
@@ -175,10 +215,6 @@ const renderItem = ({ item }) => {
         />
       </View>
 
-      </View>
-    )}
-
-  
 
       {loading ? (
        <FastImage

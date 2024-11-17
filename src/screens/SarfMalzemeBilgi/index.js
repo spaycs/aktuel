@@ -16,6 +16,7 @@ import Button from '../../components/Button';
 
 const SarfMalzemeBilgi = () => {
   const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { faturaBilgileri, setAddedProducts, setFaturaBilgileri } = useContext(ProductContext);
   const [sth_evrakno_seri, setSth_evrakno_seri] = useState('');
   const [sth_evrakno_sira, setSth_evrakno_sira] = useState('');
@@ -172,7 +173,7 @@ const SarfMalzemeBilgi = () => {
   useEffect(() => {
     const fetchSatisIrsaliyeSerino = async () => {
       try {
-        const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${authData.IQ_MikroUserId}`);
+        const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${defaults[0].IQ_MikroUserId}`);
         const satisIrsaliyeSerino = response.data[0].IQ_SarfSeriNo;
         setSth_evrakno_seri(satisIrsaliyeSerino);
   
