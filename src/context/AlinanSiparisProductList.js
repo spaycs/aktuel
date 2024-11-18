@@ -147,7 +147,7 @@ const AlinanSiparisProductList = () => {
         const vade = selectedProduct.Vade; // Vade değerini al
         return vade; // Vade değerini döndür
       } else {
-        return null;
+        return 0;
       }
     } catch (error) {
       console.error('Error fetching stock details:', error);
@@ -164,52 +164,34 @@ const AlinanSiparisProductList = () => {
   
 
   const handleItemClick = async (item) => {
-    if (!alinanSiparis.sip_musteri_kod) {
-      Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
-      return;
-    }
-  
-   const existingProductCount = addedAlinanSiparisProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
-  
-    if (existingProductCount >= 2) {
-      Alert.alert('Uyarı', 'Bu ürün zaten 2 kez eklenmiştir, daha fazla ekleyemezsiniz.');
-      return;
-    }
-  
-    // Stok detaylarını getir ve Vade bilgisini al
-    const vade = await fetchStockDetails(item.Stok_Kod);
-  
-    if (vade !== null) {
-      // Vade bilgisi ile birlikte ürünü ekle veya güncelle
-      setAddedAlinanSiparisProducts((prevProducts) => {
-        const productExists = prevProducts.some((product) => product.Stok_Kod === item.Stok_Kod);
-  
-        if (productExists) {
-          // Mevcut ürünü güncelle
-          return prevProducts.map((product) =>
-            product.Stok_Kod === item.Stok_Kod
-              ? { ...product, StokVade: vade }
-              : product
-          );
-        } else {
-          // Yeni ürünü ekle
-          return [
-            ...prevProducts,
-            {
-              ...item, // Tüm ürün bilgilerini taşı
-              StokVade: vade, // Vade bilgisini StokVade olarak ekle
-            },
-          ];
-        }
-      });
-  
-      console.log(`Added or updated product with StokVade: ${vade}`);
-    }
-  
-    // Modalı aç ve seçilen ürünü ayarla
-    setSelectedProduct(item);
-    setModalVisible(true);
-  };
+  if (!alinanSiparis.sip_musteri_kod) {
+    Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
+    return;
+  }
+
+  // Stok detaylarını getir ve Vade bilgisini al
+  const vade = await fetchStockDetails(item.Stok_Kod);
+
+  if (vade !== null) {
+    // Ürün listesinde güncelleme yap
+    setAddedAlinanSiparisProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.Stok_Kod === item.Stok_Kod
+          ? { ...product, StokVade: vade } // StokVade'yi güncelle
+          : product // Diğer ürünleri aynı bırak
+      )
+    );
+
+    console.log(`Updated product with StokVade: ${vade}`);
+  } else {
+    console.warn(`Vade bilgisi alınamadı: ${item.Stok_Kod}`);
+  }
+
+  // Modalı aç ve seçilen ürünü ayarla
+  setSelectedProduct(item);
+  setModalVisible(true);
+};
+
   
   
   

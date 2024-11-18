@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert,  } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert, ActivityIndicator,  } from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
@@ -143,16 +143,26 @@ const StokEklemeOnizleme = () => {
 
 
     {/* Kaydet İptal Seçim */}
+    {loading && (
+        <View style={MainStyles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      )}
+
       <View style={MainStyles.saveContainer}>
-        <TouchableOpacity style={MainStyles.saveButton} onPress={handleSave} > 
-            <View>
-                <Text style={MainStyles.saveButtonText}>Kaydet</Text>
-            </View>
+        <TouchableOpacity
+          style={MainStyles.saveButton}
+          onPress={handleSave}
+          disabled={loading} // Kaydet butonunu devre dışı bırak
+        >
+          <Text style={MainStyles.saveButtonText}>Kaydet</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={MainStyles.saveButton} onPress={handleCancel}> 
-            <View>
-                <Text style={MainStyles.saveButtonText}>İptal</Text>
-            </View>
+        <TouchableOpacity
+          style={MainStyles.saveButton}
+          onPress={handleCancel}
+          disabled={loading} // İptal butonunu devre dışı bırak
+        >
+          <Text style={MainStyles.saveButtonText}>İptal</Text>
         </TouchableOpacity>
       </View>
     {/* Kaydet İptal Seçim */}

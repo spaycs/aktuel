@@ -94,21 +94,30 @@ const AlinanSiparisOnizleme = () => {
   }, [defaults]);
 
   // Toplam Hesaplamalar
-    useEffect(() => {
-      if (addedAlinanSiparisProducts.length > 0) {
-        const selectedProduct = addedAlinanSiparisProducts[0]; 
+useEffect(() => {
+  if (addedAlinanSiparisProducts.length > 0) {
+    const selectedProduct = addedAlinanSiparisProducts[0];
 
-        if (selectedProduct) {
-          const newQuantity = parseFloat(selectedProduct.sth_miktar.toString().replace(',', '.')) || 0;
-          const birimKDV = parseFloat(selectedProduct.Birim_KDV) || 0;
-          const total = parseFloat(selectedProduct.Birim_KDV) || 0;
+    if (selectedProduct) {
+      // sth_miktar değeri varsa kullan, yoksa 0 olarak varsay
+      const newQuantity = selectedProduct.sth_miktar !== undefined && selectedProduct.sth_miktar !== null
+        ? parseFloat(selectedProduct.sth_miktar.toString().replace(',', '.'))
+        : 0;
 
-          const calculatedValue = (newQuantity * birimKDV).toFixed(2);
-          setCalculatedTutar(calculatedValue);
+      // Birim_KDV değeri varsa kullan, yoksa 0 olarak varsay
+      const birimKDV = selectedProduct.Birim_KDV !== undefined && selectedProduct.Birim_KDV !== null
+        ? parseFloat(selectedProduct.Birim_KDV)
+        : 0;
 
-        }
-      }
-    }, [addedAlinanSiparisProducts]); 
+      const total = birimKDV; // total hesaplama için kontrol eklenebilir
+
+      // Hesaplanan değeri tutar
+      const calculatedValue = (newQuantity * birimKDV).toFixed(2);
+      setCalculatedTutar(calculatedValue);
+    }
+  }
+}, [addedAlinanSiparisProducts]);
+
 
     const calculateIskonto = (selectedProductId = null) => {
       // Eğer belirli bir ürün için iskonto hesaplanacaksa
@@ -687,17 +696,27 @@ const AlinanSiparisOnizleme = () => {
       </Modal>
     {/* Açıklama Ekleme */}
     
-    {/* Kaydet İptal Seçim */}
+   {/* Kaydet İptal Seçim */}
+   {loading && (
+        <View style={MainStyles.loadingOverlay}>
+          <ActivityIndicatorBase size="large" color="#fff" />
+        </View>
+      )}
+
       <View style={MainStyles.saveContainer}>
-        <TouchableOpacity style={MainStyles.saveButton} onPress={handleSave} > 
-            <View>
-                <Text style={MainStyles.saveButtonText}>Kaydet</Text>
-            </View>
+        <TouchableOpacity
+          style={MainStyles.saveButton}
+          onPress={handleSave}
+          disabled={loading} // Kaydet butonunu devre dışı bırak
+        >
+          <Text style={MainStyles.saveButtonText}>Kaydet</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={MainStyles.saveButton} onPress={handleCancel}> 
-            <View>
-                <Text style={MainStyles.saveButtonText}>İptal</Text>
-            </View>
+        <TouchableOpacity
+          style={MainStyles.saveButton}
+          onPress={handleCancel}
+          disabled={loading} // İptal butonunu devre dışı bırak
+        >
+          <Text style={MainStyles.saveButtonText}>İptal</Text>
         </TouchableOpacity>
       </View>
     {/* Kaydet İptal Seçim */}

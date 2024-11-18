@@ -133,12 +133,24 @@ const CustomDrawerContent = (props) => {
       <View style={{paddingVertical: 10, flexDirection :'row', paddingHorizontal: 10, }}>
       
         <View style={{flex:1}}>
-          <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
-         
+        <View
+          style={{
+            paddingVertical: 20,
+            backgroundColor: colors.textInputBg,
+            borderRadius: 10,
+            paddingLeft: 10,
+            marginBottom: 10,
+          }}
+        >
           <Text style={{ fontSize: 12 }}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Veri Tabanı:</Text>  {defaults.length > 0 ? authData.FirmaKodu : '---'}
-            </Text>
-          </View>
+            <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Veri Tabanı:</Text>{' '}
+            {defaults.length > 0
+              ? authData.FirmaKodu === 'HilalMuhasebe'
+                ? 'Deneme'
+                : authData.FirmaKodu
+              : '---'}
+          </Text>
+        </View>
           <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
          
           <Text style={{ fontSize: 12 }}>

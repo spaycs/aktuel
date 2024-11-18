@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert,  ActivityIndicator, SafeAreaView} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert,  ActivityIndicator, SafeAreaView, ActivityIndicatorBase} from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
@@ -683,7 +683,7 @@ const SatisIrsaliyesiOnizleme = () => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+          <ActivityIndicatorBase size="large" color="#fff" />
         </View>
       )}
 
@@ -703,6 +703,8 @@ const SatisIrsaliyesiOnizleme = () => {
           <Text style={MainStyles.saveButtonText}>İptal</Text>
         </TouchableOpacity>
       </View>
+    {/* Kaydet İptal Seçim */}
+
     </View>
   );
 };

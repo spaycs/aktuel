@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
 import { useAuth } from '../../components/userDetail/Id';
@@ -12,17 +11,18 @@ const Raporlar = ({ navigation }) => {
   const [menuIzinleri, setMenuIzinleri] = useState(null); // Menü izinleri için state
   const [hasAccess, setHasAccess] = useState(true); // Erişim izni kontrolü
 
-  
   useEffect(() => {
     const fetchMenuIzinleri = async () => {
       try {
-        const temsilciKod = defaults[0].IQ_MikroUserId; // authData'dan IQ Kod alın
+        const temsilciKod = defaults[0]?.IQ_MikroUserId; // authData'dan IQ Kod alın
+        if (!temsilciKod) return;
+
         const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
         const izinData = response.data[0]; // İlk gelen veriyi alıyoruz
         setMenuIzinleri(izinData);
 
         // Eğer tüm menülere erişim izni 0 ise, erişim izni olmadığını belirleyelim
-        const hasAnyAccess = Object.values(izinData).some(value => value === 1);
+        const hasAnyAccess = Object.values(izinData).some((value) => value === 1);
         setHasAccess(hasAnyAccess);
       } catch (error) {
         console.error('Menü izinleri alınırken hata oluştu:', error);
@@ -40,135 +40,67 @@ const Raporlar = ({ navigation }) => {
       Alert.alert('Erişim Hatası', 'Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.');
     }
   };
-  
+
+  const renderButton = (title, screen, izinKey) => {
+    const hasPermission = menuIzinleri && menuIzinleri[izinKey] === 1;
+
+    return (
+      <TouchableOpacity
+        key={izinKey}
+        style={[styles.button, !hasPermission && styles.disabledButton]}
+        onPress={() => handlePress(screen, izinKey)}
+        disabled={!hasPermission}
+      >
+        <Text style={[styles.buttonText, !hasPermission && styles.disabledButtonText]}>
+          {title}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
-    {/* Cari Bakiye Yaşlandırma Aylık */}
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('CariBakiyeYaslandirmaAylik', 'IQM_CariBakiyeYasladirmaAylik')}
-    >
-      <Text style={styles.buttonText}>Cari Bakiye Yaşlandırma Aylık</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('CariBakiyeYasladirmaCoklu', 'IQM_CariBakiyeYasladirmaCoklu')}
-    >
-      <Text style={styles.buttonText}>Cari Bakiye Yasladirma Tekli</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('ExtreFoy', 'IQM_ExtreFoy')}
-    >
-      <Text style={styles.buttonText}>Extre Föy</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('NelerSattik', 'IQM_NelerSattik')}
-    >
-      <Text style={styles.buttonText}>Neler Sattık</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('KredilerOzet', 'IQM_KredilerOzet')}
-    >
-      <Text style={styles.buttonText}>Krediler Özet</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('CekSenetListesi', 'IQM_CekSenetListesi')}
-    >
-      <Text style={styles.buttonText}>Çek Senet Listesi</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('EnvanterMaliyet', 'IQM_EnvanterMaliyetRaporu')}
-    >
-      <Text style={styles.buttonText}>Envanter Maliyet</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('KasaBorc', 'IQM_KasaRaporuBorc')}
-    >
-      <Text style={styles.buttonText}>Kasa Borç</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('KasaAlacak', 'IQM_KasaRaporuAlacak')}
-    >
-      <Text style={styles.buttonText}>Kasa Alacak</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('BankaBakiyeleri', 'IQM_BankaBakiyeleri')}
-    >
-      <Text style={styles.buttonText}>Banka Bakiyeleri</Text>
-    </TouchableOpacity>
-
-    {/* 
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('PatronEkrani', 'IQM_PatronEkrani')}
-    >
-      <Text>Patron Ekranı</Text>
-    </TouchableOpacity>
-    */}
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('YillikRapor', 'IQM_YillikRapor')}
-    >
-      <Text style={styles.buttonText}>Yıllık Rapor</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('SiparisKarsilama', 'IQM_SiparisKarsilama')}
-    >
-      <Text style={styles.buttonText}>Sipariş Karşılama</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('SorumlulukBazindaBekleyenSiparis', 'IQM_SrmBazindaBekleyenSiparis')}
-    >
-      <Text style={styles.buttonText}>Sorumluluk Bazında Bekleyen Sipariş</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.button}
-      onPress={() => handlePress('TedarikciBazindaSatisKarsilama', 'IQM_TdrkcBazindaSatisKarsilastirma')}
-    >
-      <Text style={styles.buttonText}>Tedarikçi Bazında Satış Karşılama</Text>
-    </TouchableOpacity>
-    
-  </ScrollView>
-);
+      {renderButton('Cari Bakiye Yaşlandırma Aylık', 'CariBakiyeYaslandirmaAylik', 'IQM_CariBakiyeYasladirmaAylik')}
+      {renderButton('Cari Bakiye Yasladirma Tekli', 'CariBakiyeYasladirmaCoklu', 'IQM_CariBakiyeYasladirmaCoklu')}
+      {renderButton('Extre Föy', 'ExtreFoy', 'IQM_ExtreFoy')}
+      {renderButton('Neler Sattık', 'NelerSattik', 'IQM_NelerSattik')}
+      {renderButton('Krediler Özet', 'KredilerOzet', 'IQM_KredilerOzet')}
+      {renderButton('Çek Senet Listesi', 'CekSenetListesi', 'IQM_CekSenetListesi')}
+      {renderButton('Envanter Maliyet', 'EnvanterMaliyet', 'IQM_EnvanterMaliyetRaporu')}
+      {renderButton('Kasa Borç', 'KasaBorc', 'IQM_KasaRaporuBorc')}
+      {renderButton('Kasa Alacak', 'KasaAlacak', 'IQM_KasaRaporuAlacak')}
+      {renderButton('Banka Bakiyeleri', 'BankaBakiyeleri', 'IQM_BankaBakiyeleri')}
+      {renderButton('Yıllık Rapor', 'YillikRapor', 'IQM_YillikRapor')}
+      {renderButton('Sipariş Karşılama', 'SiparisKarsilama', 'IQM_SiparisKarsilama')}
+      {renderButton('Sorumluluk Bazında Bekleyen Sipariş', 'SorumlulukBazindaBekleyenSiparis', 'IQM_SrmBazindaBekleyenSiparis')}
+      {renderButton('Tedarikçi Bazında Satış Karşılama', 'TedarikciBazindaSatisKarsilama', 'IQM_TdrkcBazindaSatisKarsilastirma')}
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-container: {
-  flex: 1,
-  padding: 20,
-  backgroundColor: colors.white,
-},
-button: {
-  height: 40,
-  marginBottom: 10,
-  borderRadius: 10,
-  backgroundColor: "#444444",
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-buttonText:{
-color: colors.white,
-}
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: colors.white,
+  },
+  button: {
+    height: 40,
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: '#444444',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  disabledButton: {
+    backgroundColor: '#dfdfdf', // Soluk renk
+  },
+  buttonText: {
+    color: colors.white,
+  },
+  disabledButtonText: {
+    color: colors.white,
+  },
 });
 
 export default Raporlar;

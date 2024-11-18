@@ -133,10 +133,11 @@ const AlinanSiparisProductModal = ({
   useEffect(() => {
     if (modalVisible && selectedProduct) {
       const fetchSatisFiyati = async () => {
+        console.log('addedAlinanSiparisProducts.StokVade', selectedProduct?.Vade);
         const cari = alinanSiparis.sth_cari_kodu || alinanSiparis.sip_musteri_kod  || alinanSiparis.cha_kod;
         const stok = selectedProduct?.Stok_Kod ? selectedProduct.Stok_Kod.replace(/\s/g, '%20') : '';
         const somkod = alinanSiparis.sth_stok_srm_merkezi || alinanSiparis.sip_stok_sormerk || alinanSiparis.cha_srmrkkodu;
-        const odpno = alinanSiparis.sip_opno || alinanSiparis.sth_odeme_op  || alinanSiparis.cha_vade || addedAlinanSiparisProducts.StokVade || 0;
+        const odpno = alinanSiparis.sip_opno || alinanSiparis.sth_odeme_op  || alinanSiparis.cha_vade || selectedProduct?.Vade || 0;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
         console.log(apiUrl);
         
