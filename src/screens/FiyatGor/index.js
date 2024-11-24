@@ -1,14 +1,16 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal, TouchableWithoutFeedback } from 'react-native';
-import { MainStyles } from '../../res/style';
-import axiosLinkMain from '../../utils/axiosMain';
-import { ProductContext } from '../../context/ProductContext';
 import { useAuth } from '../../components/userDetail/Id';
-import ProductModal from '../../context/ProductModal';
+import { useAuthDefault } from '../../components/DefaultUser';
+import { ProductContext } from '../../context/ProductContext';
+import axiosLinkMain from '../../utils/axiosMain';
+import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
 import { Picker } from '@react-native-picker/picker';
 import { RNCamera } from 'react-native-camera';
-import { Camera } from '../../res/images';
+import { Camera, Nokta, Down } from '../../res/images';
+import FastImage from 'react-native-fast-image';
+import Button from '../../components/Button';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -16,142 +18,143 @@ const normalizeText = (text) => {
 
 const FiyatGor = () => {
   const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts } = useContext(ProductContext);
+
+// State Yönetimi
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState('Stok Ad');
-  const [markaOptions, setMarkaOptions] = useState([]);
-  const [selectedMarka, setSelectedMarka] = useState('');
-  const [stokAdOptions, setStokAdOptions] = useState([]);
-  const [stokKodOptions, setStokKodOptions] = useState([]);
-  const [altGrupOptions, setAltGrupOptions] = useState([]);
-  const [anaGrupOptions, setAnaGrupOptions] = useState([]);
-  const [reyonOptions, setReyonOptions] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const searchTimeoutRef = useRef(null);
+// State Yönetimi
 
-  const fetchProductData = useCallback(async (searchTerm = '', searchCriteria = 'Stok Ad', marka = '') => {
-    try {
-      let response;
+  // Arama Kriterleri
+    const pickerItems = [
+      { label: 'Stok Adı', value: 'Stok Ad', tip: 1 },
+      { label: 'Stok Kodu', value: 'Stok Kod', tip: 2 },
+      { label: 'Marka', value: 'Marka', tip: 3 },
+      { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
+      { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
+      { label: 'Reyon', value: 'Reyon', tip: 6 },
+      { label: 'Barkod', value: 'Barkod', tip: 7 },
+    ];
+  // Arama Kriterleri
 
-      // Barkod seçildiğinde barkod API'sini çağır
-      if (searchCriteria === 'Barkod') {
-        response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${searchTerm}`);
-        const data = response.data;
+  // Arama Kriterinden Tip Alma
+    const getTipForValue = (value) => {
+      const selectedItem = pickerItems.find((item) => item.value === value);
+      return selectedItem ? selectedItem.tip : 1;
+    };
+  // Arama Kriterinden Tip Alma
 
-        const filteredData = data.map(item => ({
-          Stok_Ad: item.Stok_Ad,
-          Stok_Kod: item.Stok_Kod,
-          Liste_Fiyatı: item.Liste_Fiyatı,
-          Depodaki_Miktar: item.Depodaki_Miktar,
-          Depo1Miktar: item.Depo1Miktar,
-          Depo2Miktar: item.Depo2Miktar,
-          Vergi: item.Vergi,
-          Birim: item.Birim,
-          Marka: item.Marka,
-          AltGrup: item.AltGrup,
-          AnaGrup: item.AnaGrup,
-          Reyon: item.Reyon,
-        }));
-
-        setData(filteredData);
-      } else {
-        // Diğer kriterler için stok API'sini çağır
-        response = await axiosLinkMain.get('/Api/Stok/StokListesi');
-        const data = response.data;
-
-        const markaSet = new Set(data.map(item => item.Marka).filter(marka => marka));
-        const stokAdSet = new Set(data.map(item => item.Stok_Ad).filter(ad => ad));
-        const stokKodSet = new Set(data.map(item => item.Stok_Kod).filter(kod => kod));
-        const altGrupSet = new Set(data.map(item => item.AltGrup).filter(grup => grup));
-        const anaGrupSet = new Set(data.map(item => item.AnaGrup).filter(grup => grup));
-        const reyonSet = new Set(data.map(item => item.Reyon).filter(reyon => reyon));
-
-        setMarkaOptions(Array.from(markaSet));
-        setStokAdOptions(Array.from(stokAdSet));
-        setStokKodOptions(Array.from(stokKodSet));
-        setAltGrupOptions(Array.from(altGrupSet));
-        setAnaGrupOptions(Array.from(anaGrupSet));
-        setReyonOptions(Array.from(reyonSet));
-
-        const normalizedSearchTerm = normalizeText(searchTerm).toLowerCase().split(' ');
-
-        const filteredData = data
-          .filter(item => {
-            const normalizedItemText = normalizeText(item[searchCriteria] || '').toLowerCase();
-            const matchesSearchTerm = normalizedSearchTerm.every(term => normalizedItemText.includes(term));
-            const matchesMarka = marka ? item.Marka === marka : true;
-            return matchesSearchTerm && matchesMarka;
-          })
-          .map(item => ({
-            Stok_Ad: item.Stok_Ad,
-            Stok_Kod: item.Stok_Kod,
-            Liste_Fiyatı: item.Liste_Fiyatı,
-            Depodaki_Miktar: item.Depodaki_Miktar,
-            Depo1Miktar: item.Depo1Miktar,
-            Depo2Miktar: item.Depo2Miktar,
-            Vergi: item.Vergi,
-            Birim: item.Birim,
-            Marka: item.Marka,
-            AltGrup: item.AltGrup,
-            AnaGrup: item.AnaGrup,
-            Reyon: item.Reyon,
-          }));
-
-        setData(filteredData);
+  // API'den Ürün Verilerini Getir
+    const fetchProductData = async (term, criteria) => {
+      setLoading(true);
+      try {
+        const tip = getTipForValue(criteria);
+        const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${term}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`);
+        setData(response.data);
+      } catch (err) {
+        Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
-    }
-  }, []);
+    };
+  // API'den Ürün Verilerini Getir
 
-  useEffect(() => {
-    fetchProductData();
-  }, [fetchProductData]);
+  // Arama Gecikmesiyle API'ye Çağrı Yap
+    const handleSearchTermChange = (text) => {
+      setSearchTerm(text);
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      searchTimeoutRef.current = setTimeout(() => {
+        fetchProductData(text, searchCriteria); 
+      }, 500); 
+    };
+  // Arama Gecikmesiyle API'ye Çağrı Yap
+  
+  // İlk Yükleme
+    useEffect(() => {
+      fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
+    }, []);
+  // İlk Yükleme
 
-  const openModal = (item) => {
-    setSelectedItem(item);
-    setModalVisible(true);
-  };
+  // Modal İşlemleri
+    const openModal = (item) => {
+      setSelectedItem(item);
+      setModalVisible(true);
+    };
 
-  const closeModal = () => {
-    setModalVisible(false);
-    setSelectedItem(null);
-  };
+    const closeModal = () => {
+      setModalVisible(false);
+      setSelectedItem(null);
+    };
+  // Modal İşlemleri
 
-  const handleCameraOpen = () => {
-    setCameraModalVisible(true); 
-  };
+  // Kamera İşlemleri
+    const handleCameraOpen = () => {setCameraModalVisible(true);};
+    const handleCameraClose = () => {setCameraModalVisible(false);};
 
-  const handleCameraClose = () => {
-    setCameraModalVisible(false); 
-  };
+    const handleBarCodeRead = ({ data }) => {
+      setCameraModalVisible(false);
+      setSearchCriteria('Barkod');
+      setSearchTerm(data);
+      fetchProductData(); 
+    };
+  // Kamera İşlemleri 
 
-  const handleBarCodeRead = ({ data }) => {
-    setCameraModalVisible(false);
-    setSearchCriteria('Barkod');
-    setSearchTerm(data); 
-    fetchProductData(data, 'Barkod'); 
-  };
+  // Stok Raporları
+    const navigateToStokHareketFoyu = () => {
+      if (selectedItem) {
+        navigation.navigate('StokHareketFoyu', { Stok_Kod: selectedItem.Stok_Kod });
+      } else {
+        Alert.alert('Hata', 'Stok seçimi yapılmadı.');
+      }
+    };
+    const navigateToStokDepoDurum = () => {
+      if (selectedItem) {
+        navigation.navigate('StokDepoDurum', { Stok_Kod: selectedItem.Stok_Kod });
+      } else {
+        Alert.alert('Hata', 'Stok seçimi yapılmadı.');
+      }
+    };
+  // Stok Raporları
 
    const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => openModal(item)} style={MainStyles.itemContainer}>
-      <View style={MainStyles.itemTextContainer}>
-        <Text style={MainStyles.itemText}>Stok Kodu: {item.Stok_Kod}</Text>
-        <Text style={MainStyles.itemText}>Stok Adı: {item.Stok_Ad}</Text>
-        <Text style={MainStyles.itemText}>Liste Fiyatı: {item.Liste_Fiyatı}</Text>
-        <Text style={MainStyles.itemText}>Miktar: {item.Depodaki_Miktar}</Text>
-        <Text style={MainStyles.itemText}>Depo1Miktar: {item.Depo1Miktar}</Text>
-        <Text style={MainStyles.itemText}>Depo2Miktar: {item.Depo2Miktar}</Text>
-        <Text style={MainStyles.itemText}>Vergi: {item.Vergi}</Text>
-        <Text style={MainStyles.itemText}>Birim: {item.Birim}</Text>
-        <Text style={MainStyles.itemText}>Marka: {item.Marka}</Text>
-        <Text style={MainStyles.itemText}>AltGrup: {item.AltGrup}</Text>
-        <Text style={MainStyles.itemText}>AnaGrup: {item.AnaGrup}</Text>
-        <Text style={MainStyles.itemText}>Reyon: {item.Reyon}</Text>
+    <TouchableOpacity onPress={() => openModal(item)} style={MainStyles.itemContainerPL}>
+      <View style={MainStyles.itemContentPL}>
+      <View style={MainStyles.itemHeaderPL}>
+        <Text style={MainStyles.headerTextPL}>Stok Kodu: {item.Stok_Kod}</Text>
+        <Text style={MainStyles.headerTextPL2}>
+        <Nokta /> Liste Fiyatı: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.Liste_Fiyatı)}
+        </Text>
       </View>
+      <View style={MainStyles.itemStokPL}>
+      <Text style={MainStyles.itemTitlePL}>{item.Stok_Ad}</Text>
+      <Text style={MainStyles.itemSubTitlePL}>Marka: {item.Marka}</Text>
+      <Text style={MainStyles.itemSubTitlePL}>Miktar: {item.Depodaki_Miktar}</Text>
+      </View>
+      {/* Detay alanları */}
+      <View style={MainStyles.itemContainerDetailPL}>
+        <View style={MainStyles.leftDetails}>
+          <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
+        </View>
+        <View style={MainStyles.rightDetails}>
+          <Text style={MainStyles.itemTextPL}>Vergi: {item.sth_vergi}</Text>
+          <Text style={MainStyles.itemTextPL}>Ana Grup: {item.AnaGrup}</Text>
+          <Text style={MainStyles.itemTextPL}>Alt Grup: {item.AltGrup}</Text>
+          <Text style={MainStyles.itemTextPL}>Reyon: {item.Reyon}</Text>
+        </View>
+      </View>
+    </View>
     </TouchableOpacity>
   );
 
@@ -159,19 +162,41 @@ const FiyatGor = () => {
     <View style={MainStyles.slContainer}>
       <View style={MainStyles.pageTop}>
         <View style={MainStyles.inputStyle}>
-          <Picker
-            itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-            selectedValue={searchCriteria}
-            onValueChange={(itemValue) => setSearchCriteria(itemValue)}
-          >
-            <Picker.Item label="Stok Adı" value="Stok Ad" style={MainStyles.textStyle} />
-            <Picker.Item label="Stok Kodu" value="Stok Kod" style={MainStyles.textStyle} />
-            <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
-            <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
-            <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
-            <Picker.Item label="Reyon" value="Reyon" style={MainStyles.textStyle} />
-            <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
-          </Picker>
+         {Platform.OS === 'ios' ? (
+              <>
+                <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                  <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                    {pickerItems.find(item => item.value === searchCriteria)?.label || 'Kriter Seçin'}
+                  </Text>
+                </TouchableOpacity>
+                <Modal visible={isModalVisible} animationType="slide" transparent>
+                  <View style={MainStyles.modalContainerPicker}>
+                    <View style={MainStyles.modalContentPicker}>
+                      <Picker
+                        selectedValue={searchCriteria}
+                        onValueChange={(itemValue) => setSearchCriteria(itemValue)}
+                      >
+                        {pickerItems.map((item) => (
+                          <Picker.Item key={item.value} label={item.label} value={item.value} style={MainStyles.textStyle} />
+                        ))}
+                      </Picker>
+                      <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                    </View>
+                  </View>
+                </Modal>
+              </>
+            ) : (
+              <Picker
+                selectedValue={searchCriteria}
+                onValueChange={(itemValue) => setSearchCriteria(itemValue)}
+                itemStyle={{ height: 40, fontSize: 12 }}
+                style={{ marginHorizontal: -10 }}
+              >
+                {pickerItems.map((item) => (
+                  <Picker.Item key={item.value} label={item.label} value={item.value} style={MainStyles.textStyle} />
+                ))}
+              </Picker>
+            )}
         </View>
       </View>
       <View style={MainStyles.inputContainer}>
@@ -180,7 +205,7 @@ const FiyatGor = () => {
           placeholder="Ürün kodu veya adı ile ara"
           placeholderTextColor={colors.placeholderTextColor}
           value={searchTerm}
-          onChangeText={setSearchTerm}
+          onChangeText={handleSearchTermChange}
         />
         <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
           <Camera/>
@@ -215,41 +240,43 @@ const FiyatGor = () => {
         </TouchableOpacity>
       </Modal>
 
-      <TouchableOpacity style={MainStyles.searchButton} onPress={() => fetchProductData(searchTerm, searchCriteria, selectedMarka)}>
-        <Text style={MainStyles.modalSearchButtonText}>ARA</Text>
-      </TouchableOpacity>
-
-      <FlatList
+      {loading ? ( 
+       <FastImage
+        style={MainStyles.loadingGif}
+        source={require('../../res/images/image/pageloading.gif')}
+        resizeMode={FastImage.resizeMode.contain}
+        />
+      ) : (
+      <>
+       <FlatList
         data={data}
+        keyExtractor={(item) => item.Stok_Kod.toString()}
         renderItem={renderItem}
-        keyExtractor={(item) => item.Stok_Kod}
-      />
-      {selectedItem && (
-        <Modal visible={modalVisible} transparent={true} animationType="slide">
-          <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={MainStyles.modalStokContainer}>
-            <View style={MainStyles.modalStokContent}>
-              <Text style={MainStyles.modalTitle}>Stok Detayı</Text>
-              <Text style={MainStyles.modalText}>Stok Kodu: {selectedItem.Stok_Kod}</Text>
-              <Text style={MainStyles.modalText}>Stok Adı: {selectedItem.Stok_Ad}</Text>
-              <Text style={MainStyles.modalText}>Depodaki Miktar: {selectedItem.Depodaki_Miktar}</Text>
-              <Text style={MainStyles.modalText}>Depodaki Miktar 1: {selectedItem.Depo1Miktar}</Text>
-              <Text style={MainStyles.modalText}>Depodaki Miktar 2: {selectedItem.Depo2Miktar}</Text>
-              <Text style={MainStyles.modalText}>Liste Fiyatı: {selectedItem.Liste_Fiyatı} ₺</Text>
-              <Text style={MainStyles.modalText}>Vergi: {selectedItem.Vergi}</Text>
-              <Text style={MainStyles.modalText}>Birim: {selectedItem.Birim}</Text>
-              <Text style={MainStyles.modalText}>Marka: {selectedItem.Marka}</Text>
-              <Text style={MainStyles.modalText}>AltGrup: {selectedItem.AltGrup}</Text>
-              <Text style={MainStyles.modalText}>AnaGrup: {selectedItem.AnaGrup}</Text>
-              <Text style={MainStyles.modalText}>Reyon: {selectedItem.Reyon}</Text>
-              <TouchableOpacity style={MainStyles.closeButton} onPress={closeModal}>
-                <Text style={MainStyles.closeStokDetayiOnizlemeButtonText}>X</Text>
+        ListEmptyComponent={() => <Text style={MainStyles.emptyText}>Arama sonucuna uygun veri bulunamadı</Text>}
+        />
+      </>
+      )}
+      
+      <Modal visible={modalVisible} transparent={true} animationType="slide">
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={MainStyles.modalCariContainer}>
+            <View style={MainStyles.modalCariContent}>
+              <View style={MainStyles.buttonCariModalDetail}>
+                <Text style={MainStyles.buttonCariTitle}>Hızlı Erişim</Text>
+              </View>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={navigateToStokHareketFoyu}>
+                <Text style={MainStyles.cariButtonText}>Stok Hareket Föyü</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={navigateToStokDepoDurum}>
+                <Text style={MainStyles.cariButtonText}>Stok Depo Durum</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={closeModal} style={MainStyles.buttonCariModalDetail}>
+                <Text style={MainStyles.buttonTextKapat}>Kapat</Text>
               </TouchableOpacity>
             </View>
           </View>
           </TouchableWithoutFeedback>
-        </Modal>
-      )}
+      </Modal>
     </View>
   );
 };

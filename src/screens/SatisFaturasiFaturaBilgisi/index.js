@@ -1,20 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList, Alert, ActivityIndicator, Linking, SafeAreaView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ara, Left, PDF, Takvim, TakvimVade } from '../../res/images';
 import { ProductContext } from '../../context/ProductContext';
 import { useAuthDefault } from '../../components/DefaultUser';
-import ProductModal from '../../context/ProductModal';
-import CariListModal from '../../context/CariListModal';
 import { useFocusEffect } from '@react-navigation/native';
 import axiosLinkMain from '../../utils/axiosMain';
 import { colors } from '../../res/colors';
 import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import AdresListModal from '../../context/AdresListModal';
+import CariListModal from '../../context/CariListModal';
 import Button from '../../components/Button';
 
 const SatisFaturasiFaturaBilgisi = () => {
@@ -22,75 +21,72 @@ const SatisFaturasiFaturaBilgisi = () => {
   const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
 
-// Tüm Değişken Değerleri
-  // Bilgi Sayfası
-  const [cha_evrakno_seri, setCha_evrakno_seri] = useState('');
-  const [cha_evrakno_sira, setCha_evrakno_sira] = useState('');
-  const [cha_normal_iade, setCha_normal_iade] = useState('');
-  const [cha_kod, setCha_kod] = useState('');
-  const [cha_cari_unvan1, setCha_cari_unvan1] = useState('');
-  const [cha_d_cins, setCha_d_cins] = useState('');
-  const [cha_exim_kodu, setCha_exim_kodu] = useState('');
-  const [cha_srmrkkodu, setCha_srmrkkodu] = useState('');
-  const [sth_giris_depo_no, setSth_giris_depo_no] = useState('');
-  const [sth_cikis_depo_no, setSth_cikis_depo_no] = useState('');
-  const [cha_adres_no, setCha_adres_no] = useState('');
-  const [cha_projekodu, setCha_projekodu] = useState('');
-  const [cha_vade, setCha_vade] = useState('');
+  // Tüm Değişken Değerleri
+    // Bilgi Sayfası
+    const [cha_evrakno_seri, setCha_evrakno_seri] = useState('');
+    const [cha_evrakno_sira, setCha_evrakno_sira] = useState('');
+    const [cha_normal_iade, setCha_normal_iade] = useState('');
+    const [cha_kod, setCha_kod] = useState('');
+    const [cha_cari_unvan1, setCha_cari_unvan1] = useState('');
+    const [cha_d_cins, setCha_d_cins] = useState('');
+    const [cha_exim_kodu, setCha_exim_kodu] = useState('');
+    const [cha_srmrkkodu, setCha_srmrkkodu] = useState('');
+    const [sth_giris_depo_no, setSth_giris_depo_no] = useState('');
+    const [sth_cikis_depo_no, setSth_cikis_depo_no] = useState('');
+    const [cha_adres_no, setCha_adres_no] = useState('');
+    const [cha_projekodu, setCha_projekodu] = useState('');
+    const [cha_vade, setCha_vade] = useState('');
 
-  // Listeler
-  const [dovizList, setDovizList] = useState([]);
-  const [depoList, setDepoList] = useState([]);
-  const [ihracatKoduList, setIhracatKoduList] = useState([]);
-  const [sorumlulukMerkeziList, setSorumlulukMerkeziList] = useState([]);
-  const [adresList, setAdresList] = useState([]);
-  const [projeKoduList, setProjeKoduList] = useState([]);
-  const [vadeList, setVadeList] = useState([]);
+    // Listeler
+    const [dovizList, setDovizList] = useState([]);
+    const [depoList, setDepoList] = useState([]);
+    const [ihracatKoduList, setIhracatKoduList] = useState([]);
+    const [sorumlulukMerkeziList, setSorumlulukMerkeziList] = useState([]);
+    const [adresList, setAdresList] = useState([]);
+    const [projeKoduList, setProjeKoduList] = useState([]);
+    const [vadeList, setVadeList] = useState([]);
 
-  // Seçimler
-  const [irsaliyeTipi, setIrsaliyeTipi] = useState('Satış Faturası');
-  const [irsaliyeNormalTipi, setIrsaliyeNormalTipi] = useState('Normal');
-  const [pickerOptions, setPickerOptions] = useState([]);
-  const [date, setDate] = useState(new Date());
-  const [evrakDate, setEvrakDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showEvrakDatePicker, setShowEvrakDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [gValue, setGValue] = useState('');
-  const [tValue, setTValue] = useState('');
-  const [selectedVadeNo, setSelectedVadeNo] = useState(null); 
+    // Seçimler
+    const [irsaliyeTipi, setIrsaliyeTipi] = useState('Satış Faturası');
+    const [irsaliyeNormalTipi, setIrsaliyeNormalTipi] = useState('Normal');
+    const [pickerOptions, setPickerOptions] = useState([]);
+    const [date, setDate] = useState(new Date());
+    const [evrakDate, setEvrakDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showEvrakDatePicker, setShowEvrakDatePicker] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [gValue, setGValue] = useState('');
+    const [tValue, setTValue] = useState('');
+    const [selectedVadeNo, setSelectedVadeNo] = useState(null); 
 
-  // Kurallar 
-  const [isEditable, setIsEditable] = useState(false);
-  const [pickerEditable, setPickerEditable] = useState(true);
-  
-  // Datatable
-  const [data, setData] = useState([]); 
-  const [loading, setLoading] = useState(false); 
+    // Kurallar 
+    const [isEditable, setIsEditable] = useState(false);
+    const [pickerEditable, setPickerEditable] = useState(true);
+    
+    // Datatable
+    const [data, setData] = useState([]); 
+    const [loading, setLoading] = useState(false); 
 
-  // Modal Görünürlük
-  const [isModalVisible, setIsModalVisible] = useState(false); // Modal görünürlük kontrolü
-  const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
-  const [isAdresListModalVisible, setIsAdresListModalVisible] = useState(false);
-  const [isSorumlulukMerkeziModalVisible, setIsSorumlulukMerkeziModalVisible] = useState(false);
-  const [isIhracatKoduModalVisible, setIsIhracatKoduModalVisible] = useState(false);
-  const [isProjeKoduModalVisible, setIsProjeKoduModalVisible] = useState(false);
-  const [isVadeModalVisible, setIsVadeModalVisible] = useState(false);
-  const [isGModalVisible, setIsGModalVisible] = useState(false);
-  const [isTModalVisible, setIsTModalVisible] = useState(false);
-  const [isAdresModalVisible, setIsAdresModalVisible] = useState(false);
-  const [isTipModalVisible, setIsTipModalVisible] = useState(false); 
-  const [isEvrakTipModalVisible, setIsEvrakTipModalVisible] = useState(false); 
-  const [isDovizModalVisible, setIsDovizModalVisible] = useState(false);
-  const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
-// Tüm Değişken Değerleri
+    // Modal Görünürlük
+    const [isModalVisible, setIsModalVisible] = useState(false); // Modal görünürlük kontrolü
+    const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
+    const [isAdresListModalVisible, setIsAdresListModalVisible] = useState(false);
+    const [isSorumlulukMerkeziModalVisible, setIsSorumlulukMerkeziModalVisible] = useState(false);
+    const [isIhracatKoduModalVisible, setIsIhracatKoduModalVisible] = useState(false);
+    const [isProjeKoduModalVisible, setIsProjeKoduModalVisible] = useState(false);
+    const [isVadeModalVisible, setIsVadeModalVisible] = useState(false);
+    const [isGModalVisible, setIsGModalVisible] = useState(false);
+    const [isTModalVisible, setIsTModalVisible] = useState(false);
+    const [isAdresModalVisible, setIsAdresModalVisible] = useState(false);
+    const [isTipModalVisible, setIsTipModalVisible] = useState(false); 
+    const [isEvrakTipModalVisible, setIsEvrakTipModalVisible] = useState(false); 
+    const [isDovizModalVisible, setIsDovizModalVisible] = useState(false);
+    const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
+  // Tüm Değişken Değerleri
 
-const getSelectedDovizAd = () => {
-  const selectedDoviz = dovizList.find(doviz => doviz.Doviz_Cins.toString() === cha_d_cins);
-  return selectedDoviz ? selectedDoviz.Doviz_Adı : 'Döviz Tipini Seçin';
-};
 
-  // Değiştirilebilir Alanlar 
+
+  // Kullanıcının Değiştirebilir Alan Yönetimi 
     useEffect(() => {
       if (defaults && defaults[0]) {
         const { IQ_SatisFaturaSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
@@ -98,7 +94,7 @@ const getSelectedDovizAd = () => {
         setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
       }
     }, [defaults]);
-  // Değiştirilebilir Alanlar 
+  // Kullanıcının Değiştirebilir Alan Yönetimi 
 
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
     useEffect(() => {
@@ -116,20 +112,25 @@ const getSelectedDovizAd = () => {
     }, [cha_evrakno_seri,cha_evrakno_sira,cha_kod, cha_cari_unvan1, sth_cikis_depo_no] );
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
 
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        setFaturaBilgileri({});
-      };
-    }, [])
-  );
 
-  useEffect(() => {
-    fetchDovizList();
-    fetchDepoList();
-    handleIrsaliyeTipiChange('Satış Faturası');
-    handleIrsaliyeNormalTipiChange('Normal');
-  }, []);
+  // Sayfa açıldığında tetiklenen alanlar
+    useEffect(() => {
+      fetchDovizList();
+      fetchDepoList();
+      handleIrsaliyeTipiChange('Satış Faturası');
+      handleIrsaliyeNormalTipiChange('Normal');
+    }, []);
+  // Sayfa açıldığında tetiklenen alanlar
+
+  // Araştıracağım.
+    useFocusEffect(
+      React.useCallback(() => {
+        return () => {
+          setFaturaBilgileri({});
+        };
+      }, [])
+    );
+  // Araştıracağım.
 
   // İrsaliye Tipi Varsayılan Seçim
     const handleIrsaliyeTipiChange = (itemValue) => {
@@ -361,6 +362,11 @@ const getSelectedDovizAd = () => {
         ...prev,
         cha_d_cins: itemValue,
       }));
+    };
+
+    const getSelectedDovizAd = () => {
+      const selectedDoviz = dovizList.find(doviz => doviz.Doviz_Cins.toString() === cha_d_cins);
+      return selectedDoviz ? selectedDoviz.Doviz_Adı : 'Döviz Tipini Seçin';
     };
   // Döviz Seçim
 

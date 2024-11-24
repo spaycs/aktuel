@@ -9,7 +9,7 @@ import EditDepolarArasiProductModal from '../../context/EditDepolarArasiProductM
 import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
 
-const SarfMalzemeOnizleme = () => {
+const SatinAlmaTalepFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
   const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
   const navigation = useNavigation();
@@ -178,7 +178,7 @@ const calculateTotalQuantity = () => {
       return; // Fonksiyonu burada durdur
     }
     setLoading(true);
-    const apiURL = `/Api/apiMethods/DahiliStokHareketKaydetV2`;
+    const apiURL = `/Api/apiMethods/SatinAlmaTalepKaydetV2`;
     
     const jsonPayload = {
       Mikro: {
@@ -193,35 +193,22 @@ const calculateTotalQuantity = () => {
           {
             evrak_aciklamalari: formatExplanations(),
             satirlar: addedProducts.map((product) => ({
-              sth_tarih: faturaBilgileri.sth_tarih,
-              sth_tip: 1,
-              sth_cins: 5,
-              sth_normal_iade: 0,
-              sth_evraktip: 0,
-              sth_evrakno_seri: faturaBilgileri.sth_evrakno_seri,
-              sth_isemri_gider_kodu : faturaBilgileri.sth_isemri_gider_kodu,
-              sth_stok_kod: product.Stok_Kod,
-              sth_miktar: product.sth_miktar,
+              stl_tarihi: faturaBilgileri.sth_tarih,
+              stl_belge_tarihi: faturaBilgileri.sth_tarih,
+              stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
+              stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
+              stl_Stok_kodu: product.Stok_Kod,
+              stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
+              stl_projekodu: faturaBilgileri.sth_proje_kodu,
+              stl_miktari: product.sth_miktar,
+              stl_teslim_miktari: 0,
               sth_birim_pntr: product.sth_birim_pntr,
-              sth_tutar: product.total,
-              sth_vergi_pntr: product.sth_vergi_pntr,
-              sth_vergisiz_fl: false,
-              sth_cikis_depo_no: faturaBilgileri.kaynakDepo,
+              stl_cagrilabilir_fl: 1,
+              stl_talep_eden: faturaBilgileri.personelListesi,
+              stl_depo_no : faturaBilgileri.kaynakDepo,
               sth_aciklama: product.aciklama,
-              sth_isk_mas1: 0,
-              sth_isk_mas2: 1,
-              sth_isk_mas3: 1,
-              sth_isk_mas4: 1,
-              sth_isk_mas5: 1,
-              sth_isk_mas6: 1,
-              sth_isk_mas7: 1,
-              sth_isk_mas8: 1,
-              sth_isk_mas9: 1,
-              sth_isk_mas10: 1,
-              sth_cari_srm_merkezi: faturaBilgileri.sth_stok_srm_merkezi,
-              sth_stok_srm_merkezi: faturaBilgileri.sth_stok_srm_merkezi,
-              sth_proje_kodu: faturaBilgileri.sth_proje_kodu,
-
+              stl_birim_pntr: product.stl_birim_pntr,
+              stl_harekettipi: product.stl_harekettipi,
             })),
           },
         ],
@@ -243,7 +230,7 @@ const calculateTotalQuantity = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      navigation.replace('SarfMalzeme');
+                      navigation.replace('SatinAlmaTalepFisi');
                     }
                 }
             ],
@@ -293,13 +280,11 @@ const calculateTotalQuantity = () => {
       </View>
 {/* Sipariş Toplam Hesap */}
 
-      {/* Apiye Giden Değerler 
+      {/* Apiye Giden Değerler */}
          <View style={MainStyles.faturaBilgileriContainer}>
           <Text style={MainStyles.faturaBilgileriText}>sth_tarih: {faturaBilgileri.sth_tarih}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_evrakno_seri: {faturaBilgileri.sth_evrakno_seri}</Text>
           <Text style={MainStyles.faturaBilgileriText}>kaynakDepo: {faturaBilgileri.kaynakDepo}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>Personel Kodu: {faturaBilgileri.personelListesi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_isemri_gider_kodu: {faturaBilgileri.sth_isemri_gider_kodu}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_stok_srm_merkezi: {faturaBilgileri.sth_stok_srm_merkezi}</Text>
         </View>
       {/* Apiye Giden Değerler */}
@@ -392,4 +377,4 @@ const calculateTotalQuantity = () => {
   );
 };
 
-export default SarfMalzemeOnizleme;
+export default SatinAlmaTalepFisiOnizleme;

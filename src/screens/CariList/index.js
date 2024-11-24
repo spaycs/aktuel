@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, FlatList, Modal, TouchableWithoutFeedback, Linking } from 'react-native';
+import { TextInput, TouchableOpacity, Text, FlatList, Modal, TouchableWithoutFeedback, View, Alert, Linking } from 'react-native';
 import { MainStyles } from '../../res/style';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../components/userDetail/Id';
-import axiosLinkMain from '../../utils/axiosMain';
 import { useAuthDefault } from '../../components/DefaultUser';
-
+import axiosLinkMain from '../../utils/axiosMain';
 import { colors } from '../../res/colors';
 import FastImage from 'react-native-fast-image';
-import { CariSiparisFoyu } from '..';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -25,10 +22,11 @@ const CariList = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [menuIzinleri, setMenuIzinleri] = useState({});
   const [loading, setLoading] = useState(false);
-
+  
+// Menü İzinlerini Getir
   const fetchMenuIzinleri = useCallback(async () => {
     try {
-      const temsilciKod = defaults[0]?.IQ_MikroUserId || ''; // IQ Kodunu al
+      const temsilciKod = defaults[0]?.IQ_MikroUserId || ''; 
       const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
       setMenuIzinleri(response.data[0]); // İzinleri state'e kaydet
     } catch (error) {
@@ -37,9 +35,11 @@ const CariList = ({ navigation }) => {
   }, [defaults]);
 
   useEffect(() => {
-    fetchMenuIzinleri(); // İzinleri fetch et
+    fetchMenuIzinleri(); 
   }, [fetchMenuIzinleri]);
+// Menü İzinlerini Getir
 
+// Cari Verilerini Getir
   const fetchCaris = useCallback(async (searchTerm = '') => {
     setLoading(true);
     try {
@@ -58,19 +58,16 @@ const CariList = ({ navigation }) => {
       console.error('Error fetching caris:', error);
       Alert.alert('Error', 'Failed to load data. Please try again later.');
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); 
     }
   }, [defaults]);
 
-  
   useEffect(() => {
     fetchCaris(searchTerm);
   }, [searchTerm, fetchCaris]);
-
-  const handleSearch = () => {
-    fetchCaris(searchTerm);
-  };
-
+// Cari Verilerini Getir
+  
+// Modal İşlemleri
   const openModal = (item) => {
     setSelectedItem(item);
     setModalVisible(true);
@@ -80,7 +77,9 @@ const CariList = ({ navigation }) => {
     setModalVisible(false);
     setSelectedItem(null);
   };
+// Modal İşlemleri
 
+// Cari Eylem ve Raporları
   const handlePhoneCall = () => {
     if (selectedItem?.cari_CepTel) {
       const phoneNumber = `tel:${selectedItem.cari_CepTel}`;
@@ -115,7 +114,6 @@ const CariList = ({ navigation }) => {
     }
   };
   
-
   const handleStokHareketFoyu = () => {
     if (menuIzinleri.IQM_StokFoyu === 1) {
       navigation.navigate('StokHareketFoyu', { cariKod: selectedItem?.Cari_Kod })
@@ -131,6 +129,7 @@ const CariList = ({ navigation }) => {
       Alert.alert('Erişim Hatası', 'Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.');
     }
   };
+// Cari Eylem ve Raporları
   
   
   const renderItem = ({ item }) => (
@@ -165,49 +164,48 @@ const CariList = ({ navigation }) => {
       </View>
 
       {loading ? ( // Show loading indicator if loading
-       <FastImage
+      <FastImage
         style={MainStyles.loadingGif}
         source={require('../../res/images/image/pageloading.gif')}
         resizeMode={FastImage.resizeMode.contain}
-     />
+        />
       ) : (
-        <>
+      <>
       <FlatList
         data={filteredCaris}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${item.Cari_Kod}-${index}`}
-
-      />
-       </>
+        />
+      </>
       )}
       
       <Modal visible={modalVisible} transparent={true} animationType="slide">
-      <TouchableWithoutFeedback onPress={closeModal}>
-        <View style={MainStyles.modalCariContainer}>
-          <View style={MainStyles.modalCariContent}>
-            <View style={MainStyles.buttonCariModalDetail}>
-              <Text style={MainStyles.buttonCariTitle}>Hızlı Erişim</Text>
-            </View>
-            <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handlePhoneCall} >
-              <Text style={MainStyles.cariButtonText}>Arama Yap (Cep No)</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={MainStyles.buttonCariModalDetail}  onPress={() => sendWhatsAppMessage(selectedItem?.cari_CepTel)}>
-              <Text style={MainStyles.cariButtonText}>Whatsapp Mesaj Gönder</Text>
-            </TouchableOpacity>
-             <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handleCariHareketFoyu}>
-                <Text style={MainStyles.cariButtonText}>Cari Hareket Föyü</Text>
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={MainStyles.modalCariContainer}>
+            <View style={MainStyles.modalCariContent}>
+              <View style={MainStyles.buttonCariModalDetail}>
+                <Text style={MainStyles.buttonCariTitle}>Hızlı Erişim</Text>
+              </View>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handlePhoneCall} >
+                <Text style={MainStyles.cariButtonText}>Arama Yap (Cep No)</Text>
               </TouchableOpacity>
-            <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handleStokHareketFoyu}>
-              <Text style={MainStyles.cariButtonText}>Stok Hareket Föyü</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handleCariSiparisFoyu}>
-              <Text style={MainStyles.cariButtonText}>Cari Sipariş Föyü</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={closeModal} style={MainStyles.buttonCariModalDetail}>
-              <Text style={MainStyles.buttonTextKapat}>Kapat</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail}  onPress={() => sendWhatsAppMessage(selectedItem?.cari_CepTel)}>
+                <Text style={MainStyles.cariButtonText}>Whatsapp Mesaj Gönder</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handleCariHareketFoyu}>
+                  <Text style={MainStyles.cariButtonText}>Cari Hareket Föyü</Text>
+                </TouchableOpacity>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handleStokHareketFoyu}>
+                <Text style={MainStyles.cariButtonText}>Stok Hareket Föyü</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={handleCariSiparisFoyu}>
+                <Text style={MainStyles.cariButtonText}>Cari Sipariş Föyü</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={closeModal} style={MainStyles.buttonCariModalDetail}>
+                <Text style={MainStyles.buttonTextKapat}>Kapat</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
         </TouchableWithoutFeedback>
       </Modal>
     </View>

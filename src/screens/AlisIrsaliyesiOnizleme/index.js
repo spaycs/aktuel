@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert, SafeAreaView, ActivityIndicator,  } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
@@ -627,8 +627,8 @@ const AlisIrsaliyesiOnizleme = () => {
       </Modal>
     {/* Açıklama Ekleme */}
 
-    {/* Kaydet İptal Seçim */}
-    {loading && (
+     {/* Kaydet İptal Seçim */}
+     {loading && (
         <View style={MainStyles.loadingOverlay}>
           <ActivityIndicator size="large" color="#fff" />
         </View>

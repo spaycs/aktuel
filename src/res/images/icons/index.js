@@ -63,6 +63,7 @@ import SarfMalzeme from "./sarfmalzeme.svg"
 import MikroIqTek from "./mikroiqtek.svg"
 import Quit from "./quit.svg"
 import PDF from "./pdf.svg"
+import SatinAlmaTalepFisi from "./satinalmatalepfisi.svg"
 
 export {
     Kartlas,
@@ -129,6 +130,7 @@ export {
     SarfMalzeme,
     MikroIqTek,
     Quit,
-    PDF
+    PDF,
+    SatinAlmaTalepFisi,
 
 }

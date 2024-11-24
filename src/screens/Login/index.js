@@ -154,15 +154,7 @@ const Login = ({ navigation }) => {
   const fetchUsers = async () => {
     try {
       const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
-      const userList = response.data;
-      setUsers(userList);
-  
-      // İlk kullanıcıyı otomatik olarak seç
-      if (userList.length > 0) {
-        //const firstUser = userList[0];
-        //setSelectedUser(firstUser); // İlk kullanıcıyı seç
-        //setKullaniciKodu(firstUser.KOD.toString()); // Kullanıcı kodunu ayarla
-      }
+      setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -377,24 +369,34 @@ useEffect(() => {
   );
 
  
-const handleUserChange = async (selectedValue) => {
-  setSelectedUser(selectedValue); // Seçilen kullanıcıyı ayarla
-  setKullaniciKodu(selectedValue.KOD); // TextInput'a kullanıcının KOD'unu yazdır
-  setSifre(''); 
-  setSifreStandart(''); 
-  try {
-    // Kullanıcı adını eşleştirerek IQ_MikroUserId'yi bul
-    const user = users.find(user => user.AD === selectedValue.AD);
+  const handleUserChange = (selectedKOD) => {
+    // Kullanıcı KOD'una göre eşleşme yap
+    const user = users.find(user => user.KOD === selectedKOD);
     if (user) {
-      setIQ_MikroUserId(user.IQ_MikroUserId); // IQ_MikroUserId'yi güncelle
+      setSelectedUser(user); // Eşleşen kullanıcıyı ayarla
+      setKullaniciKodu(user.KOD); // Kullanıcı kodunu TextInput'a yazdır
+      updateIQMikroUserId(user.KOD);
+      setSifre('');
+      setSifreStandart('');
     } else {
       Alert.alert('Hata', 'Seçilen kullanıcı listede bulunamadı.');
     }
-  } catch (error) {
-    console.error('Error fetching IQ_MikroUserId:', error);
-    Alert.alert('Hata', 'IQ_MikroUserId alınırken bir hata oluştu.');
-  }
-};
+  };
+
+  const updateIQMikroUserId = (kullaniciKodu) => {
+    try {
+      // Kullanıcı kodunu eşleştirerek IQ_MikroUserId'yi bul
+      const user = users.find((user) => user.KOD === kullaniciKodu);
+      if (user) {
+        setIQ_MikroUserId(user.IQ_MikroUserId); // IQ_MikroUserId'yi güncelle
+      } else {
+        Alert.alert('Hata', 'Girilen kullanıcı listede bulunamadı.');
+      }
+    } catch (error) {
+      console.error('Error fetching IQ_MikroUserId:', error);
+      Alert.alert('Hata', 'IQ_MikroUserId alınırken bir hata oluştu.');
+    }
+  };
 
 
 
@@ -500,18 +502,16 @@ const handleUserChange = async (selectedValue) => {
             <Modal visible={isModalVisible} animationType="slide" transparent>
               <View style={MainStyles.modalContainerPicker}>
                 <View style={MainStyles.modalContentPicker}>
-                  <Picker
-                    selectedValue={selectedUser}
-                    onValueChange={(itemValue) => {
-                      handleUserChange(itemValue);
-                    }}
-                    style={MainStyles.picker}
-                  >
-                    <Picker.Item label="Kullanıcı seçin" value="" />
-                    {users.map((user) => (
-                      <Picker.Item key={user.KOD} label={user.AD} value={user} />
-                    ))}
-                  </Picker>
+                <Picker
+                  selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+                  onValueChange={(itemValue) => handleUserChange(itemValue)}
+                  style={MainStyles.picker}
+                >
+                  <Picker.Item label="Kullanıcı seçin" value="" />
+                  {users.map((user) => (
+                    <Picker.Item key={user.KOD} label={user.AD} value={user.KOD} />
+                  ))}
+                </Picker>
                   <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
                 </View>
                 </View>
@@ -520,15 +520,16 @@ const handleUserChange = async (selectedValue) => {
         ) : (
           // Android Picker
           <Picker
-          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-            selectedValue={selectedUser}
-            onValueChange={(itemValue) => handleUserChange(itemValue)}
-          >
-            <Picker.Item label="Kullanıcı seçin" value="" />
-            {users.map((user) => (
-              <Picker.Item key={user.KOD} label={user.AD} value={user} />
-            ))}
-          </Picker>
+          selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+          onValueChange={(itemValue) => handleUserChange(itemValue)}
+          itemStyle={{ height: 40, fontSize: 12 }}
+          style={{ marginHorizontal: -10 }}
+        >
+          <Picker.Item label="Kullanıcı seçin" value="" />
+          {users.map((user) => (
+            <Picker.Item key={user.KOD} label={user.AD} value={user.KOD} />
+          ))}
+        </Picker>
         )}
       </View>
 

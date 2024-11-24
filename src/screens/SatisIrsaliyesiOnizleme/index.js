@@ -547,7 +547,7 @@ const SatisIrsaliyesiOnizleme = () => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler 
+    {/* Apiye Giden Değerler  
         <View style={MainStyles.faturaBilgileriContainer}>
           <Text style={MainStyles.faturaBilgileriText}>sth_evrakno_seri: {faturaBilgileri.sth_evrakno_seri}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_evrakno_sira: {faturaBilgileri.sth_evrakno_sira}</Text>
@@ -560,23 +560,7 @@ const SatisIrsaliyesiOnizleme = () => {
           <Text style={MainStyles.faturaBilgileriText}>sth_cari_kodu: {faturaBilgileri.sth_cari_kodu}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_cari_unvan1: {faturaBilgileri.sth_cari_unvan1}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_adres_no: {faturaBilgileri.sth_adres_no}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sevkTarihi: {faturaBilgileri.sevkTarihi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>asilSevkTarihi: {faturaBilgileri.asilSevkTarihi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_tasiyici_firma_kodu: {faturaBilgileri.eir_tasiyici_firma_kodu}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_sofor_adi: {faturaBilgileri.eir_sofor_adi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_sofor_soyadi: {faturaBilgileri.eir_sofor_soyadi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_sofor2_adi: {faturaBilgileri.eir_sofor2_adi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_sofor2_soyadi: {faturaBilgileri.eir_sofor2_soyadi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_sofor_tckn: {faturaBilgileri.eir_sofor_tckn}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_sofor2_tckn: {faturaBilgileri.eir_sofor2_tckn}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_tasiyici_arac_plaka: {faturaBilgileri.eir_tasiyici_arac_plaka}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_tasiyici_dorse_plaka1: {faturaBilgileri.eir_tasiyici_dorse_plaka1}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>eir_tasiyici_dorse_plaka2: {faturaBilgileri.eir_tasiyici_dorse_plaka2}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_proje_kodu: {faturaBilgileri.sth_proje_kodu}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_odeme_op: {faturaBilgileri.sth_odeme_op}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_stok_srm_merkezi: {faturaBilgileri.sth_stok_srm_merkezi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_har_doviz_cinsi: {faturaBilgileri.sth_har_doviz_cinsi}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_cikis_depo_no: {faturaBilgileri.sth_cikis_depo_no}</Text>
+     
         </View>
     {/* Apiye Giden Değerler */}
 
@@ -680,10 +664,10 @@ const SatisIrsaliyesiOnizleme = () => {
       </Modal>
     {/* Açıklama Ekleme */}
 
-    {/* Kaydet İptal Seçim */}
-    {loading && (
+     {/* Kaydet İptal Seçim */}
+     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicatorBase size="large" color="#fff" />
+          <ActivityIndicator size="large" color="#fff" />
         </View>
       )}
 

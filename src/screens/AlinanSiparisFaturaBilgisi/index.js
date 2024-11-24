@@ -37,6 +37,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [sip_adresno, setSip_adresno] = useState('');
   const [sip_projekodu, setSip_projekodu] = useState('');
   const [sip_opno, setSip_opno] = useState('');
+  const [sip_tarih, setSip_tarih] = useState('');
   const [cariDetayData, setCariDetayData] = useState([]);
   const [tedarikciSiparisData, setTedarikciSiparisData] = useState('');
   const [ortalamaVadeBakiyeData, setOrtalamaVadeBakiyeData] = useState('');
@@ -571,55 +572,95 @@ const AlinanSiparisFaturaBilgisi = () => {
     setCariDetayData(null);
   };
 
-  // İrsaliye Tipi Varsayılan Seçim
-    const handleIrsaliyeTipiChange = async (itemValue) => {
-      setIrsaliyeTipi(itemValue);
-      let sip_tip = 0;
-      let sip_cins = 0;
+  // Sayfa açıldığında varsayılan irsaliye tipini ayarlayan useEffect
+useEffect(() => {
+  if (Object.keys(alinanSiparis).length === 0) { // alinanSiparis boş ise
+    const defaultIrsaliyeTipi = 'Çok Dövizli'; // Varsayılan değer
+    setIrsaliyeTipi(defaultIrsaliyeTipi);
 
-      switch (itemValue) {
-        case 'Çok Dövizli':
-          sip_tip = 0;
-          sip_cins = 0;
-          break;
-        case 'Konsinye':
-          sip_tip = 0;
-          sip_cins = 1;
-          break;
-        case 'Satın Alma':
-          sip_tip = 1;
-          sip_cins = 0;
-          break;
-        default:
-          break;
-      }
-      
-      setAlinanSiparis(prevState => ({
+    let sip_tip = 0;
+    let sip_cins = 0;
+
+    switch (defaultIrsaliyeTipi) {
+      case 'Çok Dövizli':
+        sip_tip = 0;
+        sip_cins = 0;
+        break;
+      case 'Konsinye':
+        sip_tip = 0;
+        sip_cins = 1;
+        break;
+      case 'Satın Alma':
+        sip_tip = 1;
+        sip_cins = 0;
+        break;
+      default:
+        break;
+    }
+
+    setAlinanSiparis(prevState => ({
       ...prevState,
       sip_tip,
       sip_cins,
     }));
+  }
+}, [alinanSiparis]);
 
-    try {
-      // İrsaliye tipi bilgisini AsyncStorage'a kaydet
-     // await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
-    } catch (error) {
-      console.error('Error saving irsaliyeTipi to AsyncStorage:', error);
-    }
+// handleIrsaliyeTipiChange fonksiyonu
+const handleIrsaliyeTipiChange = async (itemValue) => {
+  setIrsaliyeTipi(itemValue);
 
-    };
-  // İrsaliye Tipi Varsayılan Seçim
+  let sip_tip = 0;
+  let sip_cins = 0;
+
+  switch (itemValue) {
+    case 'Çok Dövizli':
+      sip_tip = 0;
+      sip_cins = 0;
+      break;
+    case 'Konsinye':
+      sip_tip = 0;
+      sip_cins = 1;
+      break;
+    case 'Satın Alma':
+      sip_tip = 1;
+      sip_cins = 0;
+      break;
+    default:
+      break;
+  }
+
+  setAlinanSiparis(prevState => ({
+    ...prevState,
+    sip_tip,
+    sip_cins,
+  }));
+
+  try {
+    // İrsaliye tipi bilgisini AsyncStorage'a kaydet (isteğe bağlı)
+    // await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
+  } catch (error) {
+    console.error('Error saving irsaliyeTipi to AsyncStorage:', error);
+  }
+};
+
 
   // Evrak Tarih Alanı
   useEffect(() => {
-    const currentDate = new Date();
-    const formattedDate = formatDate(currentDate);
-    setDate(currentDate);
-    setAlinanSiparis(prevState => ({
-      ...prevState,
-      sip_tarih: formattedDate,
-    }));
-  }, []);
+    if (Object.keys(alinanSiparis).length === 0) {
+      const currentDate = new Date();
+      const formattedDate = formatDate(currentDate);
+  
+      setDate(currentDate);
+      setAlinanSiparis(prevState => ({
+        ...prevState,
+        sip_tarih: formattedDate,
+      }));
+    }
+  }, [alinanSiparis]);
+  
+
+  
   
   
   // Tarih değiştirildiğinde güncelleyip kaydeden fonksiyon

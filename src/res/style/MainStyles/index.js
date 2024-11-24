@@ -170,6 +170,7 @@ export const MainStyles = {
       borderColor: colors.textInputBg,
       justifyContent: 'center',
       height: 40,
+      marginRight: 5,
     },
   
     inputStyle2:{
@@ -470,6 +471,18 @@ export const MainStyles = {
       padding: 10,
       borderRadius: 10,
       marginTop: 10,
+    },
+    modalBackground1: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Statik arka plan siyahlığı
+      justifyContent: 'flex-end', // Modalı ekranın altına sabitlemek
+    },
+    modalContent1: {
+      backgroundColor: 'white',
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      padding: 20,
+      elevation: 10,
     },
 
   /* Stok List Sayfası */
@@ -1350,6 +1363,7 @@ export const MainStyles = {
       backgroundColor: colors.white,
       position: 'relative',
       paddingTop: 10,
+      paddingHorizontal: 15,
     },
     modalContainerUrunDetay: {
       width: '100%',

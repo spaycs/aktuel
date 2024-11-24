@@ -15,6 +15,7 @@ import Button from '../../components/Button';
 
 const DepolarArasiSevkFisiBilgisi = () => {
   const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { faturaBilgileri, setAddedProducts, setFaturaBilgileri } = useContext(ProductContext);
   const [sth_evrakno_seri, setSth_evrakno_seri] = useState('');
   const [sth_evrakno_sira, setSth_evrakno_sira] = useState('');

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Home, GetStarted, Login, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, PatronRaporu, AlinanSiparis, AlinanSiparisOnizleme, TahsilatTediye, SatisIrsaliye, SatisIrsaliyeOnizleme, SatisIrsaliyesiOnizleme, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, SatisIrsaliyesi, FiyatGor, TeklifFisi, TeklifFisiOnizleme, Raporlar, CariBakiyeYaslandirmaAylik, CariBakiyeYasladirmaCoklu, ExtreFoy, NelerSattik, PatronEkrani, Sohbet, CariHareketFoyu, StokHareketFoyu, CariSiparisFoyu, StokEklemeOnizleme, CariEklemeOnizleme, Loading } from "../screens"
+import { Home, GetStarted, Login, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, PatronRaporu, AlinanSiparis, AlinanSiparisOnizleme, SatinAlmaTalepFisi, TahsilatTediye, SatisIrsaliye, SatisIrsaliyeOnizleme, SatisIrsaliyesiOnizleme, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, SatisIrsaliyesi, FiyatGor, TeklifFisi, TeklifFisiOnizleme, Raporlar, CariBakiyeYaslandirmaAylik, CariBakiyeYasladirmaCoklu, ExtreFoy, NelerSattik, PatronEkrani, Sohbet, CariHareketFoyu, StokHareketFoyu, CariSiparisFoyu, StokEklemeOnizleme, CariEklemeOnizleme, Loading, SatinAlmaTalepFisiBilgi } from "../screens"
 import { Iptal, Kartlas, KartlasLogin, Kaydet, MikroIQ, MikroIQM, SohbetIQ, Takvim, Yazdir,} from "../res/images";
 import { Text, TouchableOpacity, View } from "react-native";
 import { handleLogout } from '../utils/logout';
@@ -134,16 +134,7 @@ function DrawerNavigator() {
             },
            
         }} />
-        <Drawer.Screen name="Fiyat Gör"  component={FiyatGor}
-         options={{
-          drawerItemStyle: { display: 'none' },
-          headerTitleAlign: 'center',
-          headerTitle: 'Fiyat Gör',
-          headerTitleStyle: {
-            fontSize: 16,
-          },
-         
-      }} />
+      
         <Drawer.Screen name="Depolar Arası Sevk Fişi"  component={DepolarArasiSevkFisi}
         options={{
           drawerItemStyle: { display: 'none' },
@@ -285,7 +276,19 @@ const Router = () => {
                 
                 })}
               />
-
+          <Stack.Screen
+                name="FiyatGor"
+                component={FiyatGor}
+                options={({ navigation, route }) => ({
+                  headerTitleAlign: 'center',
+                  headerTitle: "Fiyat Gör",
+                  headerBackTitleVisible: false,
+                  headerTitleStyle: {
+                    fontSize: 16,
+                  },
+                
+                })}
+              />
             <Stack.Screen
                 name="Raporlar"
                 component={Raporlar}
@@ -799,6 +802,19 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Cari Sipariş Föyü",
+                    headerBackTitleVisible: false,
+                    headerTitleStyle: {
+                      fontSize: 16,
+                    },
+                    
+                    })}
+            />
+            <Stack.Screen
+                name="SatinAlmaTalepFisi"
+                component={SatinAlmaTalepFisi}
+                options={({ navigation, route }) => ({
+                    headerTitleAlign: 'center',
+                    headerTitle: "Satın Alma Talep Fişi Bilgi",
                     headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,

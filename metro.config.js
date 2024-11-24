@@ -11,20 +11,22 @@ const assetExts = require('metro-config/src/defaults/defaults').assetExts;
  */
 const config = {
   transformer: {
-      babelTransformerPath: require.resolve('react-native-svg-transformer'),
-      getTransformOptions: async () => {
-        return {
-          transform: {
-            experimentalImportSupport: false,
-            inlineRequires: true,
-          },
-        };
-      },
+    babelTransformerPath: require.resolve('react-native-svg-transformer'),
+    getTransformOptions: async () => {
+      return {
+        transform: {
+          experimentalImportSupport: false,
+          inlineRequires: true,
+        },
+      };
     },
-    resolver: {
-      assetExts: assetExts.filter((ext) => { return ext !== 'svg'; }),
-      sourceExts: [...sourceExts, 'svg'],
-    },
+  },
+  resolver: {
+    assetExts: assetExts.filter(ext => {
+      return ext !== 'svg';
+    }),
+    sourceExts: [...sourceExts, 'svg'],
+  },
 };
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);

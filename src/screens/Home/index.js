@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, BackHandler, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MainStyles } from '../../res/style';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AlinanSiparis, Alisİrsaliyesi, Back, BeklenenOdeme, CariList, DepolarArasiSevkFisi, DepoSayim, Doviz, Ekle, GunlukDurum, GunlukKazanc, GunlukSiparis, GunlukStardant, MikroIqTek, Rapor, SarfMalzeme, SatisFaturasi, Satisİrsaliyesi, SezginYilmaz, SMStokListele, StokList, TahsilatTediye, TeklifFisi } from '../../res/images';
+import { AlinanSiparis, Alisİrsaliyesi, Back, BeklenenOdeme, CariList, FiyatGor, DepolarArasiSevkFisi, DepoSayim, Doviz, Ekle,GunlukDurum, GunlukKazanc, GunlukSiparis, GunlukStardant, MikroIqTek, Rapor, SarfMalzeme, SatinAlmaTalepFisi, SatisFaturasi, Satisİrsaliyesi, SezginYilmaz, SMStokListele, StokList, TahsilatTediye, TeklifFisi } from '../../res/images';
 import { colors } from '../../res/colors';
 import { useAuth } from '../../components/userDetail/Id';
 import { useFocusEffect } from '@react-navigation/native';
@@ -171,10 +171,11 @@ const Home = ({ navigation }) => {
     { key: '15', title: 'Sarf Malzeme', icon: <SarfMalzeme width={25} height={25} />, screen: 'SarfMalzeme', izinKey: 'IQM_SarfMalzeme', color: '#D6D6D6' },
     { key: '8', title: 'Teklif Fişi', icon: <TeklifFisi width={25} height={25} />, screen: 'TeklifFisi', izinKey: 'IQM_TeklifFisi', color: '#D6D6D6' },
     { key: '12', title: 'Raporlar', icon: <Rapor width={25} height={25} />, screen: 'Raporlar', izinKey: 'IQM_Raporlar', color: '#D6D6D6' },
-    
     { key: '13', title: 'Stok Ekle', icon: <Ekle width={25} height={25} />, screen: 'StokEkleme', izinKey: 'IQM_StokEkle', color: '#D6D6D6' },
     { key: '14', title: 'Cari Ekle', icon: <Ekle width={25} height={25} />, screen: 'CariEkleme', izinKey: 'IQM_CariEkle', color: '#D6D6D6' },
     { key: '11', title: 'Patron Raporu', icon: <GunlukDurum width={25} height={25} />, screen: 'PatronRaporu', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
+    //{ key: '16', title: 'Satın Alma Talep Fişi', icon: <SatinAlmaTalepFisi width={25} height={25} />, screen: 'SatinAlmaTalepFisi', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
+    { key: '17', title: 'Fiyat Gör', icon: <FiyatGor width={25} height={25} />, screen: 'FiyatGor', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
 
   ];
   

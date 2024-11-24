@@ -14,7 +14,7 @@ import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 import Button from '../../components/Button';
 
-const SarfMalzemeBilgi = () => {
+const SatinAlmaTalepFisiBilgi = () => {
   const { authData } = useAuth();
   const { defaults } = useAuthDefault();
   const { faturaBilgileri, setAddedProducts, setFaturaBilgileri } = useContext(ProductContext);
@@ -26,11 +26,12 @@ const SarfMalzemeBilgi = () => {
   const [kaynakDepo, setKaynakDepo] = useState('');
   const [hedefDepo, setHedefDepo] = useState('');
   const [date, setDate] = useState(new Date());
+  const [teslimdate, setTeslimDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTeslimDatePicker, setShowTeslimDatePicker] = useState(false);
   const [depolar, setDepolar] = useState([]);
   const [showPersonelModal, setShowPersonelModal] = useState(false);
   const [personelListesi, setPersonelListesi] = useState([]);
-  const [masrafListesi, setMasrafListesi] = useState([]);
   const [selectedKaynakDepoNo, setSelectedKaynakDepoNo] = useState('');
   const [selectedHedefDepoNo, setSelectedHedefDepoNo] = useState('');
   const [sth_personel_kodu, setSth_personel_kodu] = useState([]);
@@ -40,7 +41,6 @@ const SarfMalzemeBilgi = () => {
   const [isSorumlulukMerkeziModalVisible, setIsSorumlulukMerkeziModalVisible] = useState(false);
   const [isPersonelModalVisible, setIsPersonelModalVisible] = useState(false);
   const [isProjeKoduModalVisible, setIsProjeKoduModalVisible] = useState(false);
-  const [isMasrafModalVisible, setIsMasrafModalVisible] = useState(false);
   const [sth_stok_srm_merkezi, setSth_stok_srm_merkezi] = useState('');
   const [projeKoduList, setProjeKoduList] = useState([]);
   const [sth_personel_adi, setSth_personel_adi] = useState('');
@@ -106,19 +106,22 @@ const SarfMalzemeBilgi = () => {
       sth_evrakno_seri,
       sth_evrakno_sira,
       sym_tarihi: formatDate(date),
+      stl_teslim_tarihi: formatTeslimDate(teslimdate),
       kaynakDepo: selectedKaynakDepoNo,
       sth_personel_kodu: sth_personel_kodu,
       sth_isemri_gider_kodu: sth_isemri_gider_kodu,
       personelListesi,
-      masrafListesi,
     }));
-  }, [sth_evrakno_seri, sth_evrakno_sira, date, kaynakDepo, personelListesi, masrafListesi, sth_isemri_gider_kodu]);
-
-
+  }, [sth_evrakno_seri, sth_evrakno_sira, date, teslimdate, kaynakDepo, personelListesi, sth_isemri_gider_kodu]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     setDate(selectedDate || date);
+  };
+
+  const handleTeslimDateChange = (event2, selectedTeslimDate) => {
+    setShowTeslimDatePicker(false);
+    setTeslimDate(selectedTeslimDate || teslimdate);
   };
 
   useEffect(() => {
@@ -131,10 +134,26 @@ const SarfMalzemeBilgi = () => {
     }));
   }, []);
 
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDate1 = formatTeslimDate(currentDate);
+    setTeslimDate(currentDate);
+    setFaturaBilgileri(prevState => ({
+      ...prevState,
+      stl_teslim_tarihi: formattedDate1,
+    }));
+  }, []);
+
   const formatDate = (date) => {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+  const formatTeslimDate = (teslimdate) => {
+    const day = teslimdate.getDate().toString().padStart(2, '0');
+    const month = (teslimdate.getMonth() + 1).toString().padStart(2, '0');
+    const year = teslimdate.getFullYear();
     return `${day}.${month}.${year}`;
   };
 
@@ -144,16 +163,6 @@ const SarfMalzemeBilgi = () => {
       const response = await axiosLinkMain.get('/Api/Kullanici/Personeller');
       const data = response.data;
       setPersonelListesi(data); 
-    } catch (error) {
-      console.error('Bağlantı Hatası Sorumluluk Merkezi list:', error);
-    }
-  };
-
-  const fetchMasrafList = async () => {
-    try {
-      const response = await axiosLinkMain.get('/Api/Stok/MasrafHesaplari');
-      const data = response.data;
-      setMasrafListesi(data); 
     } catch (error) {
       console.error('Bağlantı Hatası Sorumluluk Merkezi list:', error);
     }
@@ -267,13 +276,6 @@ const SarfMalzemeBilgi = () => {
   );
 // Personel Listele
 
-// Masraf Listele
-   const renderMasrafItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleMasrafSelect(item)} style={MainStyles.modalItem}>
-      <Text style={MainStyles.modalItemText}>{item.Kod}-{item.Isim}</Text>
-    </TouchableOpacity>
-  );
-// Masraf Listele
 
 // Personel  Seçim
    const handlePersonelClick = () => {
@@ -292,22 +294,6 @@ const SarfMalzemeBilgi = () => {
   };
 // Personel  Seçim
 
-// Masraf Seçim
-   const handleMasrafClick = () => {
-    fetchMasrafList(); 
-    setIsMasrafModalVisible(true); 
-  };
-
-  const handleMasrafSelect = (item) => {
-    setSth_isemri_gider_kodu(item.Kod); // Kod API'ye gönderilecek
-    setSth_isemri_gider_adi(item.Isim); // Isim TextInput içinde gösterilecek
-    setFaturaBilgileri(prevState => ({
-      ...prevState,
-      masrafListesi: item.Kod,
-    }));
-    setIsMasrafModalVisible(false);
-  };
-// Masraf Seçim
 
   // Sorumluluk Merkezi Listele
   const renderSorumlulukMerkeziItem = ({ item }) => (
@@ -354,6 +340,24 @@ const SarfMalzemeBilgi = () => {
               mode="date"
               display="default"
               onChange={handleDateChange}
+            />
+          )}
+        </View>
+
+        <Text style={MainStyles.formTitle}>Teslim Tarih</Text> 
+        <View style={MainStyles.datePickerContainer}>
+          <TouchableOpacity onPress={() => setShowTeslimDatePicker(true)} >
+            <View style={MainStyles.dateContainer}>
+              <Takvim name="calendar-today" style={MainStyles.dateIcon} />
+              <Text style={MainStyles.dateText}>{formatTeslimDate(teslimdate)}</Text>
+            </View>
+          </TouchableOpacity>
+          {showTeslimDatePicker && (
+            <DateTimePicker
+              value={teslimdate}
+              mode="date"
+              display="default"
+              onChange={handleTeslimDateChange}
             />
           )}
         </View>
@@ -421,28 +425,13 @@ const SarfMalzemeBilgi = () => {
             </Picker>
           </View>
         */}
-         {/* Masraf */}
-         <Text style={MainStyles.formTitle}>Masraf Seç</Text> 
-         <View style={MainStyles.inputContainer}>
-          <TextInput
-            style={MainStyles.inputCariKodu}
-            placeholder="Masraf Seç"
-            value={sth_isemri_gider_adi}
-            placeholderTextColor={colors.placeholderTextColor}
-            editable={false}
-            onFocus={handleMasrafClick}
-          />
-          <TouchableOpacity onPress={handleMasrafClick} style={MainStyles.buttonCariKodu}>
-            <Ara />
-          </TouchableOpacity>
-        </View>
 
          {/* Giderler */}
-         <Text style={MainStyles.formTitle}>Personel Kodu</Text> 
+         <Text style={MainStyles.formTitle}>Talep Eden Personel Kodu</Text> 
          <View style={MainStyles.inputContainer}>
           <TextInput
             style={MainStyles.inputCariKodu}
-            placeholder="Personel Kodu"
+            placeholder="Talep Eden Personel Kodu"
             value={sth_personel_kodu.toString()} 
             placeholderTextColor={colors.placeholderTextColor}
             editable={false}
@@ -454,11 +443,11 @@ const SarfMalzemeBilgi = () => {
         </View>
 
         
-        <Text style={MainStyles.formTitle}>Personel Adı</Text> 
+        <Text style={MainStyles.formTitle}>Talep Eden Personel Adı</Text> 
         <View style={MainStyles.inputContainer}>
           <TextInput 
             style={MainStyles.inputPersonelAdi}
-            placeholder="Personel Adı"
+            placeholder="Talep Eden Personel Adı"
             value={sth_personel_adi} 
             placeholderTextColor={colors.placeholderTextColor}
             editable={false}
@@ -490,32 +479,6 @@ const SarfMalzemeBilgi = () => {
           </SafeAreaView>
         </Modal>
         
-        <Modal
-          visible={isMasrafModalVisible}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={() => setIsMasrafModalVisible(false)}
-        >
-           <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Gider Listesi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsMasrafModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
-                  <View style={MainStyles.modalContent}>
-
-              <FlatList
-                data={masrafListesi}
-                renderItem={renderMasrafItem}
-                keyExtractor={item => item.Kod.toString()}
-              />
-              
-            </View>
-          </View>
-          </SafeAreaView>
-        </Modal>
 
          {/* Sorumluluk Merkezi */}
          <Text style={MainStyles.formTitle}>Sorumluluk Merkezi</Text> 
@@ -683,4 +646,4 @@ const SarfMalzemeBilgi = () => {
   );
 };
 
-export default SarfMalzemeBilgi;
+export default SatinAlmaTalepFisiBilgi;

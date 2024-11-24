@@ -179,6 +179,13 @@ const DepoSayimOnizleme = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.Stok_Kod}
       />
+
+       {/* Apiye Giden Değerler */}
+      <View style={MainStyles.faturaBilgileriContainer}>
+        <Text style={MainStyles.fontSize11}>sym_depono: {faturaBilgileri.sym_depono}</Text>
+       
+      </View>
+    {/* Apiye Giden Değerler */}
     <View style={MainStyles.summaryContainer}>
       <Text style={MainStyles.totalText}>Satır Sayısı: {addedProducts.length}</Text>
       <Text style={MainStyles.totalText}>

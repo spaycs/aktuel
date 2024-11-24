@@ -40,6 +40,8 @@ import CariHareketFoyu from "./CariHareketFoyu";
 import StokHareketFoyu from "./StokHareketFoyu";
 import CariSiparisFoyu from "./CariSiparisFoyu";
 import Loading from "./Loading";
+import SatinAlmaTalepFisi from "./SatinAlmaTalepFisi";
+import SatinAlmaTalepFisiBilgi from "./SatinAlmaTalepFisiBilgi";
 
 export { Home, GetStarted, Login,Sohbet, CariHareketFoyu, StokHareketFoyu,CariSiparisFoyu, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, AlinanSiparis, AlinanSiparisOnizleme, TahsilatTediye, TahsilatTediyeOnizleme, SatisIrsaliyesi, SatisIrsaliyesiOnizleme, SatisIrsaliyesiDetay, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, DepoSayim, DepoSayimOnizleme, DepolarArasiSevkFisi, DepolarArasiSevkFisiOnizleme, TeklifFisi, TeklifFisiOnizleme, PatronRaporu, FiyatGor, Raporlar,
     CariBakiyeYaslandirmaAylik, 
@@ -53,5 +55,7 @@ export { Home, GetStarted, Login,Sohbet, CariHareketFoyu, StokHareketFoyu,CariSi
     CariEklemeOnizleme,
     CariEklemeYetkili,
     Loading,
+    SatinAlmaTalepFisi,
+    SatinAlmaTalepFisiBilgi,
 
 };
