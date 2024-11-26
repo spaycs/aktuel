@@ -117,7 +117,7 @@ const handleInputChange = (field, value) => {
         <>
           <TouchableOpacity onPress={() => setIsFiyatListeModalVisible(true)} style={MainStyles.inputStyle}>
             <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-              {selectedFiyatListe ? fiyatListeSiraNoList.find(item => item.Sira_No === selectedFiyatListe)?.Aciklama : 'Fiyat Liste'}
+              {selectedFiyatListe ? fiyatListeSiraNoList.find(item => item.Sira_No.toString() === selectedFiyatListe)?.Aciklama : 'Fiyat Liste'}
             </Text>
           </TouchableOpacity>
 
@@ -132,7 +132,7 @@ const handleInputChange = (field, value) => {
                 >
                   <Picker.Item label="Fiyat Liste" value="" style={MainStyles.textStyle} />
                   {fiyatListeSiraNoList.map((item) => (
-                    <Picker.Item key={item.Sira_No} label={item.Aciklama} value={item.Sira_No} style={MainStyles.textStyle} />
+                    <Picker.Item key={item.Sira_No} label={item.Aciklama} value={item.Sira_No.toString()} style={MainStyles.textStyle} />
                   ))}
                 </Picker>
                 <Button title="Kapat" onPress={() => setIsFiyatListeModalVisible(false)} />
@@ -279,5 +279,4 @@ const handleInputChange = (field, value) => {
 };
 
 export default StokEklemeFiyat;
-
 
