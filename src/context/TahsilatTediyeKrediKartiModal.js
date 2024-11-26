@@ -235,14 +235,16 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
               animationType="slide"
               onRequestClose={() => setIsTcmbModalVisible(false)}
             >
-              <View style={MainStyles.modalContainer}>
-              <View>
-                <Text style={MainStyles.modalTitle}>TCMB Banka Kodları</Text>
-              </View>
-                <TouchableOpacity TouchableOpacity style={{position :'absolute', marginTop: 20, marginLeft: 10}}  onPress={() => setIsTcmbModalVisible(false)}>
-                  <Left width={17} height={17}/>
-                </TouchableOpacity>
+               <SafeAreaView style={MainStyles.modalContainer}>
                 <View style={MainStyles.modalContent}>
+                    <View >
+                      <Text style={MainStyles.modalTitle}>TCMB Banka Kodları</Text>
+                    </View>
+                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}}  onPress={() => setIsTcmbModalVisible(false)}>
+                    <Left width={17} height={17}/>
+                    </TouchableOpacity>
+              <View style={MainStyles.modalContent}>
+
                   <FlatList
                     data={tcmbKodlariList}
                     keyExtractor={(item, index) => `${item.Banka_Kodu}_${index}`}
@@ -258,6 +260,7 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
                 
                 </View>
               </View>
+              </SafeAreaView>
             </Modal>
 
           </View>
