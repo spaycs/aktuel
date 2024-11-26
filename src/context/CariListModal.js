@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 10,
     position: 'relative',
-    marginTop: 10,
   },
   closeButton: {
     position: 'absolute',
@@ -195,8 +194,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     marginTop: 15,
-    marginHorizontal: 15,
-    marginTop: 20,
+    marginHorizontal: 10,
   },
   searchInput: {
     flex: 1,
