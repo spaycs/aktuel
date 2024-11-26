@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface mikroiqTests : XCTestCase
+@interface MikroIQTests : XCTestCase
 
 @end
 
-@implementation mikroiqTests
+@implementation MikroIQTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {
