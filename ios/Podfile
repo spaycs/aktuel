@@ -1,65 +1,69 @@
+# React Native ve native modüllerin gerekli dosyalarını dahil edin
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+# React Native izinleri için gerekli olan podları dahil edin
 permissions_path = '../node_modules/react-native-permissions/ios'
 pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways/Permission-LocationAlways.podspec"
 pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse/Permission-LocationWhenInUse.podspec"
 
+# React Native core kütüphanesini yalnızca tek bir kaynaktan dahil edin
+# `React-Core`'u sadece bir kez dahil etmelisiniz, bu yüzden aşağıdaki satırda tek bir yol kullanacağız.
+pod 'React-Core', :path => '../node_modules/react-native/'
+
+# iOS platform versiyonunu belirleyin
 platform :ios, '14.0'
+
+# React Native projesini hazırlayın
 prepare_react_native_project!
 
-# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
-# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
-#
-# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
-# ```js
-# module.exports = {
-#   dependencies: {
-#     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
-# ```
-flipper_config = FlipperConfiguration.disabled
+# Flipper yapılandırması (gerekirse devre dışı bırakılabilir)
+#flipper_config = FlipperConfiguration.disabled
 
-
+# `USE_FRAMEWORKS` ortam değişkenine göre frameworks kullanımı yapılandırın
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
 end
 
-
-target 'mikroiq' do
+# MikroIQ hedefi için pod'ları dahil edin
+target 'MikroIQ' do
+  # Native modülleri dahil et
   config = use_native_modules!
 
-  # Flags change depending on the env values.
+  # Çevresel değişkenlere göre bayraklar (flags) ayarla
   flags = get_default_flags()
 
+  # React Native yapılandırmasını yapın
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    # Upcoming versions of React Native may rely on get_default_flags(), but
-    # we make it explicit here to aid in the React Native upgrade process.
+    # Hermes, varsayılan olarak etkin. Eğer kullanmak istemiyorsanız false yapabilirsiniz.
     :hermes_enabled => false,
+    # Fabric henüz etkin değil.
     :fabric_enabled => false,
-    # Enables Flipper.
-    #
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
-    :flipper_configuration => flipper_config,
-    # An absolute path to your application root.
+    # Flipper yapılandırmasını yapın (Flipper kullanmak istemiyorsanız devre dışı bırakabilirsiniz).
+    #:flipper_configuration => flipper_config,
+    # Uygulama yolu
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'mikroiqTests' do
+  # MikroIQ test hedefi için pod'ları dahil et
+  target 'MikroIQTests' do
     inherit! :complete
-    # Pods for testing
+    # Testler için gerekli pod'ları buraya ekleyebilirsiniz
   end
 
+  # Post-install işlemleri
   post_install do |installer|
     react_native_post_install(
       installer,
-      # Set `mac_catalyst_enabled` to `true` in order to apply patches
-      # necessary for Mac Catalyst builds
+      # Eğer Mac Catalyst desteğine ihtiyacınız yoksa bunu false yapabilirsiniz.
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+  
+    # Aşağıdaki satırı kaldırın veya yoruma alın
+    # __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
+  
 end
