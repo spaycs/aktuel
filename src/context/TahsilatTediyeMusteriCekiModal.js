@@ -224,7 +224,7 @@ const [bankList, setBankList] = useState([]);
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ScrollView style={{ width: '100%', maxHeight: '90%' }}>
         <SafeAreaView style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
@@ -483,14 +483,16 @@ const [bankList, setBankList] = useState([]);
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
              >
-              <View style={MainStyles.modalContainer}>
-              <View>
-                <Text Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
-              </View>
-                <TouchableOpacity style={{position :'absolute', marginTop: 25, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
-                  <Left width={17} height={17}/>
-                </TouchableOpacity>
+             <SafeAreaView style={MainStyles.modalContainer}>
                 <View style={MainStyles.modalContent}>
+                    <View >
+                      <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
+                    </View>
+                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
+                    <Left width={17} height={17}/>
+                    </TouchableOpacity>
+              <View style={MainStyles.modalContent}>
+                
                   <FlatList
                     data={nakitKodlariList}
                     keyExtractor={(item, index) => `${item.Kod}_${index}`}
@@ -506,7 +508,8 @@ const [bankList, setBankList] = useState([]);
                  
 
                 </View>
-              </View>
+                </View>
+              </SafeAreaView>
             </Modal>
 
             <Modal
@@ -544,9 +547,7 @@ const [bankList, setBankList] = useState([]);
                     )}
                   />
 
-                  <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}} onPress={() => setIsTcmbModalVisible(false)}>
-                  <Left width={17} height={17}/>
-                  </TouchableOpacity>
+                 
                 </View>
               </View>
             </Modal>
