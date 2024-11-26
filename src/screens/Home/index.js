@@ -175,7 +175,7 @@ const Home = ({ navigation }) => {
     { key: '14', title: 'Cari Ekle', icon: <Ekle width={25} height={25} />, screen: 'CariEkleme', izinKey: 'IQM_CariEkle', color: '#D6D6D6' },
     { key: '11', title: 'Patron Raporu', icon: <GunlukDurum width={25} height={25} />, screen: 'PatronRaporu', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
     //{ key: '16', title: 'Satın Alma Talep Fişi', icon: <SatinAlmaTalepFisi width={25} height={25} />, screen: 'SatinAlmaTalepFisi', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
-    { key: '17', title: 'Fiyat Gör', icon: <FiyatGor width={25} height={25} />, screen: 'FiyatGor', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
+    //{ key: '17', title: 'Fiyat Gör', icon: <FiyatGor width={25} height={25} />, screen: 'FiyatGor', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
 
   ];
   
