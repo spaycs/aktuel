@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Alert } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Alert, SafeAreaView } from 'react-native';
 import axiosLinkMain from '../utils/axiosMain';
 import { colors } from '../res/colors';
 import FastImage from 'react-native-fast-image';
 import { MainStyles } from '../res/style';
+import { Left } from '../res/images';
 
 const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
   const [stoklar, setStoklar] = useState([]); // API'den gelen stoklar
@@ -21,7 +22,7 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
   const fetchStoklar = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosLinkMain.get('/Api/Stok/StokListesi');
+      const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${searchTerm}&tip=1&depo=1`);
       
       setStoklar(response.data); // Tüm stokları set ediyoruz
       setFilteredStoklar(response.data); // İlk başta tüm stokları gösteriyoruz
@@ -61,14 +62,15 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
+       <SafeAreaView style={styles.modalContainer}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View>
             <Text style={styles.modalTitle}>Stok Listesi</Text>
           </View>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>X</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}}  onPress={onClose}>
+              <Left width={17} height={17}/>
+            </TouchableOpacity>
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
@@ -105,6 +107,7 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
           )}
         </View>
       </View>
+      </SafeAreaView>
     </Modal>
   );
 };
@@ -149,6 +152,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     fontSize: 14,
+    height: 40,
   },
   itemContainer: {
     paddingVertical: 10,
