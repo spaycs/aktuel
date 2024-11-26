@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.style = { color: colors.black };
 
-const Home = ({ navigation }) => {  //tset3
+const Home = ({ navigation }) => {  //tset4
   const { authData } = useAuth();
   const { defaults } = useAuthDefault();
   const [gunlukDurum, setGunlukDurum] = useState(null); // Günlük durum için state
