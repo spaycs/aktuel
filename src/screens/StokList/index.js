@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useAuth } from '../../components/userDetail/Id';
