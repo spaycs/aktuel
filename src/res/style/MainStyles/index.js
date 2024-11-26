@@ -919,6 +919,7 @@ export const MainStyles = {
       borderRadius: 10,
       position: 'relative',
       marginTop: 10,
+      paddingHorizontal: 10,
     },
     modalCariDetayContent:{
       height: '90%',
