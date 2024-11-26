@@ -100,7 +100,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.modalContainer}>
+      <View style={styles.modalContainer}>
       <CustomHeader
         title="Cari Listesi"
         onClose={onClose}
@@ -158,7 +158,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
             </>
           )}
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };
