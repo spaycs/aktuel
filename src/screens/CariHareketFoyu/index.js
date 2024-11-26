@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   },
   selectedRow: {
     // Seçilen satırın arka plan rengi
-    backgroundColor: '#e0f7fa',
+    backgroundColor: '#e0f7fa', 
   },
 });
 export default CariHareketFoyu;
