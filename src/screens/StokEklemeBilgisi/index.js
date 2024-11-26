@@ -449,7 +449,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
 
           <TouchableOpacity onPress={() => setIsPerakendeVergiModalVisible(true)} >
           <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-              {selectedPerakendeVergiList ? perakendeVergiList.find(item => item.PVergiNo === selectedPerakendeVergiList)?.PVergiAdi : 'Perakende Vergi'}
+              {selectedPerakendeVergiList ? perakendeVergiList.find(item => item.PVergiNo.toString() === selectedPerakendeVergiList)?.PVergiAdi : 'Perakende Vergi'}
             </Text>
           </TouchableOpacity>
 
@@ -467,7 +467,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
                     <Picker.Item
                       key={item.PVergiNo}
                       label={item.PVergiAdi}
-                      value={item.PVergiNo}
+                      value={item.PVergiNo.toString()}
                       style={MainStyles.textStyle}
                     />
                   ))}
@@ -491,7 +491,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
               <Picker.Item
                 key={item.PVergiNo}
                 label={item.PVergiAdi}
-                value={item.PVergiNo}
+                value={item.PVergiNo.toString()}
                 style={MainStyles.textStyle}
               />
             ))}
@@ -509,7 +509,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
 
           <TouchableOpacity onPress={() => setIsToptanVergiModalVisible(true)} >
           <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-              {selectedToptanVergiList ? toptanVergiList.find(item => item.TVergiNo === selectedToptanVergiList)?.TVergiAdi : 'Toptan Vergi'}
+              {selectedToptanVergiList ? toptanVergiList.find(item => item.TVergiNo.toString() === selectedToptanVergiList)?.TVergiAdi : 'Toptan Vergi'}
             </Text>
           </TouchableOpacity>
 
@@ -527,7 +527,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
                     <Picker.Item
                       key={item.TVergiNo}
                       label={item.TVergiAdi}
-                      value={item.TVergiNo}
+                      value={item.TVergiNo.toString()}
                       style={MainStyles.textStyle}
                     />
                   ))}
@@ -551,7 +551,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
               <Picker.Item
                 key={item.TVergiNo}
                 label={item.TVergiAdi}
-                value={item.TVergiNo}
+                value={item.TVergiNo.toString()}
                 style={MainStyles.textStyle}
               />
             ))}
