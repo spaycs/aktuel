@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Alert, SafeAreaView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Alert, SafeAreaView, BackHandler } from 'react-native';
 import axiosLinkMain from '../utils/axiosMain';
 import { useAuthDefault } from '../components/DefaultUser';
 import { colors } from '../res/colors';
@@ -7,6 +7,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import { MainStyles } from '../res/style';
 import FastImage from 'react-native-fast-image';
 import { Back, Left } from '../res/images';
+import CustomHeader from '../components/CustomHeader';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -76,20 +77,34 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
     }).format(price);
     };
 
+    useEffect(() => {
+      // Geri tuşu işlemi
+      const handleBackPress = () => {
+        if (isVisible) {
+          onClose(); // Modal kapatma işlemi
+          return true; // Geri tuşu işlemini engelle
+        }
+        return false; // Diğer işlemleri engelleme
+      };
+  
+      // BackHandler event listener ekle
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+  
+      // Component unmount olduğunda event listener'ı kaldır
+      return () => backHandler.remove();
+    }, [isVisible, onClose]);
+
   return (
     <Modal
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalBorder}>
-            <Text style={styles.modalTitle}>Cari Listesi</Text>
-          </View>
-          <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={onClose}>
-          <Left width={17} height={17}/>
-          </TouchableOpacity>
+      <View style={styles.modalContainer}>
+      <CustomHeader
+        title="Cari Listesi"
+        onClose={onClose}
+      />
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
@@ -141,8 +156,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
               />
             </>
           )}
-        </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };
