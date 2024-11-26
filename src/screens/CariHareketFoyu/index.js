@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
     position : 'absolute',
   },
   colTitle:{
-    paddingVertical: 15,
+    paddingVertical: 15, 
     fontSize: 12,
   },
   selectedRow: {
