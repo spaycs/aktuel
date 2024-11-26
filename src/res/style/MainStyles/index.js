@@ -651,6 +651,7 @@ export const MainStyles = {
       fontSize: 12,
       color: colors.placeholderTextColor,
       height: 40,
+      paddingHorizontal: 8,
     },
     inputDepoSevk: {
       borderRadius: 5,

@@ -15,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import AdresListModal from '../../context/AdresListModal';
 import CariListModal from '../../context/CariListModal';
 import Button from '../../components/Button';
+import CustomHeader from '../../components/CustomHeader';
 
 const SatisFaturasiFaturaBilgisi = () => {
   const { authData } = useAuth();
@@ -1063,23 +1064,19 @@ const SatisFaturasiFaturaBilgisi = () => {
               animationType="slide"
               onRequestClose={() => setIsVadeModalVisible(false)}
             >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Vade Listesi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsVadeModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Vade Listesi"
+                onClose={() => setIsVadeModalVisible(false)}
+              />
                   <View style={MainStyles.modalContent}>
                     <FlatList
                       data={vadeList}
                       renderItem={renderVadeItem}
                       keyExtractor={item => item.Kodu.toString()}
                     />
-                    </View>
-                    </View>
-              </SafeAreaView>
+                  </View>
+                </View>
             </Modal>
 
             <Modal
@@ -1088,14 +1085,11 @@ const SatisFaturasiFaturaBilgisi = () => {
               animationType="slide"
               onRequestClose={() => setIsGModalVisible(false)}
             >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Vade Gün Girişi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsGModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Vade Gün Girişi"
+                onClose={() => setIsGModalVisible(false)}
+              />
                     <View style={MainStyles.modalContent}>
                   
                     <TextInput
@@ -1112,7 +1106,6 @@ const SatisFaturasiFaturaBilgisi = () => {
                   
                   </View>
                 </View>
-                </SafeAreaView>
             </Modal>
 
             <Modal
@@ -1121,14 +1114,11 @@ const SatisFaturasiFaturaBilgisi = () => {
               animationType="slide"
               onRequestClose={() => setIsTModalVisible(false)}
             >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Vade Tarih Girişi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsTModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+              <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Vade Tarih Girişi"
+                onClose={() => setIsTModalVisible(false)}
+              />
                     <View style={MainStyles.modalContent}>
                     <TouchableOpacity
                         style={MainStyles.dateButton}
@@ -1156,7 +1146,6 @@ const SatisFaturasiFaturaBilgisi = () => {
                     
                   </View>
                 </View>
-                </SafeAreaView>
             </Modal>
           </View>
         {/* Vade */}
@@ -1183,14 +1172,11 @@ const SatisFaturasiFaturaBilgisi = () => {
                 animationType="slide"
                 onRequestClose={() => setIsIhracatKoduModalVisible(false)}
               >
-              <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>İhracat Kodu</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsIhracatKoduModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+             <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="İhracat Kodları"
+                onClose={() => setIsIhracatKoduModalVisible(false)}
+              />
                   <View style={MainStyles.modalContent}>
                     <FlatList
                       data={ihracatKoduList}
@@ -1199,7 +1185,6 @@ const SatisFaturasiFaturaBilgisi = () => {
                     />
                   </View>
                 </View>
-                </SafeAreaView>
               </Modal>
             </>
           )}
@@ -1225,14 +1210,11 @@ const SatisFaturasiFaturaBilgisi = () => {
             animationType="slide"
             onRequestClose={() => setIsSorumlulukMerkeziModalVisible(false)}
           >
-            <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Sorumluluk Merkezleri</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsSorumlulukMerkeziModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Sorumluluk Merkezleri"
+                onClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
                 <FlatList
                   data={sorumlulukMerkeziList}
@@ -1242,7 +1224,6 @@ const SatisFaturasiFaturaBilgisi = () => {
                
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Sorumluluk Merkezi */}
 
@@ -1267,14 +1248,11 @@ const SatisFaturasiFaturaBilgisi = () => {
             animationType="slide"
             onRequestClose={() => setIsProjeKoduModalVisible(false)} 
             >
-            <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Proje Kodları</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsProjeKoduModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+             <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Proje Kodları"
+                onClose={() => setIsProjeKoduModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
                   <FlatList
                     data={projeKoduList}
@@ -1284,7 +1262,6 @@ const SatisFaturasiFaturaBilgisi = () => {
                   
                 </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Proje Kodları*/}
 

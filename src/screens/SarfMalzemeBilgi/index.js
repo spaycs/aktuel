@@ -13,6 +13,7 @@ import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 import Button from '../../components/Button';
+import CustomHeader from '../../components/CustomHeader';
 
 const SarfMalzemeBilgi = () => {
   const { authData } = useAuth();
@@ -471,14 +472,12 @@ const SarfMalzemeBilgi = () => {
           animationType="slide"
           onRequestClose={() => setIsPersonelModalVisible(false)}
         >
-          <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Personel Listesi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsPersonelModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+           <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Personel Listesi"
+                onClose={() => setIsPersonelModalVisible(false)}
+              />
+         
                   <View style={MainStyles.modalContent}>
               <FlatList
                 data={personelListesi}
@@ -487,7 +486,6 @@ const SarfMalzemeBilgi = () => {
               />
             </View>
           </View>
-          </SafeAreaView>
         </Modal>
         
         <Modal
@@ -496,14 +494,11 @@ const SarfMalzemeBilgi = () => {
           animationType="slide"
           onRequestClose={() => setIsMasrafModalVisible(false)}
         >
-           <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Gider Listesi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsMasrafModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+          <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Gider Listesi"
+                onClose={() => setIsMasrafModalVisible(false)}
+              />
                   <View style={MainStyles.modalContent}>
 
               <FlatList
@@ -514,7 +509,6 @@ const SarfMalzemeBilgi = () => {
               
             </View>
           </View>
-          </SafeAreaView>
         </Modal>
 
          {/* Sorumluluk Merkezi */}
@@ -537,14 +531,11 @@ const SarfMalzemeBilgi = () => {
             animationType="slide"
             onRequestClose={() => setIsSorumlulukMerkeziModalVisible(false)}
           >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Sorumluluk Merkezleri</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsSorumlulukMerkeziModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Sorumluluk Merkezleri"
+                onClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+              />
                   <View style={MainStyles.modalContent}>
                 <FlatList
                   data={sorumlulukMerkeziList}
@@ -553,7 +544,6 @@ const SarfMalzemeBilgi = () => {
                 />
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Sorumluluk Merkezi */}
 
@@ -578,14 +568,11 @@ const SarfMalzemeBilgi = () => {
             animationType="slide"
             onRequestClose={() => setIsProjeKoduModalVisible(false)} 
             >
-               <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Proje Kodları</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsProjeKoduModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+             <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Proje Kodları"
+                onClose={() => setIsProjeKoduModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
 
                 <FlatList
@@ -595,7 +582,6 @@ const SarfMalzemeBilgi = () => {
                 />
             </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Proje Kodları*/}
 

@@ -5,6 +5,7 @@ import { colors } from '../res/colors';
 import FastImage from 'react-native-fast-image';
 import { MainStyles } from '../res/style';
 import { Left } from '../res/images';
+import CustomHeader from '../components/CustomHeader';
 
 const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
   const [stoklar, setStoklar] = useState([]); // API'den gelen stoklar
@@ -62,15 +63,12 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
-       <SafeAreaView style={styles.modalContainer}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <View>
-            <Text style={styles.modalTitle}>Stok Listesi</Text>
-          </View>
-          <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}}  onPress={onClose}>
-              <Left width={17} height={17}/>
-            </TouchableOpacity>
+     <View style={styles.modalContainer}>
+      <CustomHeader
+        title="Stok Listesi"
+        onClose={onClose}
+      />
+       <View style={styles.modalContent}>
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
@@ -105,9 +103,8 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
               )}
             />
           )}
+          </View>
         </View>
-      </View>
-      </SafeAreaView>
     </Modal>
   );
 };
@@ -121,7 +118,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.white,
     borderRadius: 10,
-    padding: 15,
     position: 'relative',
   },
   closeButton: {
@@ -143,15 +139,15 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: 'row',
-    marginBottom: 15,
     marginTop: 15,
+    marginHorizontal: 10,
   },
   searchInput: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    fontSize: 14,
+    fontSize: 11,
     height: 40,
   },
   itemContainer: {
@@ -163,6 +159,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 10,
   },
   itemColumn: {
     flex: 1,
