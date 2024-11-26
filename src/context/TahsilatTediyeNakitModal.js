@@ -32,6 +32,7 @@ const TahsilatTediyeNakitModal = ({ isModalVisible, setIsModalVisible }) => {
           if (defaults) {
             const firmaNo = defaults[0].IQ_FirmaNo;
             const response = await axiosLinkMain.get(`/Api/Kasa/Kasalar?firmano=${firmaNo}&tip=Nakit%20kasası`);
+            console.log('response', response)
             setNakitKodlariList(response.data);
           } else {
             console.error('IQ_FirmaNo değeri bulunamadı');
@@ -205,9 +206,17 @@ const TahsilatTediyeNakitModal = ({ isModalVisible, setIsModalVisible }) => {
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
              >
-              <View style={MainStyles.modalContainer}>
+
+            <SafeAreaView style={MainStyles.modalContainer}>
                 <View style={MainStyles.modalContent}>
-                  <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
+                    <View >
+                      <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
+                    </View>
+                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
+                    <Left width={17} height={17}/>
+                    </TouchableOpacity>
+              <View style={MainStyles.modalContent}>
+                
                   <FlatList
                     data={nakitKodlariList}
                     keyExtractor={(item, index) => `${item.Kod}_${index}`}
@@ -220,11 +229,10 @@ const TahsilatTediyeNakitModal = ({ isModalVisible, setIsModalVisible }) => {
                       </TouchableOpacity>
                     )}
                   />
-                  <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}}  onPress={() => setIsCarrierModalVisible(false)}>
-                  <Left width={17} height={17}/>
-                  </TouchableOpacity>
+                 
                 </View>
-              </View>
+                </View>
+              </SafeAreaView>
             </Modal>
           </View>
         </SafeAreaView>
