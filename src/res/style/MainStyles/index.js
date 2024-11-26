@@ -1365,6 +1365,10 @@ export const MainStyles = {
       paddingTop: 10,
       paddingHorizontal: 15,
     },
+    modalContainerDetail: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
     modalContainerUrunDetay: {
       width: '100%',
       flex: 1,
