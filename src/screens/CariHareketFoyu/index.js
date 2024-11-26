@@ -547,12 +547,12 @@ const styles = StyleSheet.create({
   tableCell: {
     borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
     borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-    justifyContent: 'left', // Hücrelerin içeriğini ortalamak
+    justifyContent: 'flex-start', // Hücrelerin içeriğini ortalamak
     paddingHorizontal: 10,
     
   },
   tableToplamCell: {
-    justifyContent: 'left', // Hücrelerin içeriğini ortalamak
+    justifyContent: 'flex-start', // Hücrelerin içeriğini ortalamak
     paddingLeft: 10,
   },
   cellText: {
