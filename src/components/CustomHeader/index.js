@@ -6,7 +6,7 @@ import { Left } from '../../res/images'; // Geri tuşu ikonunuz.
 const CustomHeader = ({ title, onClose}) => {
   return (
     <SafeAreaView style={[styles.headerContainer, Platform.OS === 'android' && styles.androidHeader]}>
-    <View style={styles.headerContent}>
+    <View style={[styles.headerContent, Platform.OS === 'android' && styles.androidHeaderContent]}>
       {onClose && (
         <TouchableOpacity onPress={onClose} style={styles.backButton}>
           <Left width={17} height={17} />
@@ -29,6 +29,13 @@ const styles = StyleSheet.create({
         height: 30 + StatusBar.currentHeight,
       },
       headerContent: {
+        height: 40,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+      },
+      androidHeaderContent: {
         height: 60,
         flexDirection: 'row',
         alignItems: 'center',
