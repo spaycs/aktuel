@@ -224,6 +224,7 @@ const [bankList, setBankList] = useState([]);
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
+       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ScrollView style={{ width: '100%', maxHeight: '80%' }}>
         <SafeAreaView style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
@@ -552,6 +553,7 @@ const [bankList, setBankList] = useState([]);
           </View>
         </SafeAreaView>
       </ScrollView>
+      </View>
     </Modal>
   );
 };
