@@ -219,8 +219,8 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ScrollView style={{ width: '100%', maxHeight: '90%' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ScrollView style={{ width: '100%', maxHeight: '90%' }}>
         <SafeAreaView style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
             <Text style={MainStyles.modalTahsilatTitle}>Müşteri Senedi Tahsilat</Text>
@@ -487,9 +487,15 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
              >
-              <View style={MainStyles.modalContainer}>
+            <SafeAreaView style={MainStyles.modalContainer}>
                 <View style={MainStyles.modalContent}>
-                  <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
+                    <View >
+                      <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
+                    </View>
+                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
+                    <Left width={17} height={17}/>
+                    </TouchableOpacity>
+              <View style={MainStyles.modalContent}>
                   <FlatList
                     data={nakitKodlariList}
                     keyExtractor={(item, index) => `${item.Kod}_${index}`}
@@ -502,11 +508,10 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
                       </TouchableOpacity>
                     )}
                   />
-                  <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                  </TouchableOpacity>
+                  
                 </View>
-              </View>
+                </View>
+              </SafeAreaView>
             </Modal>
 
             <Modal
