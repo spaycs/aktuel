@@ -79,6 +79,7 @@ const [isDovizModalVisible3, setIsDovizModalVisible3] = useState(false);
 const [isKurHesapSekliModalVisible, setIsKurHesapSekliModalVisible] = useState(false);
 const [isKurHesapSekliModalVisible2, setIsKurHesapSekliModalVisible2] = useState(false);
 const [isEFaturaCinsiModalVisible, setIsEFaturaCinsiModalVisible] = useState(false);
+const [isEFaturaModalVisible, setIsEFaturaModalVisible] = useState(false);
 
 const getSelectedDovizAd = () => {
   const selected = dovizCinsList.find(item => item.No.toString() === selectedDovizCins);
@@ -649,14 +650,14 @@ const handleInputChange = (field, value) => {
 
           {Platform.OS === 'ios' ? (
           <>
-            <TouchableOpacity onPress={() => setIsKurHesapSekliModalVisible2(true)} >
+            <TouchableOpacity onPress={() => setIsEFaturaModalVisible(true)} >
           <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
           {cari_efatura_fl ? cari_efatura_fl : 'E Fatura mı ?'}
             </Text>
           </TouchableOpacity>
 
             {/* E Fatura mı ? Modal (iOS için) */}
-            <Modal visible={isKurHesapSekliModalVisible} animationType="slide" transparent>
+            <Modal visible={isEFaturaModalVisible} animationType="slide" transparent>
               <View style={MainStyles.modalContainerPicker}>
                 <View style={MainStyles.modalContentPicker}>
                   <Picker
@@ -668,7 +669,7 @@ const handleInputChange = (field, value) => {
                   <Picker.Item style={MainStyles.textStyle} label="Evet" value="Evet" />
                   <Picker.Item style={MainStyles.textStyle} label="Hayır" value="Hayır" />
                   </Picker>
-                  <Button title="Kapat" onPress={() => setIsKurHesapSekliModalVisible2(false)} />
+                  <Button title="Kapat" onPress={() => setIsEFaturaModalVisible(false)} />
                 </View>
               </View>
             </Modal>
