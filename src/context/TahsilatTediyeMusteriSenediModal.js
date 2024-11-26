@@ -219,7 +219,8 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-      <ScrollView style={{ backgroundColor: 'white' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ScrollView style={{ width: '100%', maxHeight: '90%' }}>
         <SafeAreaView style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
             <Text style={MainStyles.modalTahsilatTitle}>Müşteri Senedi Tahsilat</Text>
@@ -539,6 +540,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
           </View>
         </SafeAreaView>
       </ScrollView>
+      </View>
     </Modal>
   );
 };
