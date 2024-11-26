@@ -224,7 +224,7 @@ const [bankList, setBankList] = useState([]);
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-      <ScrollView style={{ backgroundColor: 'white' }}>
+      <ScrollView style={{ width: '100%', maxHeight: '80%' }}>
         <SafeAreaView style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
             <Text style={MainStyles.modalTahsilatTitle}>Müşteri Çeki Tahsilat</Text>
