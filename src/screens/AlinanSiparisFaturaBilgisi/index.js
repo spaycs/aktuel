@@ -18,6 +18,7 @@ import AdresListModal from '../../context/AdresListModal';
 import Button from '../../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Col, Grid, Row } from 'react-native-easy-grid';
+import CustomHeader from '../../components/CustomHeader';
 
 const AlinanSiparisFaturaBilgisi = () => {
   const { authData } = useAuth();
@@ -1862,14 +1863,12 @@ const renderOzelAlanSelectedData = () => {
             animationType="slide"
             onRequestClose={() => setIsSorumlulukMerkeziModalVisible(false)}
           >
-            <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Sorumluluk Merkezleri</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsSorumlulukMerkeziModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Sorumluluk Merkezleri"
+                onClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+              />
+
               <View style={MainStyles.modalContent}>
                 <FlatList
                   data={sorumlulukMerkeziList}
@@ -1879,7 +1878,6 @@ const renderOzelAlanSelectedData = () => {
                 
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Sorumluluk Merkezi */}
 
