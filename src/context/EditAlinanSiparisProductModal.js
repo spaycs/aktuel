@@ -436,6 +436,7 @@ const handleUpdate = async () => {
                     : katsayi.sto_birim4_katsayi
                 })`}
                 value={birim}
+                style={MainStyles.textStyle}
               />
             ))}
           </Picker>
@@ -466,6 +467,7 @@ const handleUpdate = async () => {
             : katsayi.sto_birim4_katsayi
         })`}
         value={birim}
+        style={MainStyles.textStyle}
       />
     ))}
   </Picker>
@@ -560,6 +562,9 @@ const handleUpdate = async () => {
         >
             <View style={MainStyles.modalBackground}>
                 <View style={MainStyles.modalCariDetayContent}>
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                  </TouchableOpacity>
                     {loading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
@@ -603,9 +608,6 @@ const handleUpdate = async () => {
                             )}
                         </>
                     )}
-                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                        <Text style={MainStyles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
                 </View>
             </View>
         </Modal>
@@ -618,6 +620,9 @@ const handleUpdate = async () => {
         >
             <View style={MainStyles.modalBackground}>
                 <View style={MainStyles.modalCariDetayContent}>
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                    </TouchableOpacity>
                     {loading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
@@ -657,9 +662,6 @@ const handleUpdate = async () => {
                             )}
                         </>
                     )}
-                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-                        <Text style={MainStyles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
                 </View>
             </View>
         </Modal>

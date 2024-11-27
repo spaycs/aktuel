@@ -364,6 +364,7 @@ const handleUpdate = async () => {
                     : katsayi.sto_birim4_katsayi
                 })`}
                 value={birim}
+                style={MainStyles.textStyle}
               />
             ))}
           </Picker>
@@ -394,6 +395,7 @@ const handleUpdate = async () => {
             : katsayi.sto_birim4_katsayi
         })`}
         value={birim}
+        style={MainStyles.textStyle}
       />
     ))}
   </Picker>

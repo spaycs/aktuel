@@ -578,6 +578,7 @@ const validateQuantity = (quantity) => {
                     : katsayi.sto_birim4_katsayi
                 })`}
                 value={birim}
+                style={MainStyles.textStyle}
               />
             ))}
           </Picker>
@@ -608,6 +609,7 @@ const validateQuantity = (quantity) => {
             : katsayi.sto_birim4_katsayi
         })`}
         value={birim}
+        style={MainStyles.textStyle}
       />
     ))}
   </Picker>
