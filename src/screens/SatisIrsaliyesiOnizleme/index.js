@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAuthDefault } from '../../components/DefaultUser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomHeader from '../../components/CustomHeader';
 
 const SatisIrsaliyesiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -641,9 +642,12 @@ const SatisIrsaliyesiOnizleme = () => {
         visible={explanationModalVisible}
         onRequestClose={closeExplanationModal}
       >
-        <SafeAreaView style={MainStyles.modalContainerAciklama}>
+        <View style={MainStyles.modalContainerAciklama}>
+        <CustomHeader
+          title="Açıklamalar"
+          onClose={closeExplanationModal}
+        />
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
             {Array.from({ length: 10 }, (_, index) => (
               <TextInput
                 key={index}
@@ -656,11 +660,9 @@ const SatisIrsaliyesiOnizleme = () => {
             <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={closeExplanationModal} style={MainStyles.closeOnizlemeButton}>
-              <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
-            </TouchableOpacity>
+          
           </View>
-        </SafeAreaView>
+        </View>
       </Modal>
     {/* Açıklama Ekleme */}
 

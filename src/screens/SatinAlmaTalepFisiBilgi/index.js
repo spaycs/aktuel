@@ -461,14 +461,11 @@ const SatinAlmaTalepFisiBilgi = () => {
           animationType="slide"
           onRequestClose={() => setIsPersonelModalVisible(false)}
         >
-          <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Personel Listesi</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsPersonelModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+             <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Personel Listesi"
+                onClose={() => setIsPersonelModalVisible(false)}
+              />
                   <View style={MainStyles.modalContent}>
               <FlatList
                 data={personelListesi}
@@ -477,7 +474,6 @@ const SatinAlmaTalepFisiBilgi = () => {
               />
             </View>
           </View>
-          </SafeAreaView>
         </Modal>
         
 
@@ -501,14 +497,11 @@ const SatinAlmaTalepFisiBilgi = () => {
             animationType="slide"
             onRequestClose={() => setIsSorumlulukMerkeziModalVisible(false)}
           >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Sorumluluk Merkezleri</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsSorumlulukMerkeziModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+               <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Sorumluluk Merkezleri"
+                onClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+              />
                   <View style={MainStyles.modalContent}>
                 <FlatList
                   data={sorumlulukMerkeziList}
@@ -517,7 +510,6 @@ const SatinAlmaTalepFisiBilgi = () => {
                 />
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Sorumluluk Merkezi */}
 
@@ -542,14 +534,11 @@ const SatinAlmaTalepFisiBilgi = () => {
             animationType="slide"
             onRequestClose={() => setIsProjeKoduModalVisible(false)} 
             >
-               <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Proje Kodları</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsProjeKoduModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+              <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Proje Kodları"
+                onClose={() => setIsProjeKoduModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
 
                 <FlatList
@@ -559,7 +548,6 @@ const SatinAlmaTalepFisiBilgi = () => {
                 />
             </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Proje Kodları*/}
 

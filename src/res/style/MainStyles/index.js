@@ -936,7 +936,8 @@ export const MainStyles = {
       paddingHorizontal: 10,
     },
     modalCariDetayContent:{
-      height: '90%',
+      height: '95%',
+      marginTop: 40,
       backgroundColor: colors.white,
       borderRadius: 10,
       padding: 20,
@@ -1110,13 +1111,12 @@ export const MainStyles = {
       borderRadius: 5,
     },
     closeAlinanProductButton: {
-      backgroundColor: colors.white,
-      height: 40,
-      position: 'absolute',
-      top: -10,
-      right: 10,
-      padding: 10,
+      backgroundColor: colors.textInputBg,
+      height: 30,
       borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
     },
     closeButtonText: {
       color: colors.black,

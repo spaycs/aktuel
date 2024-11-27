@@ -8,6 +8,7 @@ import { Iptal, Kaydet, Yazdir } from '../../res/images';
 import EditDepolarArasiProductModal from '../../context/EditDepolarArasiProductModal';
 import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
+import CustomHeader from '../../components/CustomHeader';
 
 const SatinAlmaTalepFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -325,9 +326,12 @@ const calculateTotalQuantity = () => {
         visible={explanationModalVisible}
         onRequestClose={closeExplanationModal}
       >
-        <SafeAreaView style={MainStyles.modalContainerAciklama}>
+        <View style={MainStyles.modalContainerAciklama}>
+        <CustomHeader
+          title="Açıklamalar"
+          onClose={closeExplanationModal}
+        />
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
             {Array.from({ length: 10 }, (_, index) => (
               <TextInput
                 key={index}
@@ -344,7 +348,7 @@ const calculateTotalQuantity = () => {
               <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
             </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
       </Modal>
     {/* Açıklama Ekleme */}
     {/* Kaydet İptal Seçim */}

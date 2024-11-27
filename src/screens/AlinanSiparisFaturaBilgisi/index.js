@@ -1266,7 +1266,7 @@ const renderOzelAlanSelectedData = () => {
               <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
                   <Grid>
                       <Row style={MainStyles.tableHeader}>
-                          <Col style={[MainStyles.tableCell, { width: 300, alignItems: 'center' }]} >
+                          <Col style={[MainStyles.tableCell, { width: 350, alignItems: 'center' }]} >
                               <Text style={MainStyles.colTitle}>Özel Alanlar</Text>
                           </Col>
                       </Row>
@@ -1282,7 +1282,7 @@ const renderOzelAlanSelectedData = () => {
                               </Row>
                           ))
                       ) : (
-                          <Text>Veri bulunamadı.</Text>
+                          <Text></Text>
                       )}
                   </Grid>
               </ScrollView>
@@ -1475,11 +1475,14 @@ const renderOzelAlanSelectedData = () => {
         >
             <View style={[MainStyles.modalBackground]}>
                 <View style={MainStyles.modalCariDetayContent}>
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                    </TouchableOpacity>
                     {loading ? (
                         <ActivityIndicator size="large" color="blue" />
                     ) : (
                         <>
-                            <Text style={MainStyles.formTitle}>Tip</Text>
+                            <Text style={MainStyles.formTitle}>Tip Seçin</Text>
                             <View style={MainStyles.inputStyleAlinanSiparis}>
                                 {Platform.OS === 'ios' ? (
                                     <>
@@ -1505,9 +1508,9 @@ const renderOzelAlanSelectedData = () => {
                                                         }}
                                                         style={MainStyles.picker}
                                                     >
-                                                        <Picker.Item label="Tipini Seçin" value={null} />
-                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
-                                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
+                                                        <Picker.Item label="Tipini Seçin" value={null} style={MainStyles.textStyle}/>
+                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" style={MainStyles.textStyle} />
+                                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" style={MainStyles.textStyle} />
                                                     </Picker>
                                                     <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
                                                 </View>
@@ -1525,9 +1528,9 @@ const renderOzelAlanSelectedData = () => {
                                         style={{ marginHorizontal: -10 }}
                                         itemStyle={{ height: 40, fontSize: 12 }}
                                     >
-                                        <Picker.Item label="Tipini Seçin" value={null} />
-                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" />
-                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" />
+                                        <Picker.Item label="Tipini Seçin" value={null} style={MainStyles.textStyle}/>
+                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" style={MainStyles.textStyle} />
+                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" style={MainStyles.textStyle}/>
                                     </Picker>
                                 )}
                             </View>
@@ -1535,9 +1538,7 @@ const renderOzelAlanSelectedData = () => {
                             {renderSelectedData && renderSelectedData()}
                         </>
                     )}
-                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                        <Text style={MainStyles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
+                  
                 </View>
             </View>
         </Modal>
@@ -1548,12 +1549,17 @@ const renderOzelAlanSelectedData = () => {
     animationType="slide"
     onRequestClose={closeModal}
 >
-    <View style={[MainStyles.modalBackground]}>
-        <View style={MainStyles.modalCariDetayContent}>
+<View style={[MainStyles.modalBackground]}>
+                <View style={MainStyles.modalCariDetayContent}>
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                    </TouchableOpacity>
+  
             {loading ? (
                 <ActivityIndicator size="large" color="blue" />
             ) : (
                 <>
+                 <Text style={MainStyles.formTitle}>Tip Seçin</Text>
                     <Picker
                         selectedValue={selectedValue}
                         onValueChange={(value) => {
@@ -1565,16 +1571,13 @@ const renderOzelAlanSelectedData = () => {
                         style={{ marginHorizontal: -10 }}
                         itemStyle={{ height: 40, fontSize: 12 }}
                     >
-                        <Picker.Item label="Seçiniz..." value={null} />
-                        <Picker.Item label="Özel Alanlar" value="teminatTutari" />
+                        <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
+                        <Picker.Item label="Özel Alanlar" value="teminatTutari" style={MainStyles.textStyle}/>
                     </Picker>
                     {/* Seçili değere göre veri gösterme */}
                     {renderOzelAlanSelectedData()}
                 </>
             )}
-            <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                <Text style={MainStyles.closeButtonText}>X</Text>
-            </TouchableOpacity>
         </View>
     </View>
 </Modal>

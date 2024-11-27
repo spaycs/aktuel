@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ara, Left, Takvim, TakvimVade } from '../../res/images';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
+import CustomHeader from '../../components/CustomHeader';
 
 const SatisIrsaliyesiDetay = () => {
   const { faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
@@ -166,15 +167,11 @@ const SatisIrsaliyesiDetay = () => {
           animationType="slide"
           onRequestClose={() => setIsCarrierModalVisible(false)}
         >
-          
-          <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Taşıyıcı Firmalar</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+           <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Taşıyıcı Firmalar"
+                onClose={() => setIsCarrierModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
               <FlatList
                 data={carrierList}
@@ -191,7 +188,6 @@ const SatisIrsaliyesiDetay = () => {
              
             </View>
           </View>
-          </SafeAreaView>
         </Modal>
         <Text style={MainStyles.formTitle}>Şöför Adı 1</Text> 
         <TextInput

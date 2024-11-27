@@ -6,6 +6,7 @@ import { colors } from '../res/colors';
 import axios from 'axios';
 import { ProductContext } from '../context/ProductContext';
 import { Ara, Takvim } from '../res/images';
+import CustomHeader from '../components/CustomHeader';
 
 const EditDepolarArasiProductModal = ({ selectedProduct, modalVisible, setModalVisible, }) => {
   const { addedProducts, setAddedProducts } = useContext(ProductContext);
@@ -40,11 +41,12 @@ const EditDepolarArasiProductModal = ({ selectedProduct, modalVisible, setModalV
 
     return (
       <Modal visible={modalVisible} transparent={true} animationType="slide" onRequestClose={handleClose}>
-        <ScrollView style={{ backgroundColor: 'white' }}>
-          <SafeAreaView style={MainStyles.modalContainer}>
+        <View style={MainStyles.modalContainerDetail}>
+        <CustomHeader
+          title="Miktar Güncelleme"
+          onClose={handleClose}
+        />
             <View style={MainStyles.modalContent}>
-              <Text style={MainStyles.modalTahsilatTitle}>Miktar Güncelleme</Text>
-         
               <TextInput
               style={MainStyles.productModalMiktarInput}
               placeholder="Miktar"
@@ -53,20 +55,14 @@ const EditDepolarArasiProductModal = ({ selectedProduct, modalVisible, setModalV
               onChangeText={setSth_miktar}
               keyboardType="numeric"  
             />
-
   
               {/* Ekle Button */}
               <TouchableOpacity style={MainStyles.addButton} onPress={handleUpdate}>
                 <Text style={MainStyles.addButtonText}>Güncelle</Text>
               </TouchableOpacity>
   
-              {/* Kapat Button */}
-              <TouchableOpacity style={MainStyles.closeOnizlemeButton} onPress={handleClose}>
-                <Text style={MainStyles.addButtonText}>Kapat</Text>
-              </TouchableOpacity>
             </View>
-          </SafeAreaView>
-        </ScrollView>
+        </View>
       </Modal>
     );
   };

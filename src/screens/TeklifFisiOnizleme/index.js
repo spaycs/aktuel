@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
 import EditProductModal from '../../context/EditProductModal';
 import axiosLinkMain from '../../utils/axiosMain';
+import CustomHeader from '../../components/CustomHeader';
 
 const TeklifFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -590,9 +591,12 @@ const TeklifFisiOnizleme = () => {
         visible={explanationModalVisible}
         onRequestClose={closeExplanationModal}
       >
-        <SafeAreaView style={MainStyles.modalContainerAciklama}>
+         <View style={MainStyles.modalContainerAciklama}>
+        <CustomHeader
+          title="Açıklamalar"
+          onClose={closeExplanationModal}
+        />
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
             {Array.from({ length: 10 }, (_, index) => (
               <TextInput
                 key={index}
@@ -605,11 +609,8 @@ const TeklifFisiOnizleme = () => {
             <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={closeExplanationModal} style={MainStyles.closeOnizlemeButton}>
-              <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
-            </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
       </Modal>
     {/* Açıklama Ekleme */}
 

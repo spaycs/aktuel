@@ -8,6 +8,7 @@ import { Iptal, Kaydet, Yazdir } from '../../res/images';
 import EditDepolarArasiProductModal from '../../context/EditDepolarArasiProductModal';
 import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
+import CustomHeader from '../../components/CustomHeader';
 
 const SarfMalzemeOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -340,9 +341,12 @@ const calculateTotalQuantity = () => {
         visible={explanationModalVisible}
         onRequestClose={closeExplanationModal}
       >
-        <SafeAreaView style={MainStyles.modalContainerAciklama}>
+       <View style={MainStyles.modalContainerAciklama}>
+        <CustomHeader
+          title="Açıklamalar"
+          onClose={closeExplanationModal}
+        />
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitleAciklama}>Açıklamalar</Text>
             {Array.from({ length: 10 }, (_, index) => (
               <TextInput
                 key={index}
@@ -355,11 +359,8 @@ const calculateTotalQuantity = () => {
             <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={closeExplanationModal} style={MainStyles.closeOnizlemeButton}>
-              <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
-            </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
       </Modal>
     {/* Açıklama Ekleme */}
     {/* Kaydet İptal Seçim */}
