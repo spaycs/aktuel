@@ -54,8 +54,8 @@ const SatisFaturasiProductList = () => {
     { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
     { label: 'Reyon', value: 'Reyon', tip: 6 },
     { label: 'Barkod', value: 'Barkod', tip: 7 },
-    { label: 'Hizmet', value: 'Hizmet', tip: 8 },
-    { label: 'Masraf', value: 'Masraf', tip: 9 },
+    { label: 'Masraf', value: 'Masraf', tip: 8 },
+    { label: 'Hizmet', value: 'Hizmet', tip: 9 },
   ];
 
   const getTipForValue = (value) => {
@@ -66,72 +66,35 @@ const SatisFaturasiProductList = () => {
   const fetchProductData = useCallback(async () => {
     setLoading(true);
     try {
-      let url;
-      // Seçilen kritere göre API URL'si belirleniyor
       const tip = getTipForValue(searchCriteria);
-      const depo = defaults[0].IQ_CikisDepoNo;
-  
-      if (tip >= 1 && tip <= 7) {
-        // Tip 1-7: StokListesiEvraklar API'si
-        url = `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`;
-        console.log('url', url)
-      } else if (tip === 8) {
-        // Tip 8: HizmetHesaplari API'si
-        url = '/Api/Stok/HizmetHesaplari';
-      } else if (tip === 9) {
-        // Tip 9: MasrafHesaplari API'si
-        url = '/Api/Stok/MasrafHesaplari';
-      }
-  
-      if (url) {
-        const response = await axiosLinkMain.get(url);
-        const data = response.data;
-  
-        // Filtreleme ve gösterim mantığı
-        let dataToFilter = [];
-  
-        if (tip === 8) {
-          dataToFilter = hizmetData.length > 0 ? hizmetData : data;
-          setHizmetData(dataToFilter); // Hizmet verisini kaydediyoruz
-        } else if (tip === 9) {
-          dataToFilter = masrafData.length > 0 ? masrafData : data;
-          setMasrafData(dataToFilter); // Masraf verisini kaydediyoruz
-        } else {
-          dataToFilter = stokListData.length > 0 ? stokListData : data;
-          setStokListData(dataToFilter); // Stok verisini kaydediyoruz
-        }
-  
-        // Gelen veriyi filtreleyip düzenleme
-        const normalizedSearchTerm = normalizeText(searchTerm).toLowerCase().split(' ');
-        const filteredData = dataToFilter
-          .filter(item => {
-            const normalizedItemText = normalizeText(item.Isim || item[searchCriteria] || '').toLowerCase();
-            const matchesSearchTerm = normalizedSearchTerm.every(term => normalizedItemText.includes(term));
-            const matchesMarka = selectedMarka ? item.Marka === selectedMarka : true;
-            return matchesSearchTerm && matchesMarka;
-          })
-          .map(item => ({
-            Stok_Ad: item.Stok_Ad || item.Isim,
-            Stok_Kod: item.Stok_Kod || item.Kod,
-            sth_vergi: item.Vergi,
-            sth_vergi_pntr: item.Vergipntr,
-            Liste_Fiyatı: item.Liste_Fiyatı,
-            Birim: item.Birim,
-            Marka: item.Marka,
-            AltGrup: item.AltGrup,
-            AnaGrup: item.AnaGrup,
-            Reyon: item.Reyon,
-          }));
-  
-        // Filtrelenmiş veriyi ekrana gösterim için ayarla
-        setFilteredData(filteredData);
-      }
+      const depo = defaults[0]?.IQ_CikisDepoNo || '';
+
+      const url = `/Api/Stok/StokListesiEvraklar2?cari=${faturaBilgileri.cha_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
+      console.log(url);
+      const response = await axiosLinkMain.get(url);
+
+      const data = response.data || [];
+      const filtered = data.map(item => ({
+        Stok_Ad: item.Stok_Ad || item.Isim,
+        Stok_Kod: item.Stok_Kod || item.Kod,
+        sth_vergi: item.Vergi,
+        sth_vergi_pntr: item.Vergipntr,
+        Liste_Fiyatı: item.Liste_Fiyatı,
+        Birim: item.Birim,
+        Marka: item.Marka,
+        AltGrup: item.AltGrup,
+        AnaGrup: item.AnaGrup,
+        Reyon: item.Reyon,
+        HareketTipi: item.HareketTipi, // Yeni eklendi
+      }));
+
+      setFilteredData(filtered);
     } catch (err) {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
-  }, [searchCriteria, searchTerm, selectedMarka, hizmetData, masrafData, stokListData]);
+  }, [searchCriteria, searchTerm, defaults, faturaBilgileri]);
   
 
   const handlePickerChange = (itemValue) => {
