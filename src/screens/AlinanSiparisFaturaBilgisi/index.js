@@ -341,24 +341,20 @@ const AlinanSiparisFaturaBilgisi = () => {
   
   const loadDateFromAsyncStorage = async () => {
     try {
-      const savedDate = await AsyncStorage.getItem('selectedDate');
       const currentDate = new Date();
-      const initialDate = savedDate ? new Date(JSON.parse(savedDate)) : currentDate;
-      setDate(initialDate);
-      
-      // Kaydedilmiş tarihi formatlayıp fatura bilgilerine ekleyin
-      const formattedDate = formatDate(initialDate);
+  
+      // Tarihi formatla ve fatura bilgisine ekle
+      const formattedDate = formatDate(currentDate);
+      setDate(currentDate);
       setAlinanSiparis(prevState => ({
         ...prevState,
         sip_tarih: formattedDate,
       }));
-
-       if (!savedDate) {
-        await AsyncStorage.setItem('selectedDate', JSON.stringify(currentDate));
-      }
-
+  
+      // AsyncStorage'a güncel tarihi kaydet
+      await AsyncStorage.setItem('selectedDate', JSON.stringify(currentDate));
     } catch (error) {
-      console.error('Error loading date from AsyncStorage:', error);
+      console.error('Error updating date in AsyncStorage:', error);
     }
   };
 
@@ -420,7 +416,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   };
   
   useEffect(() => {
-    console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
+    //console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
   
   }, [alinanSiparis]);
  
@@ -433,7 +429,7 @@ const AlinanSiparisFaturaBilgisi = () => {
          //loadAddressFromAsyncStorage(); // 5. Adres bilgisi yükler
          //loadDepoFromAsyncStorage(); // 6. Depo bilgisi yükler
         // loadDovizFromAsyncStorage(); // 7. Döviz bilgisi yükler
-        loadIrsaliyeTipiFromAsyncStorage(); // 8. İrsaliye tipi yükler
+        //loadIrsaliyeTipiFromAsyncStorage(); // 8. İrsaliye tipi yükler
          loadDateFromAsyncStorage(); // 9. Tarih bilgisi yükler
         // loadEvrakNoFromAsyncStorage(); // 10. Evrak no bilgisi yükler
         // loadOnaysizDataFromAsyncStorage(); // 11. Onaysız data yükler
@@ -1254,7 +1250,7 @@ const formatPrice = (price) => {
                     </Grid>
                 </ScrollView>
             );
-            setIsPickerModalVisible(false)
+
         default:
             return <Text>Veri bulunamadı.</Text>;
     }

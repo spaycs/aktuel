@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator, SafeAreaView, Linking, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Ara, Left, Takvim } from '../../res/images';
+import { Ara, Left, PDF, Takvim } from '../../res/images';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
 import { ProductContext } from '../../context/ProductContext';
@@ -167,6 +167,27 @@ const DepolarArasiSevkFisiBilgisi = () => {
       console.error('API Hatası:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePdfClick = async (sth_evrakno_seri, sth_evrakno_sira) => {
+    try {
+      // API'ye isteği yaparken evrakno_seri ve evrakno_sira değerlerini gönderiyoruz
+      const response = await axiosLinkMain.get(`/Api/PDF/DepolarArasiPDF?a=${sth_evrakno_seri}&b=${sth_evrakno_sira}`);
+      console.log('API Yanıtı:', response.data); // Yanıtı kontrol etmek için
+  
+      const pdfPath = response.data; 
+      
+      if (pdfPath) {
+        const fullPdfUrl = `${pdfPath}`;
+  
+        Linking.openURL(fullPdfUrl);
+      } else {
+        throw new Error('PDF dosya yolu alınamadı');
+      }
+    } catch (error) {
+      console.error('PDF almakta hata oluştu:', error);
+      Alert.alert('Hata', 'PDF alınırken bir sorun oluştu.');
     }
   };
    // Personel Listele
@@ -397,6 +418,7 @@ const DepolarArasiSevkFisiBilgisi = () => {
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Sıra</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Vergi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Yekün</DataTable.Title>
+                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Önizleme</DataTable.Title>
                       </DataTable.Header>
 
                       <ScrollView style={{ maxHeight: 600 }}>
@@ -411,6 +433,11 @@ const DepolarArasiSevkFisiBilgisi = () => {
                             <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
                               {item.sth_tutar}
                             </DataTable.Cell>
+                            <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
+                              <TouchableOpacity onPress={() => handlePdfClick(item.sth_evrakno_seri, item.sth_evrakno_sira)}>
+                              <PDF width={25} height={25}/>
+                              </TouchableOpacity>
+                            </DataTable.Cell> 
                           </DataTable.Row>
                         ))}
                       </ScrollView>

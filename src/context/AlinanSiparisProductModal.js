@@ -629,6 +629,7 @@ const validateQuantity = (quantity) => {
                     : katsayi.sto_birim4_katsayi
                 })`}
                 value={birim}
+                style={MainStyles.textStyle}
               />
             ))}
           </Picker>
@@ -659,6 +660,7 @@ const validateQuantity = (quantity) => {
             : katsayi.sto_birim4_katsayi
         })`}
         value={birim}
+        style={MainStyles.textStyle}
       />
     ))}
   </Picker>
@@ -753,8 +755,11 @@ const validateQuantity = (quantity) => {
             animationType="slide"
             onRequestClose={closeModal}
         >
-            <View style={MainStyles.modalBackground}>
-                <View style={MainStyles.modalCariDetayContent}>
+             <View style={[MainStyles.modalBackground]}>
+             <View style={MainStyles.modalCariDetayContent}>
+                  <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                  </TouchableOpacity>
                     {loading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
@@ -798,9 +803,6 @@ const validateQuantity = (quantity) => {
                             )}
                         </>
                     )}
-                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                        <Text style={MainStyles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
                 </View>
             </View>
         </Modal>
@@ -813,6 +815,9 @@ const validateQuantity = (quantity) => {
         >
             <View style={MainStyles.modalBackground}>
                 <View style={MainStyles.modalCariDetayContent}>
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                    </TouchableOpacity>
                     {loading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                     ) : (
@@ -852,9 +857,7 @@ const validateQuantity = (quantity) => {
                             )}
                         </>
                     )}
-                    <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-                        <Text style={MainStyles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
+                  
                 </View>
             </View>
         </Modal>
