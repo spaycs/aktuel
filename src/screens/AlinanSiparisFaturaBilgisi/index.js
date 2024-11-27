@@ -1254,7 +1254,7 @@ const formatPrice = (price) => {
                     </Grid>
                 </ScrollView>
             );
-
+            setIsPickerModalVisible(false)
         default:
             return <Text>Veri bulunamadı.</Text>;
     }
