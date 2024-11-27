@@ -413,7 +413,7 @@ const [bankList, setBankList] = useState([]);
                 />
               )}
             </View>
-
+            <Text style={MainStyles.formTitle}>Tutar</Text>
             <TextInput
               style={MainStyles.inputMusteriCekiTextInput}
               placeholder="Tutar"

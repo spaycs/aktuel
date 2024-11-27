@@ -11,6 +11,7 @@ import { Ara, Takvim, Down } from '../res/images';
 import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuthDefault } from '../components/DefaultUser';
+import CustomHeader from '../components/CustomHeader';
 
 const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisible, }) => {
   const { defaults } = useAuthDefault();
@@ -178,26 +179,29 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
 
     return (
       <Modal visible={modalVisible} transparent={true} animationType="slide" onRequestClose={handleClose}>
-        <ScrollView style={{ backgroundColor: 'white' }}>
-          <SafeAreaView style={MainStyles.modalContainer}>
+          <View style={MainStyles.modalContainerDetail}>
+          <CustomHeader
+            title="Tahsilat Tediye Güncelleme"
+            onClose={() => handleClose()}
+          />
+  <ScrollView>
             <View style={MainStyles.modalContent}>
-              <Text style={MainStyles.modalTahsilatTitle}>Tahsilat Tediye Güncelleme</Text>
-  
               {/* Picker */}
-              <View style={MainStyles.inputStyle}>
+              <Text style={MainStyles.formTitle}>Tip</Text>
+              <View style={MainStyles.inputStyleAlinanSiparis}>
                 <Picker
                   selectedValue={pickerValue}
                   onValueChange={(itemValue) => setPickerValue(itemValue)}
                   itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
                 >
-                  <Picker.Item label="Kendisi" value="Kendisi" />
-                  <Picker.Item label="Müşterisi" value="Müşterisi" />
+                  <Picker.Item label="Kendisi" value="Kendisi" style={MainStyles.textStyle}/>
+                  <Picker.Item label="Müşterisi" value="Müşterisi" style={MainStyles.textStyle}/>
                 </Picker>
               </View>
   
              {/* Date Picker */}
+             <Text style={MainStyles.formTitle}>Tarih</Text>
             <View style={MainStyles.datePickerContainer}>
-              <Text style={MainStyles.dateTitle}>Tarih</Text>
               <TouchableOpacity onPress={() => setShowDatePicker(true)} >
                 <View style={MainStyles.dateContainer}>
                   <Takvim name="calendar-today" style={MainStyles.dateIcon} />
@@ -218,11 +222,11 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
             </View>
   
                {/* Kasa Banka Kodu */}
-            <View style={MainStyles.musteriCekiBanka}>
             <Text style={MainStyles.dateTitle}>Kasa Banka Kodu</Text>
+            <View style={MainStyles.musteriCekiBanka}>
             <View style={MainStyles.inputContainer}>
               <TextInput
-                style={MainStyles.inputCariKodu}
+                style={MainStyles.inputMusteriCeki}
                 placeholder="Kasa Banka Kodu"
                 placeholderTextColor={colors.placeholderTextColor}
                 value={cha_kasa_hizkod}
@@ -237,7 +241,7 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
             </View>
 
             <TextInput
-              style={MainStyles.input}
+              style={MainStyles.inputMusteriSenediKodu}
               placeholder="Kasa Banka İsmi"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_kasa_isim}
@@ -246,11 +250,11 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
             </View>
 
              {/* Kasa Banka Kodu */}
-             <View style={MainStyles.musteriCekiBanka}>
              <Text style={MainStyles.dateTitle}>TCMB Banka Kodu</Text>
+             <View style={MainStyles.musteriCekiBanka}>
             <View style={MainStyles.inputContainer}>
               <TextInput
-                style={MainStyles.inputCariKodu}
+                style={MainStyles.inputMusteriCeki}
                 placeholder="TCMB Banka Adi"
                 placeholderTextColor={colors.placeholderTextColor}
                 value={sck_TCMB_Banka_adi}
@@ -265,7 +269,7 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
             </View>
 
             <TextInput
-              style={MainStyles.input}
+              style={MainStyles.inputMusteriCeki}
               placeholder="Banka Şubesi"
               placeholderTextColor={colors.placeholderTextColor}
               value={sck_TCMB_Sube_adi}
@@ -274,8 +278,10 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
             </View>
   
               {/* Other Inputs */}
-              <TextInput style={MainStyles.input} placeholder="Borçlu İsim" placeholderTextColor="#999" value={borcluIsim} onChangeText={setBorcluIsim} />
-              <TextInput style={MainStyles.input} placeholder="Açıklama" placeholderTextColor="#999" value={cha_aciklama} onChangeText={setCha_aciklama} />
+              <Text style={MainStyles.formTitle}>Borçlu İsim</Text>
+              <TextInput style={MainStyles.inputStokKodu} placeholder="Borçlu İsim" placeholderTextColor={colors.placeholderTextColor} value={borcluIsim} onChangeText={setBorcluIsim} />
+              <Text style={MainStyles.formTitle}>Açıklama</Text>
+              <TextInput style={MainStyles.inputStokKodu} placeholder="Açıklama" placeholderTextColor={colors.placeholderTextColor} value={cha_aciklama} onChangeText={setCha_aciklama} />
               {/* 
                 <TextInput style={MainStyles.input} placeholder="Hesap No" placeholderTextColor="#999" value={hesapNo} onChangeText={setHesapNo} />
                 <TextInput style={MainStyles.input} placeholder="Çek No" placeholderTextColor="#999" value={cekNo} onChangeText={setCekNo} />
@@ -283,7 +289,7 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
               */}
               {/* Checkbox for Taşra Mı */}
               <View style={MainStyles.checkboxContainer}>
-                <Text>Taşra mı?</Text>
+              <Text style={MainStyles.dateTitle}>Taşra mı?</Text>
                 <CheckBox
                   value={tasrami === 1} // Check if tasrami is 1 to make the checkbox selected
                   onValueChange={(newValue) => setTasrami(newValue ? 1 : 0)} // Update tasrami based on checkbox state
@@ -292,8 +298,8 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
 
   
           {/* Adat Date Picker */}
+          <Text style={MainStyles.formTitle}>Adat Vadesi</Text>
             <View style={MainStyles.datePickerContainer}>
-              <Text style={MainStyles.dateTitle}>Adat Vadesi</Text>
               <TouchableOpacity onPress={() => setShowAdatDatePicker(true)}>
                 <View style={MainStyles.dateContainer}>
                   <Takvim name="calendar-today" style={MainStyles.dateIcon} />
@@ -315,9 +321,9 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
             
               )}
             </View>
-
+            <Text style={MainStyles.formTitle}>Tutar</Text>
               <TextInput
-              style={MainStyles.input}
+              style={MainStyles.inputMusteriCekiTextInput}
               placeholder="Tutar"
               placeholderTextColor="#999"
               value={cha_meblag}
@@ -332,9 +338,12 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
              >
-              <View style={MainStyles.modalContainer}>
+               <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Kasa Kodları"
+                onClose={() => setIsCarrierModalVisible(false)}
+              />
                 <View style={MainStyles.modalContent}>
-                  <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
                   <FlatList
                     data={nakitKodlariList}
                     keyExtractor={(item, index) => `${item.Kod}_${index}`}
@@ -363,9 +372,12 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
               animationType="slide"
               onRequestClose={() => setIsTcmbModalVisible(false)}
              >
-              <View style={MainStyles.modalContainer}>
+               <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="TCMB Banka Kodu"
+                onClose={() => setIsTcmbModalVisible(false)}
+              />
                 <View style={MainStyles.modalContent}>
-                  <Text style={MainStyles.modalTitle}>TCMB Banka Kodu</Text>
                   <FlatList
                     data={tcmbKodlariList}
                     keyExtractor={(item, index) => `${item.BankaKod}_${index}`}
@@ -393,13 +405,10 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
                 <Text style={MainStyles.addButtonText}>Güncelle</Text>
               </TouchableOpacity>
   
-              {/* Kapat Button */}
-              <TouchableOpacity style={MainStyles.closeButton} onPress={handleClose}>
-                <Text style={MainStyles.addButtonText}>Kapat</Text>
-              </TouchableOpacity>
+            
             </View>
-          </SafeAreaView>
-        </ScrollView>
+            </ScrollView>
+        </View>
       </Modal>
     );
   };

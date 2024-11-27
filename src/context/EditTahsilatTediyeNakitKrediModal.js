@@ -9,9 +9,12 @@ import { ProductContext } from '../context/ProductContext';
 import { Ara, Takvim } from '../res/images';
 import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import CustomHeader from '../components/CustomHeader';
+import { useAuthDefault } from '../components/DefaultUser';
 
 const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setModalVisible, tediyeturu }) => {
   const [cha_kasa_hizkod, setCha_kasa_hizkod] = useState('');
+  const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts } = useContext(ProductContext);
   const [cha_kasa_isim, setCha_kasa_isim] = useState('');
   const [cha_aciklama, setCha_aciklama] = useState('');
@@ -121,15 +124,16 @@ const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setM
 
     return (
       <Modal visible={modalVisible} transparent={true} animationType="slide" onRequestClose={handleClose}>
-        <ScrollView style={{ backgroundColor: 'white' }}>
-          <SafeAreaView style={MainStyles.modalContainer}>
-            <View style={MainStyles.modalContent}>
-              <Text style={MainStyles.modalTahsilatTitle}>Nakit & Kredi Kartı Güncelleme</Text>
-  
+         <View style={MainStyles.modalContainerDetail}>
+          <CustomHeader
+            title="Nakit & Kredi Kartı Güncelleme"
+            onClose={() => handleClose()}
+          />
   
              {/* Date Picker */}
-            <View style={MainStyles.datePickerContainer}>
-              <Text style={MainStyles.dateTitle}>Tarih</Text>
+            <View style={MainStyles.modalContent}>
+              <Text style={MainStyles.formTitle}>Tarih</Text>
+              <View style={MainStyles.datePickerContainer}>
               <TouchableOpacity onPress={() => setShowDatePicker(true)} >
                 <View style={MainStyles.dateContainer}>
                   <Takvim name="calendar-today" style={MainStyles.dateIcon} />
@@ -150,8 +154,7 @@ const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setM
             </View>
   
                {/* Kasa Banka Kodu */}
-            <View style={MainStyles.musteriCekiBanka}>
-            <Text style={MainStyles.dateTitle}>Kasa Banka Kodu</Text>
+            <Text style={MainStyles.formTitle}>Kasa Banka Kodu</Text>
             <View style={MainStyles.inputContainer}>
               <TextInput
                 style={MainStyles.inputCariKodu}
@@ -171,24 +174,36 @@ const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setM
               </TouchableOpacity>
             </View>
 
+            <Text style={MainStyles.formTitle}>Kasa Banka İsmi</Text>
             <TextInput
-              style={MainStyles.input}
+              style={MainStyles.inputStokKodu}
               placeholder="Kasa Banka İsmi"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_kasa_isim}
               onChangeText={setCha_kasa_isim}
             />
-            </View>
-          
-              <TextInput style={MainStyles.input} placeholder="Açıklama" placeholderTextColor="#999" value={cha_aciklama} onChangeText={setCha_aciklama} />
 
+            <Text style={MainStyles.formTitle}>Açıklama</Text>
+              <TextInput style={MainStyles.inputStokKodu} placeholder="Açıklama" placeholderTextColor="#999" value={cha_aciklama} onChangeText={setCha_aciklama} />
+              <Text style={MainStyles.formTitle}>Tutar</Text>
               <TextInput
-              style={MainStyles.input}
+              style={MainStyles.inputStokKodu}
               placeholder="Tutar"
               placeholderTextColor="#999"
               value={cha_meblag}
-              onChangeText={setCha_meblag}
               keyboardType="numeric"
+              onChangeText={(value) => {
+                // Virgülü noktaya çevir
+                const formattedValue = value.replace(',', '.');
+
+                // Sadece rakamlar ve . (nokta) karakteri kabul edilsin
+                const validValue = formattedValue.replace(/[^0-9.]/g, '');
+
+                // Eğer birden fazla . (nokta) varsa, sonrasını kabul etme
+                const finalValue = validValue.split('.').length > 2 ? validValue.slice(0, -1) : validValue;
+
+                setCha_meblag(finalValue);
+              }}
             />
 
 <Modal
@@ -197,9 +212,12 @@ const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setM
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
             >
-              <View style={MainStyles.modalContainer}>
+               <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Kasa Kodları"
+                onClose={() => setIsCarrierModalVisible(false)}
+              />
                 <View style={MainStyles.modalContent}>
-                  <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
                   <FlatList
                     data={selectedProduct?.tediyeturu === 'Nakit' ? nakitKodlariList : krediKodlariList}
                     keyExtractor={(item, index) => `${item.Kod || item.BANKA_KODU}_${index}`}
@@ -217,12 +235,7 @@ const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setM
                       </TouchableOpacity>
                     )}
                   />
-                  <TouchableOpacity
-                    style={MainStyles.closeButton}
-                    onPress={() => setIsCarrierModalVisible(false)}
-                  >
-                    <Text style={MainStyles.addButtonText}>Kapat</Text>
-                  </TouchableOpacity>
+               
                 </View>
               </View>
             </Modal>
@@ -232,14 +245,8 @@ const EditTahsilatTediyeNakitKrediModal = ({ selectedProduct, modalVisible, setM
               <TouchableOpacity style={MainStyles.addButton} onPress={handleUpdate}>
                 <Text style={MainStyles.addButtonText}>Güncelle</Text>
               </TouchableOpacity>
-  
-              {/* Kapat Button */}
-              <TouchableOpacity style={MainStyles.closeButton} onPress={handleClose}>
-                <Text style={MainStyles.addButtonText}>Kapat</Text>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </ScrollView>
+          </View>
+          </View>
       </Modal>
     );
   };
