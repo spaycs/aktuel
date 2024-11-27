@@ -12,6 +12,7 @@ import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 import Button from '../../components/Button';
+import CustomHeader from '../../components/CustomHeader';
 
 const DepolarArasiSevkFisiBilgisi = () => {
   const { authData } = useAuth();
@@ -376,14 +377,11 @@ const DepolarArasiSevkFisiBilgisi = () => {
             animationType="slide"
             onRequestClose={() => setIsModalVisible(false)}
           >
-            <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Son Kaydedilen Evraklar</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={handleClose}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Son Kaydedilen Evraklar"
+                onClose={() => handleClose()}
+              />
               <View style={MainStyles.modalContent}>
                 {loading ? (
                  <FastImage
@@ -397,7 +395,6 @@ const DepolarArasiSevkFisiBilgisi = () => {
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Tarihi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Seri</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Sıra</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 200 }]}>Cari Kodu</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Vergi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Yekün</DataTable.Title>
                       </DataTable.Header>
@@ -410,9 +407,6 @@ const DepolarArasiSevkFisiBilgisi = () => {
                             </DataTable.Cell>
                             <DataTable.Cell style={{ width: 100, paddingHorizontal: 15 }}>{item.sth_evrakno_seri}</DataTable.Cell>
                             <DataTable.Cell style={{ width: 100 }}>{item.sth_evrakno_sira}</DataTable.Cell>
-                            <DataTable.Cell style={{ width: 200 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.sth_cari_kodu}
-                            </DataTable.Cell>
                             <DataTable.Cell style={{ width: 100 }}>{item.sth_vergi}</DataTable.Cell>
                             <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
                               {item.sth_tutar}
@@ -425,7 +419,6 @@ const DepolarArasiSevkFisiBilgisi = () => {
                 )}
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Data Table Modal */}
 

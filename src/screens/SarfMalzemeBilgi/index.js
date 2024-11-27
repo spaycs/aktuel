@@ -592,14 +592,11 @@ const SarfMalzemeBilgi = () => {
             animationType="slide"
             onRequestClose={() => setIsModalVisible(false)}
           >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Son Kaydedilen Evraklar</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={handleClose}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Son Kaydedilen Evraklar"
+                onClose={() => handleClose()}
+              />
               <View style={MainStyles.modalContent}>
                 {loading ? (
                   <FastImage
@@ -613,13 +610,11 @@ const SarfMalzemeBilgi = () => {
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Tarihi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Seri</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Sıra</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 200 }]}>Cari Kodu</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Cari Ünvan</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Türü</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Vergi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>İskonto</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Yekün</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Önizleme</DataTable.Title>
+                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 50 }]}>Önizleme</DataTable.Title>
                       </DataTable.Header>
 
                       <ScrollView style={{ maxHeight: 600 }}>
@@ -630,10 +625,6 @@ const SarfMalzemeBilgi = () => {
                             </DataTable.Cell>
                             <DataTable.Cell style={{ width: 100, paddingHorizontal: 15 }}>{item.Seri}</DataTable.Cell>
                             <DataTable.Cell style={{ width: 100 }}>{item.Sıra}</DataTable.Cell>
-                            <DataTable.Cell style={{ width: 200 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.Cari_Kod}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={{ width: 100 }}>{item.Cari_Ünvan}</DataTable.Cell>
                             <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
                               {item.N_İ}
                             </DataTable.Cell>
@@ -646,7 +637,7 @@ const SarfMalzemeBilgi = () => {
                             <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
                               {item.Toplam_Tutar}
                             </DataTable.Cell>
-                            <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
+                            <DataTable.Cell style={[MainStyles.withBorder, { width: 50 }]} >
                               <TouchableOpacity onPress={() => handlePdfClick(item.Seri, item.Sıra)}>
                               <PDF width={25} height={25}/>
                               </TouchableOpacity>
@@ -660,7 +651,6 @@ const SarfMalzemeBilgi = () => {
                 
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Data Table Modal */}
 

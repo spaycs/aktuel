@@ -6,6 +6,7 @@ import { colors } from '../res/colors';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { ProductContext } from '../context/ProductContext';
+import CustomHeader from '../components/CustomHeader';
 
 const EditSatisFaturasiProductModal = ({ selectedProduct, modalVisible, setModalVisible, setAddedProducts }) => {
   const { faturaBilgileri } = useContext(ProductContext);
@@ -209,13 +210,18 @@ const calculateTotalWithoutDiscount = () => {
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType="slide"  onRequestClose={handleClose}>
-      <ScrollView style={{ backgroundColor: 'white' }}>
-        <SafeAreaView style={MainStyles.modalContainer}>
-          <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTitle}>Satış Faturası Detayı</Text>
-            <Text style={MainStyles.modalStokKodu}>Stok Kodu: {updatedProduct?.Stok_Kod}</Text>
-            <Text style={MainStyles.modalStokKodu}>Stok Adı: {updatedProduct?.Stok_Ad}</Text>
-            <View style={MainStyles.modalBorder}></View>
+
+<View style={MainStyles.modalContainerDetail}>
+      <CustomHeader
+        title="Satış Faturası Detayı"
+        onClose={handleClose}
+      />
+       <View style={MainStyles.modalContainerProduct}>
+        <View style={MainStyles.modalContainerProductName}>
+          <Text style={MainStyles.modalStokAd}>Stok Kod:{updatedProduct?.Stok_Kod} </Text>
+          <Text style={MainStyles.modalStokKodu}>Stok Adı:{updatedProduct?.Stok_Ad}</Text>
+        </View>
+
             <View style={MainStyles.productModalContainer}>
               <View style={MainStyles.inputBirimGroup}>
                 <Text style={MainStyles.productModalText}>Miktar:</Text>
@@ -356,12 +362,8 @@ const calculateTotalWithoutDiscount = () => {
               <TouchableOpacity style={MainStyles.addButton} onPress={handleUpdate}>
                 <Text style={MainStyles.addButtonText}>Güncelle</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={MainStyles.onizlemeButton} onPress={handleClose}>
-                <Text style={MainStyles.addButtonText}>Kapat</Text>
-              </TouchableOpacity>
           </View>
-        </SafeAreaView>
-      </ScrollView>
+      </View>
     </Modal>
   );
 };

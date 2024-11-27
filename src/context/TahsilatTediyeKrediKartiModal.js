@@ -8,6 +8,7 @@ import { ProductContext } from '../context/ProductContext';
 import { Ara, Left, Takvim } from '../res/images';
 import { useAuthDefault } from '../components/DefaultUser';
 import { useAuth } from '../components/userDetail/Id';
+import CustomHeader from '../components/CustomHeader';
 
 const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) => {
   const { authData } = useAuth();
@@ -143,10 +144,12 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-      <ScrollView style={{ backgroundColor: 'white' }}>
-        <SafeAreaView style={MainStyles.modalContainer}>
+       <View style={MainStyles.modalContainerDetail}>
+          <CustomHeader
+            title="Kredi Kartı Tahsilat"
+            onClose={() => setIsModalVisible(false)}
+          />
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTahsilatTitle}>Kredi Kartı Tahsilat</Text>
             <Text style={MainStyles.formTitle}>Tarih</Text>
             <View style={MainStyles.datePickerContainer}>
               <TouchableOpacity onPress={() => setShowDatePicker(true)} >
@@ -182,7 +185,7 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
             </View>
             <Text style={MainStyles.formTitle}>Kasa Banka İsmi</Text>
             <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Kasa Banka İsmi"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_kasa_isim}
@@ -190,7 +193,7 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
             />
            <Text style={MainStyles.formTitle}>Açıklama</Text>
             <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Açıklama"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_aciklama}
@@ -198,7 +201,7 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
             />
             <Text style={MainStyles.formTitle}>Tutar</Text>
             <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Tutar"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_meblag}
@@ -224,10 +227,6 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}}  onPress={() => setIsModalVisible(false)}>
-              <Left width={17} height={17}/>
-            </TouchableOpacity>
-
              {/* TCMB Modal */}
             <Modal
               visible={isTcmbModalVisible}
@@ -235,14 +234,11 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
               animationType="slide"
               onRequestClose={() => setIsTcmbModalVisible(false)}
             >
-               <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>TCMB Banka Kodları</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}}  onPress={() => setIsTcmbModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+               <View style={MainStyles.modalContainerDetail}>
+          <CustomHeader
+            title="TCMB Banka Kodları"
+            onClose={() => setIsTcmbModalVisible(false)}
+          />
               <View style={MainStyles.modalContent}>
 
                   <FlatList
@@ -260,12 +256,10 @@ const TahsilatTediyeKrediKartiModal = ({ isModalVisible, setIsModalVisible }) =>
                 
                 </View>
               </View>
-              </SafeAreaView>
             </Modal>
 
           </View>
-        </SafeAreaView>
-      </ScrollView>
+          </View>
     </Modal>
   );
 };

@@ -11,6 +11,7 @@ import { ProductContext } from '../context/ProductContext';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { Left,Down } from '../res/images';
+import CustomHeader from '../components/CustomHeader';
 
 const ProductModal = ({
   selectedProduct,
@@ -530,13 +531,17 @@ const validateQuantity = (quantity) => {
       animationType="slide"
       onRequestClose={handleClose}
     >
-      <ScrollView style={{backgroundColor: 'white'}}>
-      <SafeAreaView style={MainStyles.modalContainerUrunDetay}>
-        <View style={MainStyles.modalContentUrunDetay}>
-          <Text style={MainStyles.modalTitle}>Ürün Detayı</Text>
-          <Text style={MainStyles.modalStokAd}>{selectedProduct?.Stok_Kod} - <Text style={MainStyles.modalStokKodu}>{selectedProduct?.Stok_Ad}</Text></Text>
-          
-          <View style={MainStyles.modalBorder}></View>
+      <View style={MainStyles.modalContainerDetail}>
+      <CustomHeader
+        title="Ürün Detayı"
+        onClose={handleClose}
+      />
+       <View style={MainStyles.modalContainerProduct}>
+        <View style={MainStyles.modalContainerProductName}>
+          <Text style={MainStyles.modalStokAd}>Stok Kod:{selectedProduct?.Stok_Kod} </Text>
+          <Text style={MainStyles.modalStokKodu}>Stok Adı:{selectedProduct?.Stok_Ad}</Text>
+        </View>
+
           <View style={MainStyles.productModalContainer}>
             <View style={MainStyles.inputBirimGroup}>
               <Text style={MainStyles.inputtip}>Birim:</Text>
@@ -876,12 +881,9 @@ const validateQuantity = (quantity) => {
           >
             <Text style={MainStyles.addButtonText}>Ekle</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{position :'absolute', marginTop: 20, }} onPress={handleClose}>
-          <Left width={17} height={17}/>
-          </TouchableOpacity>
+         
         </View>
-      </SafeAreaView>
-      </ScrollView>
+        </View>
     </Modal>
   );
 };

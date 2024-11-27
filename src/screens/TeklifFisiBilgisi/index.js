@@ -1136,14 +1136,11 @@ const TeklifFisiBilgisi = () => {
             animationType="slide"
             onRequestClose={() => setIsModalVisible(false)}
           >
-            <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Son Kaydedilen Evraklar</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={handleClose}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+           <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Son Kaydedilen Evraklar"
+                onClose={() => handleClose()}
+              />
               <View style={MainStyles.modalContent}>
                 {loading ? (
                   <FastImage
@@ -1157,12 +1154,9 @@ const TeklifFisiBilgisi = () => {
                       <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Oluşturma Tarihi</DataTable.Title>
                       <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Seri</DataTable.Title>
                       <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Sıra</DataTable.Title>
-                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Stok Kod</DataTable.Title>
-                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 300 }]}>Stok İsmi</DataTable.Title>
-                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Miktar</DataTable.Title>
-                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Birim_Fiyat</DataTable.Title>
-                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Vergi</DataTable.Title>
-                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Önizleme</DataTable.Title>
+                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Cari Kod</DataTable.Title>
+                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 300 }]}>Cari Ünvan</DataTable.Title>
+                      <DataTable.Title style={[MainStyles.tableHeaderText, { width: 50 }]}>Önizleme</DataTable.Title>
                     
                     </DataTable.Header>
 
@@ -1175,19 +1169,12 @@ const TeklifFisiBilgisi = () => {
                           <DataTable.Cell style={{ width: 100, paddingHorizontal: 15 }}>{item.Seri}</DataTable.Cell>
                           <DataTable.Cell style={{ width: 100 }}>{item.Sıra}</DataTable.Cell>
                           <DataTable.Cell style={{ width: 100 }} numberOfLines={1} ellipsizeMode="tail">
-                            {item.Stok_Kod}
+                            {item.Cari_Kod}
                           </DataTable.Cell>
                           <DataTable.Cell style={{ width: 300 }} numberOfLines={1} ellipsizeMode="tail">
-                            {item.Stok_İsmi}
+                            {item.Cari_Ünvan}
                           </DataTable.Cell>
-                          <DataTable.Cell style={{ width: 100 }}>{item.Miktar}</DataTable.Cell>
-                          <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
-                            {item.Birim_Fiyat}
-                          </DataTable.Cell>
-                          <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
-                            {item.Vergi}
-                          </DataTable.Cell>
-                          <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
+                          <DataTable.Cell style={[MainStyles.withBorder, { width: 50 }]} >
                           <TouchableOpacity onPress={() => handlePdfClick(item.Seri, item.Sıra)}>
                           <PDF width={25} height={25}/>
                           </TouchableOpacity>
@@ -1201,7 +1188,6 @@ const TeklifFisiBilgisi = () => {
 
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Evrak Getir*/}
 

@@ -1278,14 +1278,11 @@ const SatisIrsaliyesiBilgisi = () => {
             animationType="slide"
             onRequestClose={() => setIsModalVisible(false)}
           >
-           <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Son Kaydedilen Evraklar</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={handleClose}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+          <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Son Kaydedilen Evraklar"
+                onClose={() => handleClose()}
+              />
               <View style={MainStyles.modalContent}>
                 {loading ? (
                   <FastImage
@@ -1343,7 +1340,6 @@ const SatisIrsaliyesiBilgisi = () => {
 
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Evrak Getir*/}
         

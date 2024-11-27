@@ -6,6 +6,7 @@ import { colors } from '../res/colors';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { ProductContext } from '../context/ProductContext';
+import CustomHeader from '../components/CustomHeader';
 
 const EditProductModal = ({ selectedProduct, modalVisible, setModalVisible, setAddedProducts }) => {
   const { faturaBilgileri } = useContext(ProductContext);
@@ -317,13 +318,16 @@ const handleUpdate = async () => {
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType="slide"  onRequestClose={handleClose}>
-      <ScrollView style={{ backgroundColor: 'white' }}>
-        <SafeAreaView style={MainStyles.modalContainerUrunDetay}>
-          <View style={MainStyles.modalContentUrunDetay}>
-            <Text style={MainStyles.modalTitle}>Ürün Detayı</Text>
-            <Text style={MainStyles.modalStokKodu}>Stok Kodu: {updatedProduct?.Stok_Kod}</Text>
-            <Text style={MainStyles.modalStokKodu}>Stok Adı: {updatedProduct?.Stok_Ad}</Text>
-            <View style={MainStyles.modalBorder}></View>
+      <View style={MainStyles.modalContainerDetail}>
+      <CustomHeader
+        title="Ürün Detayı"
+        onClose={handleClose}
+      />
+       <View style={MainStyles.modalContainerProduct}>
+        <View style={MainStyles.modalContainerProductName}>
+          <Text style={MainStyles.modalStokAd}>Stok Kod:{updatedProduct?.Stok_Kod} </Text>
+          <Text style={MainStyles.modalStokKodu}>Stok Adı:{updatedProduct?.Stok_Ad}</Text>
+        </View>
             <View style={MainStyles.productModalContainer}>
               <View style={MainStyles.inputBirimGroup}>
                 <Text style={MainStyles.productModalText}>Birim:</Text>
@@ -344,7 +348,7 @@ const handleUpdate = async () => {
             selectedValue={sth_birim_pntr}
             onValueChange={(itemValue) => {
               setSth_birim_pntr(itemValue);
-              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+              handleMiktarChangeEdit(sth_miktar); // Miktar değişikliği işlemi
               setIsModalVisible(false); // Modal'ı kapat
             }}
             style={MainStyles.picker}
@@ -376,7 +380,7 @@ const handleUpdate = async () => {
     style={{ marginHorizontal: -10 }}
     onValueChange={(itemValue) => {
       setSth_birim_pntr(itemValue);
-      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+      handleMiktarChangeEdit(sth_miktar); // Miktar değişikliği işlemi
     }}
   >
     {birimListesi.map((birim, index) => (
@@ -539,12 +543,8 @@ const handleUpdate = async () => {
               <TouchableOpacity style={MainStyles.addButton} onPress={handleUpdate}>
                 <Text style={MainStyles.addButtonText}>Güncelle</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={MainStyles.closeProductModalButton} onPress={handleClose}>
-                <Text style={MainStyles.addButtonText}>Kapat</Text>
-              </TouchableOpacity>
           </View>
-        </SafeAreaView>
-      </ScrollView>
+      </View>
     </Modal>
   );
 };

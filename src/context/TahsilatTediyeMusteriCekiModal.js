@@ -10,6 +10,7 @@ import { Ara, Left, Takvim } from '../res/images';
 import { Picker } from '@react-native-picker/picker';
 import { useAuthDefault } from '../components/DefaultUser';
 import { useAuth } from '../components/userDetail/Id';
+import CustomHeader from '../components/CustomHeader';
 
 const TahsilatTediyeMusteriCekiModal = ({ isModalVisible, setIsModalVisible, firmaCekiValue  }) => {
   const { authData } = useAuth();
@@ -224,11 +225,14 @@ const [bankList, setBankList] = useState([]);
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ScrollView style={{ width: '100%', maxHeight: '90%' }}>
-        <SafeAreaView style={MainStyles.modalContainer}>
+        <View style={MainStyles.modalContainerDetail}>
+          <CustomHeader
+            title="Müşteri Çeki Tahsilat"
+            onClose={() => setIsModalVisible(false)}
+          />
+                <ScrollView>
+
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTahsilatTitle}>Müşteri Çeki Tahsilat</Text>
 
           {/* Picker */}
           <Text style={MainStyles.formTitle}>Tip</Text>
@@ -438,11 +442,6 @@ const [bankList, setBankList] = useState([]);
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
 
-            {/* Kapat Button */}
-
-            <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}} onPress={() => setIsModalVisible(false)}>
-            <Left width={17} height={17}/>
-            </TouchableOpacity>
 
             <Modal
             visible={isBankModalVisible}
@@ -450,13 +449,11 @@ const [bankList, setBankList] = useState([]);
             animationType="slide"
             onRequestClose={() => setIsBankModalVisible(false)}
           >
-            <View style={MainStyles.modalContainer}>
-            <View>
-              <Text style={MainStyles.modalTitle}>Banka Kodları</Text>
-            </View>
-                <TouchableOpacity style={{position :'absolute', marginTop: 25, marginLeft: 10}} onPress={() => setIsBankModalVisible(false)} >
-                  <Left width={17} height={17}/>
-                </TouchableOpacity>
+              <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Banka Kodları"
+                onClose={() => setIsBankModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
                 <FlatList
                   data={bankList}
@@ -483,14 +480,11 @@ const [bankList, setBankList] = useState([]);
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
              >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+               <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Kasa Kodları"
+                onClose={() => setIsCarrierModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
                 
                   <FlatList
@@ -509,7 +503,6 @@ const [bankList, setBankList] = useState([]);
 
                 </View>
                 </View>
-              </SafeAreaView>
             </Modal>
 
             <Modal
@@ -518,10 +511,12 @@ const [bankList, setBankList] = useState([]);
               animationType="slide"
               onRequestClose={() => setIsTcmbModalVisible(false)}
               >
-              <View style={MainStyles.modalContainer}>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="TCMB Banka Kodu"
+                onClose={() => setIsTcmbModalVisible(false)}
+              />
                 <View style={MainStyles.modalContent}>
-                  <Text style={MainStyles.modalTitle}>TCMB Banka Kodu</Text>
-                  
                   <View style={MainStyles.searchContainer}>
                     <TextInput
                       style={MainStyles.searchInput}
@@ -537,7 +532,7 @@ const [bankList, setBankList] = useState([]);
                     keyExtractor={(item, index) => `${item.BankaKod}_${index}`}
                     renderItem={({ item }) => (
                       <TouchableOpacity
-                        style={MainStyles.modalItem}
+                        style={MainStyles.modalItemMusteriCeki}
                         onPress={() => handleTcmbSelect(item)}
                       >
                         <Text style={MainStyles.modalItemText}>
@@ -552,8 +547,7 @@ const [bankList, setBankList] = useState([]);
               </View>
             </Modal>
           </View>
-        </SafeAreaView>
-      </ScrollView>
+          </ScrollView>
       </View>
     </Modal>
   );

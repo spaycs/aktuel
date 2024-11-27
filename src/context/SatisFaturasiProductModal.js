@@ -9,6 +9,7 @@ import { useAuthDefault } from '../components/DefaultUser';
 import { ProductContext } from '../context/ProductContext';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
+import CustomHeader from '../components/CustomHeader';
 
 const SatisFaturasiProductModal = ({
   selectedProduct,
@@ -391,13 +392,16 @@ const SatisFaturasiProductModal = ({
       animationType="slide"
       onRequestClose={handleClose}
     >
-      <ScrollView style={{backgroundColor: 'white'}}>
-      <SafeAreaView style={MainStyles.modalContainer}>
-        <View style={MainStyles.modalContent}>
-          <Text style={MainStyles.modalTitle}>Satış Faturası Detayı</Text>
-          <Text style={MainStyles.modalStokKodu}>Stok Kodu: {selectedProduct?.Stok_Kod}</Text>
-          <Text style={MainStyles.modalStokKodu}>Stok Adı: {selectedProduct?.Stok_Ad}</Text>
-          <View style={MainStyles.modalBorder}></View>
+       <View style={MainStyles.modalContainerDetail}>
+      <CustomHeader
+        title="Satış Faturası Detayı"
+        onClose={handleClose}
+      />
+       <View style={MainStyles.modalContainerProduct}>
+        <View style={MainStyles.modalContainerProductName}>
+          <Text style={MainStyles.modalStokAd}>Stok Kod:{selectedProduct?.Stok_Kod} </Text>
+          <Text style={MainStyles.modalStokKodu}>Stok Adı:{selectedProduct?.Stok_Ad}</Text>
+        </View>
           <View style={MainStyles.productModalContainer}>
             <View style={MainStyles.inputBirimGroup}>
               <Text style={MainStyles.productModalText}>Miktar:</Text>
@@ -556,15 +560,8 @@ const SatisFaturasiProductModal = ({
           >
             <Text style={MainStyles.addButtonText}>Ekle</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={MainStyles.closeOnizlemeButton}
-            onPress={handleClose}
-          >
-            <Text style={MainStyles.addButtonText}>Kapat</Text>
-          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-      </ScrollView>
+      </View>
     </Modal>
   );
 };

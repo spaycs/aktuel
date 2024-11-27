@@ -630,6 +630,19 @@ export const MainStyles = {
       color: colors.black,
       height: 40,
     },
+    inputMusteriSenediKodu: {
+      width: "100%",
+      borderRadius: 5,
+      marginBottom: 12,
+      paddingHorizontal: 8,
+      marginRight: 5,
+      backgroundColor: colors.white,
+      borderWidth: 1,
+      borderColor: colors.textInputBg,
+      fontSize: 12,
+      color: colors.black,
+      height: 40,
+    },
     inputPersonelAdi: {
       width: "100%",
       borderRadius: 5,
@@ -1134,6 +1147,7 @@ export const MainStyles = {
       backgroundColor: colors.red,
       padding: 10,
       borderRadius: 10,
+      marginBottom: 10,
     
     },
     addButtonUrunDetay: {
@@ -1367,6 +1381,16 @@ export const MainStyles = {
       paddingTop: 10,
       paddingHorizontal: 15,
     },
+    modalContainerProduct: {
+      flex: 1,
+      backgroundColor: colors.white,
+      position: 'relative',
+      paddingTop: 10,
+      paddingHorizontal: 15,
+    },
+    modalContainerProductName: {
+      marginBottom: 10,
+    },
     modalContainerDetail: {
       flex: 1,
       backgroundColor: colors.white,
@@ -1420,6 +1444,23 @@ export const MainStyles = {
       shadowRadius: 2,
       elevation: 3,
       marginHorizontal: 15,
+      marginBottom: 10,
+      marginTop: 2,
+      borderLeftWidth: 3.5,
+      borderColor: colors.red,
+
+    },
+    modalItemMusteriCeki: {
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: colors.white,
+      padding: 10,
+      borderRadius: 5,
+      shadowColor: colors.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 3,
       marginBottom: 10,
       marginTop: 2,
       borderLeftWidth: 3.5,
@@ -1642,19 +1683,14 @@ export const MainStyles = {
     },
     modalStokKodu: {
       borderColor: colors.gray,
-      paddingVertical: 3,
-      padding: 5,
       fontSize: 12,
-      textAlign: 'center',
+      textAlign: 'left',
       fontWeight: 'bold'
     },
     modalStokAd: {
       borderColor: colors.gray,
-      paddingVertical: 3,
-      padding: 5,
       fontSize: 12,
-      textAlign: 'center',
-       
+      textAlign: 'left',
     },
     modalBorder: {
       borderBottomWidth: 1,
@@ -1795,9 +1831,7 @@ export const MainStyles = {
 
     searchContainer: {
       flexDirection: 'row',
-    marginTop: 15,
-    marginHorizontal: 15,
-    marginTop: 20,
+    marginBottom: 10,
     },
     searchButtonText: {
       color: colors.white,

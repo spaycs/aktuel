@@ -13,6 +13,7 @@ import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 import Button from '../../components/Button';
+import CustomHeader from '../../components/CustomHeader';
 
 const SatinAlmaTalepFisiBilgi = () => {
   const { authData } = useAuth();
@@ -569,14 +570,11 @@ const SatinAlmaTalepFisiBilgi = () => {
             animationType="slide"
             onRequestClose={() => setIsModalVisible(false)}
           >
-             <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Son Kaydedilen Evraklar</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={handleClose}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+             <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Son Kaydedilen Evraklar"
+                onClose={() => handleClose()}
+              />
               <View style={MainStyles.modalContent}>
                 {loading ? (
                   <FastImage
@@ -637,7 +635,6 @@ const SatinAlmaTalepFisiBilgi = () => {
                 
               </View>
             </View>
-            </SafeAreaView>
           </Modal>
         {/* Data Table Modal */}
 

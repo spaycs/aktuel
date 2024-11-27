@@ -4,6 +4,7 @@ import axiosLinkMain from '../utils/axiosMain';
 import { useAuthDefault } from '../components/DefaultUser';
 import { colors } from '../res/colors';
 import { Left } from '../res/images';
+import CustomHeader from '../components/CustomHeader';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -64,14 +65,12 @@ const MuhKodListModal = ({ isVisible, onSelectCari, onClose }) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <View>
-            <Text style={styles.modalTitle}>Muhasebe Hesap Planları</Text>
-          </View>
-          <TouchableOpacity style={{position :'absolute', marginTop: 25, marginLeft: 10}} onPress={onClose}>
-                  <Left width={17} height={17}/>
-                  </TouchableOpacity>
+    <View style={styles.modalContainer}>
+      <CustomHeader
+        title="Muhasebe Hesap Planları"
+        onClose={onClose}
+      />
+    <View style={styles.modalContent}>
           <View style={styles.searchContainer}>
              <TextInput
               style={styles.searchInput}
@@ -105,9 +104,8 @@ const MuhKodListModal = ({ isVisible, onSelectCari, onClose }) => {
                 </TouchableOpacity>
               )}
             />
-
+          </View>
         </View>
-      </SafeAreaView>
     </Modal>
   );
 };
@@ -121,8 +119,9 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.white,
     borderRadius: 10,
-    padding: 15,
     position: 'relative',
+    paddingHorizontal: 15,
+
   },
   closeButton: {
     position: 'absolute',
@@ -143,15 +142,16 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: 'row',
-    marginBottom: 15,
     marginTop: 15,
+    marginBottom: 10
   },
   searchInput: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    fontSize: 14,
+    fontSize: 12,
+    height: 40,
   },
   searchButton: {
     backgroundColor: colors.red,
@@ -164,22 +164,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   headerContainer: {
-    marginTop: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 10,
   },
   headerText: {
     flex: 2,
+    left: 20,
     fontSize: 11,
     fontWeight: 'bold',
     textAlign: 'left',
+    color:colors.white,
   },
   headerText2: {
     flex: 2,
     fontSize: 11,
     fontWeight: 'bold',
     textAlign: 'left',
+    color:colors.white
   },
   headerText3: {
     flex: 2,

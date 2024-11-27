@@ -10,6 +10,7 @@ import { Ara, Left, Takvim } from '../res/images';
 import { Picker } from '@react-native-picker/picker';
 import { useAuthDefault } from '../components/DefaultUser';
 import { useAuth } from '../components/userDetail/Id';
+import CustomHeader from '../components/CustomHeader';
 
 const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, firmaSenediValue }) => {
   const { authData } = useAuth();
@@ -219,12 +220,13 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
       animationType="slide"
       onRequestClose={() => setIsModalVisible(false)}
     >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ScrollView style={{ width: '100%', maxHeight: '90%' }}>
-        <SafeAreaView style={MainStyles.modalContainer}>
+       <View style={MainStyles.modalContainerDetail}>
+          <CustomHeader
+            title="Müşteri Senedi Tahsilat"
+            onClose={() => setIsModalVisible(false)}
+          />
+        <ScrollView>
           <View style={MainStyles.modalContent}>
-            <Text style={MainStyles.modalTahsilatTitle}>Müşteri Senedi Tahsilat</Text>
-
               {/* Picker */}
           <Text style={MainStyles.formTitle}>Tip</Text>
           <View style={MainStyles.inputStyleAlinanSiparis}>
@@ -278,7 +280,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
             </View>
 
             <TextInput
-              style={MainStyles.inputMusteriCeki}
+              style={MainStyles.inputMusteriSenediKodu}
               placeholder="Kasa Banka İsmi"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_kasa_isim}
@@ -325,7 +327,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
                {/* Banka No */}
                <Text style={MainStyles.formTitle}>Banka No</Text>
                <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Banka No"
               placeholderTextColor={colors.placeholderTextColor}
               value={sck_bankano}
@@ -335,7 +337,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
              {/* Borçlu İsim */}
              <Text style={MainStyles.formTitle}>Borçlu İsim</Text>
             <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Borçlu İsim"
               placeholderTextColor={colors.placeholderTextColor}
               value={borcluIsim}
@@ -345,7 +347,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
             {/* Borçlu Adresi */}
             <Text style={MainStyles.formTitle}>Borçlu Adresi</Text>
             <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Borçlu Adresi"
               placeholderTextColor={colors.placeholderTextColor}
               value={sck_banka_adres1}
@@ -355,7 +357,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
             {/* Açıklama */}
             <Text style={MainStyles.formTitle}>Açıklama</Text>
             <TextInput
-              style={MainStyles.inputMusteriCekiTextInput}
+              style={MainStyles.inputStokKodu}
               placeholder="Açıklama"
               placeholderTextColor={colors.placeholderTextColor}
               value={cha_aciklama}
@@ -446,11 +448,6 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
 
-            {/* Kapat Button */}
-            <TouchableOpacity style={{position :'absolute', marginTop: 12, marginLeft: 10}} onPress={() => setIsModalVisible(false)}>
-              <Left width={17} height={17}/>
-            </TouchableOpacity>
-
             <Modal
             visible={isBankModalVisible}
             transparent={true}
@@ -487,14 +484,11 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
               animationType="slide"
               onRequestClose={() => setIsCarrierModalVisible(false)}
              >
-            <SafeAreaView style={MainStyles.modalContainer}>
-                <View style={MainStyles.modalContent}>
-                    <View >
-                      <Text style={MainStyles.modalTitle}>Kasa Kodları</Text>
-                    </View>
-                    <TouchableOpacity style={{position :'absolute', marginTop: 2, marginLeft: 10}} onPress={() => setIsCarrierModalVisible(false)}>
-                    <Left width={17} height={17}/>
-                    </TouchableOpacity>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Kasa Kodları"
+                onClose={() => setIsCarrierModalVisible(false)}
+              />
               <View style={MainStyles.modalContent}>
                   <FlatList
                     data={nakitKodlariList}
@@ -511,7 +505,6 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
                   
                 </View>
                 </View>
-              </SafeAreaView>
             </Modal>
 
             <Modal
@@ -543,7 +536,6 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
               </View>
             </Modal>
           </View>
-        </SafeAreaView>
       </ScrollView>
       </View>
     </Modal>

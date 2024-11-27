@@ -8,6 +8,7 @@ import axios from 'axios';
 import { ProductContext } from '../context/ProductContext';
 import { useAuthDefault } from '../components/DefaultUser';
 import { Col, Grid, Row } from 'react-native-easy-grid';
+import CustomHeader from '../components/CustomHeader';
 
 const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModalVisible, setAddedAlinanSiparisProducts }) => {
   const { alinanSiparis } = useContext(ProductContext);
@@ -388,13 +389,17 @@ const handleUpdate = async () => {
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType="slide"  onRequestClose={handleClose}>
-      <ScrollView style={{ backgroundColor: 'white' }}>
-        <SafeAreaView style={MainStyles.modalContainerUrunDetay}>
-          <View style={MainStyles.modalContentUrunDetay}>
-            <Text style={MainStyles.modalTitle}>Ürün Detayı</Text>
-            <Text style={MainStyles.modalStokKodu}>Stok Kodu: {updatedProduct?.Stok_Kod}</Text>
-            <Text style={MainStyles.modalStokKodu}>Stok Adı: {updatedProduct?.Stok_Ad}</Text>
-            <View style={MainStyles.modalBorder}></View>
+      <View style={MainStyles.modalContainerDetail}>
+      <CustomHeader
+        title="Ürün Detayı"
+        onClose={handleClose}
+      />
+       <View style={MainStyles.modalContainerProduct}>
+        <View style={MainStyles.modalContainerProductName}>
+          <Text style={MainStyles.modalStokAd}>Stok Kod:{updatedProduct?.Stok_Kod} </Text>
+          <Text style={MainStyles.modalStokKodu}>Stok Adı:{updatedProduct?.Stok_Ad}</Text>
+        </View>
+
             <View style={MainStyles.productModalContainer}>
               <View style={MainStyles.inputBirimGroup}>
                 <Text style={MainStyles.productModalText}>Birim:</Text>
@@ -760,12 +765,8 @@ const handleUpdate = async () => {
               <TouchableOpacity style={MainStyles.addButton} onPress={handleUpdate}>
                 <Text style={MainStyles.addButtonText}>Güncelle</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={MainStyles.closeProductModalButton} onPress={handleClose}>
-                <Text style={MainStyles.addButtonText}>Kapat</Text>
-              </TouchableOpacity>
           </View>
-        </SafeAreaView>
-      </ScrollView>
+      </View>
     </Modal>
   );
 };
