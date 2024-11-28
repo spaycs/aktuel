@@ -44,6 +44,7 @@ const CariEklemeAdres = () => {
   const [selectedIl, setSelectedIl] = useState('');
   const [ilceList, setIlceList] = useState([]);
   const [selectedIlce, setSelectedIlce] = useState('');
+  const [isUlkeModalVisible, setIsUlkeModalVisible] = useState('');
 // Tüm Değişken Değerleri
 
 // Ulke Seçim
