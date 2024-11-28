@@ -971,6 +971,20 @@ export const MainStyles = {
       fontWeight: 'bold',
       marginBottom: 10,
     },
+    tahsilatButton:{
+      padding: 10,
+      backgroundColor: colors.textInputBg,
+      marginVertical: 5,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    tahsilatSelectedButton: {
+      backgroundColor: colors.red,
+  },
+    tahsilatButtonText:{
+      fontSize: 13,
+      color: colors.black,
+    },
 
     
   /* Faturalar */
