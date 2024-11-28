@@ -335,7 +335,7 @@ const handleUpdate = async () => {
                 {Platform.OS === 'ios' ? (
   <>
     <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-      <Text style={MainStyles.pickerText}>
+    <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
         {sth_birim_pntr || 'Birim seçin'}
       </Text>
     </TouchableOpacity>

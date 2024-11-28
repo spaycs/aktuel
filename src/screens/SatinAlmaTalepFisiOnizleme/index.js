@@ -131,6 +131,7 @@ const calculateTotalQuantity = () => {
         <Text style={MainStyles.productName}>Stok Adı: {item.Stok_Ad}</Text>
         <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
         <Text style={MainStyles.productDetail}>Miktar: {item.sth_miktar}</Text>
+        <Text style={MainStyles.productDetail}>Açıklama: {item.aciklama}</Text>
       </View>
     </TouchableOpacity>
   );

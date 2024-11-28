@@ -178,9 +178,9 @@ const renderItem = ({ item }) => {
                   }}
                   style={MainStyles.picker}
                 >
-                  <Picker.Item label="Personel Seçin" value="" />
+                  <Picker.Item label="Personel Seçin" value="" style={MainStyles.textStyle}/>
                   {personelList.map((personel) => (
-                    <Picker.Item key={personel.No} label={personel.Adi} value={personel.No} />
+                    <Picker.Item key={personel.No} label={personel.Adi} value={personel.No}  style={MainStyles.textStyle}/>
                   ))}
                 </Picker>
                 <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
@@ -195,9 +195,9 @@ const renderItem = ({ item }) => {
           selectedValue={selectedPersonel}
           onValueChange={(itemValue) => setSelectedPersonel(itemValue)}
         >
-          <Picker.Item label="Personel Seçin" style={MainStyles.textStyle} value="" />
+          <Picker.Item label="Personel Seçin"  value="" style={MainStyles.textStyle}/>
           {personelList.map((personel) => (
-            <Picker.Item key={personel.No} label={personel.Adi} value={personel.No} />
+            <Picker.Item key={personel.No} label={personel.Adi} value={personel.No} style={MainStyles.textStyle}/>
           ))}
         </Picker>
       )}
@@ -206,15 +206,15 @@ const renderItem = ({ item }) => {
       </View>
     )}
 
-<View style={styles.filterRow}>
+      <View style={styles.filterRow}>
         <TextInput
           style={styles.filterInput}
           placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
           value={searchTerm}
           onChangeText={handleSearch}
         />
       </View>
-
 
       {loading ? (
        <FastImage
@@ -253,27 +253,32 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 2,
     marginTop: 2,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
+  },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+   fontSize: 12,
+   marginBottom: 5,
   },
   filterRow: {
-    padding: 5,
-    backgroundColor: '#f9f9f9',
+    marginRight: 5,
+    marginTop: 10,
   },
   filterInput: {
+    height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.islembuttongray,
     borderRadius: 5,
     padding: 8,
-    fontSize: 14,
+    fontSize: 12,
   },
   loading: {
     marginTop: 20,
   },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
+ 
   inputStyle:{
     borderRadius: 10,
     textAlign: 'left',
@@ -298,7 +303,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
+    fontSize: 12,
   },
   
 });
