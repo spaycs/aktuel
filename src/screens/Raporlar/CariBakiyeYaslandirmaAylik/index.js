@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   filterInput: {
     height: 40,
     borderWidth: 1,
-    borderColor: colors.islembuttongray,
+    borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 8,
     fontSize: 12,

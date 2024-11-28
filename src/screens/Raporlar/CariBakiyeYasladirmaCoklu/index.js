@@ -123,6 +123,8 @@ const CariBakiyeYasladirmaCoklu = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.pickerContainer}>
+      <Text style={styles.pickerLabel}>Cari Seçimi</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.inputCariKodu}
@@ -139,7 +141,7 @@ const CariBakiyeYasladirmaCoklu = () => {
       </View>
 
   {/* Filtreleme Alanı */}
-  <View style={styles.filterRow}>
+      <View style={styles.filterRow}>
         <TextInput
           style={styles.filterInput}
           placeholder="Filtrele..."
@@ -181,6 +183,7 @@ const CariBakiyeYasladirmaCoklu = () => {
         onSelectCari={handleCariSelect}
         onClose={() => setIsCariListModalVisible(false)}
       />
+      </View>
     </ScrollView>
   );
 };
@@ -192,10 +195,18 @@ const styles = StyleSheet.create({
     marginTop: 2,
     backgroundColor: colors.white
   },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+    fontSize: 12,
+    marginBottom: 5,
+   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 1,
   },
   inputCariKodu: {
     flex: 1,
@@ -203,279 +214,60 @@ const styles = StyleSheet.create({
     borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 10,
-    fontSize: 13,
+    fontSize: 12,
     color: colors.black,
-  },
-  button: {
-    backgroundColor: colors.red,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  buttonCariKodu: {
-    marginLeft: 10,
-    padding: 17,
-    borderRadius: 10,
-    backgroundColor: colors.red,
+    height: 40,
   },
   loading: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    backgroundColor: colors.cardBackground,
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  headerContainer: {
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  subHeaderText: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-  balanceContainer: {
-    marginBottom: 10,
-  },
-  balanceLabel: {
-    fontSize: 16,
-    color: colors.primary,
-  },
-  balanceValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  monthlyContainer: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: 10,
-  },
-  monthItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 4,
-  },
-  monthLabel: {
-    fontSize: 14,
-    color: colors.primary,
-  },
-  monthValue: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 2,
-  },
-  headerText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.primary,
-    width: '50%',
-  },
-  valueText: {
-    fontSize: 14,
-    color: colors.secondary,
-    width: '50%',
-    textAlign: 'right',
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-  },
-  horizontalScroll: {
     marginTop: 20,
   },
   noDataText: {
     marginTop: 20,
-    fontSize: 16,
+    fontSize: 12,
     color: 'gray',
-  },
-  tableHeader: {
-    backgroundColor: '#f3f3f3', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    maxHeight: 50 
-  },
-  tableHeaderFiltre: {
-    backgroundColor: '#f2f2f2', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 30,
-  },
-  tableRow: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 40,
-  },
-  tableCell: {
-    borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
-    borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-    justifyContent: 'left', // Hücrelerin içeriğini ortalamak
-    paddingHorizontal: 10,
-    
-  },
-  tableToplamCell: {
-    justifyContent: 'left', // Hücrelerin içeriğini ortalamak
-    paddingLeft: 10,
-  },
-  cellText: {
-    flex: 1,
-    fontSize: 9,
-    flexWrap: 'wrap', // Metni birden fazla satıra sarmasına izin verir
-    textAlign: 'left', // Metin hizalamasını sol yapar
-    
-    
-  },
-  inputStyle:{
-    borderRadius: 10,
-    textAlign: 'left',
-    marginBottom: 12,
-    backgroundColor: colors.textInputBg,
-  },
-  textStyle:{
-    fontSize: 13,
-    color: colors.black,
-    textAlign: 'left',
-  },
-  textInputStyle: {
-    width: 110, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  textInputStyle2: {
-    width: 90, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  iconStyle: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  iconStyle2: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  colTitle:{
-    fontSize: 10,
-    justifyContent: 'center',
-  },
-  totalRowContainer: {
-    position: 'absolute', // Sabitlemek için
-    bottom: 0,           // Sayfanın altına sabitler
-    left: 0,             // Sol kenara hizalar
-    right: 0,            // Sağ kenara kadar genişletir
-    backgroundColor: '#fff', // İsteğe bağlı arka plan rengi
-    padding: 10,         // İsteğe bağlı padding
   },
   buttonSearch: {
     marginLeft: 10,
     padding: 17,
     borderRadius: 10,
     backgroundColor: colors.red,
+    justifyContent: 'center',
+    height: 40,
   },
-  selectedRow: {
-    // Seçilen satırın arka plan rengi
-    backgroundColor: '#e0f7fa',
+  filterRow: {
+    marginRight: 5,
+    marginTop: 10,
   },
-
-
-    container: {
-      flex: 1,
-      padding: 2,
-      marginTop: 2,
-      backgroundColor: colors.white
-    },
-    filterRow: {
-      padding: 5,
-      backgroundColor: '#f9f9f9',
-    },
-    filterInput: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 5,
-      padding: 8,
-      fontSize: 14,
-    },
-    loading: {
-      marginTop: 20,
-    },
-    errorText: {
-      color: 'red',
-      marginVertical: 10,
-      textAlign: 'center',
-    },
-    inputStyle:{
-      borderRadius: 10,
-      textAlign: 'left',
-      backgroundColor: colors.textInputBg,
-    },
-    headerRow: {
-      backgroundColor: '#f3f3f3',
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-    },
-    row: {
-      flexDirection: 'row',
-    },
-    cell: {
-      width: 125,
-      padding: 10,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      textAlign: 'center',
-      fontSize: 10,
-    },
-    errorText: {
-      color: 'red',
-      textAlign: 'center',
-      marginTop: 20,
-    },
+  filterInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 8,
+    fontSize: 12,
+  },
+  headerRow: {
+    backgroundColor: '#f3f3f3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  cell: {
+    width: 125,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    textAlign: 'center',
+    fontSize: 10,
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 12,
+  },
     
   });
   
