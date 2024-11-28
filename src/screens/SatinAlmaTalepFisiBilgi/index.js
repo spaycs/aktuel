@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator, Linking, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList, ActivityIndicator, Linking, SafeAreaView, Button } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
@@ -12,7 +12,6 @@ import { useAuthDefault } from '../../components/DefaultUser';
 import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
-import Button from '../../components/Button';
 import CustomHeader from '../../components/CustomHeader';
 
 const SatinAlmaTalepFisiBilgi = () => {
