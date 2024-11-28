@@ -49,6 +49,16 @@ const SatinAlmaTalepFisiBilgi = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const [loading, setLoading] = useState(false); 
   const [data, setData] = useState([]); 
+  const [isEditable, setIsEditable] = useState(false);
+
+  // Kullanıcının Değiştirebilir Alan Yönetimi 
+  useEffect(() => {
+    if (defaults && defaults[0]) {
+      const { IQ_SatinAlmaTalepSeriNoDegistirebilir } = defaults[0];
+      setIsEditable(IQ_SatinAlmaTalepSeriNoDegistirebilir === 1);
+    }
+  }, [defaults]);
+// Kullanıcının Değiştirebilir Alan Yönetimi 
 
   const handleKaynakDepoChange = (itemValue) => {
     setKaynakDepo(itemValue);
@@ -184,7 +194,7 @@ const SatinAlmaTalepFisiBilgi = () => {
     const fetchSatisIrsaliyeSerino = async () => {
       try {
         const response = await axiosLinkMain.get(`/Api/Kullanici/KullaniciVarsayilanlar?a=${defaults[0].IQ_MikroUserId}`);
-        const satisIrsaliyeSerino = response.data[0].IQ_SarfSeriNo;
+        const satisIrsaliyeSerino = response.data[0].IQ_SatinAlmaTalepSeriNo;
         setSth_evrakno_seri(satisIrsaliyeSerino);
   
         if (satisIrsaliyeSerino.trim()) {
@@ -206,7 +216,7 @@ const SatinAlmaTalepFisiBilgi = () => {
 
     if (text.trim()) {
       try {
-        const response = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${text}&tip=IRSALIYE`);
+        const response = await axiosLinkMain.get(`/Api/Evrak/SatinAlmaTalepGetir?seri=${text}`);
         const { Sira } = response.data;
         setSth_evrakno_sira(Sira.toString());
       } catch (error) {
@@ -321,7 +331,7 @@ const SatinAlmaTalepFisiBilgi = () => {
       <View style={MainStyles.faturaContainer}>
       <Text style={MainStyles.formTitle}>Evrak</Text> 
         <View style={MainStyles.inputContainer}>
-          <TextInput style={MainStyles.inputEvrakNo} value={sth_evrakno_seri}  onChangeText={handleEvrakNoChange} placeholderTextColor={colors.placeholderTextColor} placeholder="Evrak No" />
+          <TextInput style={MainStyles.inputEvrakNo} value={sth_evrakno_seri}  editable={isEditable}  onChangeText={handleEvrakNoChange} placeholderTextColor={colors.placeholderTextColor} placeholder="Evrak No" />
           <TextInput style={MainStyles.inputEvrakSira}  value={sth_evrakno_sira} placeholderTextColor={colors.placeholderTextColor} placeholder="Evrak Sıra" keyboardType="numeric" />
           <TouchableOpacity onPress={fetchEvrakData} style={MainStyles.buttonEvrakGetir}>
             <Text style={MainStyles.buttonText}>EVRAK GETİR</Text>

@@ -250,14 +250,7 @@ const FiyatGor = () => {
         />
       ) : (
       <>
-       <FlatList
-        data={data}
-        keyExtractor={(item) => item.Stok_Kod.toString()}
-        renderItem={renderItem}
-        ListEmptyComponent={() => <Text style={MainStyles.emptyText}>Arama sonucuna uygun veri bulunamadı</Text>}
-        />
-      </>
-      )}
+    
       
       <FlatList
         data={data}
@@ -290,6 +283,9 @@ const FiyatGor = () => {
           </View>
           </TouchableWithoutFeedback>
         </Modal>
+      )}
+        
+        </>
       )}
     </View>
   );

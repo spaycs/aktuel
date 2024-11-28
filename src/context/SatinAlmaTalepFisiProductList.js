@@ -57,6 +57,7 @@ const SatinAlmaTalepFisiProductList = () => {
     { label: 'Barkod', value: 'Barkod', tip: 7 },
     { label: 'Masraf', value: 'Masraf', tip: 8 },
     { label: 'Hizmet', value: 'Hizmet', tip: 9 },
+    { label: 'Demirbas', value: 'Demirbas', tip: 10 },
   ];
 
   const getTipForValue = (value) => {
@@ -111,6 +112,8 @@ const SatinAlmaTalepFisiProductList = () => {
       modalId = 1;
     } else if (searchCriteria === 'Masraf') {
       modalId = 2;
+    } else if (searchCriteria === 'Demirbas') {
+      modalId = 3;
     } else {
       modalId = 0;
     }
@@ -122,7 +125,7 @@ const SatinAlmaTalepFisiProductList = () => {
 
     setSelectedProduct(item);
 
-    if (searchCriteria === 'Hizmet' || searchCriteria === 'Masraf') {
+    if (searchCriteria === 'Hizmet' || searchCriteria === 'Masraf' || searchCriteria === 'Demirbas') {
       setModalVisible(true); // SatisFaturasiProductModal göster
     } else {
       setProductModalVisible(true); // ProductModal göster
@@ -241,6 +244,7 @@ const SatinAlmaTalepFisiProductList = () => {
                   <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
                   <Picker.Item label="Hizmet" value="Hizmet" style={MainStyles.textStyle}  />
                   <Picker.Item label="Masraf" value="Masraf" style={MainStyles.textStyle}  />
+                  <Picker.Item label="Demirbas" value="Demirbas" style={MainStyles.textStyle}  />
                 </Picker>
                 <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
               </View>
@@ -264,6 +268,7 @@ const SatinAlmaTalepFisiProductList = () => {
           <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
           <Picker.Item label="Hizmet" value="Hizmet" style={MainStyles.textStyle}  />
           <Picker.Item label="Masraf" value="Masraf" style={MainStyles.textStyle}  />
+          <Picker.Item label="Demirbas" value="Demirbas" style={MainStyles.textStyle}  />
         </Picker>
       )}
         </View>
@@ -330,12 +335,12 @@ const SatinAlmaTalepFisiProductList = () => {
         setAddedProducts={setAddedProducts}
       />
 
-      <SatisFaturasiProductModal
+      <SatinAlmaTalepFisiProductModal
         selectedProduct={selectedProduct}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setAddedProducts={setAddedProducts}
-        modalId={searchCriteria === 'Hizmet' ? 1 : searchCriteria === 'Masraf' ? 2 : 0}
+        modalId={searchCriteria === 'Hizmet' ? 1 : searchCriteria === 'Masraf' ? 2  : searchCriteria === 'Demirbas' ? 3 : 0}
       />
     </View>
   );

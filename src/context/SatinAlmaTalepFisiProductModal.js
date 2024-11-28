@@ -13,12 +13,12 @@ import axios from 'axios';
 import { Left,Down } from '../res/images';
 import CustomHeader from '../components/CustomHeader';
 
-
 const SatinAlmaTalepFisiProductModal = ({
   selectedProduct,
   modalVisible,
   setModalVisible,
-  setAddedProducts
+  setAddedProducts,
+  modalId,
 }) => {
   const { defaults } = useAuthDefault();
   const { addedProducts, faturaBilgileri } = useContext(ProductContext);
@@ -28,28 +28,10 @@ const SatinAlmaTalepFisiProductModal = ({
   const [sth_birim_pntr, setSth_birim_pntr] = useState('AD');
   const [resetTax, setResetTax] = useState(false);
   const [aciklama, setAciklama] = useState('');
-  const [sth_iskonto1, setSth_iskonto1] = useState(''); 
-  const [sth_iskonto2, setSth_iskonto2] = useState(''); 
-  const [sth_iskonto3, setSth_iskonto3] = useState(''); 
-  const [sth_iskonto4, setSth_iskonto4] = useState(''); 
-  const [sth_iskonto5, setSth_iskonto5] = useState(''); 
-  const [sth_iskonto6, setSth_iskonto6] = useState(''); 
-  const [sth_isk1, setSth_isk1] = useState(''); 
-  const [sth_isk2, setSth_isk2] = useState(''); 
-  const [sth_isk3, setSth_isk3] = useState(''); 
-  const [sth_isk4, setSth_isk4] = useState(''); 
-  const [sth_isk5, setSth_isk5] = useState(''); 
-  const [sth_isk6, setSth_isk6] = useState(''); 
   const [stokDetayData, setStokDetayData] = useState(''); 
   const [birimListesi, setBirimListesi] = useState([]);
   const [katsayi, setKatsayi] = useState({});
   const [isEditable, setIsEditable] = useState(false);
-  const [isIskonto1Edit, setIsIskonto1Edit] = useState(false);
-  const [isIskonto2Edit, setIsIskonto2Edit] = useState(false);
-  const [isIskonto3Edit, setIsIskonto3Edit] = useState(false);
-  const [isIskonto4Edit, setIsIskonto4Edit] = useState(false);
-  const [isIskonto5Edit, setIsIskonto5Edit] = useState(false);
-  const [isIskonto6Edit, setIsIskonto6Edit] = useState(false);
   const [DovizIsmi, setDovizIsmi] = useState(null);
   const [Birim_KDV, setBirim_KDV] = useState('');
   const [KDV, setKDV] = useState('');
@@ -59,48 +41,29 @@ const SatinAlmaTalepFisiProductModal = ({
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [loading, setLoading] = useState(false); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [sth_iskonto1, setSth_iskonto1] = useState('0'); 
+  const [sth_iskonto2, setSth_iskonto2] = useState('0'); 
+  const [sth_iskonto3, setSth_iskonto3] = useState('0'); 
+  const [sth_iskonto4, setSth_iskonto4] = useState('0'); 
+  const [sth_iskonto5, setSth_iskonto5] = useState('0'); 
+  const [sth_iskonto6, setSth_iskonto6] = useState('0'); 
 
   useEffect(() => {
     if (defaults && defaults[0]) {
-      const { IQ_IrsaliyeFiyatiDegistirebilir, IQ_IrsaliyeIskontosu1Degistirebilir, IQ_IrsaliyeIskontosu2Degistirebilir, IQ_IrsaliyeIskontosu3Degistirebilir, IQ_IrsaliyeIskontosu4Degistirebilir, IQ_IrsaliyeIskontosu5Degistirebilir, IQ_IrsaliyeIskontosu6Degistirebilir } = defaults[0];
-  
+      const { IQ_IrsaliyeFiyatiDegistirebilir} = defaults[0];
       setIsEditable(IQ_IrsaliyeFiyatiDegistirebilir === 1);
-      setIsIskonto1Edit(IQ_IrsaliyeIskontosu1Degistirebilir === 1);
-      setIsIskonto2Edit(IQ_IrsaliyeIskontosu2Degistirebilir === 1);
-      setIsIskonto3Edit(IQ_IrsaliyeIskontosu3Degistirebilir === 1);
-      setIsIskonto4Edit(IQ_IrsaliyeIskontosu4Degistirebilir === 1);
-      setIsIskonto5Edit(IQ_IrsaliyeIskontosu5Degistirebilir === 1);
-      setIsIskonto6Edit(IQ_IrsaliyeIskontosu6Degistirebilir === 1);
     }
   }, [defaults]);
 
   useEffect(() => {
     if (modalVisible && selectedProduct) {
-  
       if (birimListesi.length > 0) {
         setSth_birim_pntr(birimListesi[0]);
       }
     }
   }, [modalVisible, selectedProduct, birimListesi]);
 
-  const fetchStokDetayData = async () => {
-    if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
-  
-    setLoading(true); // Yükleniyor state'i aktif et
-    try {
-      // API'yi çağır
-      const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=${defaults[0].IQ_MikroPersKod}`);
-      const data = response.data || []; // Hata durumunda boş dizi döner
-  
-      // Veriyi state'e ata
-      setStokDetayData(data);
-    } catch (error) {
-      console.error('Bağlantı Hatası Stok Detay:', error);
-    } finally {
-      setLoading(false); // Yükleniyor state'ini kaldır
-      setIsStokDetayVisible(true); // Modalı aç
-    }
-  };
+
   
   const closeModal = () => {
     setIsStokDetayVisible(false);
@@ -108,15 +71,10 @@ const SatinAlmaTalepFisiProductModal = ({
 
 
   useEffect(() => {
-    if (modalVisible && selectedProduct) {
+    if (modalVisible && selectedProduct && modalId !== 1 && modalId !== 2 && modalId !== 3) {
       const fetchSatisFiyati = async () => {
-        console.log('', cari)
-        const cari = faturaBilgileri.sth_cari_kodu || faturaBilgileri.sip_musteri_kod  || faturaBilgileri.cha_kod;
-        const stok = selectedProduct?.Stok_Kod;
-        const somkod = faturaBilgileri.sth_stok_srm_merkezi || faturaBilgileri.sip_stok_sormerk || faturaBilgileri.cha_srmrkkodu;
-        const odpno = faturaBilgileri.sth_odeme_op || faturaBilgileri.sip_opno  || faturaBilgileri.cha_vade;
-       
-        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
+        const stok = selectedProduct?.Stok_Kod ;
+        const apiUrl = `/Api/Stok/StokSatisFiyatiSatinAlma?stok=${stok}`;
         
         try {
           const response = await axiosLinkMain.get(apiUrl);
@@ -125,27 +83,15 @@ const SatinAlmaTalepFisiProductModal = ({
           if (Array.isArray(data) && data.length > 0) {
             const firstItem = data[0];
   
+  
+            if (firstItem.fiyat) {
+              setSth_tutar(firstItem.fiyat.toString());
+            }
+          
             if (firstItem.fiyat) {
               setSth_tutar(firstItem.fiyat.toString());
             }
             
-            if (firstItem.fiyat) {
-              setBirimFiyat(firstItem.fiyat.toString());
-            }
-         
-            if (firstItem.Birim_KDV) {
-              setBirim_KDV(firstItem.Birim_KDV.toString());  
-            }
-
-            if (firstItem.Vergipntr) {
-              setSth_vergi_pntr(firstItem.Vergipntr.toString());  
-            }
-            if (firstItem.DovizIsmi) {
-              setDovizIsmi(firstItem.DovizIsmi.toString());  
-            }
-            if (firstItem.KDV) {
-              setKDV(firstItem.KDV.toString());  
-            }
             if (firstItem.Carpan !== undefined) {
               setCarpan(firstItem.Carpan.toString());
             } else {
@@ -167,20 +113,6 @@ const SatinAlmaTalepFisiProductModal = ({
               sto_birim4_katsayi: firstItem.sto_birim4_katsayi || 1
             });
 
-            setSth_iskonto1(firstItem.isk1.toString());
-            setSth_iskonto2(firstItem.isk2.toString());
-            setSth_iskonto3(firstItem.isk3.toString());
-            setSth_iskonto4(firstItem.isk4.toString());
-            setSth_iskonto5(firstItem.isk5.toString());
-            setSth_iskonto6(firstItem.isk6.toString());
-            setSth_isk1(firstItem.isk1.toString());
-            setSth_isk2(firstItem.isk2.toString());
-            setSth_isk3(firstItem.isk3.toString());
-            setSth_isk4(firstItem.isk4.toString());
-            setSth_isk5(firstItem.isk5.toString());
-            setSth_isk6(firstItem.isk6.toString());
-
-  
           } else {
             console.error("API yanıtı beklenen formatta değil:", data);
           }
@@ -191,10 +123,15 @@ const SatinAlmaTalepFisiProductModal = ({
   
       fetchSatisFiyati();
     }
-  }, [modalVisible, selectedProduct]);
+  }, [modalVisible, selectedProduct, modalId]);
 
 // Miktar geçerliliğini kontrol eden fonksiyon
 const validateQuantity = (quantity) => {
+  if (modalId === 1 || modalId === 2 || modalId === 3) {
+    // Eğer modalId 1 veya 2 ise doğrulama yapma
+    return true;
+  }
+
   const quantityFloat = parseFloat(quantity.replace(',', '.')) || 0;
 
   let minQuantity = 1; // Varsayılan minimum miktar
@@ -227,19 +164,17 @@ const validateQuantity = (quantity) => {
       return false;
   }
 
-  // Eğer Carpan değeri varsa ve miktarın çarpan ile modunu alıyoruz
   if (Carpan > 0) {
-    const adjustedQuantity = quantityFloat * unitMultiplier; // Miktarı birim katsayısı ile çarpıyoruz
+    const adjustedQuantity = quantityFloat * unitMultiplier;
     if (adjustedQuantity % Carpan !== 0) {
       Alert.alert(
         'Geçersiz Miktar',
-        `Miktar ${Carpan} ve katları olmalıdır.`,
+        `Miktar  ve katları olmalıdır.`,
         [{ text: 'Tamam' }]
       );
       return false;
     }
   } else {
-    // Carpan 0 ise herhangi bir miktar geçerli
     if (quantityFloat <= 0) {
       Alert.alert(
         'Geçersiz Miktar',
@@ -252,6 +187,7 @@ const validateQuantity = (quantity) => {
 
   return true;
 };
+
 
 
 // Miktar değişimini yöneten fonksiyon
@@ -303,227 +239,92 @@ const validateQuantity = (quantity) => {
   };
 
   const handleAddProduct = async () => {
-    const calculatedQuantity = handleMiktarChange(sth_miktar);
     if (validateQuantity(sth_miktar)) {
       const existingProduct = addedProducts.find(
-        (product) => product.Stok_Kod === selectedProduct?.Stok_Kod
+        (product) =>
+          product.Stok_Kod === selectedProduct?.Stok_Kod && product.modalId === modalId // Stok kodu ve modalId kontrolü
       );
       const newQuantity = parseFloat(sth_miktar.replace(',', '.')) || 0;
-      const newTotalPrice = calculateTotal(); // Toplam tutar hesaplandı
-      const newTotalMiktarPrice = (newQuantity * newTotalPrice).toFixed(2);
   
-      try {
-        // İlk API çağrısı - mevcut iskontoları hesaplamak için
-        const apiUrl = `/Api/Iskonto/IskontoHesapla?tutar=${newTotalPrice}&isk1=${sth_iskonto1 || 0}&isk2=${sth_iskonto2 || 0}&isk3=${sth_iskonto3 || 0}&isk4=${sth_iskonto4 || 0}&isk5=${sth_iskonto5 || 0}&isk6=${sth_iskonto6 || 0}`;
-        const response = await axiosLinkMain.get(apiUrl);
-        const result = response.data;
-        const { İsk1, İsk2, İsk3, İsk4, İsk5, İsk6 } = result; // İlk API'den dönen iskontolar
-  
-        if (existingProduct) {
-          // Eklenen ürünün iskonto değerlerini karşılaştır
-          const isDiscountEqual =
-            existingProduct.sth_isk1 === sth_iskonto1 &&
-            existingProduct.sth_isk2 === sth_iskonto2 &&
-            existingProduct.sth_isk3 === sth_iskonto3 &&
-            existingProduct.sth_isk4 === sth_iskonto4 &&
-            existingProduct.sth_isk5 === sth_iskonto5 &&
-            existingProduct.sth_isk6 === sth_iskonto6;
-  
-          if (isDiscountEqual) {
-            // İskontolar aynı, miktarı güncelle
-            Alert.alert('Ürün Zaten Ekli', 'Bu ürün zaten eklenmiş. Miktarı güncellemek ister misiniz?', [
-              {
-                text: 'Miktarı Güncelle',
-                onPress: async () => {
-                  // Önce mevcut miktarı al
-                  const previousQuantity = parseFloat(existingProduct.sth_miktar.toString().replace(',', '.')) || 0;
-                  const updatedQuantity = previousQuantity + calculatedQuantity;
-
-                  // İskonto değerlerini sıfırlayıp yeni miktara göre yeniden hesapla
-                  const newTotalPriceForUpdate = (updatedQuantity * newTotalPrice).toFixed(2);
-                  const resetApiUrl = `/Api/Iskonto/IskontoHesapla?tutar=${newTotalPriceForUpdate}&isk1=${sth_iskonto1 || 0}&isk2=${sth_iskonto2 || 0}&isk3=${sth_iskonto3 || 0}&isk4=${sth_iskonto4 || 0}&isk5=${sth_iskonto5 || 0}&isk6=${sth_iskonto6 || 0}`;
-
-                  const resetResponse = await axiosLinkMain.get(resetApiUrl);
-                  const {
-                      İsk1: updatedİsk1,
-                      İsk2: updatedİsk2,
-                      İsk3: updatedİsk3,
-                      İsk4: updatedİsk4,
-                      İsk5: updatedİsk5,
-                      İsk6: updatedİsk6,
-                  } = resetResponse.data;
-
-                  const updatedProducts = addedProducts.map((product) =>
-                      product.Stok_Kod === selectedProduct?.Stok_Kod
-                          ? {
-                              ...product,
-                              sth_miktar: updatedQuantity.toFixed(2),
-                              sth_tutar:sth_tutar, // Tutarı güncelle
-                              sth_iskonto1: updatedİsk1.toFixed(2),
-                              sth_iskonto2: updatedİsk2.toFixed(2),
-                              sth_iskonto3: updatedİsk3.toFixed(2),
-                              sth_iskonto4: updatedİsk4.toFixed(2),
-                              sth_iskonto5: updatedİsk5.toFixed(2),
-                              sth_iskonto6: updatedİsk6.toFixed(2),
-                              total: calculateTotal(),
-                              modalId: 0,
-                          }
-                          : product
-                  );
-
-                  setAddedProducts(updatedProducts);
-
-                  // State'leri sıfırlama
-                  setCarpan();
-                  resetFields();
-              },
-          },
-              {
-                text: 'Yeni Satır Ekle',
-                onPress: () => {
-                  setAddedProducts([
-                    ...addedProducts,
-                    {
-                      id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
-                      ...selectedProduct,
-                      sth_miktar: calculatedQuantity,
-                      sth_tutar: sth_tutar,
-                      sth_birim_pntr: '1',
-                      Birim_KDV: Birim_KDV,
-                      sth_vergi_pntr: sth_vergi_pntr,
-                      resetTax,
-                      aciklama,
-                      birimFiyat,
-                      sth_iskonto1: İsk1.toFixed(2),
-                      sth_iskonto2: İsk2.toFixed(2),
-                      sth_iskonto3: İsk3.toFixed(2),
-                      sth_iskonto4: İsk4.toFixed(2),
-                      sth_iskonto5: İsk5.toFixed(2),
-                      sth_iskonto6: İsk6.toFixed(2),
-                      sth_isk1: sth_iskonto1,
-                      sth_isk2: sth_iskonto2,
-                      sth_isk3: sth_iskonto3,
-                      sth_isk4: sth_iskonto4,
-                      sth_isk5: sth_iskonto5,
-                      sth_isk6: sth_iskonto6,
-                      total: calculateTotal(),
-                      modalId: 0,
-                    },
-                  ]);
-  
-                  // State'leri sıfırlama
-                  setCarpan();
-                  resetFields();
-                },
-              },
-              {
-                text: 'Vazgeç',
-                onPress: () => setModalVisible(false),
-                style: 'cancel',
-              },
-            ]);
-          } else {
-            // İskontolar farklıysa, yeni ürün ekleme kısmı
-            Alert.alert('İskonto Farklı', 'Bu ürün zaten eklenmiş ancak iskontolar farklı. Yeni satır eklemeyi veya vazgeçmeyi seçebilirsiniz.', [
-              {
-                text: 'Yeni Satır Ekle',
-                onPress: () => {
-                  setAddedProducts([
-                    ...addedProducts,
-                    {
-                      id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
-                      ...selectedProduct,
-                      sth_miktar: calculatedQuantity,
-                      sth_tutar: sth_tutar,
-                      sth_birim_pntr: '1',
-                      Birim_KDV: Birim_KDV,
-                      sth_vergi_pntr: sth_vergi_pntr,
-                      resetTax,
-                      aciklama,
-                      birimFiyat,
-                      sth_iskonto1: İsk1.toFixed(2),
-                      sth_iskonto2: İsk2.toFixed(2),
-                      sth_iskonto3: İsk3.toFixed(2),
-                      sth_iskonto4: İsk4.toFixed(2),
-                      sth_iskonto5: İsk5.toFixed(2),
-                      sth_iskonto6: İsk6.toFixed(2),
-                      sth_isk1: sth_iskonto1,
-                      sth_isk2: sth_iskonto2,
-                      sth_isk3: sth_iskonto3,
-                      sth_isk4: sth_iskonto4,
-                      sth_isk5: sth_iskonto5,
-                      sth_isk6: sth_iskonto6,
-                      total: calculateTotal(),
-                      modalId: 0,
-                    },
-                  ]);
-  
-                  // State'leri sıfırlama
-                  setCarpan();
-                  resetFields();
-                },
-              },
-              {
-                text: 'Vazgeç',
-                onPress: () => setModalVisible(false),
-                style: 'cancel',
-              },
-            ]);
-          }
-        } else {
-          // Yeni ürün ekleme kısmı
-          setAddedProducts([
-            ...addedProducts,
-            {
-              id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
-              ...selectedProduct,
-              sth_miktar: calculatedQuantity,
-              sth_tutar: sth_tutar,
-              sth_birim_pntr: '1',
-              Birim_KDV: Birim_KDV,
-              sth_vergi_pntr: sth_vergi_pntr,
-              resetTax,
-              aciklama,
-              birimFiyat,
-              toplam_vergi: 0,
-              sth_iskonto1: İsk1.toFixed(2),
-              sth_iskonto2: İsk2.toFixed(2),
-              sth_iskonto3: İsk3.toFixed(2),
-              sth_iskonto4: İsk4.toFixed(2),
-              sth_iskonto5: İsk5.toFixed(2),
-              sth_iskonto6: İsk6.toFixed(2),
-              sth_isk1: sth_iskonto1,
-              sth_isk2: sth_iskonto2,
-              sth_isk3: sth_iskonto3,
-              sth_isk4: sth_iskonto4,
-              sth_isk5: sth_iskonto5,
-              sth_isk6: sth_iskonto6,
-              total: calculateTotal(),
-              modalId: 0,
+      if (existingProduct) {
+        // Ürün zaten eklendiğinde kullanıcıya iki seçenek sunulur
+        Alert.alert('Ürün Zaten Ekli', 'Bu ürün zaten eklenmiş. Miktarı güncellemek ister misiniz?', [
+          {
+            text: 'Miktarı Güncelle',
+            onPress: () => {
+              const updatedQuantity = parseFloat(existingProduct.sth_miktar.replace(',', '.')) + newQuantity;
+              const updatedProducts = addedProducts.map((product) =>
+                product.Stok_Kod === selectedProduct?.Stok_Kod && product.modalId === modalId
+                  ? {
+                      ...product,
+                      sth_miktar: updatedQuantity.toFixed(2),
+                      sth_tutar: (updatedQuantity * parseFloat(product.birimFiyat || 0)).toFixed(2),
+                    }
+                  : product
+              );
+              setAddedProducts(updatedProducts);
+              resetFields();
             },
-          ]);
-  
-          // State'leri sıfırlama
-          setCarpan();
-          resetFields();
-          
-        }
-      } catch (error) {
-        console.error('API çağrısı sırasında bir hata oluştu:', error);
+          },
+          {
+            text: 'Yeni Satır Ekle',
+            onPress: () => {
+              setAddedProducts([
+                ...addedProducts,
+                {
+                  id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
+                  ...selectedProduct,
+                  sth_miktar: sth_miktar,
+                  sth_tutar: sth_tutar,
+                  sth_birim_pntr: '1',
+                  Birim_KDV: Birim_KDV,
+                  sth_vergi_pntr: sth_vergi_pntr,
+                  resetTax,
+                  aciklama,
+                  birimFiyat: sth_tutar,
+                  toplam_vergi: 0,
+                  modalId: modalId,
+                  total: (newQuantity * parseFloat(sth_tutar || 0)).toFixed(2),
+                },
+              ]);
+              resetFields();
+            },
+          },
+          {
+            text: 'Vazgeç',
+            onPress: () => setModalVisible(false),
+            style: 'cancel',
+          },
+        ]);
+      } else {
+        // Yeni ürün ekleme
+        setAddedProducts([
+          ...addedProducts,
+          {
+            id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
+            ...selectedProduct,
+            sth_miktar: sth_miktar,
+            sth_tutar: sth_tutar,
+            sth_birim_pntr: '1',
+            Birim_KDV: Birim_KDV,
+            sth_vergi_pntr: sth_vergi_pntr,
+            resetTax,
+            aciklama,
+            birimFiyat: sth_tutar,
+            toplam_vergi: 0,
+            modalId: modalId,
+            total: (newQuantity * parseFloat(sth_tutar || 0)).toFixed(2),
+          },
+        ]);
+        resetFields();
       }
     }
   };
   
+  
   const resetFields = () => {
     setSth_miktar('1');
-    setSth_iskonto1('');
-    setSth_iskonto2('');
-    setSth_iskonto3('');
-    setSth_iskonto4('');
-    setSth_iskonto5('');
-    setSth_iskonto6('');
     setAciklama('');
-    setCarpan('');
     setModalVisible(false);
   };
   
@@ -545,30 +346,61 @@ const validateQuantity = (quantity) => {
           <Text style={MainStyles.modalStokKodu}>Stok Adı:{selectedProduct?.Stok_Ad}</Text>
         </View>
 
-          <View style={MainStyles.productModalContainer}>
-            <View style={MainStyles.inputBirimGroup}>
-              <Text style={MainStyles.inputtip}>Birim:</Text>
-              <View style={MainStyles.productModalPickerContainer}>
-              {Platform.OS === 'ios' ? (
-  <>
-    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-      <Text style={MainStyles.pickerText}>
-        {sth_birim_pntr || 'Birim seçin'}
-      </Text>
-    </TouchableOpacity>
+        <View style={MainStyles.productModalContainer}>
+  {modalId !== 1 && modalId !== 2 && modalId !== 3 ? ( // "Birim" ve Picker alanını kontrol eder
+    <View style={MainStyles.inputBirimGroup}>
+      <Text style={MainStyles.inputtip}>Birim:</Text>
+      <View style={MainStyles.productModalPickerContainer}>
+        {Platform.OS === 'ios' ? (
+          <>
+            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+              <Text style={MainStyles.pickerText}>
+                {sth_birim_pntr || 'Birim seçin'}
+              </Text>
+            </TouchableOpacity>
 
-    {/* iOS Modal */}
-    <Modal visible={isModalVisible} animationType="slide" transparent>
-      <View style={MainStyles.modalContainerPicker}>
-        <View style={MainStyles.modalContentPicker}>
+            {/* iOS Modal */}
+            <Modal visible={isModalVisible} animationType="slide" transparent>
+              <View style={MainStyles.modalContainerPicker}>
+                <View style={MainStyles.modalContentPicker}>
+                  <Picker
+                    selectedValue={sth_birim_pntr}
+                    onValueChange={(itemValue) => {
+                      setSth_birim_pntr(itemValue);
+                      handleMiktarChange(sth_miktar);
+                      setIsModalVisible(false);
+                    }}
+                    style={MainStyles.picker}
+                  >
+                    {birimListesi.map((birim, index) => (
+                      <Picker.Item
+                        key={index}
+                        label={`${birim} (${
+                          index === 1
+                            ? katsayi.sto_birim2_katsayi
+                            : index === 2
+                            ? katsayi.sto_birim3_katsayi
+                            : katsayi.sto_birim4_katsayi
+                        })`}
+                        value={birim}
+                        style={MainStyles.textStyle}
+                      />
+                    ))}
+                  </Picker>
+                  <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                </View>
+              </View>
+            </Modal>
+          </>
+        ) : (
           <Picker
             selectedValue={sth_birim_pntr}
+            itemStyle={{ height: 40, fontSize: 10 }}
+            style={{ marginHorizontal: -10 }}
             onValueChange={(itemValue) => {
               setSth_birim_pntr(itemValue);
-              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
-              setIsModalVisible(false); // Modal'ı kapat
+              handleMiktarChange(sth_miktar);
             }}
-            style={MainStyles.picker}
           >
             {birimListesi.map((birim, index) => (
               <Picker.Item
@@ -585,98 +417,72 @@ const validateQuantity = (quantity) => {
               />
             ))}
           </Picker>
-          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
-        </View>
+        )}
       </View>
-    </Modal>
-  </>
-) : (
-  // Android için düz Picker
-  <Picker
-    selectedValue={sth_birim_pntr}
-    itemStyle={{ height: 40, fontSize: 10 }}
-    style={{ marginHorizontal: -10 }}
-    onValueChange={(itemValue) => {
-      setSth_birim_pntr(itemValue);
-      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
-    }}
-  >
-    {birimListesi.map((birim, index) => (
-      <Picker.Item
-        key={index}
-        label={`${birim} (${
-          index === 1
-            ? katsayi.sto_birim2_katsayi
-            : index === 2
-            ? katsayi.sto_birim3_katsayi
-            : katsayi.sto_birim4_katsayi
-        })`}
-        value={birim}
-        style={MainStyles.textStyle}
-      />
-    ))}
-  </Picker>
-)}
-              </View>
-            </View>
-            <View style={MainStyles.inputBirimGroup}>
-            <Text style={MainStyles.inputtip}>Miktar:</Text>
-            <TextInput
-              style={MainStyles.productModalMiktarInput}
-              placeholderTextColor={colors.placeholderTextColor}
-              keyboardType="numeric"
-              value={sth_miktar} // Kullanıcının girdiği değeri gösteriyoruz
-              onChangeText={(value) => {
-                // Karakter filtreleme (sadece rakamlar)
-                const numericValue = value.replace(/[^0-9]/g, '');
+    </View>
+  ) : null}
 
-                // İlk karakterin 0 olmasını engelleme
-                if (numericValue === '' || numericValue === '0') {
-                  setSth_miktar(''); // Eğer giriş 0 ise boş değer ayarlanır
-                } else {
-                  setSth_miktar(numericValue); // Sadece geçerli sayısal değer ayarlanır
-                }
-              }}
-            />
-          </View>
-
-          </View>
-          <View style={MainStyles.inputRow}>
-          <View style={MainStyles.inputGroup}>
-              <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
+            <View style={modalId === 1 || modalId === 2 || modalId === 3 ? MainStyles.inputBirimOzelGroup : MainStyles.inputBirimGroup}>
+              <Text style={MainStyles.inputtip}>Miktar:</Text>
               <TextInput
                 style={MainStyles.productModalMiktarInput}
                 placeholderTextColor={colors.placeholderTextColor}
                 keyboardType="numeric"
-                value={sth_tutar}
-                editable={isEditable}
+                value={sth_miktar} // Kullanıcının girdiği değeri gösteriyoruz
                 onChangeText={(value) => {
-                  // Virgülü noktaya çevir
-                  const formattedValue = value.replace(',', '.');
+                  // Karakter filtreleme (sadece rakamlar)
+                  const numericValue = value.replace(/[^0-9]/g, '');
 
-                  // Sadece rakamlar ve . (nokta) karakteri kabul edilsin
-                  const validValue = formattedValue.replace(/[^0-9.]/g, '');
-
-                  // Eğer birden fazla . (nokta) varsa, sonrasını kabul etme
-                  const finalValue = validValue.split('.').length > 2 ? validValue.slice(0, -1) : validValue;
-
-                  setSth_tutar(finalValue);
+                  // İlk karakterin 0 olmasını engelleme
+                  if (numericValue === '' || numericValue === '0') {
+                    setSth_miktar(''); // Eğer giriş 0 ise boş değer ayarlanır
+                  } else {
+                    setSth_miktar(numericValue); // Sadece geçerli sayısal değer ayarlanır
+                  }
                 }}
               />
+            </View>
 
-              </View>
-              <View style={MainStyles.inputGroup}>
-              <Text style={MainStyles.inputtip}>Tutar:</Text>
-              <TextInput
-              style={MainStyles.productModalMiktarInput}
-              placeholderTextColor={colors.placeholderTextColor}
-              editable={false}
-              value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
-              keyboardType="numeric"  
-            />
-
-              </View>
           </View>
+
+          {/* 
+            <View style={MainStyles.inputRow}>
+            <View style={MainStyles.inputGroup}>
+                <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
+                <TextInput
+                  style={MainStyles.productModalMiktarInput}
+                  placeholderTextColor={colors.placeholderTextColor}
+                  keyboardType="numeric"
+                  value={sth_tutar}
+                  editable={isEditable}
+                  onChangeText={(value) => {
+                    // Virgülü noktaya çevir
+                    const formattedValue = value.replace(',', '.');
+
+                    // Sadece rakamlar ve . (nokta) karakteri kabul edilsin
+                    const validValue = formattedValue.replace(/[^0-9.]/g, '');
+
+                    // Eğer birden fazla . (nokta) varsa, sonrasını kabul etme
+                    const finalValue = validValue.split('.').length > 2 ? validValue.slice(0, -1) : validValue;
+
+                    setSth_tutar(finalValue);
+                  }}
+                />
+
+                </View>
+                <View style={MainStyles.inputGroup}>
+                <Text style={MainStyles.inputtip}>Tutar:</Text>
+                <TextInput
+                style={MainStyles.productModalMiktarInput}
+                placeholderTextColor={colors.placeholderTextColor}
+                editable={false}
+                value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
+                keyboardType="numeric"  
+              />
+
+                </View>
+            </View>
+          */}
           <Text style={MainStyles.inputtip}>Açıklama:</Text>
           <TextInput
             style={MainStyles.productModalMiktarInput}
@@ -685,53 +491,54 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
+
+
           {/* 
-           <TouchableOpacity
-            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
-            onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
-          >
-            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Bilgi Detay</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
+              onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
+            >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Bilgi Detay</Text>
+            </TouchableOpacity>
           */}
-
-          <Modal
-  visible={isStokDetayVisible}
-  transparent={true}
-  animationType="slide"
-  onRequestClose={closeModal}
->
-  <View style={[MainStyles.modalBackground]}>
-    <View style={MainStyles.modalCariDetayContent}>
-      {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
-      ) : (
-        <>
-          {/* Stok Detay Verisi Modal */}
-          {stokDetayData && stokDetayData.length > 0 ? (
-            <View>
-              <Text style={MainStyles.modalCariDetayTextTitle}>
-                Depo Durum Detayı
-              </Text>
-              {stokDetayData.map((item, index) => (
-                <View key={index} style={MainStyles.modalAlinanSiparisItem}>
-                  <Text style={MainStyles.modalCariDetayText}>Depo No: {item.dep_no} -  Depo Adı: {item.dep_adi} - Depo Miktar {item.DepoMiktarı}</Text>
+          {/* 
+            <Modal
+              visible={isStokDetayVisible}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={closeModal}
+            >
+              <View style={[MainStyles.modalBackground]}>
+                <View style={MainStyles.modalCariDetayContent}>
+                  {loading ? (
+                    <ActivityIndicator size="large" color={colors.primary} />
+                  ) : (
+                    <>
+                      {stokDetayData && stokDetayData.length > 0 ? (
+                        <View>
+                          <Text style={MainStyles.modalCariDetayTextTitle}>
+                            Depo Durum Detayı
+                          </Text>
+                          {stokDetayData.map((item, index) => (
+                            <View key={index} style={MainStyles.modalAlinanSiparisItem}>
+                              <Text style={MainStyles.modalCariDetayText}>Depo No: {item.dep_no} -  Depo Adı: {item.dep_adi} - Depo Miktar {item.DepoMiktarı}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      ) : (
+                        // Veri bulunamadı durumu
+                        <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                      )}
+                    </>
+                  )}
+                  <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
+                    <Text style={MainStyles.closeButtonText}>X</Text>
+                  </TouchableOpacity>
                 </View>
-              ))}
-            </View>
-          ) : (
-            // Veri bulunamadı durumu
-            <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
-          )}
-        </>
-      )}
-      <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-        <Text style={MainStyles.closeButtonText}>X</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-
-
+              </View>
+            </Modal>
+          */}
+          {/* 
             <View style={MainStyles.modalInfoContainer}>
               <View style={MainStyles.modalInfoDoviz}>
                   <Text style={MainStyles.inputtip}>BekleyenSiparis : {faturaBilgileri.BekleyenSiparis}</Text>
@@ -758,6 +565,7 @@ const validateQuantity = (quantity) => {
                   <Text style={MainStyles.inputtip}>Çarpan : {Carpan}</Text>
                 </View>
             </View>
+          */}
           {/* 
             <View style={MainStyles.productModalContainer}>
               <View style={MainStyles.inputIskontoGroup}>

@@ -1639,6 +1639,9 @@ export const MainStyles = {
       flexDirection: 'column',
       width: "48%", 
     },
+    inputBirimOzelGroup: {
+      flex: 1,
+    },
     inputProductModalBirimGroup: {
       flexDirection: 'column',
       width: "100%", 
@@ -1910,7 +1913,6 @@ export const MainStyles = {
     },
     inputStyleAlinanSiparis:{
       borderRadius: 5,
-      marginRight: 5,
       textAlign: 'left',
       backgroundColor: colors.textinputgray,
       borderWidth: 1,
