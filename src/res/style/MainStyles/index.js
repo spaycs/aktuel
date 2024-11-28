@@ -930,10 +930,12 @@ export const MainStyles = {
     modalContent: {
       width: '100%',
       backgroundColor: colors.white,
-      borderRadius: 10,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
       position: 'relative',
       marginTop: 10,
       paddingHorizontal: 10,
+      paddingVertical: 10,
     },
     modalCariDetayContent:{
       height: '95%',
@@ -1390,10 +1392,9 @@ export const MainStyles = {
     
     modalContainer: {
       flex: 1,
-      backgroundColor: colors.white,
-      position: 'relative',
-      paddingTop: 10,
-      paddingHorizontal: 15,
+      justifyContent: 'flex-end', 
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
     },
     modalContainerProduct: {
       flex: 1,
@@ -1429,7 +1430,9 @@ export const MainStyles = {
     },
     modalSatisFaturasiOnizlemeContainer: {
       flex: 1,
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-end', 
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
     },
     modalContainerAciklama: {
       flex: 1,
@@ -1885,7 +1888,7 @@ export const MainStyles = {
       backgroundColor: '#fff', // Tek satırlara beyaz
     },
     onizlemeButton: {
-      marginTop: 20,
+      marginTop: 10,
       paddingVertical: 10,
       paddingHorizontal: 20,
       backgroundColor: colors.red,

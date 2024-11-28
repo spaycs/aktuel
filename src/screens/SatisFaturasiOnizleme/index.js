@@ -600,7 +600,7 @@ const detailedProducts = products.map((product) => {
     {/* Ürün İşlem Seçim */}
       <View style={{ flex: 1 }}>
         <Modal visible={modalVisible} transparent={true} animationType="slide">
-          <View style={MainStyles.modalSatisFaturasiOnizlemeContainer}>
+          <View style={MainStyles.modalContainer}>
             <View style={MainStyles.modalContent}>
               <TouchableOpacity
                 onPress={() => editProduct(selectedProduct.id)}

@@ -348,7 +348,7 @@ const handleUpdate = async () => {
             selectedValue={sth_birim_pntr}
             onValueChange={(itemValue) => {
               setSth_birim_pntr(itemValue);
-              handleMiktarChangeEdit(sth_miktar); // Miktar değişikliği işlemi
+              //handleMiktarChangeEdit(sth_miktar); // Miktar değişikliği işlemi
               setIsModalVisible(false); // Modal'ı kapat
             }}
             style={MainStyles.picker}
@@ -381,7 +381,7 @@ const handleUpdate = async () => {
     style={{ marginHorizontal: -10 }}
     onValueChange={(itemValue) => {
       setSth_birim_pntr(itemValue);
-      handleMiktarChangeEdit(sth_miktar); // Miktar değişikliği işlemi
+      //handleMiktarChangeEdit(sth_miktar); // Miktar değişikliği işlemi
     }}
   >
     {birimListesi.map((birim, index) => (
