@@ -46,6 +46,7 @@ const CariEklemeAdres = () => {
   const [selectedIlce, setSelectedIlce] = useState('');
   const [isUlkeModalVisible, setIsUlkeModalVisible] = useState('');
   const [isIlModalVisible, setIsIlModalVisible] = useState('');
+  const [isIlceModalVisible, setIsIlceModalVisible] = useState('');
 // Tüm Değişken Değerleri
 
 // Ulke Seçim
@@ -353,21 +354,69 @@ const handleInputChange = (field, value) => {
 </View>
 
 
-       {/* İlce Seçimi*/}
-       <Text style={MainStyles.formTitle}>İlçe</Text> 
-       <View style={MainStyles.inputStyleAlinanSiparis}>
-          <Picker
-          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-            selectedValue={selectedIlce}
-            onValueChange={handleIlceChange} // Seçim yapıldığında çağrılan fonksiyon
-            enabled={selectedIl !== ''}
-          >
-            <Picker.Item style={MainStyles.textStyle} label="İlçe" value="" />
+     {/* İlçe Seçimi */}
+<Text style={MainStyles.formTitle}>İlçe</Text>
+<View style={MainStyles.inputStyleAlinanSiparis}>
+  {Platform.OS === 'ios' ? (
+    <>
+      <TouchableOpacity
+        onPress={() => {
+          if (selectedIl !== '') setIsIlceModalVisible(true);
+        }}
+      >
+        <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+          {selectedIlce || (selectedIl === '' ? 'İl Seçin' : 'İlçe')}
+        </Text>
+      </TouchableOpacity>
+
+      {/* İlçe Modal (iOS için) */}
+      <Modal visible={isIlceModalVisible} animationType="slide" transparent>
+        <View style={MainStyles.modalContainerPicker}>
+          <View style={MainStyles.modalContentPicker}>
+            <Picker
+              selectedValue={selectedIlce}
+              onValueChange={(value) => {
+                handleIlceChange(value);
+                setIsIlceModalVisible(false);
+              }}
+              enabled={selectedIl !== ''} // İl seçili değilse devre dışı
+            >
+              <Picker.Item label="İlçe" value="" />
               {ilceList.map((item) => (
-                <Picker.Item style={MainStyles.textStyle} key={item.Ilce_Kodu} label={item.Ilce_Adi} value={item.Ilce_Adi.toString()} />
+                <Picker.Item
+                  key={item.Ilce_Kodu}
+                  label={item.Ilce_Adi}
+                  value={item.Ilce_Adi.toString()}
+                />
               ))}
             </Picker>
+            <Button title="Kapat" onPress={() => setIsIlceModalVisible(false)} />
+          </View>
         </View>
+      </Modal>
+    </>
+  ) : (
+    // Android için doğrudan Picker
+    <Picker
+      selectedValue={selectedIlce}
+      onValueChange={handleIlceChange}
+      enabled={selectedIl !== ''} // İl seçili değilse devre dışı
+      style={{ marginHorizontal: -10 }}
+      itemStyle={{ height: 40, fontSize: 12 }}
+    >
+      <Picker.Item label={selectedIl === '' ? 'Önce İl Seçin' : 'İlçe'} value="" style={MainStyles.textStyle} />
+      {ilceList.map((item) => (
+        <Picker.Item
+          key={item.Ilce_Kodu}
+          label={item.Ilce_Adi}
+          value={item.Ilce_Adi.toString()}
+          style={MainStyles.textStyle}
+        />
+      ))}
+    </Picker>
+  )}
+</View>
+
 
 
 
