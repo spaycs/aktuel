@@ -130,14 +130,17 @@ const AlinanSiparisProductList = () => {
     }, 500); // 500 ms sonra API çağrısı yapılacak
   };
 
-
+  
+  useEffect(() => {
+    fetchProductData();
+  }, [searchCriteria]); 
 
   const fetchStockDetails = useCallback(async (productCode) => {
     try {
       const response = await axiosLinkMain.get(
         `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${productCode}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
       );
-  
+      
       const stokData = response.data;
   
       // Gelen veriler arasında productCode ile eşleşeni bul
@@ -156,13 +159,6 @@ const AlinanSiparisProductList = () => {
     }
   }, [alinanSiparis.sip_musteri_kod, defaults, searchCriteria]);
   
-  
-  
-  
-
-  
-  
-
   const handleItemClick = async (item) => {
   if (!alinanSiparis.sip_musteri_kod) {
     Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
@@ -192,12 +188,6 @@ const AlinanSiparisProductList = () => {
   setModalVisible(true);
 };
 
-  
-  
-  
-
-  
-
   const openModal = (item) => {
     setSelectedItem(item);
     setModalVisible(true);
@@ -223,11 +213,7 @@ const AlinanSiparisProductList = () => {
     fetchProductData(data, 'Barkod');
   };
   
-  {/*
-  useEffect(() => {
-    fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
-  }, []);
- */}
+
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemClick(item)} style={MainStyles.itemContainerPL}>
     <View style={MainStyles.itemContentPL}>

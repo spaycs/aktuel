@@ -953,6 +953,7 @@ export const MainStyles = {
       fontSize: 16,
     textAlign: 'center',
     fontWeight: 'bold',
+    marginBottom: 10,
     },
     modalTitleAciklama: {
       fontSize: 16,
@@ -1133,6 +1134,14 @@ export const MainStyles = {
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 10,
+    },
+    closeFiyatGorButton: {
+      backgroundColor: colors.textInputBg,
+      height: 30,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 10,
     },
     closeButtonText: {
       color: colors.black,

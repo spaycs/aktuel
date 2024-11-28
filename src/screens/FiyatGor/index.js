@@ -31,6 +31,7 @@ const FiyatGor = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const searchTimeoutRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 // State Yönetimi
 
   // Arama Kriterleri
@@ -58,6 +59,7 @@ const FiyatGor = () => {
       try {
         const tip = getTipForValue(criteria);
         const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${term}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`);
+        console.log(response);
         setData(response.data);
       } catch (err) {
         Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
@@ -257,26 +259,38 @@ const FiyatGor = () => {
       </>
       )}
       
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={MainStyles.modalCariContainer}>
-            <View style={MainStyles.modalCariContent}>
-              <View style={MainStyles.buttonCariModalDetail}>
-                <Text style={MainStyles.buttonCariTitle}>Hızlı Erişim</Text>
-              </View>
-              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={navigateToStokHareketFoyu}>
-                <Text style={MainStyles.cariButtonText}>Stok Hareket Föyü</Text>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.Stok_Kod}
+      />
+      {selectedItem && (
+        <Modal visible={modalVisible} transparent={true} animationType="slide">
+          <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={MainStyles.modalStokContainer}>
+            <View style={MainStyles.modalStokContent}>
+              <Text style={MainStyles.modalTitle}>Stok Detayı</Text>
+              <Text style={MainStyles.modalText}>Stok Kodu: {selectedItem.Stok_Kod}</Text>
+              <Text style={MainStyles.modalText}>Stok Adı: {selectedItem.Stok_Ad}</Text>
+              <Text style={MainStyles.modalText}>Depodaki Miktar: {selectedItem.Depodaki_Miktar}</Text>
+              <Text style={MainStyles.modalText}>Depodaki Miktar 1: {selectedItem.Depo1Miktar}</Text>
+              <Text style={MainStyles.modalText}>Depodaki Miktar 2: {selectedItem.Depo2Miktar}</Text>
+              <Text style={MainStyles.modalText}>Liste Fiyatı: {selectedItem.Liste_Fiyatı} ₺</Text>
+              <Text style={MainStyles.modalText}>Vergi: {selectedItem.Vergi}</Text>
+              <Text style={MainStyles.modalText}>Birim: {selectedItem.Birim}</Text>
+              <Text style={MainStyles.modalText}>Marka: {selectedItem.Marka}</Text>
+              <Text style={MainStyles.modalText}>AltGrup: {selectedItem.AltGrup}</Text>
+              <Text style={MainStyles.modalText}>AnaGrup: {selectedItem.AnaGrup}</Text>
+              <Text style={MainStyles.modalText}>Reyon: {selectedItem.Reyon}</Text>
+              <TouchableOpacity style={MainStyles.closeFiyatGorButton} onPress={closeModal}>
+                <Text style={MainStyles.closeButtonText}>Kapat</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={MainStyles.buttonCariModalDetail} onPress={navigateToStokDepoDurum}>
-                <Text style={MainStyles.cariButtonText}>Stok Depo Durum</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal} style={MainStyles.buttonCariModalDetail}>
-                <Text style={MainStyles.buttonTextKapat}>Kapat</Text>
-              </TouchableOpacity>
+           
             </View>
           </View>
           </TouchableWithoutFeedback>
-      </Modal>
+        </Modal>
+      )}
     </View>
   );
 };

@@ -1,16 +1,16 @@
-import React, { useState, useCallback, useEffect, useContext, useRef } from 'react';
+import React, { useState, useCallback, useContext, useEffect, useRef } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal } from 'react-native';
 import { MainStyles } from '../res/style';
 import axiosLinkMain from '../utils/axiosMain';
 import { ProductContext } from '../context/ProductContext';
 import { useAuth } from '../components/userDetail/Id';
 import ProductModal from '../context/ProductModal';
+import SatisFaturasiProductModal from '../context/SatisFaturasiProductModal';
 import { colors } from '../res/colors';
-import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
-import DepolarArasiProductModal from './DepolarArasiProductModal';
 import { RNCamera } from 'react-native-camera';
-import { Camera, Nokta, Down } from '../res/images';
+import { Camera, Nokta } from '../res/images';
+import FastImage from 'react-native-fast-image';
 import Button from '../components/Button';
 import { useAuthDefault } from '../components/DefaultUser';
 import SatinAlmaTalepFisiProductModal from './SatinAlmaTalepFisiProductModal';
@@ -22,27 +22,41 @@ const normalizeText = (text) => {
 const SatinAlmaTalepFisiProductList = () => {
   const { authData } = useAuth();
   const { defaults } = useAuthDefault();
-  const { addedProducts, setAddedProducts } = useContext(ProductContext);
+  const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
-  const [searchCriteria, setSearchCriteria] = useState('Stok Ad');
+  const [productModalVisible, setProductModalVisible] = useState(false); // Yeni state
+  const [searchCriteria, setSearchCriteria] = useState('Stok_Ad');
+  const [markaOptions, setMarkaOptions] = useState([]);
+  const [selectedMarka, setSelectedMarka] = useState('');
+  const [stokAdOptions, setStokAdOptions] = useState([]);
+  const [stokKodOptions, setStokKodOptions] = useState([]);
+  const [altGrupOptions, setAltGrupOptions] = useState([]);
+  const [anaGrupOptions, setAnaGrupOptions] = useState([]);
+  const [reyonOptions, setReyonOptions] = useState([]);
+  const [loading, setLoading] = useState(false); 
+
+  const [stokListData, setStokListData] = useState([]); // Stok Listesi verisi
+  const [hizmetData, setHizmetData] = useState([]); // Hizmet verisi
+  const [masrafData, setMasrafData] = useState([]); // Masraf verisi
+  const [barkodData, setBarkodData] = useState([]); // Barkod verisi
+  const [filteredData, setFilteredData] = useState([]); // Filtrelenmiş veriler
   const [isModalVisible, setIsModalVisible] = useState(false);
   const searchTimeoutRef = useRef(null);
 
   const pickerItems = [
-    { label: 'Stok Adı', value: 'Stok Ad', tip: 1 },
-    { label: 'Stok Kodu', value: 'Stok Kod', tip: 2 },
+    { label: 'Stok Adı', value: 'Stok_Ad', tip: 1 },
+    { label: 'Stok Kodu', value: 'Stok_Kod', tip: 2 },
     { label: 'Marka', value: 'Marka', tip: 3 },
     { label: 'Alt Grup', value: 'AltGrup', tip: 4 },
     { label: 'Ana Grup', value: 'AnaGrup', tip: 5 },
     { label: 'Reyon', value: 'Reyon', tip: 6 },
     { label: 'Barkod', value: 'Barkod', tip: 7 },
-    { label: 'Hizmet', value: 'Hizmet', tip: 8 },
-    { label: 'Masraf', value: 'Masraf', tip: 9 },
-    { label: 'Demirbas', value: 'Demirbas', tip: 10 },
+    { label: 'Masraf', value: 'Masraf', tip: 8 },
+    { label: 'Hizmet', value: 'Hizmet', tip: 9 },
   ];
 
   const getTipForValue = (value) => {
@@ -50,104 +64,125 @@ const SatinAlmaTalepFisiProductList = () => {
     return selectedItem ? selectedItem.tip : 1;
   };
 
-  const fetchProductData = useCallback(
-    async (searchTerm = '', searchCriteria = 'Stok Ad') => {
-      try {
-        const deger = searchTerm || ''; // TextInput'a yazılan değer, boşsa boş olarak gönderilecek
-        const tip = getTipForValue(searchCriteria);
-        let url = '';
+  const fetchProductData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const tip = getTipForValue(searchCriteria);
+      const depo = defaults[0]?.IQ_CikisDepoNo || '';
 
-        switch (tip) {
-          case 8: // Hizmet
-            url = '/Api/Stok/HizmetHesaplari';
-            break;
-          case 9: // Masraf
-            url = '/Api/Stok/MasrafHesaplari';
-            break;
-          case 10: // Demirbaş
-            url = '/Api/Stok/Demirbaslar';
-            break;
-          default: // Stok verileri (1-7)
-            url = `/Api/Stok/StokListesi?deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`;
-        }
+      const url = `/Api/Stok/StokListesiEvraklar2?cari=&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
+      console.log(url);
+      const response = await axiosLinkMain.get(url);
 
-        const response = await axiosLinkMain.get(url);
-        const data = response.data;
+      const data = response.data || [];
+      const filtered = data.map(item => ({
+        Stok_Ad: item.Stok_Ad || item.Isim,
+        Stok_Kod: item.Stok_Kod || item.Kod,
+        sth_vergi: item.Vergi,
+        sth_vergi_pntr: item.Vergipntr,
+        Liste_Fiyatı: item.Liste_Fiyatı,
+        Birim: item.Birim,
+        Marka: item.Marka,
+        AltGrup: item.AltGrup,
+        AnaGrup: item.AnaGrup,
+        Reyon: item.Reyon,
+        HareketTipi: item.HareketTipi, // Yeni eklendi
+      }));
 
-        setData(
-          data.map((item) => ({
-            Stok_Ad: item.Stok_Ad ||item.Isim,
-            Stok_Kod: item.Stok_Kod || item.Kod,
-            Liste_Fiyatı: item.Liste_Fiyatı,
-            Depodaki_Miktar: item.Depodaki_Miktar,
-            Depo1Miktar: item.Depo1Miktar,
-            Depo2Miktar: item.Depo2Miktar,
-            sth_vergi: item.Vergi,
-            Birim: item.Birim,
-            Marka: item.Marka,
-            AltGrup: item.AltGrup,
-            AnaGrup: item.AnaGrup,
-            Reyon: item.Reyon,
-          }))
-        );
-      } catch (err) {
-        Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
-      }
-    },
-    [defaults]
-  );
+      setFilteredData(filtered);
+    } catch (err) {
+      Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setLoading(false);
+    }
+  }, [searchCriteria, searchTerm, defaults, faturaBilgileri]);
+  
 
-  const handleSearchTermChange = (text) => {
-    setSearchTerm(text);
+  const handlePickerChange = (itemValue) => {
+    setSearchCriteria(itemValue);
+    fetchProductData(); // Kriter değişince API çağrısı yap
+  };
+  
+  const handleItemClick = (item) => {
+    const existingProductCount = addedProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
 
+    let modalId;
+    if (searchCriteria === 'Hizmet') {
+      modalId = 1;
+    } else if (searchCriteria === 'Masraf') {
+      modalId = 2;
+    } else {
+      modalId = 0;
+    }
+
+    setSelectedProduct({
+      ...item,
+      sth_vergi_pntr: item.sth_vergi_pntr, // Değeri ekliyoruz
+    });
+
+    setSelectedProduct(item);
+
+    if (searchCriteria === 'Hizmet' || searchCriteria === 'Masraf') {
+      setModalVisible(true); // SatisFaturasiProductModal göster
+    } else {
+      setProductModalVisible(true); // ProductModal göster
+    }
+  };
+
+ 
+
+  useEffect(() => {
+    // Eğer daha önce bir timeout varsa, onu temizler
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
-
+  
+    // Yeni bir timeout ayarla
     searchTimeoutRef.current = setTimeout(() => {
-      fetchProductData(text, searchCriteria); // Gecikmeli API çağrısı
-    }, 500);
+      fetchProductData(searchTerm); // `searchTerm` dolu ya da boş olabilir
+    }, 500); // 500 ms sonra çalıştır
+  
+    return () => {
+      clearTimeout(searchTimeoutRef.current); // Cleanup
+    };
+  }, [searchTerm]); // Sadece searchTerm değiştiğinde tetiklenir
+  
+  const handleSearchTermChange = (text) => {
+    setSearchTerm(text); // TextInput değişiminde `searchTerm` state'ini günceller
   };
 
-  const handleItemClick = (item) => {
-    const existingProductCount = addedProducts.filter(
-      (product) => product.Stok_Kod === item.Stok_Kod
-    ).length;
-
-    if (existingProductCount >= 2) {
-      Alert.alert('Uyarı', 'Bu ürün zaten 2 kez eklenmiştir, daha fazla ekleyemezsiniz.');
-      return;
-    }
-
-    setSelectedProduct(item);
-    setModalVisible(true);
-  };
 
   const handleCameraOpen = () => {
-    setCameraModalVisible(true);
+    setCameraModalVisible(true); 
   };
 
   const handleCameraClose = () => {
-    setCameraModalVisible(false);
+    setCameraModalVisible(false); 
   };
 
   const handleBarCodeRead = ({ data }) => {
     setCameraModalVisible(false);
     setSearchCriteria('Barkod');
-    setSearchTerm(data);
-    fetchProductData(data, 'Barkod');
+    setSearchTerm(data); 
+    fetchProductData(data, 'Barkod'); 
   };
 
+  
   useEffect(() => {
-    fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
-  }, []);
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(item)} style={MainStyles.itemContainerPL}>
-     <View style={MainStyles.itemContentPL}>
+    fetchProductData();
+  }, [searchCriteria]); 
+  
+
+  const renderItem = ({ item }) => {
+    const isHizmetOrMasraf = searchCriteria === 'Hizmet' || searchCriteria === 'Masraf'; // Picker kontrolü
+  
+    return (
+      <TouchableOpacity onPress={() => handleItemClick(item)} style={MainStyles.itemContainerPL}>
+      <View style={MainStyles.itemContentPL}>
       <View style={MainStyles.itemHeaderPL}>
         <Text style={MainStyles.headerTextPL}>Stok Kodu: {item.Stok_Kod}</Text>
         <Text style={MainStyles.headerTextPL2}>
-          <Nokta /> Liste Fiyatı: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.Liste_Fiyatı)}
+        <Nokta /> Liste Fiyatı: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.Liste_Fiyatı)}
         </Text>
       </View>
       <View style={MainStyles.itemStokPL}>
@@ -170,13 +205,15 @@ const SatinAlmaTalepFisiProductList = () => {
         </View>
       </View>
     </View>
-    </TouchableOpacity>
-  );
+  </TouchableOpacity>
+    );
+  };
+  
 
   return (
-    <View style={MainStyles.container}>
+    <View style={MainStyles.irsaliyeContainer}>
       <View style={MainStyles.pageTop}>
-        <View style={MainStyles.inputStyle}>
+      <View style={MainStyles.inputStyle}>
         {Platform.OS === 'ios' ? (
         <>
           <TouchableOpacity onPress={() => setIsModalVisible(true)}>
@@ -195,8 +232,8 @@ const SatinAlmaTalepFisiProductList = () => {
                     setSearchCriteria(itemValue);
                   }}
                 >
-                  <Picker.Item label="Stok Adı" value="Stok Ad" style={MainStyles.textStyle} />
-                  <Picker.Item label="Stok Kodu" value="Stok Kod" style={MainStyles.textStyle} />
+                  <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
+                  <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
                   <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
                   <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
                   <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
@@ -204,7 +241,6 @@ const SatinAlmaTalepFisiProductList = () => {
                   <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
                   <Picker.Item label="Hizmet" value="Hizmet" style={MainStyles.textStyle}  />
                   <Picker.Item label="Masraf" value="Masraf" style={MainStyles.textStyle}  />
-                  <Picker.Item label="Demirbas" value="Demirbas" style={MainStyles.textStyle}  />
                 </Picker>
                 <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
               </View>
@@ -219,8 +255,8 @@ const SatinAlmaTalepFisiProductList = () => {
           itemStyle={{ height: 40, fontSize: 12 }}
           style={{ marginHorizontal: -10 }}
         >
-          <Picker.Item label="Stok Adı" value="Stok Ad" style={MainStyles.textStyle} />
-          <Picker.Item label="Stok Kodu" value="Stok Kod" style={MainStyles.textStyle} />
+          <Picker.Item label="Stok Adı" value="Stok_Ad" style={MainStyles.textStyle} />
+          <Picker.Item label="Stok Kodu" value="Stok_Kod" style={MainStyles.textStyle} />
           <Picker.Item label="Marka" value="Marka" style={MainStyles.textStyle} />
           <Picker.Item label="Alt Grup" value="AltGrup" style={MainStyles.textStyle} />
           <Picker.Item label="Ana Grup" value="AnaGrup" style={MainStyles.textStyle} />
@@ -228,20 +264,18 @@ const SatinAlmaTalepFisiProductList = () => {
           <Picker.Item label="Barkod" value="Barkod" style={MainStyles.textStyle} />
           <Picker.Item label="Hizmet" value="Hizmet" style={MainStyles.textStyle}  />
           <Picker.Item label="Masraf" value="Masraf" style={MainStyles.textStyle}  />
-          <Picker.Item label="Demirbas" value="Demirbas" style={MainStyles.textStyle}  />
         </Picker>
       )}
         </View>
       </View>
       <View style={MainStyles.inputContainer}>
-        <TextInput
-          style={MainStyles.slinputUrunAra}
-          placeholder="Ürün kodu veya adı ile ara"
-          placeholderTextColor={colors.placeholderTextColor}
-          value={searchTerm}
-          onChangeText={handleSearchTermChange}
-        />
-        <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
+      <TextInput
+        style={MainStyles.slinputUrunAra}
+         placeholder="Ürün kodu veya adı ile ara"
+        value={searchTerm}
+        onChangeText={handleSearchTermChange}
+      />
+      <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
           <Camera/>
         </TouchableOpacity>
       </View>
@@ -273,21 +307,39 @@ const SatinAlmaTalepFisiProductList = () => {
         <Text style={MainStyles.kapatTitle}>Kapat</Text>
         </TouchableOpacity>
       </Modal>
-
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.Stok_Kod}
+      
+      {loading ? (
+            <FastImage
+              style={MainStyles.loadingGif}
+              source={require('../res/images/image/pageloading.gif')}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+          ) : (
+            <FlatList
+            data={filteredData}
+            keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`} // index ile birleştirerek benzersiz key sağlıyoruz
+            renderItem={renderItem}
+            contentContainerStyle={MainStyles.listContainer}
+          />
+          
+          )}
+      <SatinAlmaTalepFisiProductModal
+        selectedProduct={selectedProduct}
+        modalVisible={productModalVisible}
+        setModalVisible={setProductModalVisible}
+        setAddedProducts={setAddedProducts}
       />
 
-      <SatinAlmaTalepFisiProductModal
+      <SatisFaturasiProductModal
         selectedProduct={selectedProduct}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setAddedProducts={setAddedProducts}
+        modalId={searchCriteria === 'Hizmet' ? 1 : searchCriteria === 'Masraf' ? 2 : 0}
       />
     </View>
   );
 };
+
 
 export default SatinAlmaTalepFisiProductList;
