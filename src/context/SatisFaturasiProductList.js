@@ -102,11 +102,6 @@ const SatisFaturasiProductList = () => {
     fetchProductData(); // Kriter değişince API çağrısı yap
   };
   
-  useEffect(() => {
-    // Picker'dan yeni bir değer seçildiğinde veya ilk yüklemede fetchProductData çalıştırılır
-    fetchProductData();
-  }, [fetchProductData, searchCriteria]);
-
   const handleItemClick = (item) => {
     const existingProductCount = addedProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
 
@@ -133,19 +128,26 @@ const SatisFaturasiProductList = () => {
     }
   };
 
-  const handleSearchTermChange = (text) => {
-    setSearchTerm(text);
-  
-    // Eğer daha önceki timeout varsa, onu temizle
+  useEffect(() => {
+    // Eğer daha önce bir timeout varsa, onu temizler
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
   
     // Yeni bir timeout ayarla
     searchTimeoutRef.current = setTimeout(() => {
-      fetchProductData(text, searchCriteria); // Gecikmeli API çağrısı
-    }, 500); // 500 ms sonra API çağrısı yapılacak
+      fetchProductData(searchTerm); // `searchTerm` dolu ya da boş olabilir
+    }, 500); // 500 ms sonra çalıştır
+  
+    return () => {
+      clearTimeout(searchTimeoutRef.current); // Cleanup
+    };
+  }, [searchTerm]); // Sadece searchTerm değiştiğinde tetiklenir
+  
+  const handleSearchTermChange = (text) => {
+    setSearchTerm(text); // TextInput değişiminde `searchTerm` state'ini günceller
   };
+
 
   const handleCameraOpen = () => {
     setCameraModalVisible(true); 
@@ -162,6 +164,9 @@ const SatisFaturasiProductList = () => {
     fetchProductData(data, 'Barkod'); 
   };
 
+    useEffect(() => {
+    fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
+  }, []);
 
 
   const renderItem = ({ item }) => {

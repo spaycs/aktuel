@@ -505,6 +505,7 @@ useEffect(() => {
               sip_vergi_pntr: product.sth_vergi_pntr,
               sip_vergi: product.sth_vergi,
               sip_vergisiz_fl: false,
+              sip_cagrilabilir_fl: 1,
               sip_iskonto_1: product.sth_iskonto1,
               sip_iskonto_2: product.sth_iskonto2,
               sip_iskonto_3: product.sth_iskonto3,

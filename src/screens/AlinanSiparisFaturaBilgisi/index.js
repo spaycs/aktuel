@@ -340,7 +340,6 @@ const AlinanSiparisFaturaBilgisi = () => {
   };
   
   const loadDateFromAsyncStorage = async () => {
-    try {
       const currentDate = new Date();
   
       // Tarihi formatla ve fatura bilgisine ekle
@@ -350,12 +349,6 @@ const AlinanSiparisFaturaBilgisi = () => {
         ...prevState,
         sip_tarih: formattedDate,
       }));
-  
-      // AsyncStorage'a güncel tarihi kaydet
-      await AsyncStorage.setItem('selectedDate', JSON.stringify(currentDate));
-    } catch (error) {
-      console.error('Error updating date in AsyncStorage:', error);
-    }
   };
 
    // Veriyi AsyncStorage'a kaydet
@@ -430,7 +423,7 @@ const AlinanSiparisFaturaBilgisi = () => {
          //loadDepoFromAsyncStorage(); // 6. Depo bilgisi yükler
         // loadDovizFromAsyncStorage(); // 7. Döviz bilgisi yükler
         //loadIrsaliyeTipiFromAsyncStorage(); // 8. İrsaliye tipi yükler
-         loadDateFromAsyncStorage(); // 9. Tarih bilgisi yükler
+        // loadDateFromAsyncStorage(); // 9. Tarih bilgisi yükler
         // loadEvrakNoFromAsyncStorage(); // 10. Evrak no bilgisi yükler
         // loadOnaysizDataFromAsyncStorage(); // 11. Onaysız data yükler
   }, []);
@@ -550,6 +543,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
     }, [sip_evrakno_seri,sip_evrakno_sira,sip_musteri_kod, sip_cari_unvan1, sip_depono] );
   // Sayfa Açıldığında Gönderilen Varsayılan Değerler
+  {/* 
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -557,6 +551,8 @@ const AlinanSiparisFaturaBilgisi = () => {
       };
     }, [])
   );
+  */}
+
   useEffect(() => {
     fetchDovizList();
     fetchDepoList();
@@ -643,18 +639,21 @@ const handleIrsaliyeTipiChange = async (itemValue) => {
 
 
   // Evrak Tarih Alanı
+
+
   useEffect(() => {
-    if (Object.keys(alinanSiparis).length === 0) {
-      const currentDate = new Date();
-      const formattedDate = formatDate(currentDate);
+    const currentDate = new Date();
+    const formattedDate = formatDate(currentDate);
   
-      setDate(currentDate);
+    // alinanSiparis içinde sip_tarih yoksa veya boşsa ekle
+    if (!alinanSiparis?.sip_tarih) {
+      setDate(currentDate); // Yerel state'teki tarihi güncelle
       setAlinanSiparis(prevState => ({
         ...prevState,
-        sip_tarih: formattedDate,
+        sip_tarih: formattedDate, // Güncellenmiş tarihi ekle
       }));
     }
-  }, [alinanSiparis]);
+  }, [alinanSiparis]); 
   
 
   
@@ -674,12 +673,6 @@ const handleIrsaliyeTipiChange = async (itemValue) => {
       sip_tarih: formattedDate,
     }));
   
-    try {
-      // Yeni tarihi AsyncStorage'a kaydet
-      await AsyncStorage.setItem('selectedDate', JSON.stringify(newDate));
-    } catch (error) {
-      console.error('Error saving date to AsyncStorage:', error);
-    }
   };
 
     const formatDate = (date) => {
