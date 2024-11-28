@@ -239,12 +239,15 @@ const validateQuantity = (quantity) => {
   };
 
   const handleAddProduct = async () => {
+    const calculatedQuantity = handleMiktarChange(sth_miktar);
     if (validateQuantity(sth_miktar)) {
       const existingProduct = addedProducts.find(
         (product) =>
           product.Stok_Kod === selectedProduct?.Stok_Kod && product.modalId === modalId // Stok kodu ve modalId kontrolü
       );
       const newQuantity = parseFloat(sth_miktar.replace(',', '.')) || 0;
+      const newTotalPrice = calculateTotal(); // Toplam tutar hesaplandı
+      const newTotalMiktarPrice = (newQuantity * newTotalPrice).toFixed(2);
   
       if (existingProduct) {
         // Ürün zaten eklendiğinde kullanıcıya iki seçenek sunulur
@@ -263,6 +266,7 @@ const validateQuantity = (quantity) => {
                   : product
               );
               setAddedProducts(updatedProducts);
+              setCarpan();
               resetFields();
             },
           },
@@ -274,7 +278,7 @@ const validateQuantity = (quantity) => {
                 {
                   id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
                   ...selectedProduct,
-                  sth_miktar: sth_miktar,
+                  sth_miktar: calculatedQuantity,
                   sth_tutar: sth_tutar,
                   sth_birim_pntr: '1',
                   Birim_KDV: Birim_KDV,
@@ -287,6 +291,7 @@ const validateQuantity = (quantity) => {
                   total: (newQuantity * parseFloat(sth_tutar || 0)).toFixed(2),
                 },
               ]);
+              setCarpan();
               resetFields();
             },
           },
@@ -303,7 +308,7 @@ const validateQuantity = (quantity) => {
           {
             id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
             ...selectedProduct,
-            sth_miktar: sth_miktar,
+            sth_miktar: calculatedQuantity,
             sth_tutar: sth_tutar,
             sth_birim_pntr: '1',
             Birim_KDV: Birim_KDV,
@@ -316,6 +321,7 @@ const validateQuantity = (quantity) => {
             total: (newQuantity * parseFloat(sth_tutar || 0)).toFixed(2),
           },
         ]);
+        setCarpan();
         resetFields();
       }
     }
