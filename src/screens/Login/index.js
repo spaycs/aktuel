@@ -507,9 +507,9 @@ useEffect(() => {
                   onValueChange={(itemValue) => handleUserChange(itemValue)}
                   style={MainStyles.picker}
                 >
-                  <Picker.Item label="Kullanıcı seçin" value="" />
+                  <Picker.Item label="Kullanıcı seçin" value=""  style={MainStyles.textStyle}/>
                   {users.map((user) => (
-                    <Picker.Item key={user.KOD} label={user.AD} value={user.KOD} />
+                    <Picker.Item key={user.KOD} label={user.AD} value={user.KOD}  style={MainStyles.textStyle} />
                   ))}
                 </Picker>
                   <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
@@ -525,9 +525,9 @@ useEffect(() => {
           itemStyle={{ height: 40, fontSize: 12 }}
           style={{ marginHorizontal: -10 }}
         >
-          <Picker.Item label="Kullanıcı seçin" value="" />
+          <Picker.Item label="Kullanıcı seçin" value=""  style={MainStyles.textStyle}/>
           {users.map((user) => (
-            <Picker.Item key={user.KOD} label={user.AD} value={user.KOD} />
+            <Picker.Item key={user.KOD} label={user.AD} value={user.KOD}  style={MainStyles.textStyle} />
           ))}
         </Picker>
         )}

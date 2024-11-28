@@ -128,6 +128,8 @@ const SatisFaturasiProductList = () => {
     }
   };
 
+ 
+
   useEffect(() => {
     // Eğer daha önce bir timeout varsa, onu temizler
     if (searchTimeoutRef.current) {
@@ -164,10 +166,11 @@ const SatisFaturasiProductList = () => {
     fetchProductData(data, 'Barkod'); 
   };
 
-    useEffect(() => {
-    fetchProductData(searchTerm); // TextInput'a yazıldıkça arama yap
-  }, []);
-
+  
+  useEffect(() => {
+    fetchProductData();
+  }, [searchCriteria]); 
+  
 
   const renderItem = ({ item }) => {
     const isHizmetOrMasraf = searchCriteria === 'Hizmet' || searchCriteria === 'Masraf'; // Picker kontrolü
