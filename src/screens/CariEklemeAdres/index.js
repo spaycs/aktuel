@@ -235,38 +235,97 @@ const handleInputChange = (field, value) => {
       </View>
 
       {/* Ülke Seçimi */}
-<Text style={MainStyles.formTitle}>Ülke</Text>
+      <Text style={MainStyles.formTitle}>Ülke</Text>
+      <View style={MainStyles.inputStyleAlinanSiparis}>
+        {Platform.OS === 'ios' ? (
+          <>
+            <TouchableOpacity onPress={() => setIsUlkeModalVisible(true)}>
+              <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                {selectedUlke || "Ülke"} {/* Seçilen ülke ya da varsayılan metin */}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Ülke Modal (iOS için) */}
+            <Modal visible={isUlkeModalVisible} animationType="slide" transparent>
+              <View style={MainStyles.modalContainerPicker}>
+                <View style={MainStyles.modalContentPicker}>
+                  <Picker
+                    selectedValue={selectedUlke}
+                    onValueChange={(value) => {
+                      handleUlkeChange(value); // Seçim işlemi
+                      setIsUlkeModalVisible(false); // Modal kapat
+                    }}
+                    style={MainStyles.picker}
+                  >
+                    <Picker.Item label="Ülke" value="" />
+                    {ülkeList.map((item) => (
+                      <Picker.Item
+                        key={item.Ulke_Kodu}
+                        label={item.Ulke_Adi}
+                        value={item.Ulke_Adi.toString()}
+                      />
+                    ))}
+                  </Picker>
+                  <Button title="Kapat" onPress={() => setIsUlkeModalVisible(false)} />
+                </View>
+              </View>
+            </Modal>
+          </>
+        ) : (
+          // Android için doğrudan Picker
+          <Picker
+            selectedValue={selectedUlke}
+            onValueChange={(value) => handleUlkeChange(value)}
+            style={{ marginHorizontal: -10 }}
+            itemStyle={{ height: 40, fontSize: 12 }}
+          >
+            <Picker.Item label="Ülke" value="" style={MainStyles.textStyle} />
+            {ülkeList.map((item) => (
+              <Picker.Item
+                key={item.Ulke_Kodu}
+                label={item.Ulke_Adi}
+                value={item.Ulke_Adi.toString()}
+                style={MainStyles.textStyle}
+              />
+            ))}
+          </Picker>
+        )}
+      </View>
+
+
+      {/* İl Seçimi */}
+<Text style={MainStyles.formTitle}>İl</Text>
 <View style={MainStyles.inputStyleAlinanSiparis}>
   {Platform.OS === 'ios' ? (
     <>
-      <TouchableOpacity onPress={() => setIsUlkeModalVisible(true)}>
+      <TouchableOpacity onPress={() => setIsIlModalVisible(true)}>
         <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-          {selectedUlke || "Ülke"} {/* Seçilen ülke ya da varsayılan metin */}
+          {selectedIl || "İl"} {/* Seçili il yoksa varsayılan metin */}
         </Text>
       </TouchableOpacity>
 
-      {/* Ülke Modal (iOS için) */}
-      <Modal visible={isUlkeModalVisible} animationType="slide" transparent>
+      {/* İl Modal (iOS için) */}
+      <Modal visible={isIlModalVisible} animationType="slide" transparent>
         <View style={MainStyles.modalContainerPicker}>
           <View style={MainStyles.modalContentPicker}>
             <Picker
-              selectedValue={selectedUlke}
+              selectedValue={selectedIl}
               onValueChange={(value) => {
-                handleUlkeChange(value); // Seçim işlemi
-                setIsUlkeModalVisible(false); // Modal kapat
+                handleIlChange(value); // Seçim işlemi
+                setIsIlModalVisible(false); // Modal kapat
               }}
               style={MainStyles.picker}
             >
-              <Picker.Item label="Ülke" value="" />
-              {ülkeList.map((item) => (
+              <Picker.Item label="İl" value="" />
+              {ilList.map((item) => (
                 <Picker.Item
-                  key={item.Ulke_Kodu}
-                  label={item.Ulke_Adi}
-                  value={item.Ulke_Adi.toString()}
+                  key={item.Il_Kodu}
+                  label={item.Il_Adi}
+                  value={item.Il_Adi.toString()}
                 />
               ))}
             </Picker>
-            <Button title="Kapat" onPress={() => setIsUlkeModalVisible(false)} />
+            <Button title="Kapat" onPress={() => setIsIlModalVisible(false)} />
           </View>
         </View>
       </Modal>
@@ -274,17 +333,17 @@ const handleInputChange = (field, value) => {
   ) : (
     // Android için doğrudan Picker
     <Picker
-      selectedValue={selectedUlke}
-      onValueChange={(value) => handleUlkeChange(value)}
+      selectedValue={selectedIl}
+      onValueChange={handleIlChange}
       style={{ marginHorizontal: -10 }}
       itemStyle={{ height: 40, fontSize: 12 }}
     >
-      <Picker.Item label="Ülke" value="" style={MainStyles.textStyle} />
-      {ülkeList.map((item) => (
+      <Picker.Item label="İl" value="" style={MainStyles.textStyle} />
+      {ilList.map((item) => (
         <Picker.Item
-          key={item.Ulke_Kodu}
-          label={item.Ulke_Adi}
-          value={item.Ulke_Adi.toString()}
+          key={item.Il_Kodu}
+          label={item.Il_Adi}
+          value={item.Il_Adi.toString()}
           style={MainStyles.textStyle}
         />
       ))}
@@ -292,21 +351,6 @@ const handleInputChange = (field, value) => {
   )}
 </View>
 
-
-       {/* İl Seçimi*/}
-       <Text style={MainStyles.formTitle}>İl</Text> 
-       <View style={MainStyles.inputStyleAlinanSiparis}>
-          <Picker
-          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-            selectedValue={selectedIl}
-            onValueChange={handleIlChange} // Seçim yapıldığında çağrılan fonksiyon
-          >
-            <Picker.Item style={MainStyles.textStyle} label="İl" value="" />
-            {ilList.map((item) => (
-              <Picker.Item style={MainStyles.textStyle} key={item.Il_Kodu} label={item.Il_Adi} value={item.Il_Adi.toString()} />
-            ))}
-          </Picker>
-        </View>
 
        {/* İlce Seçimi*/}
        <Text style={MainStyles.formTitle}>İlçe</Text> 
