@@ -133,9 +133,11 @@ const calculateTotalQuantity = () => {
         <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
         <Text style={MainStyles.productDetail}>Miktar: {item.sth_miktar}</Text>
         <Text style={MainStyles.productDetail}>Açıklama: {item.aciklama}</Text>
+        <Text style={MainStyles.productDetail}>Açıklama: {item.modalId}</Text>
       </View>
     </TouchableOpacity>
   );
+
 
   const handleSave = async () => {
 
@@ -148,173 +150,77 @@ const calculateTotalQuantity = () => {
       return; // Fonksiyonu burada durdur
     }
     setLoading(true);
-    const apiURL = '/Api/apiMethods/SatinAlmaTalepKaydetV2';
-   
+    const apiURL = `/Api/apiMethods/SatinAlmaTalepKaydetV2`;
   
-    // Ürünleri ve hizmetleri filtreleyin
-    const products = addedProducts.filter(product => faturaBilgileri.modalId === 0);
-    const services = addedProducts.filter(product => faturaBilgileri.modalId !== 0);
-    console.log(products);
-    console.log(services);
-    // İndirim ve vergi hesaplamalarını yap
-    const calculateValuesForProduct = (product) => {
-        const discountRates = [
-            parseFloat(product.sth_isk1) || 0,
-            parseFloat(product.sth_isk2) || 0,
-            parseFloat(product.sth_isk3) || 0,
-            parseFloat(product.sth_isk4) || 0,
-            parseFloat(product.sth_isk5) || 0,
-            parseFloat(product.sth_isk6) || 0,
-        ];
-  
-        let discountedPrice = product.sth_miktar * product.sth_tutar;
-        discountRates.forEach(rate => {
-            discountedPrice -= (discountedPrice * rate) / 100;
-        });
-  
-        const kdvRate = parseFloat(product.sth_vergi.replace('%', '').replace(',', '.')) / 100;
-        const calculatedTax = (discountedPrice * kdvRate).toFixed(2);
-  
-        return {
-            discountedPrice: discountedPrice.toFixed(2),
-            calculatedTax,
-        };
-    };
-  
-  // Ürünlerin detaylarını hazırlayın (modalId === 0 için)
-  const detailedProducts = products.map((product) => {
-    const { discountedPrice, calculatedTax } = calculateValuesForProduct(product);
-    {/* 
-    // cha_cins'e göre sth_cins değerini ayarla
-    let sthCins = 0;
-    if (faturaBilgileri.cha_cinsi === 6) {
-        sthCins = 0;
-    } else if (faturaBilgileri.cha_cinsi === 7) {
-        sthCins = 1;
-    } else if (faturaBilgileri.cha_cinsi === 13) {
-        sthCins = 2;
-    } else if (faturaBilgileri.cha_cinsi === 29) {
-        sthCins = 12;
-    }
-    */}
-  
-    return {
-      stl_tarihi: faturaBilgileri.sth_tarih,
-      stl_belge_tarihi: faturaBilgileri.sth_tarih,
-      stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
-      stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
-      stl_Stok_kodu: addedProducts.Stok_Kod,
-      stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
-      stl_projekodu: faturaBilgileri.sth_proje_kodu,
-      stl_miktari: addedProducts.sth_miktar,
-      stl_teslim_miktari: 0,
-      sth_birim_pntr: addedProducts.sth_birim_pntr,
-      stl_cagrilabilir_fl: 1,
-      stl_talep_eden: faturaBilgileri.personelListesi,
-      stl_depo_no : faturaBilgileri.kaynakDepo,
-      sth_aciklama: addedProducts.aciklama,
-      stl_birim_pntr: addedProducts.stl_birim_pntr,
-      stl_harekettipi: addedProducts.stl_harekettipi,
-    };
-  });
-  
-    // Evrakları ve hizmetleri modalId değerine göre kaydet
-    let documents = [];
-  
-    // Eğer modalId === 0 olan ürünler varsa, sth alanlarıyla kaydet
-    if (products.length > 0) {
-        const productPayload = {
-          stl_tarihi: faturaBilgileri.sth_tarih,
-          stl_belge_tarihi: faturaBilgileri.sth_tarih,
-          stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
-          stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
-          stl_Stok_kodu: addedProducts.Stok_Kod,
-          stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
-          stl_projekodu: faturaBilgileri.sth_proje_kodu,
-          stl_miktari: addedProducts.sth_miktar,
-          stl_teslim_miktari: 0,
-          sth_birim_pntr: addedProducts.sth_birim_pntr,
-          stl_cagrilabilir_fl: 1,
-          stl_talep_eden: faturaBilgileri.personelListesi,
-          stl_depo_no : faturaBilgileri.kaynakDepo,
-          sth_aciklama: addedProducts.aciklama,
-          stl_birim_pntr: addedProducts.stl_birim_pntr,
-          stl_harekettipi: addedProducts.stl_harekettipi,
-          evrak_aciklamalari: formatExplanations(),
-        };
-        documents.push(productPayload);
-    }
-  
-    // Eğer modalId !== 0 olan hizmetler varsa, her hizmet için ayrı bir payload oluşturun
-    if (services.length > 0) {
-        services.forEach(service => {
-            const kasaHizmetValue = service.modalId === 1 ? 3 : (service.modalId === 2 ? 5 : 0);
-            const servicePayload = {
+    const jsonPayload = {
+      Mikro: {
+        FirmaKodu: authData.FirmaKodu,
+        CalismaYili: authData.CalismaYili,
+        ApiKey: authData.ApiKey,
+        KullaniciKodu: authData.KullaniciKodu,
+        Sifre: authData.Sifre,
+        FirmaNo: authData.FirmaNo,
+        SubeNo: authData.SubeNo,
+        evraklar: [
+          {
+            evrak_aciklamalari: formatExplanations(),
+            satirlar: addedProducts.map((product) => ({
               stl_tarihi: faturaBilgileri.sth_tarih,
               stl_belge_tarihi: faturaBilgileri.sth_tarih,
               stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
               stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
-              stl_Stok_kodu: addedProducts.Stok_Kod,
+              stl_Stok_kodu: product.Stok_Kod,
               stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
               stl_projekodu: faturaBilgileri.sth_proje_kodu,
-              stl_miktari: addedProducts.sth_miktar,
+              stl_miktari: product.sth_miktar,
               stl_teslim_miktari: 0,
-              sth_birim_pntr: addedProducts.sth_birim_pntr,
+              stl_birim_pntr: product.sth_birim_pntr,
               stl_cagrilabilir_fl: 1,
-              stl_talep_eden: faturaBilgileri.personelListesi,
+              stl_talep_eden: faturaBilgileri.stl_talep_eden,
               stl_depo_no : faturaBilgileri.kaynakDepo,
-              sth_aciklama: addedProducts.aciklama,
-              stl_birim_pntr: addedProducts.stl_birim_pntr,
-              stl_harekettipi: addedProducts.stl_harekettipi,
-            };
-            documents.push(servicePayload);
-        });
-    }
-  
-    // API çağrısı yapmak için toplu payload
-    const finalPayload = {
-        Mikro: {
-            FirmaKodu: authData.FirmaKodu,
-            CalismaYili: authData.CalismaYili,
-            ApiKey: authData.ApiKey,
-            KullaniciKodu: authData.KullaniciKodu,
-            Sifre: authData.Sifre,
-            evraklar: documents,
-        }
+              stl_aciklama: product.aciklama,
+              stl_harekettipi: product.modalId,
+            })),
+          },
+        ],
+      },
     };
   
-    console.log("Gönderilecek JSON Payload:", JSON.stringify(finalPayload, null, 2));
+    console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
   
     try {
-        const response = await axiosLink.post(apiURL, finalPayload);
-        const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
+      const response = await axiosLink.post(apiURL, jsonPayload);
+      console.log("apiURL", response);
+      const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
   
-        if (StatusCode == 200) {
-          Alert.alert(
-              "Başarılı",
-              "Veriler başarıyla kaydedildi.",
-              [
-                  {
-                      text: "Tamam",
-                      onPress: () => {
-                        navigation.replace('SatinAlmaTalepFisi');
-                      }
-                  }
-              ],
-            
-          );
-        } else {
-          Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
-        }
+      if (StatusCode === 200) {
+        Alert.alert(
+            "Başarılı",
+            "Veriler başarıyla kaydedildi.",
+            [
+                {
+                    text: "Tamam",
+                    onPress: () => {
+                      //navigation.replace('SatisIrsaliyesi');
+                    }
+                }
+            ],
+          
+        );
+    } else {
+        Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
+      }
+      console.log("apiURL", response);
+      //console.log(response.data);
     } catch (error) {
-        Alert.alert('Hata', 'API ile veri kaydedilirken bir sorun oluştu: ' + error.message);
-    }finally {
+      console.error("Error:", error.response ? error.response.data : error.message);
+      Alert.alert("Hata", "Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
       setLoading(false); 
     }
   };
 
 
-  
   return (
     <View style={MainStyles.container}>
       <FlatList
@@ -322,7 +228,7 @@ const calculateTotalQuantity = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.Stok_Kod}
       />
-      {/* Apiye Giden Değerler 
+      {/* Apiye Giden Değerler */}
          <View style={MainStyles.faturaBilgileriContainer}>
           <Text style={MainStyles.faturaBilgileriText}>sth_tarih: {faturaBilgileri.sth_tarih}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_evrakno_seri: {faturaBilgileri.sth_evrakno_seri}</Text>

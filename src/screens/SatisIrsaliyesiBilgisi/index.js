@@ -1283,7 +1283,7 @@ const SatisIrsaliyesiBilgisi = () => {
                 title="Son Kaydedilen Evraklar"
                 onClose={() => handleClose()}
               />
-              <View style={MainStyles.modalContent}>
+              <View style={MainStyles.modalContentSonKaydedilen}>
                 {loading ? (
                   <FastImage
                   style={MainStyles.loadingGif}

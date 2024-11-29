@@ -298,7 +298,7 @@ const SatinAlmaTalepFisiBilgi = () => {
     setSth_personel_adi(item.Adi);
     setFaturaBilgileri(prevState => ({
       ...prevState,
-      personelListesi: item.No,
+      stl_talep_eden: item.No,
     }));
     setIsPersonelModalVisible(false);
   };
@@ -572,7 +572,7 @@ const SatinAlmaTalepFisiBilgi = () => {
                 title="Son Kaydedilen Evraklar"
                 onClose={() => handleClose()}
               />
-              <View style={MainStyles.modalContent}>
+              <View style={MainStyles.modalContentSonKaydedilen}>
                 {loading ? (
                   <FastImage
                   style={MainStyles.loadingGif}

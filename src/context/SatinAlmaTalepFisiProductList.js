@@ -106,31 +106,23 @@ const SatinAlmaTalepFisiProductList = () => {
   
   const handleItemClick = (item) => {
     const existingProductCount = addedProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
-
-    let modalId;
-    if (searchCriteria === 'Hizmet') {
-      modalId = 1;
-    } else if (searchCriteria === 'Masraf') {
-      modalId = 2;
-    } else if (searchCriteria === 'Demirbas') {
-      modalId = 3;
-    } else {
-      modalId = 0;
-    }
-
+  
+    // HareketTipi değerini modalId olarak doğrudan kullanıyoruz
+    const modalId = item.HareketTipi || 0;
+  
     setSelectedProduct({
       ...item,
       sth_vergi_pntr: item.sth_vergi_pntr, // Değeri ekliyoruz
+      modalId, // HareketTipi'ni modalId olarak ekliyoruz
     });
-
-    setSelectedProduct(item);
-
-    if (searchCriteria === 'Hizmet' || searchCriteria === 'Masraf' || searchCriteria === 'Demirbas') {
-      setModalVisible(true); // SatisFaturasiProductModal göster
+  
+    if (modalId !== 0) {
+      setModalVisible(true); // Özel modal göster
     } else {
-      setProductModalVisible(true); // ProductModal göster
+      setProductModalVisible(true); // Genel modal göster
     }
   };
+  
 
  
 
@@ -330,17 +322,10 @@ const SatinAlmaTalepFisiProductList = () => {
           )}
       <SatinAlmaTalepFisiProductModal
         selectedProduct={selectedProduct}
-        modalVisible={productModalVisible}
-        setModalVisible={setProductModalVisible}
-        setAddedProducts={setAddedProducts}
-      />
-
-      <SatinAlmaTalepFisiProductModal
-        selectedProduct={selectedProduct}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setAddedProducts={setAddedProducts}
-        modalId={searchCriteria === 'Hizmet' ? 1 : searchCriteria === 'Masraf' ? 2  : searchCriteria === 'Demirbas' ? 3 : 0}
+        modalId={selectedProduct?.modalId }
       />
     </View>
   );

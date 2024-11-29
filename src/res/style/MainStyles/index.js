@@ -937,6 +937,12 @@ export const MainStyles = {
       paddingHorizontal: 10,
       paddingVertical: 10,
     },
+    modalContentSonKaydedilen: {
+      width: '100%',
+      height: '100%',
+
+      backgroundColor: colors.white,
+    },
     modalCariDetayContent:{
       height: '95%',
       marginTop: 40,

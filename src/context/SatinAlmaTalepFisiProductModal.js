@@ -38,6 +38,7 @@ const SatinAlmaTalepFisiProductModal = ({
   const [Carpan, setCarpan] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
   const [toplam_vergi, setToplam_vergi] = useState();
+  const [HareketTipi, setHareketTipi] = useState();
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [loading, setLoading] = useState(false); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
@@ -71,10 +72,12 @@ const SatinAlmaTalepFisiProductModal = ({
 
 
   useEffect(() => {
-    if (modalVisible && selectedProduct && modalId !== 1 && modalId !== 2 && modalId !== 3) {
+    console.log('aa', modalId)
+    if (modalVisible && selectedProduct && modalId === 0 ) {
       const fetchSatisFiyati = async () => {
         const stok = selectedProduct?.Stok_Kod ;
         const apiUrl = `/Api/Stok/StokSatisFiyatiSatinAlma?stok=${stok}`;
+        console.log(apiUrl);
         
         try {
           const response = await axiosLinkMain.get(apiUrl);
@@ -349,11 +352,11 @@ const validateQuantity = (quantity) => {
        <View style={MainStyles.modalContainerProduct}>
         <View style={MainStyles.modalContainerProductName}>
           <Text style={MainStyles.modalStokAd}>Stok Kod:{selectedProduct?.Stok_Kod} </Text>
-          <Text style={MainStyles.modalStokKodu}>Stok Adı:{selectedProduct?.Stok_Ad}</Text>
+          <Text style={MainStyles.modalStokAd}>Stok Adı:{selectedProduct?.Stok_Ad} </Text>
         </View>
 
         <View style={MainStyles.productModalContainer}>
-  {modalId !== 1 && modalId !== 2 && modalId !== 3 ? ( // "Birim" ve Picker alanını kontrol eder
+        {modalId === 0 ? ( // "Birim" ve Picker alanını kontrol eder
     <View style={MainStyles.inputBirimGroup}>
       <Text style={MainStyles.inputtip}>Birim:</Text>
       <View style={MainStyles.productModalPickerContainer}>
@@ -428,7 +431,7 @@ const validateQuantity = (quantity) => {
     </View>
   ) : null}
 
-            <View style={modalId === 1 || modalId === 2 || modalId === 3 ? MainStyles.inputBirimOzelGroup : MainStyles.inputBirimGroup}>
+            <View style={modalId === 0  ? MainStyles.inputBirimGroup : MainStyles.inputBirimOzelGroup}>
               <Text style={MainStyles.inputtip}>Miktar:</Text>
               <TextInput
                 style={MainStyles.productModalMiktarInput}
