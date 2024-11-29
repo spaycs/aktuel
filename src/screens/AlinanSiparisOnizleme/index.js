@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditAlinanSiparisProductModal from '../../context/EditAlinanSiparisProductModal';
 import CustomHeader from '../../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 const AlinanSiparisOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
   const { defaults } = useAuthDefault();
@@ -701,7 +702,10 @@ useEffect(() => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

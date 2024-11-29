@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Grid, Row, Col } from 'react-native-easy-grid';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
 import { useAuthDefault } from '../../components/DefaultUser';
+import FastImage from 'react-native-fast-image';
 
 const StokDepoDurum = ({ navigation, route }) => {
   const { Stok_Kod } = route.params;
@@ -34,12 +35,16 @@ const StokDepoDurum = ({ navigation, route }) => {
   const closeModal = () => {
     navigation.goBack(); // Modalı kapat
   };
+  
 
   return (
-    <View >
+    <View style={styles.container}>
       <View style={MainStyles.marginTop10}>
         {loading ? (
-          <ActivityIndicator size="large" color={colors.primary} />
+            <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         ) : (
           <>
             {depoData.length > 0 ? (
@@ -47,28 +52,28 @@ const StokDepoDurum = ({ navigation, route }) => {
                 <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
                   <Grid>
                     {/* Başlık Satırı */}
-                    <Row style={MainStyles.tableHeader}>
-                      <Col style={[MainStyles.tableCell, { width: 100 }]}>
-                        <Text style={MainStyles.colTitle}>Depo No</Text>
+                    <Row style={styles.tableHeader}>
+                      <Col style={[styles.tableCell, { width: 100 }]}>
+                        <Text style={styles.colTitle}>Depo No</Text>
                       </Col>
-                      <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                        <Text style={MainStyles.colTitle}>Depo Adı</Text>
+                      <Col style={[styles.tableCell, { width: 170 }]}>
+                        <Text style={styles.colTitle}>Depo Adı</Text>
                       </Col>
-                      <Col style={[MainStyles.tableCell, { width: 100 }]}>
-                        <Text style={MainStyles.colTitle}>Depo Miktar</Text>
+                      <Col style={[styles.tableCell, { width: 110 }]}>
+                        <Text style={styles.colTitle}>Depo Miktar</Text>
                       </Col>
                     </Row>
                     {/* Dinamik Satırlar */}
                     {depoData.map((item, index) => (
-                      <Row key={index} style={MainStyles.tableRow}>
-                        <Col style={[MainStyles.tableCell, { width: 100 }]}>
-                          <Text style={MainStyles.colText}>{item.dep_no}</Text>
+                      <Row key={index} style={styles.tableRow}>
+                        <Col style={[styles.tableCell, { width: 100 }]}>
+                          <Text style={styles.colText}>{item.dep_no}</Text>
                         </Col>
-                        <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                          <Text style={MainStyles.colText}>{item.dep_adi}</Text>
+                        <Col style={[styles.tableCell, { width: 170 }]}>
+                          <Text style={styles.colText}>{item.dep_adi}</Text>
                         </Col>
-                        <Col style={[MainStyles.tableCell, { width: 100 }]}>
-                          <Text style={MainStyles.colText}>{item.DepoMiktarı}</Text>
+                        <Col style={[styles.tableCell, { width: 110 }]}>
+                          <Text style={styles.colText}>{item.DepoMiktarı}</Text>
                         </Col>
                       </Row>
                     ))}
@@ -86,5 +91,37 @@ const StokDepoDurum = ({ navigation, route }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 2,
+    marginTop: 2,
+    backgroundColor: colors.white
+  },
+  tableHeader: {
+    backgroundColor: '#f3f3f3', // Başlık arka plan rengi
+    height: 35,
+
+  },
+  tableCell: {
+    borderWidth: 1, // Hücreler arasına dikey çizgi ekler
+    borderColor: colors.textInputBg, // Hücre dikey çizgi rengi
+    justifyContent: 'center', // Hücrelerin içeriğini ortalamak
+    paddingHorizontal: 5,
+  },
+  colTitle:{
+    fontSize: 11,
+  },
+  colText:{
+    fontSize: 9,
+  },
+  tableRow: {
+    backgroundColor: 'white',
+    borderColor: colors.textInputBg,
+    height: 30,
+  },
+
+});
 
 export default StokDepoDurum;

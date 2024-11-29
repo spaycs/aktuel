@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../components/userDetail/Id';
+import FastImage from 'react-native-fast-image';
+import { MainStyles } from '../../res/style';
 
 const Loading = ({ navigation }) => {
   const { updateAuthData } = useAuth();
@@ -49,8 +51,10 @@ const Loading = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Uygulama Başlatılıyor...</Text>
+       <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
       </View>
     );
   }

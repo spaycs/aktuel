@@ -9,6 +9,7 @@ import EditDepolarArasiProductModal from '../../context/EditDepolarArasiProductM
 import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
 import CustomHeader from '../../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const SarfMalzemeOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -366,7 +367,10 @@ const calculateTotalQuantity = () => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

@@ -9,6 +9,7 @@ import { useAuth } from '../../components/userDetail/Id';
 import axiosLink from '../../utils/axios';
 import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const StokEklemeOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -145,7 +146,10 @@ const StokEklemeOnizleme = () => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

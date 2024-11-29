@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
 import CustomHeader from '../../components/CustomHeader';
 import EditSatinAlmaTalepFisiProductModal from '../../context/EditSatinAlmaTalepFisiProductModal';
+import FastImage from 'react-native-fast-image';
 
 const SatinAlmaTalepFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -148,11 +149,13 @@ const calculateTotalQuantity = () => {
     }
     setLoading(true);
     const apiURL = '/Api/apiMethods/SatinAlmaTalepKaydetV2';
+   
   
     // Ürünleri ve hizmetleri filtreleyin
-    const products = addedProducts.filter(product => product.modalId === 0);
-    const services = addedProducts.filter(product => product.modalId !== 0);
-  
+    const products = addedProducts.filter(product => faturaBilgileri.modalId === 0);
+    const services = addedProducts.filter(product => faturaBilgileri.modalId !== 0);
+    console.log(products);
+    console.log(services);
     // İndirim ve vergi hesaplamalarını yap
     const calculateValuesForProduct = (product) => {
         const discountRates = [
@@ -181,7 +184,7 @@ const calculateTotalQuantity = () => {
   // Ürünlerin detaylarını hazırlayın (modalId === 0 için)
   const detailedProducts = products.map((product) => {
     const { discountedPrice, calculatedTax } = calculateValuesForProduct(product);
-    
+    {/* 
     // cha_cins'e göre sth_cins değerini ayarla
     let sthCins = 0;
     if (faturaBilgileri.cha_cinsi === 6) {
@@ -193,24 +196,25 @@ const calculateTotalQuantity = () => {
     } else if (faturaBilgileri.cha_cinsi === 29) {
         sthCins = 12;
     }
+    */}
   
     return {
       stl_tarihi: faturaBilgileri.sth_tarih,
       stl_belge_tarihi: faturaBilgileri.sth_tarih,
       stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
       stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
-      stl_Stok_kodu: product.Stok_Kod,
+      stl_Stok_kodu: addedProducts.Stok_Kod,
       stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
       stl_projekodu: faturaBilgileri.sth_proje_kodu,
-      stl_miktari: product.sth_miktar,
+      stl_miktari: addedProducts.sth_miktar,
       stl_teslim_miktari: 0,
-      sth_birim_pntr: product.sth_birim_pntr,
+      sth_birim_pntr: addedProducts.sth_birim_pntr,
       stl_cagrilabilir_fl: 1,
       stl_talep_eden: faturaBilgileri.personelListesi,
       stl_depo_no : faturaBilgileri.kaynakDepo,
-      sth_aciklama: product.aciklama,
-      stl_birim_pntr: product.stl_birim_pntr,
-      stl_harekettipi: product.stl_harekettipi,
+      sth_aciklama: addedProducts.aciklama,
+      stl_birim_pntr: addedProducts.stl_birim_pntr,
+      stl_harekettipi: addedProducts.stl_harekettipi,
     };
   });
   
@@ -224,18 +228,18 @@ const calculateTotalQuantity = () => {
           stl_belge_tarihi: faturaBilgileri.sth_tarih,
           stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
           stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
-          stl_Stok_kodu: product.Stok_Kod,
+          stl_Stok_kodu: addedProducts.Stok_Kod,
           stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
           stl_projekodu: faturaBilgileri.sth_proje_kodu,
-          stl_miktari: product.sth_miktar,
+          stl_miktari: addedProducts.sth_miktar,
           stl_teslim_miktari: 0,
-          sth_birim_pntr: product.sth_birim_pntr,
+          sth_birim_pntr: addedProducts.sth_birim_pntr,
           stl_cagrilabilir_fl: 1,
           stl_talep_eden: faturaBilgileri.personelListesi,
           stl_depo_no : faturaBilgileri.kaynakDepo,
-          sth_aciklama: product.aciklama,
-          stl_birim_pntr: product.stl_birim_pntr,
-          stl_harekettipi: product.stl_harekettipi,
+          sth_aciklama: addedProducts.aciklama,
+          stl_birim_pntr: addedProducts.stl_birim_pntr,
+          stl_harekettipi: addedProducts.stl_harekettipi,
           evrak_aciklamalari: formatExplanations(),
         };
         documents.push(productPayload);
@@ -250,18 +254,18 @@ const calculateTotalQuantity = () => {
               stl_belge_tarihi: faturaBilgileri.sth_tarih,
               stl_teslim_tarihi: faturaBilgileri.stl_teslim_tarihi,
               stl_evrak_seri: faturaBilgileri.sth_evrakno_seri,
-              stl_Stok_kodu: product.Stok_Kod,
+              stl_Stok_kodu: addedProducts.Stok_Kod,
               stl_Sor_Merk : faturaBilgileri.sth_stok_srm_merkezi,
               stl_projekodu: faturaBilgileri.sth_proje_kodu,
-              stl_miktari: product.sth_miktar,
+              stl_miktari: addedProducts.sth_miktar,
               stl_teslim_miktari: 0,
-              sth_birim_pntr: product.sth_birim_pntr,
+              sth_birim_pntr: addedProducts.sth_birim_pntr,
               stl_cagrilabilir_fl: 1,
               stl_talep_eden: faturaBilgileri.personelListesi,
               stl_depo_no : faturaBilgileri.kaynakDepo,
-              sth_aciklama: product.aciklama,
-              stl_birim_pntr: product.stl_birim_pntr,
-              stl_harekettipi: product.stl_harekettipi,
+              sth_aciklama: addedProducts.aciklama,
+              stl_birim_pntr: addedProducts.stl_birim_pntr,
+              stl_harekettipi: addedProducts.stl_harekettipi,
             };
             documents.push(servicePayload);
         });
@@ -411,7 +415,10 @@ const calculateTotalQuantity = () => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

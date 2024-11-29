@@ -197,7 +197,7 @@ const SatinAlmaTalepFisiBilgi = () => {
         setSth_evrakno_seri(satisIrsaliyeSerino);
   
         if (satisIrsaliyeSerino.trim()) {
-          const responseSira = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${satisIrsaliyeSerino}&tip=IRSALIYE`);
+          const responseSira = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${satisIrsaliyeSerino}&tip=SATINALMATALEP`);
           const { Sira } = responseSira.data;
           setSth_evrakno_sira(Sira.toString());
         }
@@ -229,7 +229,7 @@ const SatinAlmaTalepFisiBilgi = () => {
   const fetchEvrakData = async () => {
     setLoading(true);
     try {
-      const response = await axiosLinkMain.get(`/Api/StokHareketi/IrsaliyeGetir?seri=${sth_evrakno_seri}&tip=1&cins=5`);
+      const response = await axiosLinkMain.get(`/Api/Evrak/SatinAlmaTalepGetir?seri=${sth_evrakno_seri}`);
       console.log(response);
       setData(response.data); 
 
@@ -244,7 +244,7 @@ const SatinAlmaTalepFisiBilgi = () => {
   const handlePdfClick = async (Seri, Sıra) => {
     try {
       // API'ye isteği yaparken evrakno_seri ve evrakno_sira değerlerini gönderiyoruz
-      const response = await axiosLinkMain.get(`/Api/PDF/IrsaliyePDF?a=${Seri}&b=${Sıra}`);
+      const response = await axiosLinkMain.get(`/Api/PDF/SatinalmaTalepPDF?a=${Seri}&b=${Sıra}`);
       console.log('API Yanıtı:', response.data); // Yanıtı kontrol etmek için 
   
       const pdfPath = response.data; 

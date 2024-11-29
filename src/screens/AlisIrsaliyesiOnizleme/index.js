@@ -631,7 +631,10 @@ const AlisIrsaliyesiOnizleme = () => {
      {/* Kaydet İptal Seçim */}
      {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

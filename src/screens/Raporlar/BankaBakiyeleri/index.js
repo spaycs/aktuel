@@ -24,42 +24,8 @@ const BankaBakiyeleri = () => {
   const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-
-  const [filters, setFilters] = useState({
-    Kod: '',
-    Ad: '',
-    Sube: '',
-    HesapNo: '',
-    Bakiye: '',
-  });
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'decimal',
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }).format(price);
-    };
-
-  const handleFilterChange = (field, value) => {
-    setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
-  };
-
-  const filterData = (data) => {
-    return data.filter(item => {
-      // Her sütun için filtrelemeyi sadece string veri üzerinde yapıyoruz
-      const itemToplam = item.Toplam ? item.Toplam.toString() : '';
-  
-      return (
-        (!filters.Kod || (item.Kod && item.Kod.toLowerCase().includes(filters.Kod.toLowerCase()))) &&
-        (!filters.Ad || (item.Ad && item.Ad.toLowerCase().includes(filters.Ad.toLowerCase()))) &&
-        (!filters.Sube || (item.Sube && item.Sube.toLowerCase().includes(filters.Sube.toLowerCase()))) &&
-        (!filters.HesapNo || (item.HesapNo && item.HesapNo.toLowerCase().includes(filters.HesapNo.toLowerCase()))) &&
-        (!filters.Bakiye || (item.Bakiye && item.Bakiye.toLowerCase().includes(filters.Bakiye.toLowerCase())))
-      );
-    });
-  };
-  
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Cari seçimi fonksiyonu
   const handleCariSelect = (selectedCari) => {
@@ -74,6 +40,7 @@ const BankaBakiyeleri = () => {
     try {
       const response = await axiosLinkMain.get(`/Api/Raporlar/BankaBakiyeleri`);
       setData(response.data);
+      setFilteredData(response.data);
     } catch (error) {
       setError('Veri çekme hatası: ' + error.message);
     } finally {
@@ -82,36 +49,74 @@ const BankaBakiyeleri = () => {
   };
 
   useEffect(() => {
-    const now = new Date();
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    setStartDate(firstDayOfMonth);
+    fetchData();
   }, []);
 
-  // Tarih değişimini yönetme fonksiyonları
-  const handleStartDateChange = (event, selectedDate) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) setStartDate(selectedDate);
+  const renderHeader = () => {
+    if (data.length === 0) return null; // Eğer veri yoksa başlık oluşturma
+    const headers = Object.keys(data[0]); // İlk öğeden başlıkları al
+    return (
+      <View style={[styles.row, styles.headerRow]}>
+        {headers.map((header, index) => (
+          <Text key={index} style={styles.cell}>
+            {header.toUpperCase()} {/* Başlıkları büyük harfle yaz */}
+          </Text>
+        ))}
+      </View>
+    );
   };
 
-  const handleEndDateChange = (event, selectedDate) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) setEndDate(selectedDate);
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.row}>
+        {Object.values(item).map((value, colIndex) => (
+          <Text key={colIndex} style={styles.cell}>
+            {value === null || value === undefined
+              ? '-' // Boş değerler için gösterim
+              : typeof value === 'number'
+              ? new Intl.NumberFormat('tr-TR', {
+                  minimumFractionDigits: 3,
+                  maximumFractionDigits: 3,
+                }).format(value) // Binlik ayracı ve 3 ondalık
+              : value}
+          </Text>
+        ))}
+      </View>
+    );
   };
 
-  // Tarih formatlama
-  const formatDate = (date) => {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${month}-${day}-${year}`;
+  // Filtreleme işlevi
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term.trim() === '') {
+      setFilteredData(data); // Boşsa tüm veriyi göster
+    } else {
+      const normalizedTerm = term.toLowerCase();
+      const filtered = data.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(normalizedTerm)
+        )
+      );
+      setFilteredData(filtered);
+    }
   };
+
 
   return (
     <View style={styles.container}>
 
-      <TouchableOpacity onPress={fetchData} style={styles.button}>
-        <Text style={styles.buttonText}>Listele</Text>
-      </TouchableOpacity>
+        {/* Filtreleme Alanı */}
+        <View style={styles.filterRow}>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+      </View>
 
       {loading ? (
         <FastImage
@@ -123,109 +128,21 @@ const BankaBakiyeleri = () => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
-        <ScrollView style={styles.scrollView}>
-        <ScrollView horizontal={true} style={styles.horizontalScroll}>
-        <Grid>
-          {/* Header Row */}
-          <Row style={styles.tableHeader}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <Text style={styles.colTitle}>Kod</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Ad</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Sube</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>HesapNo</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Bakiye</Text>
-            </Col>
-          </Row>
-      
-          {/* Filter Row */}
-          <Row style={styles.tableHeaderFiltre}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Kod}
-                  onChangeText={(text) => handleFilterChange('Kod', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Ad}
-                  onChangeText={(text) => handleFilterChange('Ad', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Sube}
-                  onChangeText={(text) => handleFilterChange('Sube', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.HesapNo}
-                  onChangeText={(text) => handleFilterChange('HesapNo', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Bakiye}
-                  onChangeText={(text) => handleFilterChange('Bakiye', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            
-          </Row>
-      
-          {/* Data Rows */}
-          {filterData(data).map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => setSelectedRowIndex(index)}>
-            <Row style={[styles.tableRow, selectedRowIndex === index && styles.selectedRow]}>
-              <Col style={[styles.tableCell, { width: 120 }]}>
-                <Text style={styles.cellText}>{item.Kod}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Ad}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Sube}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.HesapNo}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{formatPrice(item.Bakiye)}</Text>
-              </Col>
-            </Row>
-            </TouchableOpacity>
-          ))}
-      
-        </Grid>
+        <View style={styles.container}>
+        <ScrollView horizontal>
+        <View>
+          {/* Dinamik Başlık */}
+          {renderHeader()}
+
+          {/* FlatList ile Dikey Liste */}
+          <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
       </ScrollView>
-      </ScrollView>
+      </View>
       
       ) : null}
 
@@ -246,37 +163,74 @@ const styles = StyleSheet.create({
     marginTop: 2,
     backgroundColor: colors.white
   },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+    fontSize: 12,
+    marginBottom: 5,
+   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    padding: 1,
   },
-  input: {
+  headerRow: {
+    backgroundColor: '#f3f3f3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  cell: {
+    width: 125,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    textAlign: 'center',
+    fontSize: 10,
+  },
+  filterRow: {
+    marginRight: 5,
+  },
+  filterInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 8,
+    fontSize: 12,
+  },
+  inputCariKodu: {
     flex: 1,
     borderWidth: 1,
     borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 10,
+    fontSize: 12,
     color: colors.black,
-    backgroundColor: colors.white,
-    fontSize: 13,
+    height: 40,
   },
   button: {
     backgroundColor: colors.red,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 5,
   },
   buttonText: {
     color: '#fff',
     fontSize: 12,
   },
   buttonSearch: {
-    marginLeft: 15,
+    marginLeft: 10,
     padding: 17,
     borderRadius: 10,
     backgroundColor: colors.red,
+    justifyContent: 'center',
+    height: 40,
   },
   datePickerContainer: {
     marginRight: 10,
@@ -293,7 +247,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: colors.white,
-    width: '%50'
   },
   dateText: {
     fontSize: 13,
@@ -301,121 +254,18 @@ const styles = StyleSheet.create({
   loading: {
     marginTop: 20,
   },
-  loadingGif: {
-    width: 70,
-    height: 50,
-    alignSelf: 'center',
-    marginTop: 10,
-  },
   errorText: {
     color: 'red',
     marginVertical: 10,
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  itemText: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  itemValue: {
-    fontWeight: 'bold',
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-  },
-  horizontalScroll: {
-    marginTop: 20,
+    fontSize: 12,
+    textAlign: 'center',
   },
   noDataText: {
     marginTop: 20,
     fontSize: 16,
     color: 'gray',
   },
-  tableHeader: {
-    backgroundColor: '#f3f3f3', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    maxHeight: 50 
-  },
-  tableHeaderFiltre: {
-    backgroundColor: '#f2f2f2', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 30,
-  },
-  tableRow: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 40,
-  },
-  tableCell: {
-    borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
-    borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-    justifyContent: 'flex-end', // Hücrelerin içeriğini ortalamak
-    paddingHorizontal: 10,
-    
-  },
-  tableToplamCell: {
-    justifyContent: 'flex-end', // Hücrelerin içeriğini ortalamak
-    paddingLeft: 10,
-  },
-  cellText: {
-    flex: 1,
-    fontSize: 10,
-    flexWrap: 'wrap', // Metni birden fazla satıra sarmasına izin verir
-    textAlign: 'left', // Metin hizalamasını sol yapar
-    
-  },
-  inputStyle:{
-    borderRadius: 10,
-    textAlign: 'left',
-    marginBottom: 12,
-    backgroundColor: colors.textInputBg,
-  },
-  textStyle:{
-    fontSize: 13,
-    color: colors.black,
-    textAlign: 'left',
-  },
-  textInputStyle: {
-    width: 110, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  textInputStyle2: {
-    width: 90, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  iconStyle: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  iconStyle2: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  colTitle:{
-    paddingVertical: 15,
-    fontSize: 12,
-  },
-  selectedRow: {
-    // Seçilen satırın arka plan rengi
-    backgroundColor: '#e0f7fa',
-  },
+ 
 });
 
 export default BankaBakiyeleri;

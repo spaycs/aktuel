@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAuthDefault } from '../../components/DefaultUser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const SatisIrsaliyesiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -669,7 +670,10 @@ const SatisIrsaliyesiOnizleme = () => {
      {/* Kaydet İptal Seçim */}
      {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

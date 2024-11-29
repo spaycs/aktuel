@@ -22,78 +22,8 @@ const TedarikciBazindaSatisKarsilama = () => {
 
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-
-  const [filters, setFilters] = useState({
-    Tedarikci: '',
-    GçenYıl: '',
-    BuYıl: '',
-    buyume: '',
- 
-  });
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'decimal',
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }).format(price);
-    };
-
-  const handleFilterChange = (field, value) => {
-    setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
-  };
-
-  const filterData = (data) => {
-    return data.filter(item => {
-      // Her sütun için filtrelemeyi sadece string veri üzerinde yapıyoruz
-      const itemToplam = item.Toplam ? item.Toplam.toString() : '';
-  
-      return (
-        (!filters.Tedarikci || (item.Tedarikci && item.Tedarikci.toLowerCase().includes(filters.Tedarikci.toLowerCase()))) &&
-        (!filters.GçenYıl || (item.GçenYıl && item.GçenYıl.toString().includes(filters.GçenYıl))) &&
-        (!filters.BuYıl || (item.BuYıl && item.BuYıl.toString().includes(filters.BuYıl))) &&
-        (!filters.buyume || (item.buyume && item.buyume.toString().includes(filters.buyume))) 
-       
-      );
-    });
-  };
-  
-
-  const calculateTotals = (data) => {
-    const totals = {
-      Tedarikci: 0,
-      GçenYıl: 0,
-      BuYıl: 0,
-      buyume: 0,
-      TOPLAMBAKİYE: 0,
-      BAKİYETİPİ: 0,
-      C30_GÜN: 0,
-      C60_GÜN: 0,
-      C90_GÜN: 0,
-      C120_GÜN: 0,
-      C120_GÜNDEN_FAZLA: 0,
-      VADE: 0,
-    };
-
-    data.forEach(item => {
-      totals.Tedarikci += parseFloat(item.Tedarikci) || 0;
-      totals.GçenYıl += parseFloat(item.GçenYıl) || 0;
-      totals.BuYıl += parseFloat(item.BuYıl) || 0;
-      totals.buyume += parseFloat(item.buyume) || 0;
-      totals.TOPLAMBAKİYE += parseFloat(item.TOPLAMBAKİYE) || 0;
-      totals.BAKİYETİPİ += parseFloat(item.BAKİYETİPİ) || 0;
-      totals.C30_GÜN += parseFloat(item.C30_GÜN) || 0;
-      totals.C60_GÜN += parseFloat(item.C60_GÜN) || 0;
-      totals.C90_GÜN += parseFloat(item.C90_GÜN) || 0;
-      totals.C120_GÜN += parseFloat(item.C120_GÜN) || 0;
-      totals.C120_GÜNDEN_FAZLA += parseFloat(item.C120_GÜNDEN_FAZLA) || 0;
-      totals.VADE += parseFloat(item.VADE) || 0;
-    });
-
-    return totals;
-  };
-
-  const totalRow = data ? calculateTotals(data) : null;
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Cari seçimi fonksiyonu
   const handleCariSelect = (selectedCari) => {
@@ -124,6 +54,7 @@ const TedarikciBazindaSatisKarsilama = () => {
       // Verinin beklenen formatta olup olmadığını kontrol edin
       if (Array.isArray(response.data)) {
         setData(response.data);
+        setFilteredData(response.data);
       } else {
         console.warn('API response is not an array:', response.data);
       }
@@ -134,8 +65,61 @@ const TedarikciBazindaSatisKarsilama = () => {
     }
   };
 
+  const renderHeader = () => {
+    if (data.length === 0) return null; // Eğer veri yoksa başlık oluşturma
+    const headers = Object.keys(data[0]); // İlk öğeden başlıkları al
+    return (
+      <View style={[styles.row, styles.headerRow]}>
+        {headers.map((header, index) => (
+          <Text key={index} style={styles.cell}>
+            {header.toUpperCase()} {/* Başlıkları büyük harfle yaz */}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.row}>
+        {Object.values(item).map((value, colIndex) => (
+          <Text key={colIndex} style={styles.cell}>
+            {value === null || value === undefined
+              ? '-' // Boş değerler için gösterim
+              : typeof value === 'number'
+              ? new Intl.NumberFormat('tr-TR', {
+                  minimumFractionDigits: 3,
+                  maximumFractionDigits: 3,
+                }).format(value) // Binlik ayracı ve 3 ondalık
+              : value}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
+  // Filtreleme işlevi
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term.trim() === '') {
+      setFilteredData(data); // Boşsa tüm veriyi göster
+    } else {
+      const normalizedTerm = term.toLowerCase();
+      const filtered = data.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(normalizedTerm)
+        )
+      );
+      setFilteredData(filtered);
+    }
+  };
+
+
   return (
     <ScrollView style={styles.container}>
+       <Text style={styles.pickerLabel}>Cari Seçimi</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.inputCariKodu}
@@ -151,6 +135,17 @@ const TedarikciBazindaSatisKarsilama = () => {
         </TouchableOpacity>
       </View>
 
+        {/* Filtreleme Alanı */}
+     <View style={styles.filterRow}>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+      </View>
+
       {loading ? (
        <FastImage
        style={MainStyles.loadingGif}
@@ -161,94 +156,21 @@ const TedarikciBazindaSatisKarsilama = () => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
-        <ScrollView style={styles.scrollView}>
-      <ScrollView horizontal={true} style={styles.horizontalScroll}>
-        <Grid>
-          {/* Header Row */}
-          <Row style={styles.tableHeader}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <Text style={styles.colTitle}>Tedarikçi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100}]}>
-              <Text style={styles.colTitle}>Geçen Yıl</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100}]}>
-              <Text style={styles.colTitle}>Bu Yıl</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100}]}>
-              <Text style={styles.colTitle}>Büyüme</Text>
-            </Col>
-          </Row>
-      
-          {/* Filter Row */}
-          <Row style={styles.tableHeaderFiltre}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Tedarikci}
-                  onChangeText={(text) => handleFilterChange('Tedarikci', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.GçenYıl}
-                  onChangeText={(text) => handleFilterChange('GçenYıl', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.BuYıl}
-                  onChangeText={(text) => handleFilterChange('BuYıl', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.buyume}
-                  onChangeText={(text) => handleFilterChange('buyume', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-           
-            {/* Diğer aylar için de aynı şekilde devam edin */}
-          </Row>
-      
-          {/* Data Rows */}
-          {filterData(data).map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => setSelectedRowIndex(index)}>
-            <Row style={[styles.tableRow, selectedRowIndex === index && styles.selectedRow]}>
-              <Col style={[styles.tableCell, { width: 120 }]}>
-                <Text style={styles.cellText}>{item.Tedarikci}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.GçenYıl}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{formatPrice(item.BuYıl)}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{formatPrice(item.buyume)}</Text>
-              </Col>
-            </Row>
-            </TouchableOpacity>
-          ))}
-      
-        </Grid>
+        <View style={styles.container}>
+        <ScrollView horizontal>
+        <View>
+          {/* Dinamik Başlık */}
+          {renderHeader()}
+
+          {/* FlatList ile Dikey Liste */}
+          <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
       </ScrollView>
-      </ScrollView>
+      </View>
       
       ) : null}
 
@@ -268,10 +190,46 @@ const styles = StyleSheet.create({
     marginTop: 2,
     backgroundColor: colors.white
   },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+    fontSize: 12,
+    marginBottom: 5,
+   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 1,
+  },
+  headerRow: {
+    backgroundColor: '#f3f3f3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  cell: {
+    width: 125,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    textAlign: 'center',
+    fontSize: 10,
+  },
+  filterRow: {
+    marginRight: 5,
+    marginTop: 10,
+  },
+  filterInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 8,
+    fontSize: 12,
   },
   inputCariKodu: {
     flex: 1,
@@ -279,227 +237,63 @@ const styles = StyleSheet.create({
     borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 10,
-    fontSize: 13,
+    fontSize: 12,
     color: colors.black,
+    height: 40,
   },
   button: {
     backgroundColor: colors.red,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-  },
-  buttonCariKodu: {
-    marginLeft: 10,
-    padding: 17,
-    borderRadius: 10,
-    backgroundColor: colors.red,
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    backgroundColor: colors.cardBackground,
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  headerContainer: {
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  subHeaderText: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-  balanceContainer: {
-    marginBottom: 10,
-  },
-  balanceLabel: {
-    fontSize: 16,
-    color: colors.primary,
-  },
-  balanceValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  monthlyContainer: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: 10,
-  },
-  monthItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 4,
-  },
-  monthLabel: {
-    fontSize: 14,
-    color: colors.primary,
-  },
-  monthValue: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 2,
-  },
-  headerText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.primary,
-    width: '50%',
-  },
-  valueText: {
-    fontSize: 14,
-    color: colors.secondary,
-    width: '50%',
-    textAlign: 'right',
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-  },
-  horizontalScroll: {
-    marginTop: 20,
-  },
-  noDataText: {
-    marginTop: 20,
-    fontSize: 16,
-    color: 'gray',
-  },
-  tableHeader: {
-    backgroundColor: '#f3f3f3', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    maxHeight: 50 
-  },
-  tableHeaderFiltre: {
-    backgroundColor: '#f2f2f2', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 30,
-  },
-  tableRow: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 40,
-  },
-  tableCell: {
-    borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
-    borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-    justifyContent: 'left', // Hücrelerin içeriğini ortalamak
-    paddingHorizontal: 10,
-    
-  },
-  tableToplamCell: {
-    justifyContent: 'left', // Hücrelerin içeriğini ortalamak
-    paddingLeft: 10,
-  },
-  cellText: {
-    flex: 1,
-    fontSize: 9,
-    flexWrap: 'wrap', // Metni birden fazla satıra sarmasına izin verir
-    textAlign: 'left', // Metin hizalamasını sol yapar
-    
-    
-  },
-  inputStyle:{
-    borderRadius: 10,
-    textAlign: 'left',
-    marginBottom: 12,
-    backgroundColor: colors.textInputBg,
-  },
-  textStyle:{
-    fontSize: 13,
-    color: colors.black,
-    textAlign: 'left',
-  },
-  textInputStyle: {
-    width: 110, // Adjust this value
-    height: 40, // Adjust this value
     fontSize: 12,
-  },
-  textInputStyle2: {
-    width: 90, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  iconStyle: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  iconStyle2: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  colTitle:{
-    fontSize: 10,
-    justifyContent: 'center',
-  },
-  totalRowContainer: {
-    position: 'absolute', // Sabitlemek için
-    bottom: 0,           // Sayfanın altına sabitler
-    left: 0,             // Sol kenara hizalar
-    right: 0,            // Sağ kenara kadar genişletir
-    backgroundColor: '#fff', // İsteğe bağlı arka plan rengi
-    padding: 10,         // İsteğe bağlı padding
   },
   buttonSearch: {
     marginLeft: 10,
     padding: 17,
     borderRadius: 10,
     backgroundColor: colors.red,
+    justifyContent: 'center',
+    height: 40,
   },
-  selectedRow: {
-    // Seçilen satırın arka plan rengi
-    backgroundColor: '#e0f7fa',
+  datePickerContainer: {
+    marginRight: 10,
   },
-  
+  dateTitle: {
+    fontSize: 11,
+    marginBottom: 5,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: colors.white,
+  },
+  dateText: {
+    fontSize: 13,
+  },
+  loading: {
+    marginTop: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginVertical: 10,
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  noDataText: {
+    marginTop: 20,
+    fontSize: 16,
+    color: 'gray',
+  },
+ 
 });
 
 export default TedarikciBazindaSatisKarsilama;

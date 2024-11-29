@@ -7,6 +7,8 @@ import { DataTable } from 'react-native-paper';
 import { Filtre } from '../../../res/images';
 import { Grid, Row, Col } from 'react-native-easy-grid';
 import { useAuthDefault } from '../../../components/DefaultUser';
+import { MainStyles } from '../../../res/style';
+import FastImage from 'react-native-fast-image';
 
 const YillikRapor = () => {
   const { defaults } = useAuthDefault();
@@ -38,31 +40,6 @@ const YillikRapor = () => {
       setFilteredData(filtered);
     }
   };
-
-  const [filters, setFilters] = useState({
-    Cari: '',
-    Ocak: '',
-    Subat: '',
-    Mart: '',
-    Nisan: '',
-    Mayıs: '',
-    Haziran: '',
-    Temmuz: '',
-    Ağustos: '',
-    Eylül: '',
-    Ekim: '',
-    Kasım: '',
-    Aralık: '',
-    Toplam: ''
-  });
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'decimal',
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }).format(price);
-    };
 
   const yearList = Array.from(new Array(20), (v, i) => currentYear - i);
 
@@ -148,73 +125,7 @@ const fetchData = async () => {
 };
 
   
-  
-  const handleFilterChange = (field, value) => {
-    setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
-  };
-
-  const filterData = (data) => {
-    return data.filter(item => {
-      // Her sütun için filtrelemeyi sadece string veri üzerinde yapıyoruz
-      const itemToplam = item.Toplam ? item.Toplam.toString() : '';
-  
-      return (
-        (!filters.Cari || (item.Cari && item.Cari.toLowerCase().includes(filters.Cari.toLowerCase()))) &&
-        (!filters.Ocak || (item.Ocak && item.Ocak.toString().includes(filters.Ocak))) &&
-        (!filters.Subat || (item.Subat && item.Subat.toString().includes(filters.Subat))) &&
-        (!filters.Mart || (item.Mart && item.Mart.toString().includes(filters.Mart))) &&
-        (!filters.Nisan || (item.Nisan && item.Nisan.toString().includes(filters.Nisan))) &&
-        (!filters.Mayıs || (item.Mayıs && item.Mayıs.toString().includes(filters.Mayıs))) &&
-        (!filters.Haziran || (item.Haziran && item.Haziran.toString().includes(filters.Haziran))) &&
-        (!filters.Temmuz || (item.Temmuz && item.Temmuz.toString().includes(filters.Temmuz))) &&
-        (!filters.Ağustos || (item.Ağustos && item.Ağustos.toString().includes(filters.Ağustos))) &&
-        (!filters.Eylül || (item.Eylül && item.Eylül.toString().includes(filters.Eylül))) &&
-        (!filters.Ekim || (item.Ekim && item.Ekim.toString().includes(filters.Ekim))) &&
-        (!filters.Kasım || (item.Kasım && item.Kasım.toString().includes(filters.Kasım))) &&
-        (!filters.Aralık || (item.Aralık && item.Aralık.toString().includes(filters.Aralık))) &&
-        (!filters.Toplam || itemToplam.includes(filters.Toplam))
-      );
-    });
-  };
-  
-
-  const calculateTotals = (data) => {
-    const totals = {
-      Ocak: 0,
-      Subat: 0,
-      Mart: 0,
-      Nisan: 0,
-      Mayıs: 0,
-      Haziran: 0,
-      Temmuz: 0,
-      Ağustos: 0,
-      Eylül: 0,
-      Ekim: 0,
-      Kasım: 0,
-      Aralık: 0,
-      Toplam: 0,
-    };
-
-    data.forEach(item => {
-      totals.Ocak += parseFloat(item.Ocak) || 0;
-      totals.Subat += parseFloat(item.Subat) || 0;
-      totals.Mart += parseFloat(item.Mart) || 0;
-      totals.Nisan += parseFloat(item.Nisan) || 0;
-      totals.Mayıs += parseFloat(item.Mayıs) || 0;
-      totals.Haziran += parseFloat(item.Haziran) || 0;
-      totals.Temmuz += parseFloat(item.Temmuz) || 0;
-      totals.Ağustos += parseFloat(item.Ağustos) || 0;
-      totals.Eylül += parseFloat(item.Eylül) || 0;
-      totals.Ekim += parseFloat(item.Ekim) || 0;
-      totals.Kasım += parseFloat(item.Kasım) || 0;
-      totals.Aralık += parseFloat(item.Aralık) || 0;
-      totals.Toplam += parseFloat(item.Toplam) || 0;
-    });
-
-    return totals;
-  };
-
-  const totalRow = data ? calculateTotals(data) : null;
+ 
   useEffect(() => {
     fetchPersonelList();
   }, []);
@@ -255,7 +166,7 @@ const fetchData = async () => {
     <View style={styles.container}>
       <View style={styles.containerTitle}>
       <View style={styles.datePickerContainer}>
-        <Text style={styles.dateTitle}>Yıl Seçimi</Text>
+        <Text style={styles.pickerLabel}>Yıl Seçimi</Text>
         <View style={styles.inputStyle}>
         <Picker
         itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
@@ -263,7 +174,7 @@ const fetchData = async () => {
           onValueChange={(itemValue) => setYear(itemValue)}
         >
           {yearList.map((yr) => (
-            <Picker.Item style={styles.textStyle} key={yr} label={yr.toString()} value={yr} />
+            <Picker.Item key={yr} label={yr.toString()} value={yr} style={MainStyles.textStyle}/>
           ))}
         </Picker>
         </View>
@@ -279,9 +190,9 @@ const fetchData = async () => {
           itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
           onValueChange={(itemValue) => setSelectedPersonel(itemValue)}
         >
-          <Picker.Item style={styles.textStyle} label="Personel seçin" value="" />
+          <Picker.Item  label="Personel seçin" value="" style={MainStyles.textStyle}/>
           {personelList.map((personel) => (
-            <Picker.Item style={styles.textStyle} key={personel.No} label={personel.Adi} value={personel.Adi} />
+            <Picker.Item  key={personel.No} label={personel.Adi} value={personel.Adi} style={MainStyles.textStyle} />
           ))}
         </Picker>
         </View>
@@ -295,7 +206,10 @@ const fetchData = async () => {
       
 
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} style={styles.loading} />
+        <FastImage
+        style={MainStyles.loadingGif}
+        source={require('../../../res/images/image/pageloading.gif')}
+        resizeMode={FastImage.resizeMode.contain}/>
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : searchClicked && !data ? (
@@ -322,48 +236,38 @@ const fetchData = async () => {
 };
 
 const styles = StyleSheet.create({
+  
  
-  buttonSearch: {
-    backgroundColor: colors.red,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  loading: {
-    marginTop: 20,
-  },
-
- 
-
   container: {
     flex: 1,
     padding: 2,
     marginTop: 2,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
+  },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+   fontSize: 12,
+   marginBottom: 5,
   },
   filterRow: {
-    padding: 5,
-    backgroundColor: '#f9f9f9',
+    marginRight: 5,
+    marginTop: 10,
   },
   filterInput: {
+    height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 8,
-    fontSize: 14,
+    fontSize: 12,
   },
   loading: {
     marginTop: 20,
   },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
+ 
   inputStyle:{
     borderRadius: 10,
     textAlign: 'left',
@@ -388,10 +292,20 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
+    fontSize: 12,
   },
-  
-
+  buttonSearch: {
+    backgroundColor: colors.red,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
 
 export default YillikRapor;

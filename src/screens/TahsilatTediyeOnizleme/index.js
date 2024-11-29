@@ -12,6 +12,7 @@ import EditProductModal from '../../context/EditProductModal';
 import EditTahsilatTediyeModal from '../../context/EditTahsilatTediyeModal';
 import EditSatisFaturasiProductModal from '../../context/EditSatisFaturasiProductModal';
 import EditTahsilatTediyeNakitKrediModal from '../../context/EditTahsilatTediyeNakitKrediModal';
+import FastImage from 'react-native-fast-image';
 
 const TahsilatTediyeOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -290,7 +291,10 @@ const TahsilatTediyeOnizleme = () => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

@@ -1468,7 +1468,10 @@ const renderOzelAlanSelectedData = () => {
                         <Text style={MainStyles.closeButtonText}>Kapat</Text>
                     </TouchableOpacity>
                     {loading ? (
-                        <ActivityIndicator size="large" color="blue" />
+                           <FastImage
+                           style={MainStyles.loadingGif}
+                           source={require('../../res/images/image/pageloading.gif')}
+                           resizeMode={FastImage.resizeMode.contain}/>
                     ) : (
                         <>
                             <Text style={MainStyles.formTitle}>Tip Seçin</Text>
@@ -1545,7 +1548,10 @@ const renderOzelAlanSelectedData = () => {
                     </TouchableOpacity>
   
             {loading ? (
-                <ActivityIndicator size="large" color="blue" />
+                <FastImage
+                style={MainStyles.loadingGif}
+                source={require('../../res/images/image/pageloading.gif')}
+                resizeMode={FastImage.resizeMode.contain}/>
             ) : (
                 <>
                  <Text style={MainStyles.formTitle}>Tip Seçin</Text>

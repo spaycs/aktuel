@@ -47,13 +47,18 @@ const Raporlar = ({ navigation }) => {
     return (
       <TouchableOpacity
         key={izinKey}
-        style={[styles.button, !hasPermission && styles.disabledButton]}
+        style={[styles.card, !hasPermission && styles.disabledCard]}
         onPress={() => handlePress(screen, izinKey)}
         disabled={!hasPermission}
       >
-        <Text style={[styles.buttonText, !hasPermission && styles.disabledButtonText]}>
-          {title}
-        </Text>
+        <View style={styles.cardContent}>
+          <Text style={[styles.cardTitle, !hasPermission && styles.disabledCardText]}>
+            {title}
+          </Text>
+          <Text style={styles.cardSubtitle}>
+            {!hasPermission ? 'Erişim Yok' : 'Rapor Detayına Git'}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -84,22 +89,36 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.white,
   },
-  button: {
-    height: 40,
-    marginBottom: 10,
+  card: {
+    marginBottom: 15,
     borderRadius: 10,
-    backgroundColor: '#444444',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
-  disabledButton: {
+  disabledCard: {
     backgroundColor: '#dfdfdf', // Soluk renk
   },
-  buttonText: {
-    color: colors.white,
+  cardContent: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
-  disabledButtonText: {
-    color: colors.white,
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.black,
+    marginBottom: 5,
+  },
+  disabledCardText: {
+    color: '#999',
+  },
+  cardSubtitle: {
+    fontSize: 12,
+    color: colors.black,
   },
 });
 

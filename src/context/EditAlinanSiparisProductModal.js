@@ -9,6 +9,7 @@ import { ProductContext } from '../context/ProductContext';
 import { useAuthDefault } from '../components/DefaultUser';
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import CustomHeader from '../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModalVisible, setAddedAlinanSiparisProducts }) => {
   const { alinanSiparis } = useContext(ProductContext);
@@ -566,7 +567,10 @@ const handleUpdate = async () => {
                         <Text style={MainStyles.closeButtonText}>Kapat</Text>
                   </TouchableOpacity>
                     {loading ? (
-                        <ActivityIndicator size="large" color={colors.primary} />
+                        <FastImage
+                        style={MainStyles.loadingGif}
+                        source={require('../res/images/image/pageloading.gif')}
+                        resizeMode={FastImage.resizeMode.contain}/>
                     ) : (
                         <>
                             {stokDetayData && stokDetayData.length > 0 ? (
@@ -624,7 +628,10 @@ const handleUpdate = async () => {
                         <Text style={MainStyles.closeButtonText}>Kapat</Text>
                     </TouchableOpacity>
                     {loading ? (
-                        <ActivityIndicator size="large" color={colors.primary} />
+                        <FastImage
+                        style={MainStyles.loadingGif}
+                        source={require('../res/images/image/pageloading.gif')}
+                        resizeMode={FastImage.resizeMode.contain}/>
                     ) : (
                         <>
                             {stokDetayOzelAlanData && stokDetayOzelAlanData.length > 0 ? (

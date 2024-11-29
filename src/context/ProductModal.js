@@ -12,6 +12,7 @@ import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { Left,Down } from '../res/images';
 import CustomHeader from '../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const ProductModal = ({
   selectedProduct,
@@ -700,7 +701,10 @@ const validateQuantity = (quantity) => {
   <View style={[MainStyles.modalBackground]}>
     <View style={MainStyles.modalCariDetayContent}>
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
+       <FastImage
+       style={MainStyles.loadingGif}
+       source={require('../res/images/image/pageloading.gif')}
+       resizeMode={FastImage.resizeMode.contain}/>
       ) : (
         <>
           {/* Stok Detay Verisi Modal */}

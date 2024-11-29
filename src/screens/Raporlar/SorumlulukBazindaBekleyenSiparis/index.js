@@ -19,76 +19,11 @@ const SorumlulukBazindaBekleyenSiparis = () => {
   const [error, setError] = useState('');
   const [personelList, setPersonelList] = useState([]); 
   const [selectedPersonel, setSelectedPersonel] = useState(''); 
-
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const [filters, setFilters] = useState({
-    Srm: '',
-    Tutar: ''
-  });
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'decimal',
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }).format(price);
-    };
-
-  const handleFilterChange = (field, value) => {
-    setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
-  };
-
-  const filterData = (data) => {
-    return data.filter(item => {
-      // Her sütun için filtrelemeyi sadece string veri üzerinde yapıyoruz
-      const itemToplam = item.Toplam ? item.Toplam.toString() : '';
-  
-      return (
-        (!filters.Srm || (item.Srm && item.Srm.toLowerCase().includes(filters.Srm.toLowerCase()))) &
-        (!filters.Tutar || (item.Tutar && item.Tutar.toLowerCase().includes(filters.Tutar.toLowerCase()))) 
-    
-      );
-    });
-  };
-  
-
-  const calculateTotals = (data) => {
-    const totals = {
-      CARİKODU: 0,
-      CARİİSMİ: 0,
-      VADESİGEÇENBAKİYE: 0,
-      VADESİGEÇMEMİŞBAKİYE: 0,
-      TOPLAMBAKİYE: 0,
-      BAKİYETİPİ: 0,
-      C30_GÜN: 0,
-      C60_GÜN: 0,
-      C90_GÜN: 0,
-      C120_GÜN: 0,
-      C120_GÜNDEN_FAZLA: 0,
-      VADE: 0,
-    };
-
-    data.forEach(item => {
-      totals.CARİKODU += parseFloat(item.CARİKODU) || 0;
-      totals.CARİİSMİ += parseFloat(item.CARİİSMİ) || 0;
-      totals.VADESİGEÇENBAKİYE += parseFloat(item.VADESİGEÇENBAKİYE) || 0;
-      totals.VADESİGEÇMEMİŞBAKİYE += parseFloat(item.VADESİGEÇMEMİŞBAKİYE) || 0;
-      totals.TOPLAMBAKİYE += parseFloat(item.TOPLAMBAKİYE) || 0;
-      totals.BAKİYETİPİ += parseFloat(item.BAKİYETİPİ) || 0;
-      totals.C30_GÜN += parseFloat(item.C30_GÜN) || 0;
-      totals.C60_GÜN += parseFloat(item.C60_GÜN) || 0;
-      totals.C90_GÜN += parseFloat(item.C90_GÜN) || 0;
-      totals.C120_GÜN += parseFloat(item.C120_GÜN) || 0;
-      totals.C120_GÜNDEN_FAZLA += parseFloat(item.C120_GÜNDEN_FAZLA) || 0;
-      totals.VADE += parseFloat(item.VADE) || 0;
-    });
-
-    return totals;
-  };
-
-  const totalRow = data ? calculateTotals(data) : null;
 
   // Cari seçimi fonksiyonu
   const handleCariSelect = (selectedCari) => {
@@ -118,6 +53,7 @@ const SorumlulukBazindaBekleyenSiparis = () => {
       // Verinin beklenen formatta olup olmadığını kontrol edin
       if (Array.isArray(response.data)) {
         setData(response.data);
+        setFilteredData(response.data);
       } else {
         console.warn('API response is not an array:', response.data);
       }
@@ -128,8 +64,76 @@ const SorumlulukBazindaBekleyenSiparis = () => {
     }
   };
 
+     // Kullanıcı için tarih formatlama (gün.ay.yıl)
+     const formatDateForUser = (date) => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    };
+  
+    // API için tarih formatlama (ay-gün-yıl)
+    const formatDateForApi = (date) => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${month}-${day}-${year}`;
+    };
+  
+    const renderHeader = () => {
+      if (data.length === 0) return null; // Eğer veri yoksa başlık oluşturma
+      const headers = Object.keys(data[0]); // İlk öğeden başlıkları al
+      return (
+        <View style={[styles.row, styles.headerRow]}>
+          {headers.map((header, index) => (
+            <Text key={index} style={styles.cell}>
+              {header.toUpperCase()} {/* Başlıkları büyük harfle yaz */}
+            </Text>
+          ))}
+        </View>
+      );
+    };
+  
+    const renderItem = ({ item }) => {
+      return (
+        <View style={styles.row}>
+          {Object.values(item).map((value, colIndex) => (
+            <Text key={colIndex} style={styles.cell}>
+              {value === null || value === undefined
+                ? '-' // Boş değerler için gösterim
+                : typeof value === 'number'
+                ? new Intl.NumberFormat('tr-TR', {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3,
+                  }).format(value) // Binlik ayracı ve 3 ondalık
+                : value}
+            </Text>
+          ))}
+        </View>
+      );
+    };
+  
+    // Filtreleme işlevi
+    const handleSearch = (term) => {
+      setSearchTerm(term);
+      if (term.trim() === '') {
+        setFilteredData(data); // Boşsa tüm veriyi göster
+      } else {
+        const normalizedTerm = term.toLowerCase();
+        const filtered = data.filter((item) =>
+          Object.values(item).some(
+            (value) =>
+              typeof value === 'string' &&
+              value.toLowerCase().includes(normalizedTerm)
+          )
+        );
+        setFilteredData(filtered);
+      }
+    };
+
   return (
     <ScrollView style={styles.container}>
+       <Text style={styles.pickerLabel}>Cari Seçimi</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.inputCariKodu}
@@ -145,6 +149,17 @@ const SorumlulukBazindaBekleyenSiparis = () => {
         </TouchableOpacity>
       </View>
 
+       {/* Filtreleme Alanı */}
+     <View style={styles.filterRow}>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+      </View>
+
       {loading ? (
        <FastImage
        style={MainStyles.loadingGif}
@@ -155,67 +170,21 @@ const SorumlulukBazindaBekleyenSiparis = () => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
-        <ScrollView style={styles.scrollView}>
-      <ScrollView horizontal={true} style={styles.horizontalScroll}>
-        <Grid>
-          {/* Header Row */}
-          <Row style={styles.tableHeader}>
-            <Col style={[styles.tableCell, { width: 200}]}>
-              <Text style={styles.colTitle}>SRM</Text>
-            </Col>
-        
-            <Col style={[styles.tableCell, { width: 200 }]}>
-              <Text style={styles.colTitle}>Tutar</Text>
-            </Col>
-          </Row>
-      
-          {/* Filter Row */}
-          <Row style={styles.tableHeaderFiltre}>
-            <Col style={[styles.tableCell, { width: 200}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Srm}
-                  onChangeText={(text) => handleFilterChange('Srm', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-          
-            <Col style={[styles.tableCell, { width: 200}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Tutar}
-                  onChangeText={(text) => handleFilterChange('Tutar', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-          
-           
-            {/* Diğer aylar için de aynı şekilde devam edin */}
-          </Row>
-      
-          {/* Data Rows */}
-          {filterData(data).map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => setSelectedRowIndex(index)}>
-            <Row style={[styles.tableRow, selectedRowIndex === index && styles.selectedRow]}>
-              <Col style={[styles.tableCell, { width: 200 }]}>
-                <Text style={styles.cellText}>{item.Srm}</Text>
-              </Col>
-            
-              <Col style={[styles.tableCell, { width: 200 }]}>
-                <Text style={styles.cellText}>{formatPrice(item.Tutar)}</Text>
-              </Col>
-             
-            </Row>
-            </TouchableOpacity>
-          ))}
-      
-        </Grid>
+        <View style={styles.container}>
+        <ScrollView horizontal>
+        <View>
+          {/* Dinamik Başlık */}
+          {renderHeader()}
+
+          {/* FlatList ile Dikey Liste */}
+          <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
       </ScrollView>
-      </ScrollView>
+      </View>
       
       ) : null}
 
@@ -235,10 +204,46 @@ const styles = StyleSheet.create({
     marginTop: 2,
     backgroundColor: colors.white
   },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+    fontSize: 12,
+    marginBottom: 5,
+   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 1,
+  },
+  headerRow: {
+    backgroundColor: '#f3f3f3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  cell: {
+    width: 125,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    textAlign: 'center',
+    fontSize: 10,
+  },
+  filterRow: {
+    marginRight: 5,
+    marginTop: 10,
+  },
+  filterInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 8,
+    fontSize: 12,
   },
   inputCariKodu: {
     flex: 1,
@@ -246,227 +251,63 @@ const styles = StyleSheet.create({
     borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 10,
-    fontSize: 13,
+    fontSize: 12,
     color: colors.black,
+    height: 40,
   },
   button: {
     backgroundColor: colors.red,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-  },
-  buttonCariKodu: {
-    marginLeft: 10,
-    padding: 17,
-    borderRadius: 10,
-    backgroundColor: colors.red,
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    backgroundColor: colors.cardBackground,
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  headerContainer: {
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  subHeaderText: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-  balanceContainer: {
-    marginBottom: 10,
-  },
-  balanceLabel: {
-    fontSize: 16,
-    color: colors.primary,
-  },
-  balanceValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  monthlyContainer: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: 10,
-  },
-  monthItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 4,
-  },
-  monthLabel: {
-    fontSize: 14,
-    color: colors.primary,
-  },
-  monthValue: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 2,
-  },
-  headerText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.primary,
-    width: '50%',
-  },
-  valueText: {
-    fontSize: 14,
-    color: colors.secondary,
-    width: '50%',
-    textAlign: 'right',
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-  },
-  horizontalScroll: {
-    marginTop: 20,
-  },
-  noDataText: {
-    marginTop: 20,
-    fontSize: 16,
-    color: 'gray',
-  },
-  tableHeader: {
-    backgroundColor: '#f3f3f3', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    maxHeight: 50 
-  },
-  tableHeaderFiltre: {
-    backgroundColor: '#f2f2f2', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 30,
-  },
-  tableRow: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 40,
-  },
-  tableCell: {
-    borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
-    borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-    justifyContent: 'flex-start', // Hücrelerin içeriğini ortalamak
-    paddingHorizontal: 10,
-    
-  },
-  tableToplamCell: {
-    justifyContent: 'flex-start', // Hücrelerin içeriğini ortalamak
-    paddingLeft: 10,
-  },
-  cellText: {
-    flex: 1,
-    fontSize: 9,
-    flexWrap: 'wrap', // Metni birden fazla satıra sarmasına izin verir
-    textAlign: 'left', // Metin hizalamasını sol yapar
-    
-    
-  },
-  inputStyle:{
-    borderRadius: 10,
-    textAlign: 'left',
-    marginBottom: 12,
-    backgroundColor: colors.textInputBg,
-  },
-  textStyle:{
-    fontSize: 13,
-    color: colors.black,
-    textAlign: 'left',
-  },
-  textInputStyle: {
-    width: 110, // Adjust this value
-    height: 40, // Adjust this value
     fontSize: 12,
-  },
-  textInputStyle2: {
-    width: 90, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  iconStyle: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  iconStyle2: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  colTitle:{
-    fontSize: 10,
-    justifyContent: 'center',
-  },
-  totalRowContainer: {
-    position: 'absolute', // Sabitlemek için
-    bottom: 0,           // Sayfanın altına sabitler
-    left: 0,             // Sol kenara hizalar
-    right: 0,            // Sağ kenara kadar genişletir
-    backgroundColor: '#fff', // İsteğe bağlı arka plan rengi
-    padding: 10,         // İsteğe bağlı padding
   },
   buttonSearch: {
     marginLeft: 10,
     padding: 17,
     borderRadius: 10,
     backgroundColor: colors.red,
+    justifyContent: 'center',
+    height: 40,
   },
-  selectedRow: {
-    // Seçilen satırın arka plan rengi
-    backgroundColor: '#e0f7fa',
+  datePickerContainer: {
+    marginRight: 10,
   },
-  
+  dateTitle: {
+    fontSize: 11,
+    marginBottom: 5,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: colors.white,
+  },
+  dateText: {
+    fontSize: 13,
+  },
+  loading: {
+    marginTop: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginVertical: 10,
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  noDataText: {
+    marginTop: 20,
+    fontSize: 16,
+    color: 'gray',
+  },
+ 
 });
 
 export default SorumlulukBazindaBekleyenSiparis;

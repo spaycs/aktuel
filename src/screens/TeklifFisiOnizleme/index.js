@@ -11,6 +11,7 @@ import axiosLink from '../../utils/axios';
 import EditProductModal from '../../context/EditProductModal';
 import axiosLinkMain from '../../utils/axiosMain';
 import CustomHeader from '../../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const TeklifFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -617,7 +618,10 @@ const TeklifFisiOnizleme = () => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

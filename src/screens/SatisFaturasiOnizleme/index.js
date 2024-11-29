@@ -13,6 +13,7 @@ import EditSatisFaturasiProductModal from '../../context/EditSatisFaturasiProduc
 import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
 import CustomHeader from '../../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const SatisFaturasiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -707,7 +708,10 @@ const detailedProducts = products.map((product) => {
     {/* Kaydet İptal Seçim */}
     {loading && (
         <View style={MainStyles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
+         <FastImage
+            style={MainStyles.loadingGif}
+            source={require('../../res/images/image/pageloading.gif')}
+            resizeMode={FastImage.resizeMode.contain}/>
         </View>
       )}
 

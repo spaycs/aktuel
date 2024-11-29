@@ -145,6 +145,7 @@ const CariBakiyeYasladirmaCoklu = () => {
         <TextInput
           style={styles.filterInput}
           placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
           value={searchTerm}
           onChangeText={handleSearch}
         />
