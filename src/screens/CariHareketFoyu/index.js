@@ -28,21 +28,10 @@ const CariHareketFoyu = ({ navigation, route }) => {
   const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const [filters, setFilters] = useState({
-    Tarih: '',
-    Seri: '',
-    Sıra: '',
-    Belge_No: '',
-    Evrak_Tipi: '',
-    Cinsi: '',
-    Sorumluluk_Merkezi_İsmi: '',
-    Vade_Tarihi: '',
-    Vade_Gün: '',
-    B_A: '',
-    Ana_Döviz_Borç: '',
-    Ana_Döviz_Alacak: '',
-  });
+  
 
   const handleFilterChange = (field, value) => {
     setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
@@ -61,8 +50,9 @@ const CariHareketFoyu = ({ navigation, route }) => {
     try {
       if (defaults) {
       const firmaNo = defaults[0].IQ_FirmaNo;
-      const response = await axiosLinkMain.get(`/Api/Raporlar/CariHaraketFoyu?firmano=${firmaNo}&cari=${cariKod}&ilktarih=${formatDate(startDate)}&sontarih=${formatDate(endDate)}`);
+      const response = await axiosLinkMain.get(`/Api/Raporlar/CariHaraketFoyu?firmano=${firmaNo}&cari=${cariKod}&ilktarih=${formatDateForApi(startDate)}&sontarih=${formatDateForApi(endDate)}`);
       setData(response.data);
+      setFilteredData(response.data);
     } else {
       console.error('IQ_FirmaNo değeri bulunamadı');
     }}
@@ -79,27 +69,19 @@ const CariHareketFoyu = ({ navigation, route }) => {
     }
   }, [cariKod, startDate, endDate]);
 
-  const filterData = (data) => {
-    return data.filter(item => {
-      // Her sütun için filtrelemeyi sadece string veri üzerinde yapıyoruz
-      const itemToplam = item.Toplam ? item.Toplam.toString() : '';
-  
-      return (
-        (!filters.Tarih || (item.Tarih && item.Tarih.toString().includes(filters.Tarih.toLowerCase()))) &&
-        (!filters.Seri || (item.Seri && item.Seri.toLowerCase().includes(filters.Seri.toLowerCase()))) &&
-        (!filters.Sıra || (item.Sıra && item.Sıra.toString().includes(filters.Sıra.toLowerCase()))) &&
-        (!filters.Belge_No || (item.Belge_No && item.Belge_No.toString().includes(filters.Belge_No.toLowerCase()))) &&
-        (!filters.Evrak_Tipi || (item.Evrak_Tipi && item.Evrak_Tipi.toLowerCase().includes(filters.Evrak_Tipi.toLowerCase()))) &&
-        (!filters.Cinsi || (item.Cinsi && item.Cinsi.toLowerCase().includes(filters.Cinsi.toLowerCase()))) &&
-        (!filters.Sorumluluk_Merkezi_İsmi || (item.Sorumluluk_Merkezi_İsmi && item.Sorumluluk_Merkezi_İsmi.toLowerCase().includes(filters.Sorumluluk_Merkezi_İsmi.toLowerCase()))) &&
-        (!filters.Vade_Tarihi || (item.Vade_Tarihi && item.Vade_Tarihi.toString().includes(filters.Vade_Tarihi.toLowerCase()))) &&
-        (!filters.Vade_Gün || (item.Vade_Gün && item.Vade_Gün.toString().includes(filters.Vade_Gün.toLowerCase()))) &&
-        (!filters.B_A || (item.B_A && item.B_A.toLowerCase().includes(filters.B_A.toLowerCase()))) &&
-        (!filters.Ana_Döviz_Borç || (item.Ana_Döviz_Borç && item.Ana_Döviz_Borç.toString().includes(filters.Ana_Döviz_Borç.toLowerCase()))) &&
-        (!filters.Ana_Döviz_Alacak || (item.Ana_Döviz_Alacak && item.Ana_Döviz_Alacak.toString().includes(filters.Ana_Döviz_Alacak.toLowerCase()))) 
-      );
-    });
-  };
+    // İlk Tarih Değişikliği
+    const handleIlkTarihChange = (event, selectedDate) => {
+      const currentDate = selectedDate || ilkTarih;
+      setShowIlkTarihPicker(false);
+      setIlkTarih(currentDate);
+    };
+    
+    // Son Tarih Değişikliği
+    const handleSonTarihChange = (event, selectedDate) => {
+      const currentDate = selectedDate || sonTarih;
+      setShowSonTarihPicker(false);
+      setSonTarih(currentDate);
+    };
   
 
   // Cari seçimi fonksiyonu
@@ -130,6 +112,7 @@ const CariHareketFoyu = ({ navigation, route }) => {
     if (selectedDate) setEndDate(selectedDate);
   };
   
+  
   // Tarih formatlama
   const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -137,7 +120,73 @@ const CariHareketFoyu = ({ navigation, route }) => {
     const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   };
+
+// Kullanıcı için tarih formatlama (gün.ay.yıl)
+const formatDateForUser = (date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
+};
+
+// Tarih formatlama (API için gönderim: yıl-ay-gün)
+const formatDateForApi = (date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+};
   
+  const renderHeader = () => {
+    if (data.length === 0) return null; // Eğer veri yoksa başlık oluşturma
+    const headers = Object.keys(data[0]); // İlk öğeden başlıkları al
+    return (
+      <View style={[styles.row, styles.headerRow]}>
+        {headers.map((header, index) => (
+          <Text key={index} style={styles.cell}>
+            {header.toUpperCase()} {/* Başlıkları büyük harfle yaz */}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.row}>
+        {Object.values(item).map((value, colIndex) => (
+          <Text key={colIndex} style={styles.cell}>
+            {value === null || value === undefined
+              ? '-' // Boş değerler için gösterim
+              : typeof value === 'number'
+              ? new Intl.NumberFormat('tr-TR', {
+                  minimumFractionDigits: 3,
+                  maximumFractionDigits: 3,
+                }).format(value) // Binlik ayracı ve 3 ondalık
+              : value}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
+  // Filtreleme işlevi
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term.trim() === '') {
+      setFilteredData(data); // Boşsa tüm veriyi göster
+    } else {
+      const normalizedTerm = term.toLowerCase();
+      const filtered = data.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(normalizedTerm)
+        )
+      );
+      setFilteredData(filtered);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -148,7 +197,7 @@ const CariHareketFoyu = ({ navigation, route }) => {
           <Text style={styles.dateTitle}>Başlangıç Tarihi</Text>
           <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
             <View style={styles.dateContainer}>
-              <Text style={styles.dateText}>{formatDate(startDate)}</Text>
+              <Text style={styles.dateText}>{formatDateForUser(startDate)}</Text>
             </View>
           </TouchableOpacity>
           {showStartDatePicker && (
@@ -165,7 +214,7 @@ const CariHareketFoyu = ({ navigation, route }) => {
           <Text style={styles.dateTitle}>Bitiş Tarihi</Text>
           <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
             <View style={styles.dateContainer}>
-              <Text style={styles.dateText}>{formatDate(endDate)}</Text>
+              <Text style={styles.dateText}>{formatDateForUser(endDate)}</Text>
             </View>
           </TouchableOpacity>
           {showEndDatePicker && (
@@ -195,222 +244,21 @@ const CariHareketFoyu = ({ navigation, route }) => {
       ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
-        <ScrollView style={styles.scrollView}>
-        <ScrollView horizontal={true} style={styles.horizontalScroll}>
-        <Grid>
-          {/* Header Row */}
-          <Row style={styles.tableHeader}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <Text style={styles.colTitle}>Tarih</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Seri</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Sıra</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Belge_No</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Evrak_Tipi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Cinsi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Sorumluluk_Merkezi_İsmi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Vade_Tarihi</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Vade_Gün</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>B_A</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Ana_Döviz_Borç</Text>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <Text style={styles.colTitle}>Ana_Döviz_Alacak</Text>
-            </Col>
-          </Row>
-      
-          {/* Filter Row */}
-          <Row style={styles.tableHeaderFiltre}>
-            <Col style={[styles.tableCell, { width: 120}]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Tarih}
-                  onChangeText={(text) => handleFilterChange('Tarih', text)}
-                  style={styles.textInputStyle}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Seri}
-                  onChangeText={(text) => handleFilterChange('Seri', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Sıra}
-                  onChangeText={(text) => handleFilterChange('Sıra', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Belge_No}
-                  onChangeText={(text) => handleFilterChange('Belge_No', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Evrak_Tipi}
-                  onChangeText={(text) => handleFilterChange('Evrak_Tipi', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Cinsi}
-                  onChangeText={(text) => handleFilterChange('Cinsi', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Sorumluluk_Merkezi_İsmi}
-                  onChangeText={(text) => handleFilterChange('Sorumluluk_Merkezi_İsmi', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Vade_Tarihi}
-                  onChangeText={(text) => handleFilterChange('Vade_Tarihi', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Vade_Gün}
-                  onChangeText={(text) => handleFilterChange('Vade_Gün', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.B_A}
-                  onChangeText={(text) => handleFilterChange('B_A', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Ana_Döviz_Borç}
-                  onChangeText={(text) => handleFilterChange('Ana_Döviz_Borç', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-            <Col style={[styles.tableCell, { width: 100 }]}>
-              <View style={styles.filterContainer}>
-                <TextInput
-                  value={filters.Ana_Döviz_Alacak}
-                  onChangeText={(text) => handleFilterChange('Ana_Döviz_Alacak', text)}
-                  style={styles.textInputStyle2}
-                />
-                <Filtre width={10} height={10} style={styles.iconStyle2} />
-              </View>
-            </Col>
-           
-            {/* Diğer aylar için de aynı şekilde devam edin */}
-          </Row>
-      
-          {/* Data Rows */}
-          {filterData(data).map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => setSelectedRowIndex(index)}>
-            <Row style={[styles.tableRow, selectedRowIndex === index && styles.selectedRow]}>
-              <Col style={[styles.tableCell, { width: 120 }]}>
-                <Text style={styles.cellText}>{item.Tarih}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Seri}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Sıra}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Belge_No}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Evrak_Tipi}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Cinsi}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Sorumluluk_Merkezi_İsmi}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Vade_Tarihi}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Vade_Gün}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.B_A}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Ana_Döviz_Borç}</Text>
-              </Col>
-              <Col style={[styles.tableCell, { width: 100 }]}>
-                <Text style={styles.cellText}>{item.Ana_Döviz_Alacak}</Text>
-              </Col>
-            </Row>
-            </TouchableOpacity>
-          ))}
-      
-        </Grid>
+        <View style={styles.container}>
+        <ScrollView horizontal>
+        <View>
+          {/* Dinamik Başlık */}
+          {renderHeader()}
+
+          {/* FlatList ile Dikey Liste */}
+          <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
       </ScrollView>
-      </ScrollView>
+      </View>
       
       ) : null}
 
@@ -431,20 +279,56 @@ const styles = StyleSheet.create({
     marginTop: 2,
     backgroundColor: colors.white
   },
+  pickerContainer: {
+    padding: 1,
+    marginTop: 5,
+  },
+  pickerLabel: {
+    fontSize: 12,
+    marginBottom: 5,
+   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    padding: 1,
   },
-  input: {
+  headerRow: {
+    backgroundColor: '#f3f3f3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  cell: {
+    width: 125,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    textAlign: 'center',
+    fontSize: 10,
+  },
+  filterRow: {
+    marginRight: 5,
+    marginTop: 10,
+  },
+  filterInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: colors.textInputBg,
+    borderRadius: 5,
+    padding: 8,
+    fontSize: 12,
+  },
+  inputCariKodu: {
     flex: 1,
     borderWidth: 1,
     borderColor: colors.textInputBg,
     borderRadius: 5,
     padding: 10,
+    fontSize: 12,
     color: colors.black,
-    backgroundColor: colors.white,
-    fontSize: 13,
+    height: 40,
   },
   button: {
     backgroundColor: colors.red,
@@ -458,10 +342,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonSearch: {
-    marginLeft: 15,
+    marginLeft: 10,
     padding: 17,
     borderRadius: 10,
     backgroundColor: colors.red,
+    justifyContent: 'center',
+    height: 40,
   },
   datePickerContainer: {
     marginRight: 10,
@@ -478,7 +364,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: colors.white,
-    width: '%50'
   },
   dateText: {
     fontSize: 13,
@@ -486,120 +371,16 @@ const styles = StyleSheet.create({
   loading: {
     marginTop: 20,
   },
-  loadingGif: {
-    width: 70,
-    height: 50,
-    alignSelf: 'center',
-    marginTop: 10,
-  },
   errorText: {
     color: 'red',
     marginVertical: 10,
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  itemText: {
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  itemValue: {
-    fontWeight: 'bold',
-  },
-  loading: {
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
-  },
-  horizontalScroll: {
-    marginTop: 20,
+    fontSize: 12,
+    textAlign: 'center',
   },
   noDataText: {
     marginTop: 20,
-    fontSize: 16,
+    fontSize: 12,
     color: 'gray',
-  },
-  tableHeader: {
-    backgroundColor: '#f3f3f3', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    maxHeight: 50 
-  },
-  tableHeaderFiltre: {
-    backgroundColor: '#f2f2f2', // Başlık arka plan rengi
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 30,
-  },
-  tableRow: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: colors.textInputBg,
-    height: 40,
-  },
-  tableCell: {
-    borderRightWidth: 1, // Hücreler arasına dikey çizgi ekler
-    borderRightColor: '#e0e0e0', // Hücre dikey çizgi rengi
-    justifyContent: 'flex-start', // Hücrelerin içeriğini ortalamak
-    paddingHorizontal: 10,
-    
-  },
-  tableToplamCell: {
-    justifyContent: 'flex-start', // Hücrelerin içeriğini ortalamak
-    paddingLeft: 10,
-  },
-  cellText: {
-    flex: 1,
-    fontSize: 10,
-    flexWrap: 'wrap', // Metni birden fazla satıra sarmasına izin verir
-    textAlign: 'left', // Metin hizalamasını sol yapar
-    
-  },
-  inputStyle:{
-    borderRadius: 10,
-    textAlign: 'left',
-    marginBottom: 12,
-    backgroundColor: colors.textInputBg,
-  },
-  textStyle:{
-    fontSize: 13,
-    color: colors.black,
-    textAlign: 'left',
-  },
-  textInputStyle: {
-    width: 110, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  textInputStyle2: {
-    width: 90, // Adjust this value
-    height: 40, // Adjust this value
-    fontSize: 12,
-  },
-  iconStyle: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  iconStyle2: {
-    left: -8,
-    top: 10,
-    position : 'absolute',
-  },
-  colTitle:{
-    paddingVertical: 15, 
-    fontSize: 12,
-  },
-  selectedRow: {
-    // Seçilen satırın arka plan rengi
-    backgroundColor: '#e0f7fa', 
   },
 });
 export default CariHareketFoyu;
