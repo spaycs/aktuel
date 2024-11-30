@@ -234,18 +234,56 @@ const [bankList, setBankList] = useState([]);
 
           <View style={MainStyles.modalContent}>
 
-          {/* Picker */}
-          <Text style={MainStyles.formTitle}>Tip</Text>
-          <View style={MainStyles.inputStyleAlinanSiparis}>
+         {/* Picker */}
+<Text style={MainStyles.formTitle}>Tip</Text>
+<View style={MainStyles.inputStyleAlinanSiparis}>
+  {Platform.OS === 'ios' ? (
+    <>
+      {/* iOS için Modal Picker */}
+      <TouchableOpacity onPress={() => setIsPickerModalVisible(true)}>
+        <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+          {pickerValue ? pickerValue : 'Seçiniz...'}
+        </Text>
+      </TouchableOpacity>
+      <Modal
+        visible={isPickerModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsPickerModalVisible(false)}
+      >
+        <View style={MainStyles.modalContainerPicker}>
+          <View style={MainStyles.modalContentPicker}>
             <Picker
-              itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
               selectedValue={pickerValue}
-              onValueChange={(itemValue) => setPickerValue(itemValue)}
+              onValueChange={(itemValue) => {
+                setPickerValue(itemValue);
+                setIsPickerModalVisible(false); // Seçim sonrası modal kapanır
+              }}
+              style={MainStyles.picker}
             >
-              <Picker.Item label="Kendisi" value="Kendisi" style={MainStyles.textStyle}/>
-              <Picker.Item label="Müşterisi" value="Müşterisi" style={MainStyles.textStyle}/>
+              <Picker.Item label="Kendisi" value="Kendisi" style={MainStyles.textStyle} />
+              <Picker.Item label="Müşterisi" value="Müşterisi" style={MainStyles.textStyle} />
             </Picker>
+            <TouchableOpacity onPress={() => setIsPickerModalVisible(false)}>
+              <Text style={MainStyles.closeButtonText}>Kapat</Text>
+            </TouchableOpacity>
           </View>
+        </View>
+      </Modal>
+    </>
+  ) : (
+    // Android için düz Picker
+    <Picker
+      selectedValue={pickerValue}
+      onValueChange={(itemValue) => setPickerValue(itemValue)}
+      itemStyle={{ height: 40, fontSize: 12 }}
+      style={{ marginHorizontal: -10 }}
+    >
+      <Picker.Item label="Kendisi" value="Kendisi" style={MainStyles.textStyle} />
+      <Picker.Item label="Müşterisi" value="Müşterisi" style={MainStyles.textStyle} />
+    </Picker>
+  )}
+</View>
 
            {/* Tarih */}
            <Text style={MainStyles.formTitle}>Tarih</Text>
