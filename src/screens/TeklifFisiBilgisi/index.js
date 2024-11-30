@@ -1164,7 +1164,7 @@ const TeklifFisiBilgisi = () => {
                     
                     </DataTable.Header>
 
-                    <ScrollView style={{ maxHeight: 600 }}>
+                    <ScrollView >
                       {data.map((item, index) => (
                         <DataTable.Row key={index} style={MainStyles.tableRow}>
                           <DataTable.Cell style={{ width: 100 }} numberOfLines={1} ellipsizeMode="tail">

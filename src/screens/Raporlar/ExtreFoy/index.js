@@ -169,7 +169,7 @@ const ExtreFoy = () => {
           </TouchableOpacity>
           {showStartDatePicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+            style={{position: 'absolute', marginTop: 20, width: 90, backgroundColor: colors.textinputgray}}
               value={startDate}
               mode="date"
               display="default"
@@ -187,7 +187,7 @@ const ExtreFoy = () => {
           </TouchableOpacity>
           {showEndDatePicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+            style={{position: 'absolute', marginTop: 20, width: 90, backgroundColor: colors.textinputgray}}
               value={endDate}
               mode="date"
               display="default"
