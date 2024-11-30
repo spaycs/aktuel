@@ -31,8 +31,6 @@ const CariHareketFoyu = ({ navigation, route }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  
-
   const handleFilterChange = (field, value) => {
     setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
   };
@@ -68,21 +66,6 @@ const CariHareketFoyu = ({ navigation, route }) => {
       fetchData(); // Eğer cari kod varsa veriyi çek
     }
   }, [cariKod, startDate, endDate]);
-
-    // İlk Tarih Değişikliği
-    const handleIlkTarihChange = (event, selectedDate) => {
-      const currentDate = selectedDate || ilkTarih;
-      setShowIlkTarihPicker(false);
-      setIlkTarih(currentDate);
-    };
-    
-    // Son Tarih Değişikliği
-    const handleSonTarihChange = (event, selectedDate) => {
-      const currentDate = selectedDate || sonTarih;
-      setShowSonTarihPicker(false);
-      setSonTarih(currentDate);
-    };
-  
 
   // Cari seçimi fonksiyonu
   const handleCariSelect = (selectedCari) => {
