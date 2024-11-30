@@ -1167,7 +1167,7 @@ const handleIrsaliyeTipiChange = async (itemValue) => {
   const fetchOzelAlanData = async (sip_musteri_kod, pickerValue) => {
     setLoading(true);
     try {
-        if (pickerValue === "teminatTutari") {
+        if (pickerValue === "Özel Alanlar") {
             const response3 = await axiosLinkMain.get(`/api/Raporlar/CariOzelAlan?cari=${sip_musteri_kod}&userno=${defaults[0].IQ_MikroPersKod}`);
             console.log("CariOzelAlan API Yanıtı:", response3.data); // API yanıtını kontrol edin
             const teminatData = response3.data || [];
@@ -1250,7 +1250,7 @@ const formatPrice = (price) => {
 };
 const renderOzelAlanSelectedData = () => {
   switch (selectedValue) {
-      case "teminatTutari":
+      case "Özel Alanlar":
           return (
               <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
                   <Grid>
@@ -1449,8 +1449,8 @@ const renderOzelAlanSelectedData = () => {
     <TouchableOpacity
         style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
         onPress={() => {
-            setSelectedValue('teminatTutari'); // Teminat Tutari
-            fetchOzelAlanData(sip_musteri_kod, 'teminatTutari');
+            setSelectedValue('Özel Alanlar'); // Teminat Tutari
+            fetchOzelAlanData(sip_musteri_kod, 'Özel Alanlar');
         }}
     >
         <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
@@ -1578,7 +1578,7 @@ const renderOzelAlanSelectedData = () => {
                                                 selectedValue={selectedValue}
                                                 onValueChange={(value) => {
                                                     setSelectedValue(value);
-                                                    if (value === "teminatTutari") {
+                                                    if (value === "Özel Alanlar") {
                                                         fetchOzelAlanData(sip_musteri_kod, value);
                                                     }
                                                     setIsPickerModalVisible(false); // Modalı kapat
@@ -1586,7 +1586,7 @@ const renderOzelAlanSelectedData = () => {
                                                 style={MainStyles.picker}
                                             >
                                                 <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
-                                                <Picker.Item label="Özel Alanlar" value="teminatTutari" style={MainStyles.textStyle} />
+                                                <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
                                             </Picker>
                                             <TouchableOpacity onPress={() => setIsPickerModalVisible(false)}>
                                                 <Text style={MainStyles.closeButtonText}>Kapat</Text>
@@ -1601,7 +1601,7 @@ const renderOzelAlanSelectedData = () => {
                                 selectedValue={selectedValue}
                                 onValueChange={(value) => {
                                     setSelectedValue(value);
-                                    if (value === "teminatTutari") {
+                                    if (value === "Özel Alanlar") {
                                         fetchOzelAlanData(sip_musteri_kod, value);
                                     }
                                 }}
@@ -1609,7 +1609,7 @@ const renderOzelAlanSelectedData = () => {
                                 itemStyle={{ height: 40, fontSize: 12 }}
                             >
                                 <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
-                                <Picker.Item label="Özel Alanlar" value="teminatTutari" style={MainStyles.textStyle} />
+                                <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
                             </Picker>
                         )}
                     </View>
