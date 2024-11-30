@@ -1684,7 +1684,7 @@ export const MainStyles = {
       borderWidth: 1,
     },
     pickerText:{
-      left:10,
+      left:5,
       fontSize: 12,
     },
     productModalPicker: {
