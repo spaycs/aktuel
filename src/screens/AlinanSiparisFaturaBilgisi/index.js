@@ -1588,9 +1588,7 @@ const renderOzelAlanSelectedData = () => {
                                                 <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
                                                 <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
                                             </Picker>
-                                            <TouchableOpacity onPress={() => setIsPickerModalVisible(false)}>
-                                                <Text style={MainStyles.closeButtonText}>Kapat</Text>
-                                            </TouchableOpacity>
+                                            <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
                                         </View>
                                     </View>
                                 </Modal>
