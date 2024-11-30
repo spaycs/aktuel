@@ -165,40 +165,122 @@ const fetchData = async () => {
   return (
     <View style={styles.container}>
       <View style={styles.containerTitle}>
-      <View style={styles.datePickerContainer}>
-        <Text style={styles.pickerLabel}>Yıl Seçimi</Text>
-        <View style={styles.inputStyle}>
-        <Picker
-        itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-          selectedValue={year}
-          onValueChange={(itemValue) => setYear(itemValue)}
+      {/* Yıl Seçimi */}
+<View style={styles.datePickerContainer}>
+  <Text style={styles.pickerLabel}>Yıl Seçimi</Text>
+  <View style={styles.inputStyle}>
+    {Platform.OS === 'ios' ? (
+      <>
+        {/* iOS için Modal Picker */}
+        <TouchableOpacity onPress={() => setIsYearPickerVisible(true)}>
+          <Text style={[styles.textStyle, { paddingVertical: 10 }]}>
+            {year || 'Yıl Seçin'}
+          </Text>
+        </TouchableOpacity>
+        <Modal
+          visible={isYearPickerVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setIsYearPickerVisible(false)}
         >
-          {yearList.map((yr) => (
-            <Picker.Item key={yr} label={yr.toString()} value={yr} style={MainStyles.textStyle}/>
-          ))}
-        </Picker>
-        </View>
-      </View>
+          <View style={MainStyles.modalContainerPicker}>
+            <View style={MainStyles.modalContentPicker}>
+              <Picker
+                selectedValue={year}
+                onValueChange={(itemValue) => {
+                  setYear(itemValue);
+                  setIsYearPickerVisible(false); // Seçim sonrası modal kapanır
+                }}
+                style={MainStyles.picker}
+              >
+                {yearList.map((yr) => (
+                  <Picker.Item key={yr} label={yr.toString()} value={yr} style={MainStyles.textStyle} />
+                ))}
+              </Picker>
+              <TouchableOpacity onPress={() => setIsYearPickerVisible(false)}>
+                <Text style={MainStyles.closeButtonText}>Kapat</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </>
+    ) : (
+      // Android için düz Picker
+      <Picker
+        selectedValue={year}
+        onValueChange={(itemValue) => setYear(itemValue)}
+        itemStyle={{ height: 40, fontSize: 12 }}
+        style={{ marginHorizontal: -10 }}
+      >
+        {yearList.map((yr) => (
+          <Picker.Item key={yr} label={yr.toString()} value={yr} style={MainStyles.textStyle} />
+        ))}
+      </Picker>
+    )}
+  </View>
+</View>
 
-      {IQ_Admin === 1 && (
-      <View style={styles.pickerContainer}>
-      <View style={styles.datePickerContainer}>
-        <Text style={styles.pickerLabel}>Personel Seçimi</Text>
-        <View style={styles.inputStyle}>
-        <Picker
-          selectedValue={selectedPersonel}
-          itemStyle={{height:40, fontSize: 12 }} style={{ marginHorizontal: -10 }} 
-          onValueChange={(itemValue) => setSelectedPersonel(itemValue)}
-        >
-          <Picker.Item  label="Personel seçin" value="" style={MainStyles.textStyle}/>
-          {personelList.map((personel) => (
-            <Picker.Item  key={personel.No} label={personel.Adi} value={personel.Adi} style={MainStyles.textStyle} />
-          ))}
-        </Picker>
-        </View>
-      </View>
-      </View>
+{/* Personel Seçimi */}
+{IQ_Admin === 1 && (
+  <View style={styles.pickerContainer}>
+    <View style={styles.datePickerContainer}>
+      <Text style={styles.pickerLabel}>Personel Seçimi</Text>
+      <View style={styles.inputStyle}>
+        {Platform.OS === 'ios' ? (
+          <>
+            {/* iOS için Modal Picker */}
+            <TouchableOpacity onPress={() => setIsPersonelPickerVisible(true)}>
+              <Text style={[styles.textStyle, { paddingVertical: 10 }]}>
+                {selectedPersonel || 'Personel Seçin'}
+              </Text>
+            </TouchableOpacity>
+            <Modal
+              visible={isPersonelPickerVisible}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={() => setIsPersonelPickerVisible(false)}
+            >
+              <View style={MainStyles.modalContainerPicker}>
+                <View style={MainStyles.modalContentPicker}>
+                  <Picker
+                    selectedValue={selectedPersonel}
+                    onValueChange={(itemValue) => {
+                      setSelectedPersonel(itemValue);
+                      setIsPersonelPickerVisible(false); // Seçim sonrası modal kapanır
+                    }}
+                    style={MainStyles.picker}
+                  >
+                    <Picker.Item label="Personel Seçin" value="" style={MainStyles.textStyle} />
+                    {personelList.map((personel) => (
+                      <Picker.Item key={personel.No} label={personel.Adi} value={personel.Adi} style={MainStyles.textStyle} />
+                    ))}
+                  </Picker>
+                  <TouchableOpacity onPress={() => setIsPersonelPickerVisible(false)}>
+                    <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </>
+        ) : (
+          // Android için düz Picker
+          <Picker
+            selectedValue={selectedPersonel}
+            onValueChange={(itemValue) => setSelectedPersonel(itemValue)}
+            itemStyle={{ height: 40, fontSize: 12 }}
+            style={{ marginHorizontal: -10 }}
+          >
+            <Picker.Item label="Personel Seçin" value="" style={MainStyles.textStyle} />
+            {personelList.map((personel) => (
+              <Picker.Item key={personel.No} label={personel.Adi} value={personel.Adi} style={MainStyles.textStyle} />
+            ))}
+          </Picker>
         )}
+      </View>
+    </View>
+  </View>
+)}
+
     </View>
       <TouchableOpacity onPress={fetchData} style={styles.buttonSearch}>
         <Text style={styles.buttonText}>Listele</Text>
