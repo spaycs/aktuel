@@ -52,6 +52,9 @@ const PatronRaporu = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    fetchData();
+  },[]);
 
   return (
     <View style={styles.container}>

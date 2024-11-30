@@ -47,6 +47,7 @@ const PatronEkrani = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <View style={styles.container}>
