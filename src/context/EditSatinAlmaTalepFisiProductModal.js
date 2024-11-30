@@ -64,7 +64,7 @@ const EditSatisFaturasiProductModal = ({ selectedProduct, modalVisible, setModal
 
   useEffect(() => {
     console.log('', modalId);
-    if (modalVisible && selectedProduct && modalId !== 1 && modalId !== 2 && modalId !== 3) {
+    if (modalVisible && selectedProduct && modalId < 1) {
       const fetchSatisFiyati = async () => {
         const stok = selectedProduct?.Stok_Kod;
         const apiUrl = `/Api/Stok/StokSatisFiyatiSatinAlma?stok=${stok}`;
@@ -126,7 +126,7 @@ const EditSatisFaturasiProductModal = ({ selectedProduct, modalVisible, setModal
 // Miktarı doğrulama fonksiyonu
 const validateQuantityEdit = (quantity) => {
 
-  if (modalId === 1 || modalId === 2 || modalId === 3) {
+  if (selectedProduct?.modalId >= 1 ) {
     // Eğer modalId 1 veya 2 ise doğrulama yapma
     return true;
   }
@@ -328,7 +328,7 @@ const handleUpdate = async () => {
           <Text style={MainStyles.modalStokKodu}>Stok Adı:{updatedProduct?.Stok_Ad}</Text>
         </View>
             <View style={MainStyles.productModalContainer}>
-            {modalId !== 1 && modalId !== 2 && modalId !== 3 ? (
+            {modalId < 1 ? (
               <View style={MainStyles.inputBirimGroup}>
                 <Text style={MainStyles.productModalText}>Birim:</Text>
                 <View style={MainStyles.productModalPickerContainer}>
@@ -403,7 +403,7 @@ const handleUpdate = async () => {
  </View>
 </View>
 ) : null}
-              <View style={modalId === 1 || modalId === 2 || modalId === 3 ? MainStyles.inputBirimOzelGroup : MainStyles.inputBirimGroup}>
+              <View style={modalId < 1 ? MainStyles.inputBirimGroup : MainStyles.inputBirimOzelGroup}>
                 <Text style={MainStyles.productModalText}>Miktar:</Text>
                 <TextInput
                   style={MainStyles.productModalMiktarInput}

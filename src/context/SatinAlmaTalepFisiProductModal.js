@@ -72,8 +72,7 @@ const SatinAlmaTalepFisiProductModal = ({
 
 
   useEffect(() => {
-    console.log('aa', modalId)
-    if (modalVisible && selectedProduct && modalId === 0 ) {
+    if (modalVisible && selectedProduct && modalId < 1 ) {
       const fetchSatisFiyati = async () => {
         const stok = selectedProduct?.Stok_Kod ;
         const apiUrl = `/Api/Stok/StokSatisFiyatiSatinAlma?stok=${stok}`;
@@ -353,10 +352,11 @@ const validateQuantity = (quantity) => {
         <View style={MainStyles.modalContainerProductName}>
           <Text style={MainStyles.modalStokAd}>Stok Kod:{selectedProduct?.Stok_Kod} </Text>
           <Text style={MainStyles.modalStokAd}>Stok Adı:{selectedProduct?.Stok_Ad} </Text>
+          <Text style={MainStyles.modalStokAd}>Modalid:{selectedProduct?.modalId} </Text>
         </View>
 
         <View style={MainStyles.productModalContainer}>
-        {modalId === 0 ? ( // "Birim" ve Picker alanını kontrol eder
+        {modalId < 1 ? ( // "Birim" ve Picker alanını kontrol eder
     <View style={MainStyles.inputBirimGroup}>
       <Text style={MainStyles.inputtip}>Birim:</Text>
       <View style={MainStyles.productModalPickerContainer}>
@@ -431,7 +431,7 @@ const validateQuantity = (quantity) => {
     </View>
   ) : null}
 
-            <View style={modalId === 0  ? MainStyles.inputBirimGroup : MainStyles.inputBirimOzelGroup}>
+            <View style={modalId < 1  ? MainStyles.inputBirimGroup : MainStyles.inputBirimOzelGroup}>
               <Text style={MainStyles.inputtip}>Miktar:</Text>
               <TextInput
                 style={MainStyles.productModalMiktarInput}

@@ -201,7 +201,7 @@ const calculateTotalQuantity = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      //navigation.replace('SatisIrsaliyesi');
+                      navigation.replace('SatinAlmaTalepFisi');
                     }
                 }
             ],
@@ -228,7 +228,7 @@ const calculateTotalQuantity = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.Stok_Kod}
       />
-      {/* Apiye Giden Değerler */}
+      {/* Apiye Giden Değerler 
          <View style={MainStyles.faturaBilgileriContainer}>
           <Text style={MainStyles.faturaBilgileriText}>sth_tarih: {faturaBilgileri.sth_tarih}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_evrakno_seri: {faturaBilgileri.sth_evrakno_seri}</Text>

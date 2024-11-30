@@ -108,7 +108,7 @@ const SatinAlmaTalepFisiProductList = () => {
     const existingProductCount = addedProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
   
     // HareketTipi değerini modalId olarak doğrudan kullanıyoruz
-    const modalId = item.HareketTipi || 0;
+    const modalId = item.HareketTipi;
   
     setSelectedProduct({
       ...item,
@@ -116,11 +116,8 @@ const SatinAlmaTalepFisiProductList = () => {
       modalId, // HareketTipi'ni modalId olarak ekliyoruz
     });
   
-    if (modalId !== 0) {
       setModalVisible(true); // Özel modal göster
-    } else {
-      setProductModalVisible(true); // Genel modal göster
-    }
+    
   };
   
 
