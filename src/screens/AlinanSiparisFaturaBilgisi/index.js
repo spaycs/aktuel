@@ -1147,11 +1147,11 @@ const handleIrsaliyeTipiChange = async (itemValue) => {
       setLoading(true);
       try {
           // Cari Detay - siparis veya vadeBakiye
-          if (pickerValue === "siparis") {
+          if (pickerValue === "Tedarikçi Bazında Bekleyen Siparişler") {
               const response1 = await axiosLinkMain.get(`/api/Raporlar/TedarikciBazindaBekleyenSiparis?cari=${sip_musteri_kod}`);
               const tedarikciData = response1.data || [];
               setTedarikciSiparisData(tedarikciData);
-          } else if (pickerValue === "vadeBakiye") {
+          } else if (pickerValue === "Sorumluluk Bazında Ortalama Vade") {
               const response2 = await axiosLinkMain.get(`/api/Raporlar/SorumlulukBazindaOrtVadeBakiye?cari=${sip_musteri_kod}`);
               const vadeBakiyeData = response2.data || [];
               setOrtalamaVadeBakiyeData(vadeBakiyeData);
@@ -1192,7 +1192,7 @@ const formatPrice = (price) => {
   
   const renderSelectedData = () => {
     switch (selectedValue) {
-        case "siparis":
+        case "Tedarikçi Bazında Bekleyen Siparişler":
             return (
                 <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
                     <Grid>
@@ -1218,7 +1218,7 @@ const formatPrice = (price) => {
                 </ScrollView>
             );
 
-        case "vadeBakiye":
+        case "Sorumluluk Bazında Ortalama Vade":
             return (
                 <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
                     <Grid>
@@ -1440,8 +1440,8 @@ const renderOzelAlanSelectedData = () => {
     <TouchableOpacity
         style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
         onPress={() => {
-            setSelectedValue('siparis');  // veya 'vadeBakiye' değerleri
-            fetchCariDetayData(sip_musteri_kod, 'siparis'); // ya da 'vadeBakiye'
+            setSelectedValue('Tedarikçi Bazında Bekleyen Siparişler');  // veya 'vadeBakiye' değerleri
+            fetchCariDetayData(sip_musteri_kod, 'Tedarikçi Bazında Bekleyen Siparişler'); // ya da 'vadeBakiye'
         }}
     >
         <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
@@ -1502,8 +1502,8 @@ const renderOzelAlanSelectedData = () => {
                                                         style={MainStyles.picker}
                                                     >
                                                         <Picker.Item label="Tipini Seçin" value={null} style={MainStyles.textStyle}/>
-                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" style={MainStyles.textStyle} />
-                                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" style={MainStyles.textStyle} />
+                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="Tedarikçi Bazında Bekleyen Siparişler" style={MainStyles.textStyle} />
+                                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="Sorumluluk Bazında Ortalama Vade" style={MainStyles.textStyle} />
                                                     </Picker>
                                                     <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
                                                 </View>
@@ -1522,8 +1522,8 @@ const renderOzelAlanSelectedData = () => {
                                         itemStyle={{ height: 40, fontSize: 12 }}
                                     >
                                         <Picker.Item label="Tipini Seçin" value={null} style={MainStyles.textStyle}/>
-                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="siparis" style={MainStyles.textStyle} />
-                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="vadeBakiye" style={MainStyles.textStyle}/>
+                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="Tedarikçi Bazında Bekleyen Siparişler" style={MainStyles.textStyle} />
+                                        <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="Sorumluluk Bazında Ortalama Vade" style={MainStyles.textStyle}/>
                                     </Picker>
                                 )}
                             </View>
