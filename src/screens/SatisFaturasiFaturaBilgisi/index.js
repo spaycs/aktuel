@@ -1135,7 +1135,7 @@ const SatisFaturasiFaturaBilgisi = () => {
                       
                       {showEvrakDatePicker && (
                         <DateTimePicker
-                          style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+                           style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
                           value={evrakDate || new Date()} 
                           mode="date"
                           display="default"
