@@ -44,6 +44,7 @@ const TahsilatTediyeMusteriCekiModal = ({ isModalVisible, setIsModalVisible, fir
   const [selectedPickerValue, setSelectedPickerValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isBankModalVisible, setIsBankModalVisible] = useState(false);
+  const [isPickerModalVisible, setIsPickerModalVisible] = useState(false);
 const [bankList, setBankList] = useState([]);
 
   useEffect(() => {
