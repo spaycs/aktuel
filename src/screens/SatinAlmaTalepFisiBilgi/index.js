@@ -586,41 +586,29 @@ const SatinAlmaTalepFisiBilgi = () => {
                     <DataTable>
                       <DataTable.Header style={MainStyles.tableHeaderContainer}>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Tarihi</DataTable.Title>
+                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Teslim Tarihi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Seri</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Evrak Sıra</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 200 }]}>Cari Kodu</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Cari Ünvan</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Türü</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Vergi</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>İskonto</DataTable.Title>
-                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Yekün</DataTable.Title>
+                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 200 }]}>Kod</DataTable.Title>
+                        <DataTable.Title style={[MainStyles.tableHeaderText, { width: 100 }]}>Tipi</DataTable.Title>
                         <DataTable.Title style={[MainStyles.tableHeaderText, { width: 150 }]}>Önizleme</DataTable.Title>
                       </DataTable.Header>
 
-                      <ScrollView style={{ maxHeight: 600 }}>
+                      <ScrollView >
                         {data.map((item, index) => (
                           <DataTable.Row key={index} style={MainStyles.tableRow}>
                             <DataTable.Cell style={{ width: 100 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.Tarihi}
+                              {item.Tarih}
+                            </DataTable.Cell>
+                            <DataTable.Cell style={{ width: 100 }} numberOfLines={1} ellipsizeMode="tail">
+                              {item.Teslim_Tarihi}
                             </DataTable.Cell>
                             <DataTable.Cell style={{ width: 100, paddingHorizontal: 15 }}>{item.Seri}</DataTable.Cell>
                             <DataTable.Cell style={{ width: 100 }}>{item.Sıra}</DataTable.Cell>
                             <DataTable.Cell style={{ width: 200 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.Cari_Kod}
+                              {item.Kod}
                             </DataTable.Cell>
-                            <DataTable.Cell style={{ width: 100 }}>{item.Cari_Ünvan}</DataTable.Cell>
-                            <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.N_İ}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.Toplam_Vergi}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.Toplam_Iskonto}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={{ width: 150 }} numberOfLines={1} ellipsizeMode="tail">
-                              {item.Toplam_Tutar}
-                            </DataTable.Cell>
+                            <DataTable.Cell style={{ width: 100 }}>{item.Tipi}</DataTable.Cell>
                             <DataTable.Cell style={[MainStyles.withBorder, { width: 150 }]} >
                               <TouchableOpacity onPress={() => handlePdfClick(item.Seri, item.Sıra)}>
                               <PDF width={25} height={25}/>
