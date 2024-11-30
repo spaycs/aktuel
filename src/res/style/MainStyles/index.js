@@ -1920,6 +1920,12 @@ export const MainStyles = {
       borderWidth: 1,
       borderColor: colors.textInputBg,
     },
+    tableRowModal: {
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: colors.textInputBg,
+      height: 30,
+    },
     evenRow: {
       backgroundColor: '#f9f9f9', // Çift satırlara açık gri renk
     },

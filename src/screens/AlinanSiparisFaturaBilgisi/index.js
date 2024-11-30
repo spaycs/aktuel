@@ -1205,7 +1205,7 @@ const formatPrice = (price) => {
                             </Col>
                         </Row>
                         {tedarikciSiparisData.map((item, index) => (
-                            <Row key={index} style={MainStyles.tableRow}>
+                            <Row key={index} style={MainStyles.tableRowModal}>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
                                     <Text style={MainStyles.colText}>{item.Tedarikci}</Text>
                                 </Col>
@@ -1231,7 +1231,7 @@ const formatPrice = (price) => {
                             </Col>
                         </Row>
                         {ortalamaVadeBakiyeData.map((item, index) => (
-                            <Row key={index} style={MainStyles.tableRow}>
+                            <Row key={index} style={MainStyles.tableRowModal}>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
                                     <Text style={MainStyles.colText}>{item.SrmBakiye}</Text>
                                 </Col>
@@ -1261,7 +1261,7 @@ const renderOzelAlanSelectedData = () => {
                       </Row>
                       {teminatTutariData.length > 0 ? (
                           teminatTutariData.map((item, index) => (
-                              <Row key={index} style={MainStyles.tableRow}>
+                              <Row key={index} style={MainStyles.tableRowModal}>
                                   <Col style={[MainStyles.tableCell, { width: 150 }]} >
                                       <Text style={MainStyles.colTitle}>{item.Tip}</Text>
                                   </Col>
