@@ -219,6 +219,7 @@ const SatisFaturasiFaturaBilgisi = () => {
     }, []);
 
     const handleDateChange = (event, selectedDate) => {
+      setShowDatePicker(false);
       const newDate = selectedDate || date;
       setDate(newDate);
 
@@ -772,51 +773,21 @@ const SatisFaturasiFaturaBilgisi = () => {
         </View>
         <Text style={MainStyles.formTitle}>Tarih </Text> 
         <View style={MainStyles.datePickerContainer}>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} >
             <View style={MainStyles.dateContainer}>
               <Takvim name="calendar-today" style={MainStyles.dateIcon} />
               <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
             </View>
           </TouchableOpacity>
-
-          {/* Tarih Seçici */}
           {showDatePicker && (
-            Platform.OS === 'ios' ? (
-              <Modal
-                visible={showDatePicker}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setShowDatePicker(false)}
-              >
-                <View style={MainStyles.modalBackgroundTarih}>
-                  <View style={MainStyles.modalContent}>
-                    {/* DateTimePicker */}
-                    <DateTimePicker
-                      value={date}
-                      mode="date"
-                      display="spinner" // iOS için spinner daha iyi bir seçenek
-                      onChange={handleDateChange}
-                    />
-
-                    {/* Kapat Butonu */}
-                    <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                      <Text style={MainStyles.modalCloseButtonTarih}>Kapat</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
-            ) : (
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="default" // Android için varsayılan görünüm
-                onChange={handleDateChange}
-              />
-            )
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
           )}
         </View>
-
-
 
         <View style={MainStyles.teksirabirlestir}>
         <View style={{ width: '35%' }}>
