@@ -1369,6 +1369,7 @@ const renderOzelAlanSelectedData = () => {
           <View style={MainStyles.modalContent}>
             {/* DateTimePicker */}
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
               display="spinner" // iOS için spinner önerilir
@@ -1388,6 +1389,7 @@ const renderOzelAlanSelectedData = () => {
       </Modal>
     ) : (
       <DateTimePicker
+      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
         value={date}
         mode="date"
         display="default" // Android için varsayılan görünüm
@@ -1852,6 +1854,7 @@ const renderOzelAlanSelectedData = () => {
                     
                     {showEvrakDatePicker && (
                       <DateTimePicker
+                      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                         value={evrakDate || new Date()} 
                         mode="date"
                         display="default"

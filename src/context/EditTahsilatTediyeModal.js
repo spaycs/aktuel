@@ -210,6 +210,7 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
               </TouchableOpacity>
               {showDatePicker && (
                 <DateTimePicker
+                style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                   value={date}
                   mode="date"
                   display="default"
@@ -308,6 +309,7 @@ const EditTahsilatTediyeModal = ({ selectedProduct, modalVisible, setModalVisibl
               </TouchableOpacity>
               {showAdatDatePicker && (
               <DateTimePicker
+              style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={adatVadesi}
               mode="date"
               display="default"

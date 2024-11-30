@@ -773,6 +773,7 @@ const AlisIrsaliyesiBilgisi = () => {
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
               display="default"
@@ -1127,6 +1128,7 @@ const AlisIrsaliyesiBilgisi = () => {
                     
                     {showEvrakDatePicker && (
                       <DateTimePicker
+                      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                         value={evrakDate || new Date()} 
                         mode="date"
                         display="default"

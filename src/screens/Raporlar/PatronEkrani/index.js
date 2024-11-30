@@ -60,6 +60,7 @@ const PatronEkrani = () => {
         </TouchableOpacity>
         {showStartDatePicker && (
           <DateTimePicker
+          style={{position: 'absolute', backgroundColor: colors.textinputgray}}
             value={startDate}
             mode="date"
             display="default"
@@ -77,6 +78,7 @@ const PatronEkrani = () => {
         </TouchableOpacity>
         {showEndDatePicker && (
           <DateTimePicker
+          style={{position: 'absolute', backgroundColor: colors.textinputgray}}
             value={endDate}
             mode="date"
             display="default"

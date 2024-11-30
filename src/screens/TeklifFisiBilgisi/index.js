@@ -742,6 +742,7 @@ const TeklifFisiBilgisi = () => {
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
               display="default"
@@ -759,6 +760,7 @@ const TeklifFisiBilgisi = () => {
           </TouchableOpacity>
           {showBaslangicDatePicker  && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={baslangicTarih}
               mode="date"
               display="default"
@@ -776,6 +778,7 @@ const TeklifFisiBilgisi = () => {
           </TouchableOpacity>
           {showGecerlilikDatePicker  && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={gecerlilikTarih}
               mode="date"
               display="default"
@@ -1040,6 +1043,7 @@ const TeklifFisiBilgisi = () => {
                     
                     {showEvrakDatePicker && (
                       <DateTimePicker
+                      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                         value={evrakDate || new Date()} 
                         mode="date"
                         display="default"

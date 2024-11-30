@@ -258,6 +258,7 @@ const [bankList, setBankList] = useState([]);
             </TouchableOpacity>
             {showDatePicker && (
               <DateTimePicker
+              style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                 value={date}
                 mode="date"
                 display="default"
@@ -406,6 +407,7 @@ const [bankList, setBankList] = useState([]);
               </TouchableOpacity>
               {showAdatVadesiPicker && (
                 <DateTimePicker
+                style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                   value={adatVadesi}
                   mode="date"
                   display="default"

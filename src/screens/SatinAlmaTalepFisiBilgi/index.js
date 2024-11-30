@@ -346,6 +346,7 @@ const SatinAlmaTalepFisiBilgi = () => {
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
               display="default"
@@ -364,6 +365,7 @@ const SatinAlmaTalepFisiBilgi = () => {
           </TouchableOpacity>
           {showTeslimDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={teslimdate}
               mode="date"
               display="default"

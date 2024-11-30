@@ -251,6 +251,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
             </TouchableOpacity>
             {showDatePicker && (
               <DateTimePicker
+              style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                 value={date}
                 mode="date"
                 display="default"
@@ -412,6 +413,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
               </TouchableOpacity>
               {showAdatVadesiPicker && (
                 <DateTimePicker
+                style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                   value={adatVadesi}
                   mode="date"
                   display="default"

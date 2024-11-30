@@ -747,6 +747,7 @@ const handleInputChange = (field, value) => {
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
               display="default"

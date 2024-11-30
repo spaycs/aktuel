@@ -549,6 +549,7 @@ const TahsilatTediyeBilgisi = () => {
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={evrakDate}
               mode="date"
               display="default"
@@ -797,6 +798,7 @@ const TahsilatTediyeBilgisi = () => {
                       
                       {showEvrakDatePicker && (
                         <DateTimePicker
+                        style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                           value={evrakDate || new Date()} 
                           mode="date"
                           display="default"

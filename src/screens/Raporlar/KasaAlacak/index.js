@@ -152,6 +152,7 @@ const KasaAlacak = () => {
           </TouchableOpacity>
           {showStartDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={startDate}
               mode="date"
               display="default"
@@ -169,6 +170,7 @@ const KasaAlacak = () => {
           </TouchableOpacity>
           {showEndDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={endDate}
               mode="date"
               display="default"
