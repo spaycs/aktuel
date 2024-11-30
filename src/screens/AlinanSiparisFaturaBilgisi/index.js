@@ -1585,7 +1585,7 @@ const renderOzelAlanSelectedData = () => {
                                                 }}
                                                 style={MainStyles.picker}
                                             >
-                                                <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
+                                                <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
                                                 <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
                                             </Picker>
                                             <TouchableOpacity onPress={() => setIsPickerModalVisible(false)}>
@@ -1608,7 +1608,7 @@ const renderOzelAlanSelectedData = () => {
                                 style={{ marginHorizontal: -10 }}
                                 itemStyle={{ height: 40, fontSize: 12 }}
                             >
-                                <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
+                                <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
                                 <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
                             </Picker>
                         )}
