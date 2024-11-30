@@ -175,7 +175,7 @@ const fetchData = async () => {
       <>
         {/* iOS için Modal Picker */}
         <TouchableOpacity onPress={() => setIsYearPickerVisible(true)}>
-          <Text style={[styles.textStyle, { paddingVertical: 10 }]}>
+          <Text style={[styles.textStyle, { paddingVertical: 10, paddingLeft:5 }]}>
             {year || 'Yıl Seçin'}
           </Text>
         </TouchableOpacity>
@@ -230,7 +230,7 @@ const fetchData = async () => {
           <>
             {/* iOS için Modal Picker */}
             <TouchableOpacity onPress={() => setIsPersonelPickerVisible(true)}>
-              <Text style={[styles.textStyle, { paddingVertical: 10 }]}>
+              <Text style={[styles.textStyle, { paddingVertical: 10, paddingLeft:5 }]}>
                 {selectedPersonel || 'Personel Seçin'}
               </Text>
             </TouchableOpacity>
