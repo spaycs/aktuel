@@ -199,9 +199,7 @@ const fetchData = async () => {
                   <Picker.Item key={yr} label={yr.toString()} value={yr} style={MainStyles.textStyle} />
                 ))}
               </Picker>
-              <TouchableOpacity onPress={() => setIsYearPickerVisible(false)}>
-                <Text style={MainStyles.closeButtonText}>Kapat</Text>
-              </TouchableOpacity>
+              <Button title="Kapat" onPress={() => setIsYearPickerVisible(false)} />
             </View>
           </View>
         </Modal>
@@ -257,9 +255,7 @@ const fetchData = async () => {
                       <Picker.Item key={personel.No} label={personel.Adi} value={personel.Adi} style={MainStyles.textStyle} />
                     ))}
                   </Picker>
-                  <TouchableOpacity onPress={() => setIsPersonelPickerVisible(false)}>
-                    <Text style={MainStyles.closeButtonText}>Kapat</Text>
-                  </TouchableOpacity>
+                  <Button title="Kapat" onPress={() => setIsPersonelPickerVisible(false)} />
                 </View>
               </View>
             </Modal>
