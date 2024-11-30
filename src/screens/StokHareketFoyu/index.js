@@ -199,6 +199,16 @@ const StokHareketFoyu = ({ navigation, route  }) => {
         </TouchableOpacity>
     </View>
       
+      {/* Filtreleme Alanı */}
+     <View style={styles.filterRow}>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+      </View>
 
       {loading ? (
       <FastImage

@@ -108,6 +108,7 @@ const CariList = ({ navigation }) => {
 
   const handleCariHareketFoyu = () => {
     if (menuIzinleri.IQM_CariHaraketFoyu === 1) {
+      closeModal();
       navigation.navigate('CariHareketFoyu', { cariKod: selectedItem?.Cari_Kod });
     } else {
       Alert.alert('Erişim Hatası', 'Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.');
@@ -116,6 +117,7 @@ const CariList = ({ navigation }) => {
   
   const handleStokHareketFoyu = () => {
     if (menuIzinleri.IQM_StokFoyu === 1) {
+      closeModal();
       navigation.navigate('StokHareketFoyu', { cariKod: selectedItem?.Cari_Kod })
     } else {
       Alert.alert('Erişim Hatası', 'Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.');
@@ -124,6 +126,7 @@ const CariList = ({ navigation }) => {
 
   const handleCariSiparisFoyu = () => {
     if (menuIzinleri.IQM_StokSiparisFoyu === 1) {
+      closeModal();
       navigation.navigate('CariSiparisFoyu', { cariKod: selectedItem?.Cari_Kod });
     } else {
       Alert.alert('Erişim Hatası', 'Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.');
