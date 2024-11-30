@@ -258,9 +258,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
               <Picker.Item label="Kendisi" value="Kendisi" style={MainStyles.textStyle} />
               <Picker.Item label="Müşterisi" value="Müşterisi" style={MainStyles.textStyle} />
             </Picker>
-            <TouchableOpacity onPress={() => setIsPickerModalVisible(false)}>
-              <Text style={MainStyles.closeButtonText}>Kapat</Text>
-            </TouchableOpacity>
+            <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
           </View>
         </View>
       </Modal>
