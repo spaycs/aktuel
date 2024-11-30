@@ -12,6 +12,7 @@ import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
 import CustomHeader from '../../components/CustomHeader';
+import FastImage from 'react-native-fast-image';
 
 const AlisIrsaliyesiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
