@@ -20,6 +20,8 @@ const YillikRapor = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchClicked, setSearchClicked] = useState(false); 
+  const [isPersonelPickerVisible, setIsPersonelPickerVisible] = useState(false); 
+  const [isYearPickerVisible, setIsYearPickerVisible] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const IQ_MikroPersKod = defaults[0]?.IQ_MikroPersKod || '';
   const IQ_Admin = defaults[0]?.IQ_Admin || '';
