@@ -90,6 +90,7 @@ const StokHareketFoyu = ({ navigation, route  }) => {
       const response = await axiosLinkMain.get(`/Api/Raporlar/StokFoyu?stokkod=${Stok_Kod}&ilktarih=${formattedIlkTarih}&sontarih=${formattedSonTarih}`);
       setData(response.data);
       setFilteredData(response.data);
+      console.log(response)
     } catch (error) {
       setError('Veri çekme hatası: ' + error.message);
     } finally {
