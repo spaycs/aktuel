@@ -392,7 +392,9 @@ const [bankList, setBankList] = useState([]);
               <Text style={MainStyles.dateTitle}>Taşra mı?</Text>
               <CheckBox
                 value={tasrami}
+                boxType='square'
                 onValueChange={setTasrami}
+                style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
               />
             </View>
 
