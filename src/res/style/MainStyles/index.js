@@ -1685,6 +1685,7 @@ export const MainStyles = {
     },
     pickerText:{
       left:10,
+      fontSize: 12,
     },
     productModalPicker: {
       width: '100%', 
