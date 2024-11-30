@@ -1537,40 +1537,82 @@ const renderOzelAlanSelectedData = () => {
             </View>
         </Modal>
 
-<Modal
+        <Modal
     visible={isOzelAlanDetayVisible}
     transparent={true}
     animationType="slide"
     onRequestClose={closeModal}
 >
-<View style={[MainStyles.modalBackground]}>
-                <View style={MainStyles.modalCariDetayContent}>
-                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
-                    </TouchableOpacity>
-  
+    <View style={[MainStyles.modalBackground]}>
+        <View style={MainStyles.modalCariDetayContent}>
+            <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                <Text style={MainStyles.closeButtonText}>Kapat</Text>
+            </TouchableOpacity>
             {loading ? (
                 <FastImage
-                style={MainStyles.loadingGif}
-                source={require('../../res/images/image/pageloading.gif')}
-                resizeMode={FastImage.resizeMode.contain}/>
+                    style={MainStyles.loadingGif}
+                    source={require('../../res/images/image/pageloading.gif')}
+                    resizeMode={FastImage.resizeMode.contain}
+                />
             ) : (
                 <>
-                 <Text style={MainStyles.formTitle}>Tip Seçin</Text>
-                    <Picker
-                        selectedValue={selectedValue}
-                        onValueChange={(value) => {
-                            setSelectedValue(value);
-                            if (value === "teminatTutari") {
-                                fetchOzelAlanData(sip_musteri_kod, value);
-                            }
-                        }}
-                        style={{ marginHorizontal: -10 }}
-                        itemStyle={{ height: 40, fontSize: 12 }}
-                    >
-                        <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
-                        <Picker.Item label="Özel Alanlar" value="teminatTutari" style={MainStyles.textStyle}/>
-                    </Picker>
+                    <Text style={MainStyles.formTitle}>Tip Seçin</Text>
+                    <View style={MainStyles.inputStyleAlinanSiparis}>
+                        {Platform.OS === 'ios' ? (
+                            <>
+                                <TouchableOpacity onPress={() => setIsPickerModalVisible(true)}>
+                                    <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                                        {selectedValue ? selectedValue : 'Seçiniz...'}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                {/* iOS için Picker Modal */}
+                                <Modal
+                                    visible={isPickerModalVisible}
+                                    animationType="slide"
+                                    transparent
+                                >
+                                    <View style={MainStyles.modalContainerPicker}>
+                                        <View style={MainStyles.modalContentPicker}>
+                                            <Picker
+                                                selectedValue={selectedValue}
+                                                onValueChange={(value) => {
+                                                    setSelectedValue(value);
+                                                    if (value === "teminatTutari") {
+                                                        fetchOzelAlanData(sip_musteri_kod, value);
+                                                    }
+                                                    setIsPickerModalVisible(false); // Modalı kapat
+                                                }}
+                                                style={MainStyles.picker}
+                                            >
+                                                <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
+                                                <Picker.Item label="Özel Alanlar" value="teminatTutari" style={MainStyles.textStyle} />
+                                            </Picker>
+                                            <TouchableOpacity onPress={() => setIsPickerModalVisible(false)}>
+                                                <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </Modal>
+                            </>
+                        ) : (
+                            // Android için Picker
+                            <Picker
+                                selectedValue={selectedValue}
+                                onValueChange={(value) => {
+                                    setSelectedValue(value);
+                                    if (value === "teminatTutari") {
+                                        fetchOzelAlanData(sip_musteri_kod, value);
+                                    }
+                                }}
+                                style={{ marginHorizontal: -10 }}
+                                itemStyle={{ height: 40, fontSize: 12 }}
+                            >
+                                <Picker.Item label="Seçiniz..." value={null} style={MainStyles.textStyle} />
+                                <Picker.Item label="Özel Alanlar" value="teminatTutari" style={MainStyles.textStyle} />
+                            </Picker>
+                        )}
+                    </View>
                     {/* Seçili değere göre veri gösterme */}
                     {renderOzelAlanSelectedData()}
                 </>
@@ -1578,6 +1620,7 @@ const renderOzelAlanSelectedData = () => {
         </View>
     </View>
 </Modal>
+
 
 
 
