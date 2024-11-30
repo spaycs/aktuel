@@ -1143,7 +1143,7 @@ const SatisIrsaliyesiBilgisi = () => {
                       
                       {showEvrakDatePicker && (
                         <DateTimePicker
-                        style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+                        style={{position: 'absolute', top: 11, width: 140, backgroundColor: colors.white}}
                           value={evrakDate || new Date()} 
                           mode="date"
                           display="default"
