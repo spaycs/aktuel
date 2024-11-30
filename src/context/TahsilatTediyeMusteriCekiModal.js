@@ -394,7 +394,7 @@ const [bankList, setBankList] = useState([]);
                 value={tasrami}
                 boxType='square'
                 onValueChange={setTasrami}
-                style={{ transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }] }}
+                style={{ transform: [{ scaleX: 0.6 }, { scaleY: 0.6 }] }}
               />
             </View>
 
