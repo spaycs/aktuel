@@ -48,27 +48,24 @@ const SatisIrsaliyesiDetay = () => {
   // Sayfa Açıldığında Otomatik Çalışan Değerler
 
   // Tarih Seçimi
-    // Tarih Seçimi
-const handleDateChange = (event, selectedDate) => {
-  if (selectedDate) {
-    const newDate = selectedDate;
-    setDate(newDate);
+    const handleDateChange = (event, selectedDate) => {
+      setShowDatePicker(false);
+      const newDate = selectedDate || date;
+      setDate(newDate);
 
-    const formattedDate = formatDate(newDate);
-    if (selectedField) {
-      handleInputChange(selectedField, formattedDate);
-    }
-  }
-  setShowDatePicker(false);
-};
+      const formattedDate = formatDate(newDate);
+      if (selectedField) {
+        handleInputChange(selectedField, formattedDate);
+        setSelectedField(null); 
+      }
+    };
 
-const formatDate = (date) => {
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-};
-
+    const formatDate = (date) => {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    };
   // Tarih Seçimi
 
   // Bilgileri Set Eden Alan
@@ -124,7 +121,7 @@ const formatDate = (date) => {
           </View>
           {showDatePicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+            style={{position: 'absolute', marginTop: 10, backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
               display="default"
