@@ -1683,6 +1683,9 @@ export const MainStyles = {
       borderColor: colors.textInputBg,
       borderWidth: 1,
     },
+    pickerText:{
+      left:10,
+    },
     productModalPicker: {
       width: '100%', 
       fontSize: 13,
