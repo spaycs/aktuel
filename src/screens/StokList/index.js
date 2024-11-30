@@ -254,7 +254,7 @@ const StokList = ({navigation}) => {
       </>
       )}
       
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
+      <Modal visible={modalVisible} transparent={true} onRequestClose={closeModal} animationType="slide">
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={MainStyles.modalCariContainer}>
             <View style={MainStyles.modalCariContent}>
