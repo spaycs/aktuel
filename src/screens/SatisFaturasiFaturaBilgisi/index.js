@@ -780,17 +780,12 @@ const SatisFaturasiFaturaBilgisi = () => {
             </View>
           </TouchableOpacity>
           {showDatePicker && (
-           <DateTimePicker
-           value={date}
-           mode="date"
-           display={Platform.OS === 'ios' ? 'spinner' : 'default'} // iOS'ta "spinner", Android'de varsayılan görünüm
-           onChange={(event, selectedDate) => {
-             setShowDatePicker(false); // Tarih seçildikten sonra seçiciyi kapat
-             if (selectedDate) {
-               handleDateChange(event, selectedDate); // Tarihi güncelle
-             }
-           }}
-         />
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
           )}
         </View>
 
