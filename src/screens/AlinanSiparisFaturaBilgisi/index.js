@@ -1349,61 +1349,22 @@ const renderOzelAlanSelectedData = () => {
 
         <Text style={MainStyles.formTitle}>Tarih </Text> 
         <View style={MainStyles.datePickerContainer}>
-  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-    <View style={MainStyles.dateContainer}>
-      <Takvim name="calendar-today" style={MainStyles.dateIcon} />
-      <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
-    </View>
-  </TouchableOpacity>
-
-  {/* Tarih Seçici */}
-  {showDatePicker && (
-    Platform.OS === 'ios' ? (
-      <Modal
-        visible={showDatePicker}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowDatePicker(false)}
-      >
-        <View style={MainStyles.modalBackgroundTarih}>
-          <View style={MainStyles.modalContent}>
-            {/* DateTimePicker */}
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} >
+            <View style={MainStyles.dateContainer}>
+              <Takvim name="calendar-today" style={MainStyles.dateIcon} />
+              <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
+            </View>
+          </TouchableOpacity>
+          {showDatePicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+              style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
               mode="date"
-              display="spinner" // iOS için spinner önerilir
-              onChange={(event, selectedDate) => {
-                if (selectedDate) {
-                  setDate(selectedDate); // Tarihi günceller
-                }
-              }}
+              display="default"
+              onChange={handleDateChange}
             />
-
-            {/* Kapat Butonu */}
-            <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-              <Text style={MainStyles.modalCloseButtonTarih}>Kapat</Text>
-            </TouchableOpacity>
-          </View>
+          )}
         </View>
-      </Modal>
-    ) : (
-      <DateTimePicker
-      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
-        value={date}
-        mode="date"
-        display="default" // Android için varsayılan görünüm
-        onChange={(event, selectedDate) => {
-          if (selectedDate) {
-            setDate(selectedDate); // Tarihi günceller
-            setShowDatePicker(false); // Android'de picker'ı kapatır
-          }
-        }}
-      />
-    )
-  )}
-</View>
-
         
         <Text style={MainStyles.formTitle}>Tip </Text> 
       <View style={MainStyles.inputStyleAlinanSiparis}>
@@ -1854,7 +1815,6 @@ const renderOzelAlanSelectedData = () => {
                     
                     {showEvrakDatePicker && (
                       <DateTimePicker
-                      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                         value={evrakDate || new Date()} 
                         mode="date"
                         display="default"
