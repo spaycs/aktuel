@@ -47,6 +47,7 @@ const SarfMalzemeBilgi = () => {
   const [sth_personel_adi, setSth_personel_adi] = useState('');
   const [sth_isemri_gider_adi, setSth_isemri_gider_adi] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isKaynakModalVisible, setIsKaynakModalVisible] = useState(false); 
   const [loading, setLoading] = useState(false); 
   const [data, setData] = useState([]); 
 
@@ -363,14 +364,14 @@ const SarfMalzemeBilgi = () => {
         <View style={MainStyles.inputDepoSecin}>
         {Platform.OS === 'ios' ? (
           <>
-            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <TouchableOpacity onPress={() => setIsKaynakModalVisible(true)}>
               <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
                 {kaynakDepo ? kaynakDepo : 'Depo'}
               </Text>
             </TouchableOpacity>
 
             {/* iOS Modal */}
-            <Modal visible={isModalVisible} animationType="slide" transparent>
+            <Modal visible={isKaynakModalVisible} animationType="slide" transparent>
               <View style={MainStyles.modalContainerPicker}>
                 <View style={MainStyles.modalContentPicker}>
                   <Picker
@@ -383,7 +384,7 @@ const SarfMalzemeBilgi = () => {
                       <Picker.Item key={`kaynak-${item.Adı}`} label={item.Adı} value={item.Adı} />
                     ))}
                   </Picker>
-                  <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                  <Button title="Kapat" onPress={() => setIsKaynakModalVisible(false)} />
                 </View>
               </View>
             </Modal>
