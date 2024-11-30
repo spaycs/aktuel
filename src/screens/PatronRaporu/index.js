@@ -69,7 +69,7 @@ const PatronRaporu = () => {
         </TouchableOpacity>
         {showStartDatePicker && (
           <DateTimePicker
-          style={{position: 'absolute', marginTop:10, width:90, backgroundColor: colors.textinputgray}}
+          style={{position: 'absolute', marginTop:22, width:90, backgroundColor: colors.textinputgray}}
             value={startDate}
             mode="date"
             display="default"
@@ -87,7 +87,7 @@ const PatronRaporu = () => {
         </TouchableOpacity>
         {showEndDatePicker && (
           <DateTimePicker
-          style={{position: 'absolute', marginTop:10, width:90,  backgroundColor: colors.textinputgray}}
+          style={{position: 'absolute', marginTop:22, width:90,  backgroundColor: colors.textinputgray}}
             value={endDate}
             mode="date"
             display="default"
