@@ -202,7 +202,7 @@ const formatDateForApi = (date) => {
           </TouchableOpacity>
           {showStartDatePicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+            style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
               value={startDate}
               mode="date"
               display="default"
@@ -220,7 +220,7 @@ const formatDateForApi = (date) => {
           </TouchableOpacity>
           {showEndDatePicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+            style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
               value={endDate}
               mode="date"
               display="default"

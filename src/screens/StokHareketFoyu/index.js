@@ -166,7 +166,7 @@ const StokHareketFoyu = ({ navigation, route  }) => {
           </TouchableOpacity>
           {showIlkTarihPicker && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+             style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
               value={ilkTarih}
               mode="date"
               display="default"
@@ -186,7 +186,7 @@ const StokHareketFoyu = ({ navigation, route  }) => {
           </TouchableOpacity>
           {showSonTarihPicker  && (
             <DateTimePicker
-            style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+            style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
               value={sonTarih}
               mode="date"
               display="default"
