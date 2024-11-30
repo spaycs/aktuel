@@ -142,7 +142,7 @@ const handleInputChange = (field, value) => {
         </>
       ) : (
         // Android için klasik Picker
-        <View style={MainStyles.inputStyle}>
+        <View >
           <Picker
             selectedValue={selectedFiyatListe}
             onValueChange={handleFiyatListeSiraNoChange}
@@ -207,7 +207,7 @@ const handleInputChange = (field, value) => {
               </>
             ) : (
               // Android için klasik Picker
-              <View style={MainStyles.inputStyle}>
+              <View >
                 <Picker
                   selectedValue={selectedDoviz}
                   onValueChange={handleDovizChange}

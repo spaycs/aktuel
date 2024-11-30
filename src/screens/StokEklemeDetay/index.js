@@ -140,7 +140,7 @@ const handleInputChange = (field, value) => {
         </>
       ) : (
         // Android için klasik Picker
-        <View style={MainStyles.inputStyle}>
+        <View >
           <Picker
             selectedValue={selectedBarkod}
             onValueChange={handleBarkodTipiChange}

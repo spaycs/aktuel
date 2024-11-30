@@ -419,7 +419,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
         </>
       ) : (
         // Android için klasik Picker
-        <View style={MainStyles.inputStyle}>
+        <View>
           <Picker
             selectedValue={selectedBirimList}
             onValueChange={handleBirimChange}
@@ -479,7 +479,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
         </>
       ) : (
         // Android için klasik Picker
-        <View style={MainStyles.inputStyle}>
+        <View>
           <Picker
             selectedValue={selectedPerakendeVergiList}
             onValueChange={handlePerakendeVergiChange}
@@ -539,7 +539,7 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
         </>
       ) : (
         // Android için klasik Picker
-        <View style={MainStyles.inputStyle}>
+        <View>
           <Picker
             selectedValue={selectedToptanVergiList}
             onValueChange={handleToptanVergiChange}
