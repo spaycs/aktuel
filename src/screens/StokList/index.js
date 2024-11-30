@@ -109,6 +109,7 @@ const StokList = ({navigation}) => {
   // Stok Raporları
     const navigateToStokHareketFoyu = () => {
       if (selectedItem) {
+        closeModal();
         navigation.navigate('StokHareketFoyu', { Stok_Kod: selectedItem.Stok_Kod });
       } else {
         Alert.alert('Hata', 'Stok seçimi yapılmadı.');
@@ -116,6 +117,7 @@ const StokList = ({navigation}) => {
     };
     const navigateToStokDepoDurum = () => {
       if (selectedItem) {
+        closeModal();
         navigation.navigate('StokDepoDurum', { Stok_Kod: selectedItem.Stok_Kod });
       } else {
         Alert.alert('Hata', 'Stok seçimi yapılmadı.');
