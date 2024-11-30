@@ -219,7 +219,6 @@ const SatisFaturasiFaturaBilgisi = () => {
     }, []);
 
     const handleDateChange = (event, selectedDate) => {
-      setShowDatePicker(false);
       const newDate = selectedDate || date;
       setDate(newDate);
 
