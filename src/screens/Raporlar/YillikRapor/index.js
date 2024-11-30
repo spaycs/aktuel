@@ -216,7 +216,7 @@ const fetchData = async () => {
           <Picker.Item key={yr} label={yr.toString()} value={yr} style={MainStyles.textStyle} />
         ))}
       </Picker>
-    )}
+    )} 
   </View>
 </View>
 
