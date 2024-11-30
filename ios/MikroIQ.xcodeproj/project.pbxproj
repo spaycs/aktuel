@@ -11,11 +11,11 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DA3F6D90220298C63FEE32B /* libPods-MikroIQ.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 21DFFD5CCF2A27CCB6264C6F /* libPods-MikroIQ.a */; };
+		251AA8546E9D72C34AE15A3D /* libPods-MikroIQ.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF1DA6BDA9C03CCCFDBDF5D /* libPods-MikroIQ.a */; };
 		30CA4874F37B27F7B434FAF0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 37C63D94AE6A88643DDE1285 /* PrivacyInfo.xcprivacy */; };
+		36BF7E75C7FCC5D7D655D118 /* libPods-MikroIQ-MikroIQTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BC11D2B1D5BB4D4735A3F8B /* libPods-MikroIQ-MikroIQTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A31347F32CC42333004A8655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A31347F22CC42333004A8655 /* Assets.xcassets */; };
-		E66A78CFD682A99EBD0B83A0 /* libPods-MikroIQ-MikroIQTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CE9DD5A1309F3E7791E935B /* libPods-MikroIQ-MikroIQTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,18 +51,18 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MikroIQ/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MikroIQ/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MikroIQ/main.m; sourceTree = "<group>"; };
-		1CE9DD5A1309F3E7791E935B /* libPods-MikroIQ-MikroIQTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MikroIQ-MikroIQTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		21DFFD5CCF2A27CCB6264C6F /* libPods-MikroIQ.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MikroIQ.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		37C63D94AE6A88643DDE1285 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MikroIQ/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		4A3B1CAC3073E9C6199A82C2 /* Pods-MikroIQ-MikroIQTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ-MikroIQTests.release.xcconfig"; path = "Target Support Files/Pods-MikroIQ-MikroIQTests/Pods-MikroIQ-MikroIQTests.release.xcconfig"; sourceTree = "<group>"; };
-		5D976573228DB4442E0E382C /* Pods-MikroIQ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ.release.xcconfig"; path = "Target Support Files/Pods-MikroIQ/Pods-MikroIQ.release.xcconfig"; sourceTree = "<group>"; };
+		1CF1DA6BDA9C03CCCFDBDF5D /* libPods-MikroIQ.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MikroIQ.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37C63D94AE6A88643DDE1285 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = MikroIQ/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		4BC11D2B1D5BB4D4735A3F8B /* libPods-MikroIQ-MikroIQTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MikroIQ-MikroIQTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		52B4D0263FA73CA73773F395 /* Pods-MikroIQ-MikroIQTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ-MikroIQTests.debug.xcconfig"; path = "Target Support Files/Pods-MikroIQ-MikroIQTests/Pods-MikroIQ-MikroIQTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5AC16BC85602304143E7D968 /* Pods-MikroIQ-MikroIQTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ-MikroIQTests.release.xcconfig"; path = "Target Support Files/Pods-MikroIQ-MikroIQTests/Pods-MikroIQ-MikroIQTests.release.xcconfig"; sourceTree = "<group>"; };
+		6B1CDDEDA6CEEFA9CA246044 /* Pods-MikroIQ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ.release.xcconfig"; path = "Target Support Files/Pods-MikroIQ/Pods-MikroIQ.release.xcconfig"; sourceTree = "<group>"; };
+		6FED60427C3311731395AC94 /* Pods-MikroIQ.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ.debug.xcconfig"; path = "Target Support Files/Pods-MikroIQ/Pods-MikroIQ.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MikroIQ/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A31347F22CC42333004A8655 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A31E2F722CAFC5C60001600E /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "Pods/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
 		A36B465C2CB06B6500427E5C /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		A36B465E2CB070C200427E5C /* double-conversion.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = "double-conversion.xcframework"; path = "Pods/Flipper-DoubleConversion/Frameworks/double-conversion.xcframework"; sourceTree = "<group>"; };
-		CFAFD17E3361C7C10640C149 /* Pods-MikroIQ-MikroIQTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ-MikroIQTests.debug.xcconfig"; path = "Target Support Files/Pods-MikroIQ-MikroIQTests/Pods-MikroIQ-MikroIQTests.debug.xcconfig"; sourceTree = "<group>"; };
-		D66DCCC75B89B5900D7978E0 /* Pods-MikroIQ.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MikroIQ.debug.xcconfig"; path = "Target Support Files/Pods-MikroIQ/Pods-MikroIQ.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -71,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E66A78CFD682A99EBD0B83A0 /* libPods-MikroIQ-MikroIQTests.a in Frameworks */,
+				36BF7E75C7FCC5D7D655D118 /* libPods-MikroIQ-MikroIQTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DA3F6D90220298C63FEE32B /* libPods-MikroIQ.a in Frameworks */,
+				251AA8546E9D72C34AE15A3D /* libPods-MikroIQ.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,8 +124,8 @@
 				A36B465C2CB06B6500427E5C /* hermes.xcframework */,
 				A31E2F722CAFC5C60001600E /* OpenSSL.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				21DFFD5CCF2A27CCB6264C6F /* libPods-MikroIQ.a */,
-				1CE9DD5A1309F3E7791E935B /* libPods-MikroIQ-MikroIQTests.a */,
+				1CF1DA6BDA9C03CCCFDBDF5D /* libPods-MikroIQ.a */,
+				4BC11D2B1D5BB4D4735A3F8B /* libPods-MikroIQ-MikroIQTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -165,10 +165,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D66DCCC75B89B5900D7978E0 /* Pods-MikroIQ.debug.xcconfig */,
-				5D976573228DB4442E0E382C /* Pods-MikroIQ.release.xcconfig */,
-				CFAFD17E3361C7C10640C149 /* Pods-MikroIQ-MikroIQTests.debug.xcconfig */,
-				4A3B1CAC3073E9C6199A82C2 /* Pods-MikroIQ-MikroIQTests.release.xcconfig */,
+				6FED60427C3311731395AC94 /* Pods-MikroIQ.debug.xcconfig */,
+				6B1CDDEDA6CEEFA9CA246044 /* Pods-MikroIQ.release.xcconfig */,
+				52B4D0263FA73CA73773F395 /* Pods-MikroIQ-MikroIQTests.debug.xcconfig */,
+				5AC16BC85602304143E7D968 /* Pods-MikroIQ-MikroIQTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -180,11 +180,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MikroIQTests" */;
 			buildPhases = (
-				F9BF096EC886E6D9C7E4CA40 /* [CP] Check Pods Manifest.lock */,
+				8BD239967498F3D2DACC90F5 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				B73973170EA03F99B5EC02BC /* [CP] Copy Pods Resources */,
+				746F694C1A1BD09CC6EDD91A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -200,14 +200,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MikroIQ" */;
 			buildPhases = (
-				C856555558041B9831F93AD4 /* [CP] Check Pods Manifest.lock */,
+				B2161BD0FF208D52ABEF8FDB /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				A36B46612CB070C200427E5C /* Embed Frameworks */,
-				75D06E30C9471133F19B027B /* [CP] Copy Pods Resources */,
+				6ACBECE7F75032A1593F0A1E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -294,7 +294,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		75D06E30C9471133F19B027B /* [CP] Copy Pods Resources */ = {
+		6ACBECE7F75032A1593F0A1E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -311,7 +311,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MikroIQ/Pods-MikroIQ-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B73973170EA03F99B5EC02BC /* [CP] Copy Pods Resources */ = {
+		746F694C1A1BD09CC6EDD91A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -328,29 +328,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MikroIQ-MikroIQTests/Pods-MikroIQ-MikroIQTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C856555558041B9831F93AD4 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MikroIQ-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F9BF096EC886E6D9C7E4CA40 /* [CP] Check Pods Manifest.lock */ = {
+		8BD239967498F3D2DACC90F5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -366,6 +344,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-MikroIQ-MikroIQTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B2161BD0FF208D52ABEF8FDB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MikroIQ-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -424,7 +424,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CFAFD17E3361C7C10640C149 /* Pods-MikroIQ-MikroIQTests.debug.xcconfig */;
+			baseConfigurationReference = 52B4D0263FA73CA73773F395 /* Pods-MikroIQ-MikroIQTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -453,7 +453,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4A3B1CAC3073E9C6199A82C2 /* Pods-MikroIQ-MikroIQTests.release.xcconfig */;
+			baseConfigurationReference = 5AC16BC85602304143E7D968 /* Pods-MikroIQ-MikroIQTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -479,7 +479,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D66DCCC75B89B5900D7978E0 /* Pods-MikroIQ.debug.xcconfig */;
+			baseConfigurationReference = 6FED60427C3311731395AC94 /* Pods-MikroIQ.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -494,13 +494,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8;
+				MARKETING_VERSION = 1.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.seobilisim.MikroIQ2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seobilisim.mikroiq2;
 				PRODUCT_NAME = MikroIQ;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -511,7 +511,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D976573228DB4442E0E382C /* Pods-MikroIQ.release.xcconfig */;
+			baseConfigurationReference = 6B1CDDEDA6CEEFA9CA246044 /* Pods-MikroIQ.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -525,13 +525,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8;
+				MARKETING_VERSION = 1.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.seobilisim.MikroIQ2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seobilisim.mikroiq2;
 				PRODUCT_NAME = MikroIQ;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -612,10 +612,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = false;
@@ -690,10 +687,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = false;
