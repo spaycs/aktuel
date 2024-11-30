@@ -419,7 +419,7 @@ const TahsilatTediyeMusteriSenediModal = ({ isModalVisible, setIsModalVisible, f
                 />
               )}
             </View>
-
+            <Text style={MainStyles.formTitle}>Tutar</Text>
             <TextInput
               style={MainStyles.inputMusteriCekiTextInput}
               placeholder="Tutar"

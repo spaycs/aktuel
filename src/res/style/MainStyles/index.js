@@ -545,6 +545,13 @@ export const MainStyles = {
       fontSize: 12,
       height: 40,
     },
+    loadingModalBackground: {
+      position: "absolute",
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Siyah arka plan ve opacity
+    },
     inputSatisIrsaliyesiEvrakNo: {
       width: "49%",
       borderRadius: 5,
@@ -939,9 +946,8 @@ export const MainStyles = {
     },
     modalContentSonKaydedilen: {
       width: '100%',
-      height: '100%',
-
       backgroundColor: colors.white,
+      marginBottom: 70,
     },
     modalCariDetayContent:{
       height: '95%',
@@ -1897,7 +1903,6 @@ export const MainStyles = {
       backgroundColor: 'white',
       borderWidth: 1,
       borderColor: colors.textInputBg,
-      height: 30,
     },
     evenRow: {
       backgroundColor: '#f9f9f9', // Çift satırlara açık gri renk

@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
         left: 10,
         zIndex: 1, // Geri butonunun her zaman görünür olması için
         padding: 5,
+        width: 40,
       },
       title: {
         fontSize: 16,

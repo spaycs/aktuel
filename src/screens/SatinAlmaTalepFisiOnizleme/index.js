@@ -133,7 +133,6 @@ const calculateTotalQuantity = () => {
         <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
         <Text style={MainStyles.productDetail}>Miktar: {item.sth_miktar}</Text>
         <Text style={MainStyles.productDetail}>Açıklama: {item.aciklama}</Text>
-        <Text style={MainStyles.productDetail}>Açıklama: {item.modalId}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -310,9 +309,6 @@ const calculateTotalQuantity = () => {
             ))}
             <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
               <Text style={MainStyles.addButtonText}>Ekle</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={closeExplanationModal} style={MainStyles.closeOnizlemeButton}>
-              <Text style={MainStyles.closeOnizlemeButtonText}>Kapat</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -180,7 +180,7 @@ const DepoSayimOnizleme = () => {
         keyExtractor={(item) => item.Stok_Kod}
       />
 
-       {/* Apiye Giden Değerler */}
+       {/* Apiye Giden Değerler 
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.fontSize11}>sym_depono: {faturaBilgileri.sym_depono}</Text>
        

@@ -352,7 +352,6 @@ const validateQuantity = (quantity) => {
         <View style={MainStyles.modalContainerProductName}>
           <Text style={MainStyles.modalStokAd}>Stok Kod:{selectedProduct?.Stok_Kod} </Text>
           <Text style={MainStyles.modalStokAd}>Stok Adı:{selectedProduct?.Stok_Ad} </Text>
-          <Text style={MainStyles.modalStokAd}>Modalid:{selectedProduct?.modalId} </Text>
         </View>
 
         <View style={MainStyles.productModalContainer}>
