@@ -220,7 +220,7 @@ const fetchData = async () => {
   </View>
 </View>
 
-{/* Personel Seçimi */}
+{/* Personel Seçimi */} 
 {IQ_Admin === 1 && (
   <View style={styles.pickerContainer}>
     <View style={styles.datePickerContainer}>
