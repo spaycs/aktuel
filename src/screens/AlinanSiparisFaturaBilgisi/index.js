@@ -1365,7 +1365,7 @@ const renderOzelAlanSelectedData = () => {
         animationType="slide"
         onRequestClose={() => setShowDatePicker(false)}
       >
-        <View style={MainStyles.modalBackground}>
+        <View style={MainStyles.modalBackgroundTarih}>
           <View style={MainStyles.modalContent}>
             {/* DateTimePicker */}
             <DateTimePicker
@@ -1381,7 +1381,7 @@ const renderOzelAlanSelectedData = () => {
 
             {/* Kapat Butonu */}
             <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-              <Text style={MainStyles.modalCloseButton}>Kapat</Text>
+              <Text style={MainStyles.modalCloseButtonTarih}>Kapat</Text>
             </TouchableOpacity>
           </View>
         </View>
