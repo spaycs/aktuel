@@ -1498,6 +1498,7 @@ const renderOzelAlanSelectedData = () => {
                                                         onValueChange={(value) => {
                                                             setSelectedValue(value);
                                                             fetchCariDetayData(sip_musteri_kod, value);
+                                                            setIsPickerModalVisible(false);
                                                         }}
                                                         style={MainStyles.picker}
                                                     >
