@@ -185,7 +185,7 @@ const NelerSattik = () => {
         </TouchableOpacity>
         {showEndDatePicker && (
           <DateTimePicker
-          style={{position: 'absolute', marginTop: 20, width: 90, backgroundColor: colors.textinputgray}}
+          style={{position: 'absolute', marginTop: 20, width: 100, backgroundColor: colors.textinputgray}}
             value={endDate}
             mode="date"
             display="default"
