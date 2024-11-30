@@ -1174,11 +1174,18 @@ export const MainStyles = {
       fontWeight: 'bold',
     },
     modalCloseButton: {
+      position: 'absolute',
+      top: 5,
+      right: 10,
+      padding: 10,
+      borderRadius: 5,
+    },
+    modalCloseButtonSatisFaturasi: {
       marginTop: 10,
-      color: 'blue',
+      color: colors.red,
       fontWeight: 'bold',
       textAlign: 'center',
-      fontSize: 16,
+      fontSize: 15,
     },
     addButton: {
       backgroundColor: colors.red,

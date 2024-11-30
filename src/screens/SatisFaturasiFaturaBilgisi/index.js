@@ -805,7 +805,7 @@ const SatisFaturasiFaturaBilgisi = () => {
 
             {/* Kapat Butonu */}
             <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-              <Text style={MainStyles.modalCloseButton}>Kapat</Text>
+              <Text style={MainStyles.modalCloseButtonSatisFaturasi}>Kapat</Text>
             </TouchableOpacity>
           </View>
         </View>
