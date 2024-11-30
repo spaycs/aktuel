@@ -1349,21 +1349,59 @@ const renderOzelAlanSelectedData = () => {
 
         <Text style={MainStyles.formTitle}>Tarih </Text> 
         <View style={MainStyles.datePickerContainer}>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} >
-            <View style={MainStyles.dateContainer}>
-              <Takvim name="calendar-today" style={MainStyles.dateIcon} />
-              <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
-            </View>
-          </TouchableOpacity>
-          {showDatePicker && (
+  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+    <View style={MainStyles.dateContainer}>
+      <Takvim name="calendar-today" style={MainStyles.dateIcon} />
+      <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
+    </View>
+  </TouchableOpacity>
+
+  {/* Tarih Seçici */}
+  {showDatePicker && (
+    Platform.OS === 'ios' ? (
+      <Modal
+        visible={showDatePicker}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowDatePicker(false)}
+      >
+        <View style={MainStyles.modalBackground}>
+          <View style={MainStyles.modalContent}>
+            {/* DateTimePicker */}
             <DateTimePicker
               value={date}
               mode="date"
-              display="default"
-              onChange={handleDateChange}
+              display="spinner" // iOS için spinner önerilir
+              onChange={(event, selectedDate) => {
+                if (selectedDate) {
+                  setDate(selectedDate); // Tarihi günceller
+                }
+              }}
             />
-          )}
+
+            {/* Kapat Butonu */}
+            <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+              <Text style={MainStyles.modalCloseButton}>Kapat</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+      </Modal>
+    ) : (
+      <DateTimePicker
+        value={date}
+        mode="date"
+        display="default" // Android için varsayılan görünüm
+        onChange={(event, selectedDate) => {
+          if (selectedDate) {
+            setDate(selectedDate); // Tarihi günceller
+            setShowDatePicker(false); // Android'de picker'ı kapatır
+          }
+        }}
+      />
+    )
+  )}
+</View>
+
         
         <Text style={MainStyles.formTitle}>Tip </Text> 
       <View style={MainStyles.inputStyleAlinanSiparis}>

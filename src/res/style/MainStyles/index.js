@@ -932,7 +932,12 @@ export const MainStyles = {
     modalBackground: {
       flex: 1,
       backgroundColor: 'rgba(0, 0, 0, 0.5)', // Hafif siyah arkaplan
-      justifyContent: 'flex-end',
+      justifyContent: 'center',
+  },
+    modalBackgroundTarih: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Hafif siyah arkaplan
+      justifyContent: 'center',
   },
     modalContent: {
       width: '100%',
@@ -1180,7 +1185,7 @@ export const MainStyles = {
       padding: 10,
       borderRadius: 5,
     },
-    modalCloseButtonSatisFaturasi: {
+    modalCloseButtonTarih: {
       marginTop: 10,
       color: colors.red,
       fontWeight: 'bold',
