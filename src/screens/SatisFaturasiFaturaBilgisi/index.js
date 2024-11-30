@@ -796,11 +796,7 @@ const SatisFaturasiFaturaBilgisi = () => {
                       value={date}
                       mode="date"
                       display="spinner" // iOS için spinner daha iyi bir seçenek
-                      onChange={(event, selectedDate) => {
-                        if (selectedDate) {
-                          setDate(selectedDate); // Seçilen tarihi sadece günceller
-                        }
-                      }}
+                      onChange={handleDateChange}
                     />
 
                     {/* Kapat Butonu */}
@@ -815,12 +811,7 @@ const SatisFaturasiFaturaBilgisi = () => {
                 value={date}
                 mode="date"
                 display="default" // Android için varsayılan görünüm
-                onChange={(event, selectedDate) => {
-                  if (selectedDate) {
-                    setDate(selectedDate); // Tarihi günceller
-                    setShowDatePicker(false); // Android'de picker'ı kapatır
-                  }
-                }}
+                onChange={handleDateChange}
               />
             )
           )}
