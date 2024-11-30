@@ -1815,6 +1815,7 @@ const renderOzelAlanSelectedData = () => {
                     
                     {showEvrakDatePicker && (
                       <DateTimePicker
+                      style={{position: 'absolute', backgroundColor: colors.textinputgray}}
                         value={evrakDate || new Date()} 
                         mode="date"
                         display="default"
