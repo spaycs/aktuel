@@ -781,6 +781,7 @@ const SatisFaturasiFaturaBilgisi = () => {
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
+            style={{position: 'absolute', backgroundColor: colors.white}}
               value={date}
               mode="date"
               display="default"
