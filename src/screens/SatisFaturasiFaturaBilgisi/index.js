@@ -791,15 +791,19 @@ const SatisFaturasiFaturaBilgisi = () => {
       >
         <View style={MainStyles.modalBackground}>
           <View style={MainStyles.modalContent}>
+            {/* DateTimePicker */}
             <DateTimePicker
               value={date}
               mode="date"
-              display="spinner" // iOS için spinner görünümü daha iyi
+              display="spinner" // iOS için spinner daha iyi bir seçenek
               onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
-                if (selectedDate) handleDateChange(event, selectedDate);
+                if (selectedDate) {
+                  setDate(selectedDate); // Seçilen tarihi sadece günceller
+                }
               }}
             />
+
+            {/* Kapat Butonu */}
             <TouchableOpacity onPress={() => setShowDatePicker(false)}>
               <Text style={MainStyles.modalCloseButton}>Kapat</Text>
             </TouchableOpacity>
@@ -812,13 +816,16 @@ const SatisFaturasiFaturaBilgisi = () => {
         mode="date"
         display="default" // Android için varsayılan görünüm
         onChange={(event, selectedDate) => {
-          setShowDatePicker(false);
-          if (selectedDate) handleDateChange(event, selectedDate);
+          if (selectedDate) {
+            setDate(selectedDate); // Tarihi günceller
+            setShowDatePicker(false); // Android'de picker'ı kapatır
+          }
         }}
       />
     )
   )}
 </View>
+
 
 
         <View style={MainStyles.teksirabirlestir}>
