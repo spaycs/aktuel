@@ -937,7 +937,7 @@ export const MainStyles = {
     modalBackgroundTarih: {
       flex: 1,
       backgroundColor: 'rgba(0, 0, 0, 0.5)', // Hafif siyah arkaplan
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
   },
     modalContent: {
       width: '100%',
