@@ -220,7 +220,7 @@ const StokHareketFoyu = ({ navigation, route  }) => {
       resizeMode={FastImage.resizeMode.contain}/>
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
-      ) : data.length === 0 ? (
+      ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
         <View style={styles.container}>
@@ -351,10 +351,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   noDataText: {
-    marginTop: 10,
+    marginTop: 20,
     fontSize: 12,
     color: 'gray',
-    textAlign: 'center',
   },
 
   dateIcon: {
