@@ -37,13 +37,14 @@ import PatronEkrani from "./Raporlar/PatronEkrani";
 import YillikRapor from "./Raporlar/YillikRapor";
 import Sohbet from "./Sohbet";
 import CariHareketFoyu from "./CariHareketFoyu";
+import CariStokHareketFoyu from "./CariStokHareketFoyu";
 import StokHareketFoyu from "./StokHareketFoyu";
 import CariSiparisFoyu from "./CariSiparisFoyu";
 import Loading from "./Loading";
 import SatinAlmaTalepFisi from "./SatinAlmaTalepFisi";
 import SatinAlmaTalepFisiBilgi from "./SatinAlmaTalepFisiBilgi";
 
-export { Home, GetStarted, Login,Sohbet, CariHareketFoyu, StokHareketFoyu,CariSiparisFoyu, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, AlinanSiparis, AlinanSiparisOnizleme, TahsilatTediye, TahsilatTediyeOnizleme, SatisIrsaliyesi, SatisIrsaliyesiOnizleme, SatisIrsaliyesiDetay, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, DepoSayim, DepoSayimOnizleme, DepolarArasiSevkFisi, DepolarArasiSevkFisiOnizleme, TeklifFisi, TeklifFisiOnizleme, PatronRaporu, FiyatGor, Raporlar,
+export { Home, GetStarted, Login,Sohbet, CariHareketFoyu, CariStokHareketFoyu, StokHareketFoyu,CariSiparisFoyu, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, AlinanSiparis, AlinanSiparisOnizleme, TahsilatTediye, TahsilatTediyeOnizleme, SatisIrsaliyesi, SatisIrsaliyesiOnizleme, SatisIrsaliyesiDetay, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, DepoSayim, DepoSayimOnizleme, DepolarArasiSevkFisi, DepolarArasiSevkFisiOnizleme, TeklifFisi, TeklifFisiOnizleme, PatronRaporu, FiyatGor, Raporlar,
     CariBakiyeYaslandirmaAylik, 
     CariBakiyeYasladirmaCoklu,
     ExtreFoy,

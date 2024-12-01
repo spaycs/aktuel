@@ -118,7 +118,7 @@ const CariList = ({ navigation }) => {
   const handleStokHareketFoyu = () => {
     if (menuIzinleri.IQM_StokFoyu === 1) {
       closeModal();
-      navigation.navigate('StokHareketFoyu', { cariKod: selectedItem?.Cari_Kod })
+      navigation.navigate('CariStokHareketFoyu', { cariKod: selectedItem?.Cari_Kod })
     } else {
       Alert.alert('Erişim Hatası', 'Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.');
     }

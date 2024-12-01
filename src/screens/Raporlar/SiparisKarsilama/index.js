@@ -203,7 +203,7 @@ const SiparisKarsilama = () => {
        resizeMode={FastImage.resizeMode.contain}/>
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
-      ) : searchClicked && !data ? (
+      ) : data.length === 0 ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
         <View style={styles.container}>
@@ -340,9 +340,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   noDataText: {
-    marginTop: 20,
-    fontSize: 16,
+    marginTop: 10,
+    fontSize: 12,
     color: 'gray',
+    textAlign: 'center',
   },
  
 });

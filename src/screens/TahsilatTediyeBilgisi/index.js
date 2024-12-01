@@ -404,7 +404,7 @@ const TahsilatTediyeBilgisi = () => {
           setSth_evrakno_seri(satisIrsaliyeSerino);
     
           if (satisIrsaliyeSerino.trim()) {
-            const responseSira = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${satisIrsaliyeSerino}&tip=IRSALIYE`);
+            const responseSira = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${satisIrsaliyeSerino}&tip=TAHSILATTEDIYE`);
             const { Sira } = responseSira.data;
             setSth_evrakno_sira(Sira.toString());
           }
@@ -421,7 +421,7 @@ const TahsilatTediyeBilgisi = () => {
       setSth_evrakno_seri(text);
       if (text.trim()) {
         try {
-          const response = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${text}&tip=IRSALIYE`);
+          const response = await axiosLinkMain.get(`/Api/Evrak/EvrakSiraGetir?seri=${text}&tip=TAHSILATTEDIYE`);
           const { Sira } = response.data;
           setSth_evrakno_sira(Sira.toString());
         } catch (error) {
@@ -451,7 +451,7 @@ const TahsilatTediyeBilgisi = () => {
     const handlePdfClick = async (Seri, Sıra) => {
       try {
         // API'ye isteği yaparken evrakno_seri ve evrakno_sira değerlerini gönderiyoruz
-        const response = await axiosLinkMain.get(`/Api/PDF/IrsaliyePDF?a=${Seri}&b=${Sıra}`);
+        const response = await axiosLinkMain.get(`/Api/PDF/TahsilatTediyePDF?seri=${Seri}&sira=${Sıra}`);
         console.log('API Yanıtı:', response.data); // Yanıtı kontrol etmek için 
     
         const pdfPath = response.data; 

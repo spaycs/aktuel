@@ -157,7 +157,7 @@ const CariBakiyeYasladirmaCoklu = () => {
        resizeMode={FastImage.resizeMode.contain}/>
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
-      ) : searchClicked && !data ? (
+      ) : data.length === 0 ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
        
@@ -223,9 +223,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   noDataText: {
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 12,
     color: 'gray',
+    textAlign: 'center',
   },
   buttonSearch: {
     marginLeft: 10,

@@ -1,60 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView, ActivityIndicator } from 'react-native';
-import axios from 'axios';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import axiosLinkMain from '../../utils/axiosMain'; // axiosLinkMain dosyasının yolunu kontrol edin
-import { colors } from '../../res/colors'; // Renkler için stil dosyasını ayarlayın
-import CariListModal from '../../context/CariListModal'; // Cari seçimi için modal
-import { Ara } from '../../res/images';
-import FastImage from 'react-native-fast-image';
-import { Filtre } from '../../res/images';
-import { Grid, Row, Col } from 'react-native-easy-grid';
-import { useAuthDefault } from '../../components/DefaultUser';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Image, StyleSheet, Text, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, View, Alert, FlatList, Modal, TouchableWithoutFeedback, Linking } from 'react-native';
 import { MainStyles } from '../../res/style';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../../components/userDetail/Id';
+import axiosLinkMain from '../../utils/axiosMain';
+import { useAuthDefault } from '../../components/DefaultUser';
+import { Filtre, Takvim } from '../../res/images';
+import { Grid, Row, Col } from 'react-native-easy-grid';
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-const normalizeText = (text) => {
-  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+import { colors } from '../../res/colors';
+import FastImage from 'react-native-fast-image';
+
+const turkishCharacterMap = {
+  'Ç': 'c', 'ç': 'c',
+  'Ğ': 'g', 'ğ': 'g',
+  'I': 'i', 'İ': 'i',
+  'Ö': 'o', 'ö': 'o',
+  'Ş': 's', 'ş': 's',
+  'Ü': 'u', 'ü': 'u'
 };
 
-const CariHareketFoyu = ({ navigation, route }) => {
+const normalizeText = (text) => {
+  return text
+    .normalize('NFD')  // Normalleştirme, diakritikleri ayırır
+    .replace(/[\u0300-\u036f]/g, '')  // Diakritik işaretlerini kaldır
+    .replace(/[ÇçĞğIİÖöŞşÜü]/g, (char) => turkishCharacterMap[char] || char)  // Türkçe karakterleri dönüştür
+    .toLowerCase();  // Küçük harfe çevir
+};
+
+const CariStokHareketFoyu = ({ navigation, route  }) => {
   const { cariKod } = route.params;
+  const { authData } = useAuth();
   const { defaults } = useAuthDefault();
-  const [cariKodu, setCariKodu] = useState('');
-  const [data, setData] = useState([]);
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState(currentYear);
+  const [personelList, setPersonelList] = useState([]); 
+  const [selectedPersonel, setSelectedPersonel] = useState(''); 
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
   const [searchClicked, setSearchClicked] = useState(false); 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [evrakDate, setEvrakDate] = useState(new Date());
+  const [showIlkTarihPicker, setShowIlkTarihPicker] = useState(false);
+  const [showSonTarihPicker, setShowSonTarihPicker] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleFilterChange = (field, value) => {
-    setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
+  const [ilkTarih, setIlkTarih] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1); // Ayın ilk günü
+  });
+  const [sonTarih, setSonTarih] = useState(new Date());
+  
+  // Tarih formatlama fonksiyonu
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
   };
+  
+  // İlk Tarih Değişikliği
+  const handleIlkTarihChange = (event, selectedDate) => {
+    const currentDate = selectedDate || ilkTarih;
+    setShowIlkTarihPicker(false);
+    setIlkTarih(currentDate);
+  };
+  
+  // Son Tarih Değişikliği
+  const handleSonTarihChange = (event, selectedDate) => {
+    const currentDate = selectedDate || sonTarih;
+    setShowSonTarihPicker(false);
+    setSonTarih(currentDate);
+  };
+  
 
-   // API'den veri çekme fonksiyonu
-   const fetchData = async () => {
-
-    if (!startDate || !endDate) {
-      setError('Başlangıç ve bitiş tarihlerini seçiniz.');
-      return;
-    }
-
+  // Veri çekme fonksiyonu
+  const fetchData = async () => {
     setLoading(true);
     setError('');
     try {
-      if (defaults) {
-      const firmaNo = defaults[0].IQ_FirmaNo;
-      const response = await axiosLinkMain.get(`/Api/Raporlar/CariHaraketFoyu?firmano=${firmaNo}&cari=${cariKod}&ilktarih=${formatDateForApi(startDate)}&sontarih=${formatDateForApi(endDate)}`);
+      const formattedIlkTarih = ilkTarih.toISOString().split('T')[0];
+      const formattedSonTarih = sonTarih.toISOString().split('T')[0];
+
+      const response = await axiosLinkMain.get(`/Api/Raporlar/CariStokHareketFoyu?cari=${cariKod}&ilktarih=${formattedIlkTarih}&sontarih=${formattedSonTarih}`);
       setData(response.data);
       setFilteredData(response.data);
-    } else {
-      console.error('IQ_FirmaNo değeri bulunamadı');
-    }}
-    catch (error) {
+      console.log(response)
+    } catch (error) {
       setError('Veri çekme hatası: ' + error.message);
     } finally {
       setLoading(false);
@@ -62,64 +99,9 @@ const CariHareketFoyu = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if (cariKod) {
-      fetchData(); // Eğer cari kod varsa veriyi çek
-    }
-  }, [cariKod, startDate, endDate]);
+    fetchData();
+  }, [cariKod]);
 
-  // Cari seçimi fonksiyonu
-  const handleCariSelect = (selectedCari) => {
-    setCariKodu(selectedCari.Cari_Kod);
-    setIsCariListModalVisible(false);
-  };
-
- 
-  const [startDate, setStartDate] = useState(() => {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), 1); // Ayın ilk günü
-  });
-  const [endDate, setEndDate] = useState(() => {
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth() + 1, 0); // Ayın son günü
-  });
-  
-  
-  // Tarih değişimini yönetme fonksiyonları
-  const handleStartDateChange = (event, selectedDate) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) setStartDate(selectedDate);
-  };
-  
-  const handleEndDateChange = (event, selectedDate) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) setEndDate(selectedDate);
-  };
-  
-  
-  // Tarih formatlama
-  const formatDate = (date) => {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-  };
-
-// Kullanıcı için tarih formatlama (gün.ay.yıl)
-const formatDateForUser = (date) => {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-};
-
-// Tarih formatlama (API için gönderim: yıl-ay-gün)
-const formatDateForApi = (date) => {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${year}-${month}-${day}`;
-};
-  
   const renderHeader = () => {
     if (data.length === 0) return null; // Eğer veri yoksa başlık oluşturma
     const headers = Object.keys(data[0]); // İlk öğeden başlıkları al
@@ -173,60 +155,72 @@ const formatDateForApi = (date) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        {/* Tarih Seçimi */}
+       <View style={styles.inputContainer}>
+        {/* İlk Tarih Seçimi */}
         <View style={[styles.datePickerContainer, { flex: 1 }]}>
-          
-          <Text style={styles.dateTitle}>Başlangıç Tarihi</Text>
-          <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-            <View style={styles.dateContainer}>
-              <Text style={styles.dateText}>{formatDateForUser(startDate)}</Text>
+        <Text style={styles.dateTitle}>İlk Tarih: </Text>
+          <TouchableOpacity onPress={() => setShowIlkTarihPicker(true)}>
+              <View style={styles.dateContainer}>
+              <Takvim name="calendar-today" style={styles.dateIcon} />
+              <Text style={styles.dateText}>{formatDate(ilkTarih)}</Text>
             </View>
           </TouchableOpacity>
-          {showStartDatePicker && (
+          {showIlkTarihPicker && (
             <DateTimePicker
-            style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
-              value={startDate}
+             style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
+              value={ilkTarih}
               mode="date"
               display="default"
-              onChange={handleStartDateChange}
+              onChange={handleIlkTarihChange}
             />
           )}
         </View>
 
+        {/* Son Tarih Seçimi */}
         <View style={[styles.datePickerContainer, { flex: 1 }]}>
-          <Text style={styles.dateTitle}>Bitiş Tarihi</Text>
-          <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
-            <View style={styles.dateContainer}>
-              <Text style={styles.dateText}>{formatDateForUser(endDate)}</Text>
+        <Text style={styles.dateTitle}>Son Tarih Seç: </Text>
+          <TouchableOpacity onPress={() => setShowSonTarihPicker(true)}>
+              <View style={styles.dateContainer}>
+              <Takvim name="calendar-today" style={styles.dateIcon} />
+              <Text style={styles.dateText}>{formatDate(sonTarih)}</Text>
             </View>
           </TouchableOpacity>
-          {showEndDatePicker && (
+          {showSonTarihPicker  && (
             <DateTimePicker
             style={{position: 'absolute', top: 20, width: 100, backgroundColor: colors.white}}
-              value={endDate}
+              value={sonTarih}
               mode="date"
               display="default"
-              onChange={handleEndDateChange}
+              onChange={handleSonTarihChange}
             />
           )}
         </View>
 
-      <TouchableOpacity onPress={fetchData} style={styles.button}>
-        <Text style={styles.buttonText}>Listele</Text>
-      </TouchableOpacity>
+      {/* Listele Butonu */}
+        <TouchableOpacity onPress={fetchData} style={styles.button}>
+          <Text style={styles.buttonText}>Listele</Text>
+        </TouchableOpacity>
+    </View>
+      
+      {/* Filtreleme Alanı */}
+     <View style={styles.filterRow}>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Filtrele..."
+          placeholderTextColor={colors.black}
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
       </View>
-      {/* Ara Butonu */}
-     
 
       {loading ? (
-       <FastImage
-       style={MainStyles.loadingGif}
-       source={require('../../res/images/image/pageloading.gif')}
-       resizeMode={FastImage.resizeMode.contain}/>
+      <FastImage
+      style={MainStyles.loadingGif}
+      source={require('../../res/images/image/pageloading.gif')}
+      resizeMode={FastImage.resizeMode.contain}/>
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
-      ) : data.length === 0 ? (
+      ) : searchClicked && !data ? (
         <Text style={styles.noDataText}>Veri bulunamadı</Text>
       ) : data ? (
         <View style={styles.container}>
@@ -246,18 +240,12 @@ const formatDateForApi = (date) => {
       </View>
       
       ) : null}
-
-      {/* Cari Seçim Modal'ı */}
-      <CariListModal
-        isVisible={isCariListModalVisible}
-        onSelectCari={handleCariSelect}
-        onClose={() => setIsCariListModalVisible(false)}
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     padding: 2,
@@ -363,10 +351,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   noDataText: {
-    marginTop: 10,
+    marginTop: 20,
     fontSize: 12,
     color: 'gray',
-    textAlign: 'center',
   },
+
+  dateIcon: {
+    marginRight: 10,
+  },
+
 });
-export default CariHareketFoyu;
+export default CariStokHareketFoyu;
