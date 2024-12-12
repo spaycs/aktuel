@@ -641,7 +641,7 @@ useEffect(() => {
               value={FirmaKodu}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              //secureTextEntry={!isPasswordVisible}
+              secureTextEntry={!isPasswordVisible}
             />
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Çalışma Yılı</Text>
             <TextInput
@@ -660,7 +660,7 @@ useEffect(() => {
               value={FirmaApiUrl}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              //secureTextEntry={!isPasswordVisible}
+              secureTextEntry={!isPasswordVisible}
             />
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Mikro Api Url</Text>
             <TextInput
@@ -670,7 +670,7 @@ useEffect(() => {
               value={MikroApiUrl}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              //secureTextEntry={!isPasswordVisible}
+              secureTextEntry={!isPasswordVisible}
             />
 
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma No</Text>
