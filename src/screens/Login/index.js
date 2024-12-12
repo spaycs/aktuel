@@ -436,23 +436,31 @@ useEffect(() => {
     storeServiceSettings();
   };
 
-  const handleModalSave = () => { 
-
-    // Yeni değerlerle güncelleme
-    updateAuthData('FirmaKodu', FirmaKodu);
-    updateAuthData('FirmaApiUrl', FirmaApiUrl);
-    updateAuthData('MikroApiUrl', MikroApiUrl);
-    updateAuthData('CalismaYili', CalismaYili);
-    updateAuthData('FirmaNo', FirmaNo);
-    updateAuthData('SubeNo', SubeNo);
-    
-    // Servis ayarlarını sakla
-    storeServiceSettings();
-    storeRememberMeAuthdata();
-
-    // Modali kapat
-    toggleModal();
-};
+  const handleModalSave = async () => { 
+    try {
+      // Yeni değerlerle güncelleme
+      updateAuthData('FirmaKodu', FirmaKodu);
+      updateAuthData('FirmaApiUrl', FirmaApiUrl);
+      updateAuthData('MikroApiUrl', MikroApiUrl);
+      updateAuthData('CalismaYili', CalismaYili);
+      updateAuthData('FirmaNo', FirmaNo);
+      updateAuthData('SubeNo', SubeNo);
+  
+      // Servis ayarlarını sakla
+      await storeServiceSettings();
+      await storeRememberMeAuthdata();
+  
+      // Kullanıcı listesini yenile
+      await fetchUsers();
+  
+      // Modali kapat
+      toggleModal();
+  
+      console.log('Modal save completed.');
+    } catch (error) {
+      console.error('Error in handleModalSave:', error);
+    }
+  };
 
 
   const handleClose = () => {
@@ -588,7 +596,7 @@ useEffect(() => {
               value={FirmaKodu}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              secureTextEntry={!isPasswordVisible}
+              //secureTextEntry={!isPasswordVisible}
             />
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Çalışma Yılı</Text>
             <TextInput
@@ -607,7 +615,7 @@ useEffect(() => {
               value={FirmaApiUrl}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              secureTextEntry={!isPasswordVisible}
+              //secureTextEntry={!isPasswordVisible}
             />
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Mikro Api Url</Text>
             <TextInput
@@ -617,7 +625,7 @@ useEffect(() => {
               value={MikroApiUrl}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              secureTextEntry={!isPasswordVisible}
+              //secureTextEntry={!isPasswordVisible}
             />
 
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma No</Text>
