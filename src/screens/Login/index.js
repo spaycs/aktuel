@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal } from 'react-native';
+import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView } from 'react-native';
 import { MainStyles } from '../../res/style';
 import Button from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -54,7 +54,9 @@ const Login = ({ navigation }) => {
   const [SubeNo, setSubeNo] = useState(0);
   const [isConnected, setIsConnected] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
+  const [activationCode, setActivationCode] = useState('');
+  const [apiResponse, setApiResponse] = useState('');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
@@ -105,7 +107,7 @@ const Login = ({ navigation }) => {
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
-
+ 
   useEffect(() => {
       // Üçüncü API çağrısı (axiosLinkMains)
       axios.get('http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=1&database=HilalMuhasebe&maliyil=2024&firmano=0&subeno=3')
@@ -124,7 +126,7 @@ const Login = ({ navigation }) => {
       });
 
   }, []);
-  */}
+ */}
 
   useEffect(() => {
     retrieveRememberMe();
@@ -160,6 +162,26 @@ const Login = ({ navigation }) => {
     }
   };
 
+  const handleUpdate = async () => {
+    try {
+      const response = await axios.get(
+        `http://80.253.246.89:8055/api/Kontrol/LisansBilgileri?uyeno=${activationCode}`
+      );
+
+      const data = response.data;
+
+      // Gelen verilerle state'i güncelle
+      setFirmaKodu(data.FirmaKodu || '');
+      setCalismaYili(data.CalismaYil?.toString() || '');
+      setFirmaApiUrl(data.FirmaApiUrl || '');
+      setMikroApiUrl(data.MikroApiUrl || '');
+      setFirmaNo(data.FirmaNo?.toString() || '');
+      setSubeNo(data.SubeNo?.toString() || '');
+    } catch (error) {
+      console.error('API Hatası:', error);
+    }
+  };
+
   const toggleRememberMe = () => {
     setRememberMeChecked(!isRememberMeChecked);
     console.log(`Beni Unutma seçeneği ${isRememberMeChecked ? 'seçildi' : 'seçilmedi'}.`);
@@ -174,8 +196,25 @@ const Login = ({ navigation }) => {
 
     try {
         updateAuthData("KullaniciKodu", KullaniciKodu);
+
+         // 1. Lisans Kontrol API'sini çağır
+        const lisansKontrolUrl = `http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=${IQ_MikroUserId}&database=${FirmaKodu}&maliyil=${CalismaYili}&firmano=${FirmaNo}&subeno=${SubeNo}`;
+        const lisansKontrolResponse = await axios.get(lisansKontrolUrl);
+    
+        const lisansData = lisansKontrolResponse.data.Data; // İlk API'den gelen veri
+        
+        // 2. Lisans çözme API'sini çağır
+        const lisansCozUrl = `http://80.253.246.89:8055/Api/Kontrol/LisansCoz?veri=${lisansData}`;
+        const lisansCozResponse = await axios.get(lisansCozUrl);
+    
+        const lisansCozData = lisansCozResponse.data.Data; // Lisans çözme API'sinden gelen veri
+
         //const sifreStandart = FirmaKodu === 'DENEMESD' ? '2085' : Sifre;
         const sifreStandart = FirmaKodu === 'HilalMuhasebe' ? 'HK1905' : Sifre;
+
+        // 3. Lisans geçerliliğini kontrol et
+        if (lisansCozData.includes("Lisans geçerli")) {
+        // Lisans geçerli, login işlemlerine devam et
 
         const md5Response = await axiosLinkMain.get(`/Api/kullanici/MD5SifreDonustur?sifre=${sifreStandart}`);
         const hashedPassword = md5Response.data;
@@ -215,35 +254,40 @@ const Login = ({ navigation }) => {
                     updateAuthData('selectedUser', selectedUser);
 
                     navigation.navigate("DrawerNavigator");
-                } else {
-                    retrieveServiceSettings();
-                    Alert.alert('Hata', 'Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
-                }
-            } catch {
-                throw new Error('Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
-            }
-        };
+                  } else {
+                      retrieveServiceSettings();
+                      Alert.alert('Hata', 'Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
+                  }
+              } catch (error) {
+                  throw new Error('Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
+              }
+          };
 
-        try {
-            await attemptLogin(ApiKey1);
-        } catch (error) {
-            try {
-                await attemptLogin(ApiKey2);
-            } catch {
-                setLoading(false);
-                Alert.alert('Hata', 'Giriş başarısız oldu. Lütfen tekrar deneyin.');
-            }
-        }
+          try {
+              await attemptLogin(ApiKey1);
+          } catch (error) {
+              try {
+                  await attemptLogin(ApiKey2);
+              } catch (err) {
+                  setLoading(false);
+                  Alert.alert('Hata', 'Giriş başarısız oldu. Lütfen tekrar deneyin.');
+              }
+          }
 
-        setLoading(false);
+      } else {
+          // Lisans geçerli değil, login işlemi yapılmasın
+          setLoading(false);
+          Alert.alert('Lisans Hatası', 'Lisans geçerli değil. Lütfen lisansınızı kontrol edin.');
+      }
 
-    } catch (error) {
-        setLoading(false);
-        Alert.alert('Hata', 'Şifreyi MD5 ile dönüştürürken veya giriş aşamasında bir hata oluştu.');
-        console.error(error);
-    }
+      setLoading(false);
+
+  } catch (error) {
+      setLoading(false);
+      Alert.alert('Hata', 'Şifreyi MD5 ile dönüştürürken veya giriş aşamasında bir hata oluştu.');
+      console.error(error);
+  }
 };
-
 
   
   
@@ -579,7 +623,7 @@ useEffect(() => {
         transparent={true}
         onRequestClose={toggleModal}
       >
-        <View style={[MainStyles.paddingHorizontal15, MainStyles.paddingTop10, MainStyles.backgroundColorWhite, MainStyles.flex1]}>
+        <ScrollView style={[MainStyles.paddingHorizontal15, MainStyles.paddingTop10, MainStyles.backgroundColorWhite, MainStyles.flex1]}>
             <View style={[MainStyles.alignCenter, MainStyles.backgroundColorWhite, MainStyles.flexDirection, MainStyles.paddingVertical15, MainStyles.justifySpaceBetween]}>
               <TouchableOpacity onPress={handleClose}>
                 <Left width={17} height={17}/>
@@ -650,14 +694,33 @@ useEffect(() => {
               title="Kaydet"
               onPress={handleModalSave}
             />
+          <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Aktivasyon Kodu</Text>
+          <TextInput
+              style={[MainStyles.borderWidth1, MainStyles.borderColor, MainStyles.marginBottom10, MainStyles.borderRadius5, MainStyles.fontSize12, MainStyles.height40, MainStyles.paddingLeft10]}
+              placeholder='Aktivasyon Kodunu Giriniz.'
+              autoCapitalize="none"
+              placeholderTextColor={colors.black}
+              value={activationCode}
+              onChangeText={setActivationCode}
+              //secureTextEntry={!isPasswordVisible}
+            />
+
+            <Button
+              title="Güncelle"
+              onPress={handleUpdate}
+            />
+  
           </View>
-          <View style={[  MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5, MainStyles.borderRadius10, MainStyles.paddingHorizontal15]}>
-       <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
-             <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
-            <Text style={{color: colors.black, fontSize: 11}}>Local: {axiosLinkMainStatus}</Text>
-            <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
+
+          {/*
+            <View style={[  MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5, MainStyles.borderRadius10, MainStyles.paddingHorizontal15]}>
+              <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
+              <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
+              <Text style={{color: colors.black, fontSize: 11}}>Local: {axiosLinkMainStatus}</Text>
+              <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
             </View>
-        </View>
+          */}
+        </ScrollView>
       </Modal>
     </View>
   );
