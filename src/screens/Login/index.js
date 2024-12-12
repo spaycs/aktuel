@@ -20,6 +20,7 @@ import { useAxiosLinkMain } from '../../utils/axiosMain';
 import { useAxiosLink } from '../../utils/axios';
 import axios from 'axios';
 import NetInfo from '@react-native-community/netinfo';
+import CustomHeader from '../../components/CustomHeader';
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.style = { color: colors.black };
@@ -623,12 +624,12 @@ useEffect(() => {
         transparent={true}
         onRequestClose={toggleModal}
       >
-        <ScrollView style={[MainStyles.paddingHorizontal15, MainStyles.paddingTop10, MainStyles.backgroundColorWhite, MainStyles.flex1]}>
-            <View style={[MainStyles.alignCenter, MainStyles.backgroundColorWhite, MainStyles.flexDirection, MainStyles.paddingVertical15, MainStyles.justifySpaceBetween]}>
-              <TouchableOpacity onPress={handleClose}>
-                <Left width={17} height={17}/>
-              </TouchableOpacity>
-              <Text style={[MainStyles.fontSize16, MainStyles.textAlignCenter, MainStyles.fontWeightBold, MainStyles.flex1]}>Servis Ayarları</Text>
+        <ScrollView style={[ MainStyles.backgroundColorWhite, MainStyles.flex1]}>
+            <View style={MainStyles.modalContainerDetail}>
+              <CustomHeader
+                title="Servis Ayarları"
+                onClose={() => handleClose()}
+              />
             </View>
             <View style={MainStyles.padding10}>
             <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma Kodu</Text>
