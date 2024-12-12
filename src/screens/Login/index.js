@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView } from 'react-native';
 import { MainStyles } from '../../res/style';
 import Button from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -553,7 +553,6 @@ useEffect(() => {
 
             {/* iOS Modal */}
             <Modal visible={isModalVisible} animationType="slide" transparent>
-            <TouchableWithoutFeedback onPress={setIsModalVisible}>
               <View style={MainStyles.modalContainerPicker}>
                 <View style={MainStyles.modalContentPicker}>
                 <Picker
@@ -569,7 +568,6 @@ useEffect(() => {
                   <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
                 </View>
                 </View>
-                </TouchableWithoutFeedback>
             </Modal>
           </>
         ) : (
