@@ -553,7 +553,7 @@ useEffect(() => {
 
             {/* iOS Modal */}
             <Modal visible={isModalVisible} animationType="slide" transparent>
-            <TouchableWithoutFeedback onPress={closeModal}>
+            <TouchableWithoutFeedback onPress={setIsModalVisible}>
               <View style={MainStyles.modalContainerPicker}>
                 <View style={MainStyles.modalContentPicker}>
                 <Picker
