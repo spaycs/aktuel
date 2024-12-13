@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../../res/style';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Ara, Takvim } from '../../res/images';
+import { Ara, Camera, Takvim } from '../../res/images';
 import { ProductContext } from '../../context/ProductContext';
 import { useAuthDefault } from '../../components/DefaultUser';
 import ProductModal from '../../context/ProductModal';
@@ -14,6 +14,7 @@ import { colors } from '../../res/colors';
 import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import Button from '../../components/Button';
+import { RNCamera } from 'react-native-camera';
 
 const StokEklemeDetay = () => {
   const { authData } = useAuth();
@@ -32,6 +33,7 @@ const StokEklemeDetay = () => {
   const [barkodBirimPntrList, setBarkodBirimPntrList] = useState([]);
   const [selectedBarkodBirimPntr, setSelectedBarkodBirimPntr] = useState('');
   const [isBarkodTipiModalVisible, setIsBarkodTipiModalVisible] = useState(false);
+  const [cameraModalVisible, setCameraModalVisible] = useState(false);
 
   {/* Barkod Tipi Seçim */}
     const handleBarkodTipiChange = (value) => {
@@ -88,6 +90,17 @@ const handleInputChange = (field, value) => {
     }, [])
   );
 
+    // Kamera İşlemleri
+    const handleCameraOpen = () => {setCameraModalVisible(true);};
+    const handleCameraClose = () => {setCameraModalVisible(false);};
+
+    const handleBarCodeRead = ({ data }) => {
+      setCameraModalVisible(false);
+      setBar_kodu(data);
+      handleInputChange('bar_kodu', data); 
+    };
+  // Kamera İşlemleri 
+
   return (
     <ScrollView>
       <View style={MainStyles.faturaContainer}>
@@ -95,7 +108,7 @@ const handleInputChange = (field, value) => {
          <Text style={MainStyles.formTitle}>Barkod</Text>
          <View style={MainStyles.inputContainer}>
           <TextInput
-            style={MainStyles.inputStokKodu}
+            style={MainStyles.slinputUrunAra}
             placeholder="Barkod"
             value={bar_kodu}
             keyboardType="numeric"
@@ -105,7 +118,38 @@ const handleInputChange = (field, value) => {
             }}
             placeholderTextColor={colors.placeholderTextColor}
           />
+            <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
+              <Camera/>
+            </TouchableOpacity>
         </View>
+
+         <Modal visible={cameraModalVisible} animationType="slide">
+                <View style={MainStyles.cameraContainer}>
+                <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+                <View style={MainStyles.cameraWrapper}>
+                    <RNCamera
+                      style={{ flex: 1 }}
+                      onBarCodeRead={handleBarCodeRead}
+                      captureAudio={false}
+                      androidCameraPermissionOptions={{
+                        title: 'Kamera İzni',
+                        message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+                        buttonPositive: 'Tamam',
+                        buttonNegative: 'İptal',
+                      }}
+                    />
+                    <View style={MainStyles.overlay}>
+                        <View style={MainStyles.overlayMask} />
+                          <View style={MainStyles.overlayBox}>
+                            <View style={MainStyles.overlayLine} />
+                          </View>
+                        </View>
+                    </View>
+                    </View>
+                <TouchableOpacity onPress={handleCameraClose} style={MainStyles.kapat}>
+                <Text style={MainStyles.kapatTitle}>Kapat</Text>
+                </TouchableOpacity>
+              </Modal>
 
         {/* Barkod Tipi */}
         <Text style={MainStyles.formTitle}>Barkod Tipi</Text>
