@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView, ActivityIndicator, Linking, Alert } from 'react-native';
 import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axiosLinkMain from '../../../utils/axiosMain'; // axiosLinkMain dosyasının yolunu kontrol edin
 import { colors } from '../../../res/colors'; // Renkler için stil dosyasını ayarlayın
 import CariListModal from '../../../context/CariListModal'; // Cari seçimi için modal
-import { Ara } from '../../../res/images';
+import { Ara, PDF } from '../../../res/images';
 import FastImage from 'react-native-fast-image';
 import { Filtre } from '../../../res/images';
 import { Grid, Row, Col } from 'react-native-easy-grid';
@@ -55,6 +55,27 @@ const ExtreFoy = () => {
       setError('Veri çekme hatası: ' + error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePdfClick = async (a, b, c) => {
+    try {
+      // API'ye isteği yaparken evrakno_seri ve evrakno_sira değerlerini gönderiyoruz
+      const response = await axiosLinkMain.get(`/Api/PDF/ExtrePDF?a=${cariKodu}&b=${formatDateForApi(startDate)}&c=${formatDateForApi(endDate)}`);
+      console.log('API Yanıtı:', response); // Yanıtı kontrol etmek için 
+  
+      const pdfPath = response.data; 
+      
+      if (pdfPath) {
+        const fullPdfUrl = `${pdfPath}`;
+  
+        Linking.openURL(fullPdfUrl);
+      } else {
+        throw new Error('PDF dosya yolu alınamadı');
+      }
+    } catch (error) {
+      console.error('PDF almakta hata oluştu:', error);
+      Alert.alert('Hata', 'PDF alınırken bir sorun oluştu.');
     }
   };
 
@@ -200,6 +221,24 @@ const ExtreFoy = () => {
         <Text style={styles.buttonText}>Listele</Text>
       </TouchableOpacity>
       </View>
+      <TouchableOpacity
+  onPress={() => {
+    // İlk öğeyi seçerek API çağrısını yapabilirsiniz. Eğer belirli bir öğeye ihtiyaç varsa onu seçin.
+    if (data.length > 0) {
+      const item = data[0]; // Sadece ilk öğeyi alıyoruz
+      handlePdfClick(item.a, item.b, item.c);
+    } else {
+      Alert.alert('Hata', 'PDF oluşturmak için yeterli veri bulunamadı.');
+    }
+  }}
+  style={styles.button}
+>
+  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <PDF width={20} height={20} />
+    <Text style={styles.buttonText}> PDF OLUŞTUR</Text>
+  </View>
+</TouchableOpacity>
+
       {/* Ara Butonu */}
      
      {/* Filtreleme Alanı */}
