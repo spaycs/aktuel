@@ -104,7 +104,7 @@ const StokList = ({navigation}) => {
       setSearchTerm(data);
       setTimeout(() => {
         fetchProductData();
-      }, 100);
+      }, 500);
     };
   // Kamera İşlemleri 
 
