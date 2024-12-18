@@ -102,7 +102,9 @@ const StokList = ({navigation}) => {
       setCameraModalVisible(false);
       setSearchCriteria('Barkod');
       setSearchTerm(data);
-      fetchProductData(); 
+      setTimeout(() => {
+        fetchProductData();
+      }, 100);
     };
   // Kamera İşlemleri 
 

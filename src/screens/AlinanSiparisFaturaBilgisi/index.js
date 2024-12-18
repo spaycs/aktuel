@@ -641,46 +641,46 @@ const handleIrsaliyeTipiChange = async (itemValue) => {
   // Evrak Tarih Alanı
 
 
-  useEffect(() => {
-    const currentDate = new Date();
-    const formattedDate = formatDate(currentDate);
-  
-    // alinanSiparis içinde sip_tarih yoksa veya boşsa ekle
-    if (!alinanSiparis?.sip_tarih) {
-      setDate(currentDate); // Yerel state'teki tarihi güncelle
+    useEffect(() => {
+      const currentDate = new Date();
+      const formattedDate = formatDate(currentDate);
+    
+      // alinanSiparis içinde sip_tarih yoksa veya boşsa ekle
+      if (!alinanSiparis?.sip_tarih) {
+        setDate(currentDate); // Yerel state'teki tarihi güncelle
+        setAlinanSiparis(prevState => ({
+          ...prevState,
+          sip_tarih: formattedDate, // Güncellenmiş tarihi ekle
+        }));
+      }
+    }, [alinanSiparis]); 
+    
+
+    
+    
+    
+    // Tarih değiştirildiğinde güncelleyip kaydeden fonksiyon
+    const handleDateChange = async (event, selectedDate) => {
+      setShowDatePicker(false);
+      const newDate = selectedDate || date;
+      setDate(newDate);
+    
+      const formattedDate = formatDate(newDate);
+    
+      // alinansiparis state'ini güncelle
       setAlinanSiparis(prevState => ({
         ...prevState,
-        sip_tarih: formattedDate, // Güncellenmiş tarihi ekle
+        sip_tarih: formattedDate,
       }));
-    }
-  }, [alinanSiparis]); 
-  
-
-  
-  
-  
-  // Tarih değiştirildiğinde güncelleyip kaydeden fonksiyon
-  const handleDateChange = async (event, selectedDate) => {
-    setShowDatePicker(false);
-    const newDate = selectedDate || date;
-    setDate(newDate);
-  
-    const formattedDate = formatDate(newDate);
-  
-    // alinansiparis state'ini güncelle
-    setAlinanSiparis(prevState => ({
-      ...prevState,
-      sip_tarih: formattedDate,
-    }));
-  
-  };
-
-    const formatDate = (date) => {
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear();
-      return `${day}.${month}.${year}`;
+    
     };
+
+      const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+      };
   // Evrak Tarih Alanı
 
   // Cari Seçim
@@ -1440,8 +1440,8 @@ const renderOzelAlanSelectedData = () => {
     <TouchableOpacity
         style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
         onPress={() => {
-            setSelectedValue('Tedarikçi Bazında Bekleyen Siparişler');  // veya 'vadeBakiye' değerleri
-            fetchCariDetayData(sip_musteri_kod, 'Tedarikçi Bazında Bekleyen Siparişler'); // ya da 'vadeBakiye'
+            setSelectedValue('Sorumluluk Bazında Ortalama Vade');  // veya 'vadeBakiye' değerleri
+            fetchCariDetayData(sip_musteri_kod, 'Sorumluluk Bazında Ortalama Vade'); // ya da 'vadeBakiye'
         }}
     >
         <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
@@ -1503,8 +1503,8 @@ const renderOzelAlanSelectedData = () => {
                                                         style={MainStyles.picker}
                                                     >
                                                         <Picker.Item label="Tipini Seçin" value={null} style={MainStyles.textStyle}/>
-                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="Tedarikçi Bazında Bekleyen Siparişler" style={MainStyles.textStyle} />
                                                         <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="Sorumluluk Bazında Ortalama Vade" style={MainStyles.textStyle} />
+                                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="Tedarikçi Bazında Bekleyen Siparişler" style={MainStyles.textStyle} />
                                                     </Picker>
                                                     <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
                                                 </View>
@@ -1523,8 +1523,8 @@ const renderOzelAlanSelectedData = () => {
                                         itemStyle={{ height: 40, fontSize: 12 }}
                                     >
                                         <Picker.Item label="Tipini Seçin" value={null} style={MainStyles.textStyle}/>
-                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="Tedarikçi Bazında Bekleyen Siparişler" style={MainStyles.textStyle} />
                                         <Picker.Item label="Sorumluluk Bazında Ortalama Vade" value="Sorumluluk Bazında Ortalama Vade" style={MainStyles.textStyle}/>
+                                        <Picker.Item label="Tedarikçi Bazında Bekleyen Siparişler" value="Tedarikçi Bazında Bekleyen Siparişler" style={MainStyles.textStyle} />
                                     </Picker>
                                 )}
                             </View>

@@ -632,6 +632,23 @@ useEffect(() => {
               />
             </View>
             <View style={MainStyles.padding10}>
+
+          <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Aktivasyon Kodu</Text>
+            <TextInput
+              style={[MainStyles.borderWidth1, MainStyles.borderColor, MainStyles.marginBottom10, MainStyles.borderRadius5, MainStyles.fontSize12, MainStyles.height40, MainStyles.paddingLeft10]}
+              placeholder='Aktivasyon Kodunu Giriniz.'
+              autoCapitalize="none"
+              placeholderTextColor={colors.black}
+              value={activationCode}
+              onChangeText={setActivationCode}
+              //secureTextEntry={!isPasswordVisible}
+            />
+
+            <Button
+              title="Güncelle"
+              onPress={handleUpdate}
+            />
+              
             <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma Kodu</Text>
      
             <TextInput
@@ -695,21 +712,7 @@ useEffect(() => {
               title="Kaydet"
               onPress={handleModalSave}
             />
-          <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Aktivasyon Kodu</Text>
-          <TextInput
-              style={[MainStyles.borderWidth1, MainStyles.borderColor, MainStyles.marginBottom10, MainStyles.borderRadius5, MainStyles.fontSize12, MainStyles.height40, MainStyles.paddingLeft10]}
-              placeholder='Aktivasyon Kodunu Giriniz.'
-              autoCapitalize="none"
-              placeholderTextColor={colors.black}
-              value={activationCode}
-              onChangeText={setActivationCode}
-              //secureTextEntry={!isPasswordVisible}
-            />
-
-            <Button
-              title="Güncelle"
-              onPress={handleUpdate}
-            />
+         
   
           </View>
 
