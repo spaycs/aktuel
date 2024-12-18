@@ -107,7 +107,7 @@ const StokList = ({navigation}) => {
   // Kamera İşlemleri 
 
   // Stok Raporları
-    const navigateToStokHareketFoyu = () => {
+    const navigateToStokHareketFoyu = () => { 
       if (selectedItem) {
         closeModal();
         navigation.navigate('StokHareketFoyu', { Stok_Kod: selectedItem.Stok_Kod });
