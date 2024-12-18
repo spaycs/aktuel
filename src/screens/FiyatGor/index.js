@@ -107,7 +107,7 @@ const FiyatGor = () => {
       setCameraModalVisible(false);
       setSearchCriteria('Barkod');
       setSearchTerm(data);
-      fetchProductData(); 
+      fetchProductData(data, 'Barkod');
     };
   // Kamera İşlemleri 
 
