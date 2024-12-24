@@ -514,6 +514,7 @@ useEffect(() => {
               sip_iskonto_5: product.sth_iskonto5,
               sip_iskonto_6: product.sth_iskonto6,
               sip_b_fiyat : product.sth_tutar,
+              sip_doviz_cinsi: product.sip_doviz_cinsi,
               sth_giris_depo_no: alinanSiparis.sth_giris_depo_no,
               sip_depono: alinanSiparis.sip_depono,
               sip_opno: defaults[0]?.IQ_OPCaridenGelsin === 1 

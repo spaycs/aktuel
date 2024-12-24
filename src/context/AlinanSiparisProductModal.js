@@ -57,6 +57,7 @@ const AlinanSiparisProductModal = ({
   const [KDV, setKDV] = useState('');
   const [Carpan, setCarpan] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
+  const [sip_doviz_cinsi, setSip_doviz_cinsi] = useState('');
   const [toplam_vergi, setToplam_vergi] = useState();
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [isStokOzelDetayVisible, setIsStokOzelDetayVisible] = useState(false);
@@ -168,6 +169,9 @@ const AlinanSiparisProductModal = ({
 
             if (firstItem.Vergipntr) {
               setSth_vergi_pntr(firstItem.Vergipntr.toString());  
+            }
+            if (firstItem.DovizCinsi) {
+              setSip_doviz_cinsi(firstItem.DovizCinsi.toString());  
             }
             if (firstItem.DovizIsmi) {
               setDovizIsmi(firstItem.DovizIsmi.toString());  
@@ -435,6 +439,7 @@ const validateQuantity = (quantity) => {
                       sth_birim_pntr: '1',
                       Birim_KDV: Birim_KDV,
                       sth_vergi_pntr: sth_vergi_pntr,
+                      sip_doviz_cinsi: sip_doviz_cinsi,
                       resetTax,
                       aciklama,
                       birimFiyat,
@@ -483,6 +488,7 @@ const validateQuantity = (quantity) => {
                       sth_birim_pntr: '1',
                       Birim_KDV: Birim_KDV,
                       sth_vergi_pntr: sth_vergi_pntr,
+                      sip_doviz_cinsi: sip_doviz_cinsi,
                       resetTax,
                       aciklama,
                       birimFiyat,
@@ -528,6 +534,7 @@ const validateQuantity = (quantity) => {
               sth_birim_pntr: '1',
               Birim_KDV: Birim_KDV,
               sth_vergi_pntr: sth_vergi_pntr,
+              sip_doviz_cinsi: sip_doviz_cinsi,
               resetTax,
               aciklama,
               birimFiyat,
@@ -573,6 +580,7 @@ const validateQuantity = (quantity) => {
     setBirimFiyat(''); // Birim fiyat sıfırla
     setCarpan(''); // Çarpan sıfırla
     setSth_tutar(''); // Tutar sıfırla
+    setSip_doviz_cinsi(''); // Tutar sıfırla
     setModalVisible(false); 
   };
   
