@@ -533,7 +533,7 @@ useEffect(() => {
             
             }))
           }
-        ]
+        ] 
       }
     };
     console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
