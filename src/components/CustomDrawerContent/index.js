@@ -139,7 +139,7 @@ const CustomDrawerContent = (props) => {
             backgroundColor: colors.textInputBg,
             borderRadius: 10,
             paddingLeft: 10,
-            marginBottom: 10,
+            marginBottom: 5,
           }}
         >
           <Text style={{ fontSize: 12 }}>
@@ -151,13 +151,19 @@ const CustomDrawerContent = (props) => {
               : '---'}
           </Text>
         </View>
-          <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
+        <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 5 }}>
+         
+         <Text style={{ fontSize: 12 }}>
+         <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Versiyon: </Text> 
+          15.0</Text>
+           </View>
+          <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 5 }}>
          
           <Text style={{ fontSize: 12 }}>
           <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Mali Yılı: </Text> 
             {defaults.length > 0 ? defaults[0].IQ_MaliYıl : '---'}</Text>
             </View>
-            <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 10 }}>
+            <View style={{paddingVertical: 20, backgroundColor: colors.textInputBg, borderRadius: 10, paddingLeft:10, marginBottom: 5 }}>
            
           <Text style={{ fontSize: 12 }}> <Text style={{ fontSize: 12, fontWeight: 'bold' }}> Kullanıcı: </Text> 
             {defaults.length > 0 ? defaults[0].Adi : '---'}</Text>
