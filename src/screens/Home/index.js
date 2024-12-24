@@ -306,7 +306,7 @@ const Home = ({ navigation }) => {  //tset4
         contentContainerStyle={MainStyles.homeContainerFlatlist}
       />
       <View style={{justifyContent:'center', alignItems:'center', position:'absolute', bottom:1, alignSelf:'center'}}>
-       <SezginYilmaz width={80}/>
+       <SezginYilmaz width={80}/> 
        </View>
        <View style={{justifyContent:'flex-end',borderTopLeftRadius:7, alignItems:'flex-end', position:'absolute', bottom:1, right:0,padding:2, backgroundColor: colors.textInputBg, alignSelf:'flex-end'}}>
         <Text style={{  fontSize: 12, color: colors.black }}>15.0</Text>
