@@ -55,9 +55,43 @@ const Login = ({ navigation }) => {
   const [SubeNo, setSubeNo] = useState(0);
   const [isConnected, setIsConnected] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [activationCode, setActivationCode] = useState('');
+  const [AktivasyonKodu, setAktivasyonKodu] = useState('');
+  const [databases, setDatabases] = useState([]); // Veritabanları listesi
+  const [selectedDatabase, setSelectedDatabase] = useState(''); // Seçili veritabanı
   const [apiResponse, setApiResponse] = useState('');
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (AktivasyonKodu) {
+      handleFetchDatabases();
+    }
+  }, [AktivasyonKodu]);
+   // Veritabanlarını getir
+   const handleFetchDatabases = async () => {
+    try {
+      const response = await axios.get(
+        `http://80.253.246.89:8055/api/Kontrol/Veritabanlari?uyeno=${AktivasyonKodu}`
+      );
+
+      if (response.data && Array.isArray(response.data)) {
+        setDatabases(response.data);
+      } else {
+        Alert.alert('Hata', 'Beklenmeyen bir yanıt alındı.');
+      }
+    } catch (error) {
+      console.error('Veritabanı çekme hatası:', error);
+      Alert.alert('Hata', 'Veritabanı listesi alınırken bir hata oluştu.');
+    }
+  };
+
+  // Veritabanı seçildiğinde firma kodunu ayarla
+  const handleDatabaseSelect = (database) => {
+    setSelectedDatabase(database);
+    const selected = databases.find((db) => db.Database === database);
+    if (selected) {
+      setFirmaKodu(selected.Database); // Firma Kodu seçilen veritabanına göre ayarlanır
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
@@ -137,6 +171,7 @@ const Login = ({ navigation }) => {
 
   useEffect(() => {
     if (authData) {
+      setAktivasyonKodu(authData.AktivasyonKodu || '');
       setFirmaKodu(authData.FirmaKodu || '');
       setFirmaApiUrl(authData.FirmaApiUrl || '');
       setMikroApiUrl(authData.MikroApiUrl || '');
@@ -166,7 +201,7 @@ const Login = ({ navigation }) => {
   const handleUpdate = async () => {
     try {
       const response = await axios.get(
-        `http://80.253.246.89:8055/api/Kontrol/LisansBilgileri?uyeno=${activationCode}`
+        `http://80.253.246.89:8055/api/Kontrol/LisansBilgileri?uyeno=${AktivasyonKodu}`
       );
 
       const data = response.data;
@@ -222,6 +257,7 @@ const Login = ({ navigation }) => {
 
         const attemptLogin = async (apiKey) => {
             const requestData = {
+                AktivasyonKodu,
                 FirmaKodu,
                 FirmaApiUrl,
                 MikroApiUrl,
@@ -295,7 +331,7 @@ const Login = ({ navigation }) => {
 
 const storeRememberMe = async (KullaniciKodu, IQ_MikroUserId, hashedPassword, selectedUser) => {
   try {
-    const authDataToStore = { KullaniciKodu, Sifre: hashedPassword, OrijinalSifre: sifreStandart, IQ_MikroUserId, FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo, selectedUser };
+    const authDataToStore = { KullaniciKodu, Sifre: hashedPassword, OrijinalSifre: sifreStandart, IQ_MikroUserId, AktivasyonKodu, FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo, selectedUser };
     await AsyncStorage.setItem('authData', JSON.stringify(authDataToStore));
   } catch (error) {
     console.error('Error storing data:', error);
@@ -304,7 +340,7 @@ const storeRememberMe = async (KullaniciKodu, IQ_MikroUserId, hashedPassword, se
 
 const storeRememberMeAuthdata = async () => {
   try {
-    const authDataToStore = {FirmaKodu, FirmaApiUrl, MikroApiUrl, IQ_MikroUserId, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo };
+    const authDataToStore = {AktivasyonKodu, FirmaKodu, FirmaApiUrl, MikroApiUrl, IQ_MikroUserId, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo };
     await AsyncStorage.setItem('authData', JSON.stringify(authDataToStore));
   } catch (error) {
     console.error('Error storing data:', error);
@@ -316,6 +352,7 @@ const retrieveRememberMe = async () => {
     const storedAuthData = await AsyncStorage.getItem('authData');
     if (storedAuthData) {
       const parsedAuthData = JSON.parse(storedAuthData);
+      setAktivasyonKodu(parsedAuthData.AktivasyonKodu || '');
       setFirmaKodu(parsedAuthData.FirmaKodu || '');
       setFirmaApiUrl(parsedAuthData.FirmaApiUrl || '');
       setMikroApiUrl(parsedAuthData.MikroApiUrl || '');
@@ -354,7 +391,7 @@ const handlePasswordChange = (password) => {
 // Asenkron işlemleri saklayan fonksiyon
 const storeServiceSettings = async () => {
   try {
-    const serviceSettings = { FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo };
+    const serviceSettings = {AktivasyonKodu, FirmaKodu, FirmaApiUrl, MikroApiUrl, CalismaYili, ApiKey1, ApiKey2, FirmaNo, SubeNo };
     await AsyncStorage.setItem('serviceSettings', JSON.stringify(serviceSettings));
     
     // Geri almayı burada yapmayın, ana bileşende çağırın
@@ -370,6 +407,7 @@ const retrieveServiceSettings = async () => {
     const storedServiceSettings = await AsyncStorage.getItem('serviceSettings');
     if (storedServiceSettings) {
       const parsedServiceSettings = JSON.parse(storedServiceSettings);
+      setAktivasyonKodu(parsedServiceSettings.AktivasyonKodu || '');
       setFirmaKodu(parsedServiceSettings.FirmaKodu || '');
       setFirmaApiUrl(parsedServiceSettings.FirmaApiUrl || '');
       setMikroApiUrl(parsedServiceSettings.MikroApiUrl || '');
@@ -451,6 +489,9 @@ useEffect(() => {
 
   const handleServiceSettingsChange = (key, value) => {
     switch (key) {
+      case 'AktivasyonKodu':
+        setAktivasyonKodu(value);
+        break;
       case 'FirmaKodu':
         setFirmaKodu(value);
         break;
@@ -484,6 +525,7 @@ useEffect(() => {
   const handleModalSave = async () => { 
     try {
       // Yeni değerlerle güncelleme
+      updateAuthData('AktivasyonKodu', AktivasyonKodu);
       updateAuthData('FirmaKodu', FirmaKodu);
       updateAuthData('FirmaApiUrl', FirmaApiUrl);
       updateAuthData('MikroApiUrl', MikroApiUrl);
@@ -639,8 +681,8 @@ useEffect(() => {
               placeholder='Aktivasyon Kodunu Giriniz.'
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              value={activationCode}
-              onChangeText={setActivationCode}
+              value={AktivasyonKodu}
+              onChangeText={setAktivasyonKodu}
               //secureTextEntry={!isPasswordVisible}
             />
 
@@ -649,8 +691,23 @@ useEffect(() => {
               onPress={handleUpdate}
             />
               
+            {/* Veritabanı Seçimi */}
+            <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Veri Tabanı Seçin</Text>
+            <View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
+                    <Picker
+                  selectedValue={selectedDatabase}
+                  onValueChange={(itemValue) => handleDatabaseSelect(itemValue)}
+                  itemStyle={{ height: 40, fontSize: 12 }}
+                  style={{ marginHorizontal: -10 }}
+                >
+                  <Picker.Item label="Veritabanı Seçin" value=""  style={MainStyles.textStyle} />
+                  {databases.map((db) => (
+                    <Picker.Item key={db.Database} label={db.Database} value={db.Database}  style={MainStyles.textStyle} />
+                  ))}
+                </Picker>
+              </View>
+               {/* 
             <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma Kodu</Text>
-     
             <TextInput
               style={[MainStyles.borderWidth1, MainStyles.borderColor, MainStyles.marginBottom10, MainStyles.borderRadius5, MainStyles.fontSize12, MainStyles.height40, MainStyles.paddingLeft10]}
               placeholder='Firma Kodu Giriniz'
@@ -658,8 +715,9 @@ useEffect(() => {
               value={FirmaKodu}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              secureTextEntry={!isPasswordVisible}
+              //secureTextEntry={!isPasswordVisible}
             />
+            */}
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Çalışma Yılı</Text>
             <TextInput
               style={[MainStyles.borderWidth1, MainStyles.borderColor, MainStyles.marginBottom10, MainStyles.borderRadius5, MainStyles.fontSize12, MainStyles.height40, MainStyles.paddingLeft10]}
@@ -677,7 +735,7 @@ useEffect(() => {
               value={FirmaApiUrl}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              secureTextEntry={!isPasswordVisible}
+              //secureTextEntry={!isPasswordVisible}
             />
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Mikro Api Url</Text>
             <TextInput
@@ -687,7 +745,7 @@ useEffect(() => {
               value={MikroApiUrl}
               autoCapitalize="none"
               placeholderTextColor={colors.black}
-              secureTextEntry={!isPasswordVisible}
+              //secureTextEntry={!isPasswordVisible}
             />
 
              <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma No</Text>

@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     KullaniciKodu: "",
     Sifre: "",
     OrijinalSifre: "",
+    AktivasyonKodu: "",
     FirmaKodu: "HilalMuhasebe",
     FirmaApiUrl: "http://hilalapi.novatekcloud.com:8094",
     MikroApiUrl: "http://hilalapi.novatekcloud.com:8084",
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // FirmaApiUrl değiştiğinde axiosLinkMain'i güncelle
-      //console.log("Güncel bilgi", authData);
+      console.log("Güncel bilgi", authData);
   }); 
 
   useEffect(() => {

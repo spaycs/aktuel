@@ -319,6 +319,7 @@ useEffect(() => {
               <Text style={MainStyles.productName}>Stok Adı: {item.Stok_Ad}</Text>
               <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
               <Text style={MainStyles.productTitle}>Vade: {item.Vade}</Text>
+              <Text style={MainStyles.productTitle}>sip_doviz_cinsi: {item.sip_doviz_cinsi}</Text>
             </View>
 
             <View style={MainStyles.rowContainer}>
