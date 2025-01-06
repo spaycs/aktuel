@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     KullaniciKodu: "",
     Sifre: "",
     OrijinalSifre: "",
-    AktivasyonKodu: "",
+    AktivasyonKodu: "AE1B724851",
     FirmaKodu: "HilalMuhasebe",
     FirmaApiUrl: "http://hilalapi.novatekcloud.com:8094",
     MikroApiUrl: "http://hilalapi.novatekcloud.com:8084",

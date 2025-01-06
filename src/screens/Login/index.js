@@ -64,6 +64,7 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     if (AktivasyonKodu) {
       handleFetchDatabases();
+      
     }
   }, [AktivasyonKodu]);
    // Veritabanlarını getir
@@ -86,13 +87,18 @@ const Login = ({ navigation }) => {
 
   // Veritabanı seçildiğinde firma kodunu ayarla
   const handleDatabaseSelect = (database) => {
-    setSelectedDatabase(database);
+    setSelectedDatabase(database); // Seçili veritabanını state'e kaydet
     const selected = databases.find((db) => db.Database === database);
     if (selected) {
-      setFirmaKodu(selected.Database); // Firma Kodu seçilen veritabanına göre ayarlanır
+      setFirmaKodu(selected.Database); // Firma Kodu
+      setFirmaApiUrl(selected.FirmaUrl); // Firma URL
+      setMikroApiUrl(selected.MikroUrl); // Firma URL
+      updateAuthData('FirmaKodu', selected.Database); // Firma Kodu'nu useAuth'a kaydet
+      updateAuthData('FirmaApiUrl', selected.FirmaUrl); // Firma URL'yi useAuth'a kaydet
+      updateAuthData('MikroApiUrl', selected.MikroUrl); // Firma URL'yi useAuth'a kaydet
     }
   };
-
+  
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
@@ -103,6 +109,12 @@ const Login = ({ navigation }) => {
 
     return () => unsubscribe(); // Cleanup on unmount
   }, []);
+
+  useEffect(() => {
+    if (authData?.FirmaKodu) {
+      setSelectedDatabase(authData.FirmaKodu); // useAuth'taki FirmaKodu'nu başlangıç seçimi olarak ayarla
+    }
+  }, [authData]);
 
   {/* 
   useEffect(() => {
@@ -207,6 +219,14 @@ const Login = ({ navigation }) => {
       const data = response.data;
 
       // Gelen verilerle state'i güncelle
+      //setAktivasyonKodu(data.AktivasyonKodu || '');
+      updateAuthData('AktivasyonKodu', AktivasyonKodu);
+      updateAuthData('FirmaKodu', FirmaKodu);
+      updateAuthData('FirmaApiUrl', FirmaApiUrl);
+      updateAuthData('MikroApiUrl', MikroApiUrl);
+      updateAuthData('CalismaYili', CalismaYili);
+      updateAuthData('FirmaNo', FirmaNo);
+      updateAuthData('SubeNo', SubeNo);
       setFirmaKodu(data.FirmaKodu || '');
       setCalismaYili(data.CalismaYil?.toString() || '');
       setFirmaApiUrl(data.FirmaApiUrl || '');
