@@ -22,57 +22,7 @@ const CustomDrawerContent = (props) => {
   const [isRaporlarExpanded, setIsRaporlarExpanded] = useState(false); 
   const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
 
-  useEffect(() => {
-    const fetchMenuIzinleri = async () => {
-      try {
-        if (defaults.length > 0) {
-          const temsilciKod = defaults[0].IQ_MikroUserId;
-          const response = await axiosLinkMain.get(`/Api/Kullanici/MenuIzin?kod=${temsilciKod}`);
-          console.log(temsilciKod);
-          const izinData = response.data[0];
-          setMenuIzinleri(izinData);
-        }
-      } catch (error) {
-        console.error('Menü izinleri alınırken hata oluştu:', error);
-      }
-    };
-
-    fetchMenuIzinleri();
-  }, [defaults]);
-
-  const handleNavigation = (navigation, route, izinKontrol) => {
-    if (izinKontrol) {
-      if (menuIzinleri && menuIzinleri[izinKontrol] === 1) {
-        handleNavigationWithReset(navigation, route);
-      } else {
-        Alert.alert("Uyarı", "Bu menüye erişim izniniz bulunmamaktadır. Yöneticiniz ile iletişime geçiniz.");
-      }
-    }
-  };
-
-
-  const handleNavigationWithReset = (navigation, route) => {
-    Alert.alert(
-      "Uyarı",
-      "Başka bir sayfaya geçiyorsunuz. Girdiğiniz veriler kaybolacak. Devam etmek istiyor musunuz?",
-      [
-        {
-          text: "Evet",
-          onPress: () => {
-            setFaturaBilgileri({});
-            setAddedProducts([]);
-            navigation.navigate(route);
-          }
-        },
-        {
-          text: "Hayır",
-          onPress: () => {},
-          style: "cancel"
-        }
-      ]
-    );
-  };
-
+  // Çıkış yapma işlemi
   const handleLogout = async () => {
     try {
       const response = await axiosLink.post('/Api/apiMethods/APILogoffV2', {
@@ -89,14 +39,13 @@ const CustomDrawerContent = (props) => {
       if (response.status === 200) {
         Alert.alert('Başarılı', 'Başarıyla çıkış yaptınız.');
   
-        // Çekmeceyi kapat
         props.navigation.closeDrawer();
   
         // Navigasyonu sıfırla ve Login sayfasına yönlendir
         props.navigation.dispatch(
           CommonActions.reset({
-            index: 0, // Yeni yığın indeksi
-            routes: [{ name: 'Login' }], // Yönlendirilecek sayfa
+            index: 0, 
+            routes: [{ name: 'Login' }], 
           })
         );
       } else {
@@ -112,14 +61,16 @@ const CustomDrawerContent = (props) => {
     <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <DrawerItemList {...props} />
+
+    {/* Kullanıcı Bilgileri */}
       <View style={{
-        justifyContent: 'space-between', // Logo ve X arasında boşluk oluşturur
+        justifyContent: 'space-between', 
         alignItems: 'center',
-        flexDirection: 'row', // Yatayda hizalar
+        flexDirection: 'row', 
         marginTop: 10,
         borderBottomWidth: 1,
         borderColor: colors.textInputBg,
-        paddingHorizontal: 10 // İçerikler için sağ ve sol boşluklar
+        paddingHorizontal: 10 
       }}>
          <TouchableOpacity style={{}} onPress={() => props.navigation.closeDrawer()}>
           <Left width={16} height={16}/>
@@ -129,7 +80,8 @@ const CustomDrawerContent = (props) => {
         </View>
        
         </View>
-       
+
+    {/* Bilgi Kartları */}
       <View style={{paddingVertical: 10, flexDirection :'row', paddingHorizontal: 10, }}>
       
         <View style={{flex:1}}>
@@ -207,7 +159,7 @@ const styles = StyleSheet.create({
   },
   categoryHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Sol ve sağdaki içerikler arasında boşluk bırakır
+    justifyContent: 'space-between', 
     alignItems: 'center',
   },
   leftContainer: {

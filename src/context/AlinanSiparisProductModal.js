@@ -65,10 +65,10 @@ const AlinanSiparisProductModal = ({
   const [stokDetayOzelAlanData, setStokDetayOzelAlanData] = useState(''); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
 
+  // Kullanıcının yetkilerine göre fiyat ve iskonto düzenleme izinleri kontrol ediliyor
   useEffect(() => {
     if (defaults && defaults[0]) {
       const { IQ_SiparisFiyatiDegistirebilir, IQ_SiparisIskontosu1Degistirebilir, IQ_SiparisIskontosu2Degistirebilir, IQ_SiparisIskontosu3Degistirebilir, IQ_SiparisIskontosu4Degistirebilir, IQ_SiparisIskontosu5Degistirebilir, IQ_SiparisIskontosu6Degistirebilir } = defaults[0];
-  
       setIsEditable(IQ_SiparisFiyatiDegistirebilir === 1);
       setIsIskonto1Edit(IQ_SiparisIskontosu1Degistirebilir === 1);
       setIsIskonto2Edit(IQ_SiparisIskontosu2Degistirebilir === 1);
@@ -88,42 +88,40 @@ const AlinanSiparisProductModal = ({
     }
   }, [modalVisible, selectedProduct, birimListesi]);
 
+  // Seçilen ürünün detay bilgilerini getirir
   const fetchStokDetayData = async () => {
     if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
   
-    setLoading(true); // Yükleniyor state'i aktif et
+    setLoading(true); 
     try {
-      // API'yi çağır
       const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=${defaults[0].IQ_MikroPersKod}`);
       const data = response.data || []; // Hata durumunda boş dizi döner
   
-      // Veriyi state'e ata
       setStokDetayData(data);
     } catch (error) {
       console.error('Bağlantı Hatası Stok Detay:', error);
     } finally {
-      setLoading(false); // Yükleniyor state'ini kaldır
-      setIsStokDetayVisible(true); // Modalı aç
+      setLoading(false); 
+      setIsStokDetayVisible(true); 
     }
   };
 
+  // Seçilen ürünün özel alan detaylarını getirir
   const fetchStokOzelAlanDetayData = async () => {
     if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
   
-    setLoading(true); // Yükleniyor state'i aktif et
+    setLoading(true);
     try {
-      // API'yi çağır
       const cari = alinanSiparis.sth_cari_kodu || alinanSiparis.sip_musteri_kod  || alinanSiparis.cha_kod;
       const response = await axiosLinkMain.get(`/api/Raporlar/StokOzelAlan?stok=${selectedProduct.Stok_Kod}&cari=${cari}&userno=${defaults[0].IQ_MikroPersKod}`);
-      const data = response.data || []; // Hata durumunda boş dizi döner
+      const data = response.data || []; 
   
-      // Veriyi state'e ata
       setStokDetayOzelAlanData(data);
     } catch (error) {
       console.error('Bağlantı Hatası Stok Detay:', error);
     } finally {
-      setLoading(false); // Yükleniyor state'ini kaldır
-      setIsStokOzelDetayVisible(true); // Modalı aç
+      setLoading(false); 
+      setIsStokOzelDetayVisible(true); 
     }
   };
   
@@ -131,7 +129,6 @@ const AlinanSiparisProductModal = ({
     setIsStokDetayVisible(false);
     setIsStokOzelDetayVisible(false);
   };
-
 
   useEffect(() => {
     if (modalVisible && selectedProduct) {
@@ -162,7 +159,6 @@ const AlinanSiparisProductModal = ({
               setBirimFiyat(firstItem.fiyat.toString());
             }
             
-         
             if (firstItem.Birim_KDV) {
               setBirim_KDV(firstItem.Birim_KDV.toString());  
             }
@@ -212,7 +208,6 @@ const AlinanSiparisProductModal = ({
             setSth_isk4(firstItem.isk4.toString());
             setSth_isk5(firstItem.isk5.toString());
             setSth_isk6(firstItem.isk6.toString());
-
   
           } else {
             console.error("API yanıtı beklenen formatta değil:", data);
@@ -235,21 +230,21 @@ const validateQuantity = (quantity) => {
 
   // Seçilen birime göre katsayıyı belirliyoruz
   switch (sth_birim_pntr) {
-    case birimListesi[1]: // KUT birimi
+    case birimListesi[1]: 
       unitMultiplier = katsayi.sto_birim2_katsayi || 1;
       minQuantity = unitMultiplier;
       break;
-    case birimListesi[2]: // KOL birimi
+    case birimListesi[2]: 
       unitMultiplier = katsayi.sto_birim3_katsayi || 1;
       minQuantity = unitMultiplier;
       break;
-    case birimListesi[3]: // Yeni eklenen birim, sto_birim4_ad
+    case birimListesi[3]: 
       unitMultiplier = katsayi.sto_birim4_katsayi || 1;
       minQuantity = unitMultiplier;
       break;
-    case birimListesi[0]: // AD birimi
-      unitMultiplier = 1; // AD biriminde çarpan yok
-      minQuantity = 1; // AD biriminde minimum miktar 1
+    case birimListesi[0]: 
+      unitMultiplier = 1; 
+      minQuantity = 1; 
       break;
     default:
       Alert.alert(
@@ -286,7 +281,6 @@ const validateQuantity = (quantity) => {
   return true;
 };
 
-
 // Miktar değişimini yöneten fonksiyon
   const handleMiktarChange = (value) => {
     const quantityFloat = parseFloat(value.replace(',', '.')) || 0;
@@ -295,25 +289,24 @@ const validateQuantity = (quantity) => {
     let finalQuantity = quantityFloat;
 
     switch (sth_birim_pntr) {
-      case birimListesi[1]: // KL birimi
+      case birimListesi[1]: 
         finalQuantity = quantityFloat * katsayi.sto_birim2_katsayi;
         break;
-      case birimListesi[2]: // KOL birimi
+      case birimListesi[2]: 
         finalQuantity = quantityFloat * katsayi.sto_birim3_katsayi;
         break;
-      case birimListesi[3]: // Yeni eklenen birim
+      case birimListesi[3]: 
         finalQuantity = quantityFloat * katsayi.sto_birim4_katsayi;
         break;
-      case birimListesi[0]: // SET birimi
+      case birimListesi[0]: 
       default:
-        finalQuantity = quantityFloat; // Katsayı yok
+        finalQuantity = quantityFloat; 
         break;
     }
 
     return finalQuantity; // Hesaplanan miktarı döndürüyoruz
   };
 
-  
   const calculateTotal = () => {
     let newmiktar = handleMiktarChange(sth_miktar);
     let sth_miktarFloat = parseFloat(newmiktar) || 0;
@@ -344,7 +337,6 @@ const validateQuantity = (quantity) => {
     setBirimFiyat('');
   };
 
-
   const handleAddProduct = async () => {
     const calculatedQuantity = handleMiktarChange(sth_miktar);
     
@@ -356,15 +348,13 @@ const validateQuantity = (quantity) => {
       const newTotalPrice = calculateTotal(); // Toplam tutar hesaplandı
       const newTotalMiktarPrice = (newQuantity * newTotalPrice).toFixed(2);
   
-   
       try {
         // İlk API çağrısı - mevcut iskontoları hesaplamak için
         const apiUrl = `/Api/Iskonto/IskontoHesapla?tutar=${newTotalPrice}&isk1=${sth_iskonto1 || 0}&isk2=${sth_iskonto2 || 0}&isk3=${sth_iskonto3 || 0}&isk4=${sth_iskonto4 || 0}&isk5=${sth_iskonto5 || 0}&isk6=${sth_iskonto6 || 0}`;
         const response = await axiosLinkMain.get(apiUrl);
         const result = response.data;
         const { İsk1, İsk2, İsk3, İsk4, İsk5, İsk6 } = result; // İlk API'den dönen iskontolar
-       // İkinci API çağrısı - Vade değerini almak için
-      
+        // İkinci API çağrısı - Vade değerini almak için
 
         if (existingProduct) {
           // Eklenen ürünün iskonto değerlerini karşılaştır
@@ -405,7 +395,7 @@ const validateQuantity = (quantity) => {
                           ? {
                               ...product,
                               sth_miktar: updatedQuantity.toFixed(2),
-                              sth_tutar:sth_tutar, // Tutarı güncelle
+                              sth_tutar:sth_tutar, 
                               sth_iskonto1: updatedİsk1.toFixed(2),
                               sth_iskonto2: updatedİsk2.toFixed(2),
                               sth_iskonto3: updatedİsk3.toFixed(2),
@@ -569,21 +559,20 @@ const validateQuantity = (quantity) => {
   };
   
   const resetFields = () => {
-    setSth_miktar('1'); // Miktar sıfırla
+    setSth_miktar('1'); 
     setSth_iskonto1('');
     setSth_iskonto2('');
     setSth_iskonto3('');
     setSth_iskonto4('');
     setSth_iskonto5('');
     setSth_iskonto6('');
-    setAciklama(''); // Açıklama sıfırla
-    setBirimFiyat(''); // Birim fiyat sıfırla
-    setCarpan(''); // Çarpan sıfırla
-    setSth_tutar(''); // Tutar sıfırla
-    setSip_doviz_cinsi(''); // Tutar sıfırla
+    setAciklama(''); 
+    setBirimFiyat(''); 
+    setCarpan('');
+    setSth_tutar(''); 
+    setSip_doviz_cinsi(''); 
     setModalVisible(false); 
   };
-  
   
   return (
     <Modal
@@ -607,83 +596,83 @@ const validateQuantity = (quantity) => {
               <Text style={MainStyles.inputtip}>Birim:</Text>
               <View style={MainStyles.productModalPickerContainer}>
               {Platform.OS === 'ios' ? (
-  <>
-    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-      <Text style={MainStyles.pickerText}>
-        {sth_birim_pntr || 'Birim seçin'}
-      </Text>
-    </TouchableOpacity>
+                  <>
+                    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                      <Text style={MainStyles.pickerText}>
+                        {sth_birim_pntr || 'Birim seçin'}
+                      </Text>
+                    </TouchableOpacity>
 
-    {/* iOS Modal */}
-    <Modal visible={isModalVisible} animationType="slide" transparent>
-      <View style={MainStyles.modalContainerPicker}>
-        <View style={MainStyles.modalContentPicker}>
-          <Picker
-            selectedValue={sth_birim_pntr}
-            onValueChange={(itemValue) => {
-              setSth_birim_pntr(itemValue);
-              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
-              setIsModalVisible(false); // Modal'ı kapat
-            }}
-            style={MainStyles.picker}
-          >
-            {birimListesi.map((birim, index) => (
-              <Picker.Item
-                key={index}
-                label={`${birim} (${
-                  index === 1
-                    ? katsayi.sto_birim2_katsayi
-                    : index === 2
-                    ? katsayi.sto_birim3_katsayi
-                    : katsayi.sto_birim4_katsayi
-                })`}
-                value={birim}
-                style={MainStyles.textStyle}
-              />
-            ))}
-          </Picker>
-          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
-        </View>
-      </View>
-    </Modal>
-  </>
-) : (
-  // Android için düz Picker
-  <Picker
-    selectedValue={sth_birim_pntr}
-    itemStyle={{ height: 40, fontSize: 10 }}
-    style={{ marginHorizontal: -10 }}
-    onValueChange={(itemValue) => {
-      setSth_birim_pntr(itemValue);
-      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
-    }}
-  >
-    {birimListesi.map((birim, index) => (
-      <Picker.Item
-        key={index}
-        label={`${birim} (${
-          index === 1
-            ? katsayi.sto_birim2_katsayi
-            : index === 2
-            ? katsayi.sto_birim3_katsayi
-            : katsayi.sto_birim4_katsayi
-        })`}
-        value={birim}
-        style={MainStyles.textStyle}
-      />
-    ))}
-  </Picker>
-)}
+                    {/* iOS Modal */}
+                    <Modal visible={isModalVisible} animationType="slide" transparent>
+                      <View style={MainStyles.modalContainerPicker}>
+                        <View style={MainStyles.modalContentPicker}>
+                          <Picker
+                            selectedValue={sth_birim_pntr}
+                            onValueChange={(itemValue) => {
+                              setSth_birim_pntr(itemValue);
+                              handleMiktarChange(sth_miktar); 
+                              setIsModalVisible(false); 
+                            }}
+                            style={MainStyles.picker}
+                          >
+                            {birimListesi.map((birim, index) => (
+                              <Picker.Item
+                                key={index}
+                                label={`${birim} (${
+                                  index === 1
+                                    ? katsayi.sto_birim2_katsayi
+                                    : index === 2
+                                    ? katsayi.sto_birim3_katsayi
+                                    : katsayi.sto_birim4_katsayi
+                                })`}
+                                value={birim}
+                                style={MainStyles.textStyle}
+                              />
+                            ))}
+                          </Picker>
+                          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                        </View>
+                      </View>
+                    </Modal>
+                  </>
+                ) : (
+                  // Android için düz Picker
+                  <Picker
+                    selectedValue={sth_birim_pntr}
+                    itemStyle={{ height: 40, fontSize: 10 }}
+                    style={{ marginHorizontal: -10 }}
+                    onValueChange={(itemValue) => {
+                      setSth_birim_pntr(itemValue);
+                      handleMiktarChange(sth_miktar); 
+                    }}
+                  >
+                    {birimListesi.map((birim, index) => (
+                      <Picker.Item
+                        key={index}
+                        label={`${birim} (${
+                          index === 1
+                            ? katsayi.sto_birim2_katsayi
+                            : index === 2
+                            ? katsayi.sto_birim3_katsayi
+                            : katsayi.sto_birim4_katsayi
+                        })`}
+                        value={birim}
+                        style={MainStyles.textStyle}
+                      />
+                    ))}
+                  </Picker>
+                )}
 
               </View>
             </View>
-            <View style={MainStyles.inputBirimGroup}>
+          <View style={MainStyles.inputBirimGroup}>
             <Text style={MainStyles.inputtip}>Miktar:</Text>
             <TextInput
               style={MainStyles.productModalMiktarInput}
               placeholderTextColor={colors.placeholderTextColor}
               keyboardType="numeric"
-              value={sth_miktar} // Kullanıcının girdiği değeri gösteriyoruz
+              value={sth_miktar} 
               onChangeText={(value) => {
                 // Karakter filtreleme (sadece rakamlar)
                 const numericValue = value.replace(/[^0-9]/g, '');
@@ -698,40 +687,40 @@ const validateQuantity = (quantity) => {
             />
           </View>
 
-          </View>
+        </View>
           <View style={MainStyles.inputRow}>
-          <View style={MainStyles.inputGroup}>
-              <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
-              <TextInput
-                style={MainStyles.productModalMiktarInput}
-                placeholderTextColor={colors.placeholderTextColor}
-                keyboardType="numeric"
-                value={sth_tutar}
-                editable={isEditable}
-                onChangeText={(value) => {
-                  // Virgülü noktaya çevir
-                  const formattedValue = value.replace(',', '.');
+            <View style={MainStyles.inputGroup}>
+                <Text style={MainStyles.inputtip}>Birim Fiyatı:</Text>
+                <TextInput
+                  style={MainStyles.productModalMiktarInput}
+                  placeholderTextColor={colors.placeholderTextColor}
+                  keyboardType="numeric"
+                  value={sth_tutar}
+                  editable={isEditable}
+                  onChangeText={(value) => {
+                    // Virgülü noktaya çevir
+                    const formattedValue = value.replace(',', '.');
 
-                  // Sadece rakamlar ve . (nokta) karakteri kabul edilsin
-                  const validValue = formattedValue.replace(/[^0-9.]/g, '');
+                    // Sadece rakamlar ve . (nokta) karakteri kabul edilsin
+                    const validValue = formattedValue.replace(/[^0-9.]/g, '');
 
-                  // Eğer birden fazla . (nokta) varsa, sonrasını kabul etme
-                  const finalValue = validValue.split('.').length > 2 ? validValue.slice(0, -1) : validValue;
+                    // Eğer birden fazla . (nokta) varsa, sonrasını kabul etme
+                    const finalValue = validValue.split('.').length > 2 ? validValue.slice(0, -1) : validValue;
 
-                  setSth_tutar(finalValue);
-                }}
-              />
+                    setSth_tutar(finalValue);
+                  }}
+                />
 
-              </View>
+            </View>
               <View style={MainStyles.inputGroup}>
-              <Text style={MainStyles.inputtip}>Tutar:</Text>
-              <TextInput
-              style={MainStyles.productModalMiktarInput}
-              placeholderTextColor={colors.placeholderTextColor}
-              editable={false}
-              value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
-              keyboardType="numeric"  
-            />
+                <Text style={MainStyles.inputtip}>Tutar:</Text>
+                  <TextInput
+                  style={MainStyles.productModalMiktarInput}
+                  placeholderTextColor={colors.placeholderTextColor}
+                  editable={false}
+                  value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
+                  keyboardType="numeric"  
+                  />
 
               </View>
           </View>
@@ -746,13 +735,13 @@ const validateQuantity = (quantity) => {
           <View style={{flexDirection: 'row',}}>
            <TouchableOpacity
             style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
-            onPress={fetchStokDetayData} // sip_musteri_kod kaldırıldı
+            onPress={fetchStokDetayData} 
           >
             <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Depo Detayları</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, paddingHorizontal: 5, marginBottom: 10,marginLeft: 2, borderRadius: 5, width: '49%' }}
-            onPress={fetchStokOzelAlanDetayData} // sip_musteri_kod kaldırıldı
+            onPress={fetchStokOzelAlanDetayData} 
           >
             <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
           </TouchableOpacity>
@@ -767,7 +756,7 @@ const validateQuantity = (quantity) => {
              <View style={[MainStyles.modalBackground]}>
              <View style={MainStyles.modalCariDetayContent}>
                   <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                    <Text style={MainStyles.closeButtonText}>Kapat</Text>
                   </TouchableOpacity>
                     {loading ? (
                         <FastImage
@@ -1017,15 +1006,6 @@ const validateQuantity = (quantity) => {
               </View>
             </View>
           
-          {/* 
-            <View style={MainStyles.checkboxContainer}>
-              <CheckBox
-                value={resetTax}
-                onValueChange={setResetTax}
-              />
-              <Text>Vergi Sıfırla</Text>
-            </View>
-          */}
           <TouchableOpacity
             style={MainStyles.addButtonUrunDetay}
             onPress={handleAddProduct}

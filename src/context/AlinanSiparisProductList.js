@@ -14,10 +14,6 @@ import AlinanSiparisProductModal from './AlinanSiparisProductModal';
 import { useAuthDefault } from '../components/DefaultUser';
 import FastImage from 'react-native-fast-image';
 
-const normalizeText = (text) => {
-  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-};
-
 const AlinanSiparisProductList = () => {
   const { authData } = useAuth();
   const { defaults } = useAuthDefault();
@@ -41,6 +37,7 @@ const AlinanSiparisProductList = () => {
   const [loading, setLoading] = useState(false);
   const searchTimeoutRef = useRef(null);
 
+  // Arama kriterleri için seçenekler tanımlanıyor.
   const pickerItems = [
     { label: 'Stok Adı', value: 'Stok Ad', tip: 1 },
     { label: 'Stok Kodu', value: 'Stok Kod', tip: 2 },
@@ -51,25 +48,24 @@ const AlinanSiparisProductList = () => {
     { label: 'Barkod', value: 'Barkod', tip: 7 },
   ];
 
+  // Arama kriterine göre tip değeri belirleniyor.
   const getTipForValue = (value) => {
     const selectedItem = pickerItems.find((item) => item.value === value);
     return selectedItem ? selectedItem.tip : 1;
   };
 
+  // Ürün verisi API'den çekiliyor.
   const fetchProductData = useCallback(
     async (searchTerm = '', searchCriteria = 'Stok Ad') => {
       setLoading(true);
       try {
-        const deger = searchTerm || ''; // TextInput'a yazılan değer, boşsa boş olarak gönderilecek
+        const deger = searchTerm || ''; 
         const tip = getTipForValue(searchCriteria);
         const response = await axiosLinkMain.get(
           `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
         );
         
-  
         const data = response.data;
-  
-        // Gelen veriyi filteredData formatına dönüştürme
         const filteredData = data.map(item => ({
           Stok_Ad: item.Stok_Ad,
           Stok_Kod: item.Stok_Kod,
@@ -88,7 +84,7 @@ const AlinanSiparisProductList = () => {
           Depo: item.Depo,
         }));
   
-        setData(filteredData); // filteredData'yı setData ile ayarlayın
+        setData(filteredData); 
   
         // StokVade ve BekleyenSiparis değerlerini kontrol et
         const stokVadeValue = filteredData.find((item) => item.Vade)?.Vade;
@@ -115,7 +111,7 @@ const AlinanSiparisProductList = () => {
     }));
   }, [setAlinanSiparis]);
   
-
+  // Arama terimi değiştiğinde API çağrısı yapılır.
   const handleSearchTermChange = (text) => {
     setSearchTerm(text);
   
@@ -130,17 +126,16 @@ const AlinanSiparisProductList = () => {
     }, 500); // 500 ms sonra API çağrısı yapılacak
   };
 
-  
   useEffect(() => {
     fetchProductData();
   }, [searchCriteria]); 
 
+  // Ürün detayları çekilir.
   const fetchStockDetails = useCallback(async (productCode) => {
     try {
       const response = await axiosLinkMain.get(
         `/Api/Stok/StokListesiEvraklar?cari=${alinanSiparis.sip_musteri_kod}&deger=${productCode}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
       );
-      
       const stokData = response.data;
   
       // Gelen veriler arasında productCode ile eşleşeni bul
@@ -159,34 +154,35 @@ const AlinanSiparisProductList = () => {
     }
   }, [alinanSiparis.sip_musteri_kod, defaults, searchCriteria]);
   
+  // Ürün seçildiğinde detay modalı açılır.
   const handleItemClick = async (item) => {
-  if (!alinanSiparis.sip_musteri_kod) {
-    Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
-    return;
-  }
+    if (!alinanSiparis.sip_musteri_kod) {
+      Alert.alert('Hata', 'İlk önce cari seçimi yapmalısınız.');
+      return;
+    }
 
-  // Stok detaylarını getir ve Vade bilgisini al
-  const vade = await fetchStockDetails(item.Stok_Kod);
+    // Stok detaylarını getir ve Vade bilgisini al
+    const vade = await fetchStockDetails(item.Stok_Kod);
 
-  if (vade !== null) {
-    // Ürün listesinde güncelleme yap
-    setAddedAlinanSiparisProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.Stok_Kod === item.Stok_Kod
-          ? { ...product, StokVade: vade } // StokVade'yi güncelle
-          : product // Diğer ürünleri aynı bırak
-      )
-    );
+    if (vade !== null) {
+      // Ürün listesinde güncelleme yap
+      setAddedAlinanSiparisProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.Stok_Kod === item.Stok_Kod
+            ? { ...product, StokVade: vade } // StokVade'yi güncelle
+            : product // Diğer ürünleri aynı bırak
+        )
+      );
 
-    console.log(`Updated product with StokVade: ${vade}`);
-  } else {
-    console.warn(`Vade bilgisi alınamadı: ${item.Stok_Kod}`);
-  }
+      console.log(`Updated product with StokVade: ${vade}`);
+    } else {
+      console.warn(`Vade bilgisi alınamadı: ${item.Stok_Kod}`);
+    }
 
-  // Modalı aç ve seçilen ürünü ayarla
-  setSelectedProduct(item);
-  setModalVisible(true);
-};
+    // Modalı aç ve seçilen ürünü ayarla
+    setSelectedProduct(item);
+    setModalVisible(true);
+  };
 
   const openModal = (item) => {
     setSelectedItem(item);
@@ -213,7 +209,7 @@ const AlinanSiparisProductList = () => {
     fetchProductData(data, 'Barkod');
   };
   
-
+  // Ürün listesi render edili ekranda görüntülenir
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemClick(item)} style={MainStyles.itemContainerPL}>
     <View style={MainStyles.itemContentPL}>
@@ -251,10 +247,13 @@ const AlinanSiparisProductList = () => {
 
   return (
     <View style={MainStyles.irsaliyeContainer}>
+
+      {/* Üst Alan - Arama Kriteri Seçimi */}
       <View style={MainStyles.pageTop}>
         <View style={MainStyles.inputStyle}>
         {Platform.OS === 'ios' ? (
         <>
+          {/* iOS için Arama Kriteri Seçimi (Modal içinde) */}
           <TouchableOpacity onPress={() => setIsModalVisible(true)}>
           <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
             {searchCriteria}
@@ -303,6 +302,8 @@ const AlinanSiparisProductList = () => {
       )}
         </View>
       </View>
+
+      {/* Ürün Arama Alanı */}
       <View style={MainStyles.inputContainer}>
         <TextInput
           style={MainStyles.slinputUrunAra}
@@ -316,6 +317,7 @@ const AlinanSiparisProductList = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Barkod Okuma Kamerası */}
       <Modal visible={cameraModalVisible} animationType="slide">
         <View style={MainStyles.cameraContainer}>
         <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
@@ -344,7 +346,7 @@ const AlinanSiparisProductList = () => {
         </TouchableOpacity>
       </Modal>
 
-      {loading ? ( // Show loading indicator if loading
+      {loading ? ( 
        <FastImage
         style={MainStyles.loadingGif}
         source={require('../res/images/image/pageloading.gif')}

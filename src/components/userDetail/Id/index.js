@@ -7,12 +7,12 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-// Axios instance'ı tanımlama
+// AxiosLinkMain instance'ı tanımlama
 let axiosLinkMain = axios.create({
   baseURL: '', // Varsayılan URL
 });
 
-// Axios instance'ı tanımlama
+// AxiosLink instance'ı tanımlama
 let axiosLink = axios.create({
   baseURL: '', // Varsayılan URL
 });
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         authData,
         updateAuthData,
-        axiosLinkMain, // Axios instance'ını sağlayın
+        axiosLinkMain, 
         axiosLink,
       }}
     >

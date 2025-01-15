@@ -11,25 +11,26 @@ const Loading = ({ navigation }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
+        // AsyncStorage'dan daha önce kaydedilmiş auth bilgileri alınır
         const storedAuthData = await AsyncStorage.getItem('authData');
 
         if (storedAuthData) {
+          // Eğer auth verisi varsa JSON formatından obje formatına çevrilir
           const parsedAuthData = JSON.parse(storedAuthData);
-          // Auth verilerini güncelleyin
+          // Her bir auth verisi context'e aktarılır 
           Object.keys(parsedAuthData).forEach((key) => {
             updateAuthData(key, parsedAuthData[key]);
           });
-          // Kullanıcı varsa GetStarted'a yönlendir
           setTimeout(() => {
             navigation.navigate('GetStarted');
           }, gifDuration);
         } else {
-          // Kullanıcı yoksa Login sayfasına yönlendir
           setTimeout(() => {
             navigation.navigate('Login');
           }, gifDuration);
         }
       } catch (error) {
+        // AsyncStorage'dan veri alınamazsa hata yönetimi yapılır ve Login ekranına yönlendirilir
         console.error('Error retrieving stored auth data:', error);
         setTimeout(() => {
           navigation.navigate('Login');
@@ -42,6 +43,7 @@ const Loading = ({ navigation }) => {
     checkUser();
   }, [navigation]);
 
+  // Yükleme durumu devam ediyorsa ekranda dönen bir yüklenme animasyonu gösterilir
   if (loading) {
     return (
       <View style={styles.container}>

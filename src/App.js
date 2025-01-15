@@ -11,6 +11,8 @@ import VersionCheck from 'react-native-version-check';
 function App() {
     const [isUpdateRequired, setIsUpdateRequired] = useState(false);
 
+    // Uygulama açıldığında mağazadaki son sürüm ile mevcut sürümü karşılaştırır
+    
     useEffect(() => {
         const checkAppVersion = async () => {
             try {
@@ -18,10 +20,7 @@ function App() {
                 const appID = Platform.OS === 'ios' ? '6737150009' : undefined;  // iOS'ta geçerli
                 const packageName = Platform.OS === 'android' ? 'com2.mikroiq' : undefined;  // Android'de geçerli
         
-                console.log("Provider:", provider);
-                console.log("App ID:", appID);  // iOS için App ID
-                console.log("Package Name:", packageName);  // Android için Package Name
-        
+                // Mağazadaki en güncel sürüm bilgisi alınıyor
                 const latestVersion = await VersionCheck.getLatestVersion({
                     provider,
                     appID,
@@ -29,13 +28,15 @@ function App() {
                     ignoreErrors: true,
                 });
         
+                 // Uygulamanın mevcut sürümü alınıyor
                 const currentVersion = VersionCheck.getCurrentVersion();
         
                 console.log('Current Version:', currentVersion);
                 console.log('Latest Version:', latestVersion);
         
+                // Sürüm karşılaştırması yapılıyor
                 if (latestVersion && currentVersion && latestVersion > currentVersion) {
-                    setIsUpdateRequired(true);  // Güncelleme gerekli
+                    setIsUpdateRequired(true);  
                     Alert.alert(
                         'Zorunlu Güncelleme',
                         'Uygulamanızın güncel bir sürümü mevcut. Devam etmek için güncelleme yapmalısınız.',
@@ -46,24 +47,23 @@ function App() {
                                     Linking.openURL(
                                         Platform.OS === 'ios'
                                             ? 'https://apps.apple.com/tr/app/mikroiq/id6737150009?l=tr'
-                                            : 'https://play.google.com/store/apps/details?id=com2.mikroiq&gl=TR'  // Android linki
+                                            : 'https://play.google.com/store/apps/details?id=com2.mikroiq&gl=TR'  
                                     );
                                 },
                             },
                         ],
-                        { cancelable: false }
+                        { cancelable: false } // Geri tuşu veya boş alana tıklama iptali engelleniyor
                     );
                 }
             } catch (error) {
                 console.error('Güncelleme kontrol hatası:', error);
             }
         };
-        
-        
 
         checkAppVersion();
-    }, []); // Sadece uygulama ilk açıldığında çalışacak
+    }, []); 
 
+    // Eğer güncelleme gerekli ise ekrana bilgilendirme mesajı gösterilir
     if (isUpdateRequired) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -72,13 +72,19 @@ function App() {
         );
     }
 
+    // Güncelleme gerekmediğinde uygulamanın asıl içeriği gösterilir
+    // ProductProvider Ürün verileri yönetiliyor 
+    // NavigationContainer Navigasyon sistemi başlatılıyor 
+    // AuthProvider Kullanıcı oturumu yönetiliyor 
+    // AuthDefaultProvider Varsayılan kullanıcı ayarları sağlanıyor 
+    // Router Sayfa yönlendirmeleri yapılır 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <ProductProvider>
-                <NavigationContainer>
-                    <AuthProvider>
-                        <AuthDefaultProvider>
-                            <Router />
+            <ProductProvider>                       
+                <NavigationContainer>              
+                    <AuthProvider>                  
+                        <AuthDefaultProvider>       
+                            <Router />              
                         </AuthDefaultProvider>
                     </AuthProvider>
                 </NavigationContainer>

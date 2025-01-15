@@ -5,7 +5,10 @@ import { MainStyles } from '../res/style';
 import { Left } from '../res/images';
 import CustomHeader from '../components/CustomHeader';
 
+// AdresListModal bileşeni tanımlanıyor
 const AdresListModal = ({ isVisible, onClose, adresList, onSelect }) => {
+
+  // Adres öğelerini listelemek için render edilen öğe
   const renderAdresItem = ({ item }) => (
     <TouchableOpacity onPress={() => onSelect(item)} style={MainStyles.modalItem}> 
       <Text style={MainStyles.modalItemText}>{item.Adres}</Text>

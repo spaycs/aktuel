@@ -96,7 +96,7 @@ const AlinanSiparisFaturaBilgisi = () => {
 
 // Tümü 
 
-  // AsyncStorage'dan veriyi yükle
+// AsyncStorage'dan veriyi yükle
    const loadDataFromAsyncStorage = async () => {
     try {
       const savedFaturaBilgileri = await AsyncStorage.getItem('alinanSiparis');
@@ -183,8 +183,7 @@ const AlinanSiparisFaturaBilgisi = () => {
     } catch (error) {
         console.error('Error loading data from AsyncStorage:', error);
     }
-};
-
+  };
 
   const loadVadeFromAsyncStorage = async () => {
     try {
@@ -351,7 +350,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       }));
   };
 
-   // Veriyi AsyncStorage'a kaydet
+// Veriyi AsyncStorage'a kaydet
   const saveDataToAsyncStorage = async () => {
     try {
       await AsyncStorage.setItem('sip_projekodu', sip_projekodu); // Kod'u kaydediyoruz
@@ -409,8 +408,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   };
   
   useEffect(() => {
-    //console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
-  
+  //console.log("Fatura:", alinanSiparis);  // Burada log ekleyin
   }, [alinanSiparis]);
  
   useEffect(() => {
@@ -428,8 +426,6 @@ const AlinanSiparisFaturaBilgisi = () => {
         // loadOnaysizDataFromAsyncStorage(); // 11. Onaysız data yükler
   }, []);
   
-
-   
   useEffect(() => {
     if (projeKoduList.length === 0) {
       fetchProjeKoduList(); // Listeyi API'den al
@@ -454,12 +450,8 @@ const AlinanSiparisFaturaBilgisi = () => {
     }
   }, [vadeList]); // Liste değiştiğinde çalışacak
 
-
-
 // Veriyi AsyncStorage'a kaydet
    
-    
-
   const getSelectedDovizAd = () => {
     const selectedDoviz = dovizList.find(doviz => doviz.Doviz_Cins.toString() === sip_doviz_cinsi);
     return selectedDoviz ? selectedDoviz.Doviz_Adı : 'Döviz Tipini Seçin';
@@ -565,16 +557,48 @@ const AlinanSiparisFaturaBilgisi = () => {
     setCariDetayData(null);
   };
 
-  // Sayfa açıldığında varsayılan irsaliye tipini ayarlayan useEffect
-useEffect(() => {
-  if (Object.keys(alinanSiparis).length === 0) { // alinanSiparis boş ise
-    const defaultIrsaliyeTipi = 'Çok Dövizli'; // Varsayılan değer
-    setIrsaliyeTipi(defaultIrsaliyeTipi);
+// Sayfa açıldığında varsayılan irsaliye tipini ayarlayan useEffect
+  useEffect(() => {
+    if (Object.keys(alinanSiparis).length === 0) { // alinanSiparis boş ise
+      const defaultIrsaliyeTipi = 'Çok Dövizli'; // Varsayılan değer
+      setIrsaliyeTipi(defaultIrsaliyeTipi);
+
+      let sip_tip = 0;
+      let sip_cins = 0;
+
+      switch (defaultIrsaliyeTipi) {
+        case 'Çok Dövizli':
+          sip_tip = 0;
+          sip_cins = 0;
+          break;
+        case 'Konsinye':
+          sip_tip = 0;
+          sip_cins = 1;
+          break;
+        case 'Satın Alma':
+          sip_tip = 1;
+          sip_cins = 0;
+          break;
+        default:
+          break;
+      }
+
+      setAlinanSiparis(prevState => ({
+        ...prevState,
+        sip_tip,
+        sip_cins,
+      }));
+    }
+  }, [alinanSiparis]);
+
+  // handleIrsaliyeTipiChange fonksiyonu
+  const handleIrsaliyeTipiChange = async (itemValue) => {
+    setIrsaliyeTipi(itemValue);
 
     let sip_tip = 0;
     let sip_cins = 0;
 
-    switch (defaultIrsaliyeTipi) {
+    switch (itemValue) {
       case 'Çok Dövizli':
         sip_tip = 0;
         sip_cins = 0;
@@ -596,46 +620,14 @@ useEffect(() => {
       sip_tip,
       sip_cins,
     }));
-  }
-}, [alinanSiparis]);
 
-// handleIrsaliyeTipiChange fonksiyonu
-const handleIrsaliyeTipiChange = async (itemValue) => {
-  setIrsaliyeTipi(itemValue);
-
-  let sip_tip = 0;
-  let sip_cins = 0;
-
-  switch (itemValue) {
-    case 'Çok Dövizli':
-      sip_tip = 0;
-      sip_cins = 0;
-      break;
-    case 'Konsinye':
-      sip_tip = 0;
-      sip_cins = 1;
-      break;
-    case 'Satın Alma':
-      sip_tip = 1;
-      sip_cins = 0;
-      break;
-    default:
-      break;
-  }
-
-  setAlinanSiparis(prevState => ({
-    ...prevState,
-    sip_tip,
-    sip_cins,
-  }));
-
-  try {
-    // İrsaliye tipi bilgisini AsyncStorage'a kaydet (isteğe bağlı)
-    // await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
-  } catch (error) {
-    console.error('Error saving irsaliyeTipi to AsyncStorage:', error);
-  }
-};
+    try {
+      // İrsaliye tipi bilgisini AsyncStorage'a kaydet (isteğe bağlı)
+      // await AsyncStorage.setItem('selectedIrsaliyeTipi', JSON.stringify(itemValue));
+    } catch (error) {
+      console.error('Error saving irsaliyeTipi to AsyncStorage:', error);
+    }
+  };
 
 
   // Evrak Tarih Alanı
@@ -1162,129 +1154,128 @@ const handleIrsaliyeTipiChange = async (itemValue) => {
           setLoading(false);
           setIsCariDetayVisible(true);
       }
-  };
+    };
 
-  const fetchOzelAlanData = async (sip_musteri_kod, pickerValue) => {
-    setLoading(true);
-    try {
-        if (pickerValue === "Özel Alanlar") {
-            const response3 = await axiosLinkMain.get(`/api/Raporlar/CariOzelAlan?cari=${sip_musteri_kod}&userno=${defaults[0].IQ_MikroPersKod}`);
-            console.log("CariOzelAlan API Yanıtı:", response3.data); // API yanıtını kontrol edin
-            const teminatData = response3.data || [];
-            setTeminatTutariData(teminatData);
-        } 
-    } catch (error) {
-        console.error('Bağlantı Hatası Cari Detay:', error);
-    } finally {
-        setLoading(false);
-        setIsOzelAlanVisible(true);
-    }
-};
+    const fetchOzelAlanData = async (sip_musteri_kod, pickerValue) => {
+      setLoading(true);
+      try {
+          if (pickerValue === "Özel Alanlar") {
+              const response3 = await axiosLinkMain.get(`/api/Raporlar/CariOzelAlan?cari=${sip_musteri_kod}&userno=${defaults[0].IQ_MikroPersKod}`);
+              console.log("CariOzelAlan API Yanıtı:", response3.data); // API yanıtını kontrol edin
+              const teminatData = response3.data || [];
+              setTeminatTutariData(teminatData);
+          } 
+      } catch (error) {
+          console.error('Bağlantı Hatası Cari Detay:', error);
+      } finally {
+          setLoading(false);
+          setIsOzelAlanVisible(true);
+      }
+    };
 
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('tr-TR', {
-    style: 'decimal',
-    minimumFractionDigits: 3,
-    maximumFractionDigits: 3,
-  }).format(price);
-  };
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('tr-TR', {
+        style: 'decimal',
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3,
+      }).format(price);
+      };
 
-  
-  const renderSelectedData = () => {
-    switch (selectedValue) {
-        case "Tedarikçi Bazında Bekleyen Siparişler":
-            return (
-                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
-                    <Grid>
-                        <Row style={MainStyles.tableHeader}>
-                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                <Text style={MainStyles.colTitle}>TEDARİKÇİ</Text>
-                            </Col>
-                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                <Text style={MainStyles.colTitle}>TUTAR</Text>
-                            </Col>
-                        </Row>
-                        {tedarikciSiparisData.map((item, index) => (
-                            <Row key={index} style={MainStyles.tableRowModal}>
+      
+      const renderSelectedData = () => {
+        switch (selectedValue) {
+            case "Tedarikçi Bazında Bekleyen Siparişler":
+                return (
+                    <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                        <Grid>
+                            <Row style={MainStyles.tableHeader}>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                    <Text style={MainStyles.colText}>{item.Tedarikci}</Text>
+                                    <Text style={MainStyles.colTitle}>TEDARİKÇİ</Text>
                                 </Col>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                    <Text style={MainStyles.colText}>{formatPrice(item.tutar)}</Text>
+                                    <Text style={MainStyles.colTitle}>TUTAR</Text>
                                 </Col>
                             </Row>
-                        ))}
-                    </Grid>
-                </ScrollView>
-            );
+                            {tedarikciSiparisData.map((item, index) => (
+                                <Row key={index} style={MainStyles.tableRowModal}>
+                                    <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                        <Text style={MainStyles.colText}>{item.Tedarikci}</Text>
+                                    </Col>
+                                    <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                        <Text style={MainStyles.colText}>{formatPrice(item.tutar)}</Text>
+                                    </Col>
+                                </Row>
+                            ))}
+                        </Grid>
+                    </ScrollView>
+                );
 
-        case "Sorumluluk Bazında Ortalama Vade":
-            return (
-                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
-                    <Grid>
-                        <Row style={MainStyles.tableHeader}>
-                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                <Text style={MainStyles.colTitle}>SRM BAKİYE</Text>
-                            </Col>
-                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                <Text style={MainStyles.colTitle}>VADE</Text>
-                            </Col>
-                        </Row>
-                        {ortalamaVadeBakiyeData.map((item, index) => (
-                            <Row key={index} style={MainStyles.tableRowModal}>
+            case "Sorumluluk Bazında Ortalama Vade":
+                return (
+                    <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                        <Grid>
+                            <Row style={MainStyles.tableHeader}>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                    <Text style={MainStyles.colText}>{item.SrmBakiye}</Text>
+                                    <Text style={MainStyles.colTitle}>SRM BAKİYE</Text>
                                 </Col>
                                 <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                    <Text style={MainStyles.colText}>{item.Vade}</Text>
+                                    <Text style={MainStyles.colTitle}>VADE</Text>
                                 </Col>
                             </Row>
-                        ))}
-                    </Grid>
-                </ScrollView>
-            );
+                            {ortalamaVadeBakiyeData.map((item, index) => (
+                                <Row key={index} style={MainStyles.tableRowModal}>
+                                    <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                        <Text style={MainStyles.colText}>{item.SrmBakiye}</Text>
+                                    </Col>
+                                    <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                        <Text style={MainStyles.colText}>{item.Vade}</Text>
+                                    </Col>
+                                </Row>
+                            ))}
+                        </Grid>
+                    </ScrollView>
+                );
 
-        default:
-            return <Text>Veri bulunamadı.</Text>;
-    }
-};
-const renderOzelAlanSelectedData = () => {
-  switch (selectedValue) {
-      case "Özel Alanlar":
-          return (
-              <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
-                  <Grid>
-                      <Row style={MainStyles.tableHeader}>
-                          <Col style={[MainStyles.tableCell, { width: 350, alignItems: 'center' }]} >
-                              <Text style={MainStyles.colTitle}>Özel Alanlar</Text>
-                          </Col>
-                      </Row>
-                      {teminatTutariData.length > 0 ? (
-                          teminatTutariData.map((item, index) => (
-                              <Row key={index} style={MainStyles.tableRowModal}>
-                                  <Col style={[MainStyles.tableCell, { width: 150 }]} >
-                                      <Text style={MainStyles.colTitle}>{item.Tip}</Text>
-                                  </Col>
-                                  <Col style={[MainStyles.tableCell, { width: 150 }]}>
-                                      <Text style={MainStyles.colText}>{item.Deger}</Text>
-                                  </Col>
-                              </Row>
-                          ))
-                      ) : (
-                          <Text></Text>
-                      )}
-                  </Grid>
-              </ScrollView>
-          );
+            default:
+                return <Text>Veri bulunamadı.</Text>;
+        }
+    };
 
-      default:
-          return <Text>Veri bulunamadı.</Text>;
-  }
-};
+    const renderOzelAlanSelectedData = () => {
+      switch (selectedValue) {
+          case "Özel Alanlar":
+              return (
+                  <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                      <Grid>
+                          <Row style={MainStyles.tableHeader}>
+                              <Col style={[MainStyles.tableCell, { width: 350, alignItems: 'center' }]} >
+                                  <Text style={MainStyles.colTitle}>Özel Alanlar</Text>
+                              </Col>
+                          </Row>
+                          {teminatTutariData.length > 0 ? (
+                              teminatTutariData.map((item, index) => (
+                                  <Row key={index} style={MainStyles.tableRowModal}>
+                                      <Col style={[MainStyles.tableCell, { width: 150 }]} >
+                                          <Text style={MainStyles.colTitle}>{item.Tip}</Text>
+                                      </Col>
+                                      <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                          <Text style={MainStyles.colText}>{item.Deger}</Text>
+                                      </Col>
+                                  </Row>
+                              ))
+                          ) : (
+                              <Text></Text>
+                          )}
+                      </Grid>
+                  </ScrollView>
+              );
+
+          default:
+              return <Text>Veri bulunamadı.</Text>;
+      }
+    };
     
   // Api Bağlantıları
-
-
 
   // Sorumluluk Merkezi Listele
     const renderSorumlulukMerkeziItem = ({ item }) => (
@@ -1437,25 +1428,25 @@ const renderOzelAlanSelectedData = () => {
         </View>
 
         <View style={{flexDirection: 'row',}}>
-    <TouchableOpacity
-        style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
-        onPress={() => {
-            setSelectedValue('Sorumluluk Bazında Ortalama Vade');  // veya 'vadeBakiye' değerleri
-            fetchCariDetayData(sip_musteri_kod, 'Sorumluluk Bazında Ortalama Vade'); // ya da 'vadeBakiye'
-        }}
-    >
-        <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-        style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
-        onPress={() => {
-            setSelectedValue('Özel Alanlar'); // Teminat Tutari
-            fetchOzelAlanData(sip_musteri_kod, 'Özel Alanlar');
-        }}
-    >
-        <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
-    </TouchableOpacity>
-</View>
+          <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
+              onPress={() => {
+                  setSelectedValue('Sorumluluk Bazında Ortalama Vade');  // veya 'vadeBakiye' değerleri
+                  fetchCariDetayData(sip_musteri_kod, 'Sorumluluk Bazında Ortalama Vade'); // ya da 'vadeBakiye'
+              }}
+          >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Cari Detay</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  width: '50%' }}
+              onPress={() => {
+                  setSelectedValue('Özel Alanlar'); // Teminat Tutari
+                  fetchOzelAlanData(sip_musteri_kod, 'Özel Alanlar');
+              }}
+          >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
+          </TouchableOpacity>
+        </View>
 
       <Modal
             visible={isCariDetayVisible}
@@ -1538,96 +1529,90 @@ const renderOzelAlanSelectedData = () => {
         </Modal>
 
         <Modal
-    visible={isOzelAlanDetayVisible}
-    transparent={true}
-    animationType="slide"
-    onRequestClose={closeModal}
->
-    <View style={[MainStyles.modalBackground]}>
-        <View style={MainStyles.modalCariDetayContent}>
-            <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
-                <Text style={MainStyles.closeButtonText}>Kapat</Text>
-            </TouchableOpacity>
-            {loading ? (
-                <FastImage
-                    style={MainStyles.loadingGif}
-                    source={require('../../res/images/image/pageloading.gif')}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
-            ) : (
-                <>
-                    <Text style={MainStyles.formTitle}>Tip Seçin</Text>
-                    <View style={MainStyles.inputStyleAlinanSiparis}>
-                        {Platform.OS === 'ios' ? (
-                            <>
-                                <TouchableOpacity onPress={() => setIsPickerModalVisible(true)}>
-                                    <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-                                        {selectedValue ? selectedValue : 'Seçiniz...'}
-                                    </Text>
-                                </TouchableOpacity>
+              visible={isOzelAlanDetayVisible}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={closeModal}
+          >
+              <View style={[MainStyles.modalBackground]}>
+                  <View style={MainStyles.modalCariDetayContent}>
+                      <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                          <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                      </TouchableOpacity>
+                      {loading ? (
+                          <FastImage
+                              style={MainStyles.loadingGif}
+                              source={require('../../res/images/image/pageloading.gif')}
+                              resizeMode={FastImage.resizeMode.contain}
+                          />
+                      ) : (
+                          <>
+                              <Text style={MainStyles.formTitle}>Tip Seçin</Text>
+                              <View style={MainStyles.inputStyleAlinanSiparis}>
+                                  {Platform.OS === 'ios' ? (
+                                      <>
+                                          <TouchableOpacity onPress={() => setIsPickerModalVisible(true)}>
+                                              <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                                                  {selectedValue ? selectedValue : 'Seçiniz...'}
+                                              </Text>
+                                          </TouchableOpacity>
 
-                                {/* iOS için Picker Modal */}
-                                <Modal
-                                    visible={isPickerModalVisible}
-                                    animationType="slide"
-                                    transparent
-                                >
-                                    <View style={MainStyles.modalContainerPicker}>
-                                        <View style={MainStyles.modalContentPicker}>
-                                            <Picker
-                                                selectedValue={selectedValue}
-                                                onValueChange={(value) => {
-                                                    setSelectedValue(value);
-                                                    if (value === "Özel Alanlar") {
-                                                        fetchOzelAlanData(sip_musteri_kod, value);
-                                                    }
-                                                    setIsPickerModalVisible(false); // Modalı kapat
-                                                }}
-                                                style={MainStyles.picker}
-                                            >
-                                                <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
-                                                <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
-                                            </Picker>
-                                            <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
-                                        </View>
-                                    </View>
-                                </Modal>
-                            </>
-                        ) : (
-                            // Android için Picker
-                            <Picker
-                                selectedValue={selectedValue}
-                                onValueChange={(value) => {
-                                    setSelectedValue(value);
-                                    if (value === "Özel Alanlar") {
-                                        fetchOzelAlanData(sip_musteri_kod, value);
-                                    }
-                                }}
-                                style={{ marginHorizontal: -10 }}
-                                itemStyle={{ height: 40, fontSize: 12 }}
-                            >
-                                <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
-                                <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
-                            </Picker>
-                        )}
-                    </View>
-                    {/* Seçili değere göre veri gösterme */}
-                    {renderOzelAlanSelectedData()}
-                </>
-            )}
-        </View>
-    </View>
-</Modal>
-
-
-
-
-
-
+                                          {/* iOS için Picker Modal */}
+                                          <Modal
+                                              visible={isPickerModalVisible}
+                                              animationType="slide"
+                                              transparent
+                                          >
+                                              <View style={MainStyles.modalContainerPicker}>
+                                                  <View style={MainStyles.modalContentPicker}>
+                                                      <Picker
+                                                          selectedValue={selectedValue}
+                                                          onValueChange={(value) => {
+                                                              setSelectedValue(value);
+                                                              if (value === "Özel Alanlar") {
+                                                                  fetchOzelAlanData(sip_musteri_kod, value);
+                                                              }
+                                                              setIsPickerModalVisible(false); // Modalı kapat
+                                                          }}
+                                                          style={MainStyles.picker}
+                                                      >
+                                                          <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
+                                                          <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
+                                                      </Picker>
+                                                      <Button title="Kapat" onPress={() => setIsPickerModalVisible(false)} />
+                                                  </View>
+                                              </View>
+                                          </Modal>
+                                      </>
+                                  ) : (
+                                      // Android için Picker
+                                      <Picker
+                                          selectedValue={selectedValue}
+                                          onValueChange={(value) => {
+                                              setSelectedValue(value);
+                                              if (value === "Özel Alanlar") {
+                                                  fetchOzelAlanData(sip_musteri_kod, value);
+                                              }
+                                          }}
+                                          style={{ marginHorizontal: -10 }}
+                                          itemStyle={{ height: 40, fontSize: 12 }}
+                                      >
+                                          <Picker.Item label="Seçiniz..." value={'Seçiniz'} style={MainStyles.textStyle} />
+                                          <Picker.Item label="Özel Alanlar" value="Özel Alanlar" style={MainStyles.textStyle} />
+                                      </Picker>
+                                  )}
+                              </View>
+                              {/* Seçili değere göre veri gösterme */}
+                              {renderOzelAlanSelectedData()}
+                          </>
+                      )}
+                  </View>
+              </View>
+          </Modal>  
 
         {/* Adres */}
-        <Text style={MainStyles.formTitle}>Adres</Text> 
-          <View style={MainStyles.inputContainer}>
+          <Text style={MainStyles.formTitle}>Adres</Text> 
+            <View style={MainStyles.inputContainer}>
               <TextInput
                 style={MainStyles.inputCariKodu}
                 placeholder="Adres"
@@ -1645,62 +1630,62 @@ const renderOzelAlanSelectedData = () => {
 
       <View style={MainStyles.teksirabirlestir}>
         {/* Doviz Seçim */}
-          <View style={{ width: '35%' }}>
-            <Text style={MainStyles.formTitle}>Döviz</Text>
-            <View style={MainStyles.inputStyle}>
-            {Platform.OS === 'ios' ? (
-          <>
-            <TouchableOpacity onPress={() => setIsDovizModalVisible(true)}>
-              <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
-                {getSelectedDovizAd()}
-              </Text>
-            </TouchableOpacity>
+            <View style={{ width: '35%' }}>
+              <Text style={MainStyles.formTitle}>Döviz</Text>
+              <View style={MainStyles.inputStyle}>
+              {Platform.OS === 'ios' ? (
+            <>
+              <TouchableOpacity onPress={() => setIsDovizModalVisible(true)}>
+                <Text style={[MainStyles.textColorBlack, MainStyles.fontSize12, MainStyles.paddingLeft10]}>
+                  {getSelectedDovizAd()}
+                </Text>
+              </TouchableOpacity>
 
-            {/* Döviz Modal (iOS için) */}
-            <Modal visible={isDovizModalVisible} animationType="slide" transparent>
-              <View style={MainStyles.modalContainerPicker}>
-                <View style={MainStyles.modalContentPicker}>
-                  <Picker
-                    selectedValue={sip_doviz_cinsi}
-                    onValueChange={handleDovizChange}
-                    style={MainStyles.picker}
-                  >
-                    <Picker.Item label="Döviz Tipi" value="" />
-                    {dovizList.map((doviz) => (
-                      <Picker.Item
-                        key={doviz.Doviz_Cins}
-                        label={doviz.Doviz_Adı}
-                        value={doviz.Doviz_Cins.toString()}
-                      />
-                    ))}
-                  </Picker>
-                  <Button title="Kapat" onPress={() => setIsDovizModalVisible(false)} />
+              {/* Döviz Modal (iOS için) */}
+              <Modal visible={isDovizModalVisible} animationType="slide" transparent>
+                <View style={MainStyles.modalContainerPicker}>
+                  <View style={MainStyles.modalContentPicker}>
+                    <Picker
+                      selectedValue={sip_doviz_cinsi}
+                      onValueChange={handleDovizChange}
+                      style={MainStyles.picker}
+                    >
+                      <Picker.Item label="Döviz Tipi" value="" />
+                      {dovizList.map((doviz) => (
+                        <Picker.Item
+                          key={doviz.Doviz_Cins}
+                          label={doviz.Doviz_Adı}
+                          value={doviz.Doviz_Cins.toString()}
+                        />
+                      ))}
+                    </Picker>
+                    <Button title="Kapat" onPress={() => setIsDovizModalVisible(false)} />
+                  </View>
                 </View>
-              </View>
-            </Modal>
-          </>
-        ) : (
-          // Android için doğrudan Picker
-          <Picker
-            selectedValue={sip_doviz_cinsi}
-            onValueChange={handleDovizChange}
-            style={{ marginHorizontal: -10 }}
-            itemStyle={{ height: 40, fontSize: 12 }}
-          >
-            <Picker.Item label="Döviz Tipini Seçin" value="" style={MainStyles.textStyle} />
-            {dovizList.map((doviz) => (
-              <Picker.Item
-                key={doviz.Doviz_Cins}
-                label={doviz.Doviz_Adı}
-                value={doviz.Doviz_Cins.toString()}
-                style={MainStyles.textStyle}
-              />
-            ))}
-          </Picker>
-        )}
-            </View>
-      </View>
-      {/* Doviz Seçim */}
+              </Modal>
+            </>
+            ) : (
+              // Android için doğrudan Picker
+              <Picker
+                selectedValue={sip_doviz_cinsi}
+                onValueChange={handleDovizChange}
+                style={{ marginHorizontal: -10 }}
+                itemStyle={{ height: 40, fontSize: 12 }}
+              >
+                <Picker.Item label="Döviz Tipini Seçin" value="" style={MainStyles.textStyle} />
+                {dovizList.map((doviz) => (
+                  <Picker.Item
+                    key={doviz.Doviz_Cins}
+                    label={doviz.Doviz_Adı}
+                    value={doviz.Doviz_Cins.toString()}
+                    style={MainStyles.textStyle}
+                  />
+                ))}
+              </Picker>
+            )}
+                </View>
+          </View>
+        {/* Doviz Seçim */}
 
         {/* Depo Seçim */}
           <View style={{ width: '65%' }}>
@@ -1754,12 +1739,11 @@ const renderOzelAlanSelectedData = () => {
           )}
                 </View>
           </View>
-      {/* Depo Seçim */}
-
+        {/* Depo Seçim */}
 
       </View>
         {/* Vade */}
-        <Text style={MainStyles.formTitle}>Vade</Text> 
+          <Text style={MainStyles.formTitle}>Vade</Text> 
           <View style={MainStyles.inputContainer}>
             <TextInput
               style={MainStyles.inputVade}
@@ -1875,41 +1859,41 @@ const renderOzelAlanSelectedData = () => {
         {/* Vade */}
 
         {/* Sorumluluk Merkezi */}
-        <Text style={MainStyles.formTitle}>Sorumluluk Merkezi</Text> 
-          <View style={MainStyles.inputContainer}>
-            <TextInput
-              style={MainStyles.inputCariKodu}
-              placeholder="Sorumluluk Merkezi"
-              placeholderTextColor={colors.placeholderTextColor}
-              value={sip_stok_sormerk}
-              onFocus={handleSorumlulukMerkeziClick} 
-            />
-            <TouchableOpacity onPress={handleSorumlulukMerkeziClick} style={MainStyles.buttonCariKodu}>
-            <Ara />
-            </TouchableOpacity>
-          </View>
-          <Modal
-            visible={isSorumlulukMerkeziModalVisible}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setIsSorumlulukMerkeziModalVisible(false)}
-          >
-            <View style={MainStyles.modalContainerDetail}>
-              <CustomHeader
-                title="Sorumluluk Merkezleri"
-                onClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+          <Text style={MainStyles.formTitle}>Sorumluluk Merkezi</Text> 
+            <View style={MainStyles.inputContainer}>
+              <TextInput
+                style={MainStyles.inputCariKodu}
+                placeholder="Sorumluluk Merkezi"
+                placeholderTextColor={colors.placeholderTextColor}
+                value={sip_stok_sormerk}
+                onFocus={handleSorumlulukMerkeziClick} 
               />
-
-              <View style={MainStyles.modalContent}>
-                <FlatList
-                  data={sorumlulukMerkeziList}
-                  renderItem={renderSorumlulukMerkeziItem}
-                  keyExtractor={item => item.Kod.toString()}
-                />
-                
-              </View>
+              <TouchableOpacity onPress={handleSorumlulukMerkeziClick} style={MainStyles.buttonCariKodu}>
+              <Ara />
+              </TouchableOpacity>
             </View>
-          </Modal>
+            <Modal
+              visible={isSorumlulukMerkeziModalVisible}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+            >
+              <View style={MainStyles.modalContainerDetail}>
+                <CustomHeader
+                  title="Sorumluluk Merkezleri"
+                  onClose={() => setIsSorumlulukMerkeziModalVisible(false)}
+                />
+
+                <View style={MainStyles.modalContent}>
+                  <FlatList
+                    data={sorumlulukMerkeziList}
+                    renderItem={renderSorumlulukMerkeziItem}
+                    keyExtractor={item => item.Kod.toString()}
+                  />
+                  
+                </View>
+              </View>
+            </Modal>
         {/* Sorumluluk Merkezi */}
 
         {/* Proje Kodları*/}
