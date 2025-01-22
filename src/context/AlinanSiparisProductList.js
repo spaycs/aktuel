@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext, useRef } from 'react';
-import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal, } from 'react-native';
+import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, } from 'react-native';
 import { MainStyles } from '../res/style';
 import axiosLinkMain from '../utils/axiosMain';
 import { ProductContext } from '../context/ProductContext';
@@ -247,6 +247,12 @@ const AlinanSiparisProductList = () => {
 
   return (
     <View style={MainStyles.irsaliyeContainer}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
+      >
 
       {/* Üst Alan - Arama Kriteri Seçimi */}
       <View style={MainStyles.pageTop}>
@@ -369,6 +375,8 @@ const AlinanSiparisProductList = () => {
         setAddedAlinanSiparisProducts={setAddedAlinanSiparisProducts}
       />
     </View>
+    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
