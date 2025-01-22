@@ -1353,6 +1353,7 @@ const AlinanSiparisFaturaBilgisi = () => {
               mode="date"
               display="default"
               onChange={handleDateChange}
+              disabled={isDatePickerDisabled}
             />
           )}
         </View>
