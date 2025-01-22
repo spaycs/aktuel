@@ -318,8 +318,6 @@ useEffect(() => {
             <View style={MainStyles.stokContainer}>
               <Text style={MainStyles.productName}>Stok Adı: {item.Stok_Ad}</Text>
               <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
-              <Text style={MainStyles.productTitle}>Vade: {item.Vade}</Text>
-              <Text style={MainStyles.productTitle}>sip_doviz_cinsi: {item.sip_doviz_cinsi}</Text>
             </View>
 
             <View style={MainStyles.rowContainer}>
@@ -552,6 +550,17 @@ useEffect(() => {
       if (StatusCode === 200) {
         await clearAsyncStorage();
         setIsSaved(true);
+
+        // Sipariş mail API çağrısı
+        try {
+          const mailResponse = await axiosLinkMain.get(
+            `Api/Mail/SiparisMail?seri=${alinanSiparis.sip_evrakno_seri}&personel=${defaults[0].IQ_MikroPersKod}`
+          );
+          console.log("Mail API Yanıtı:", mailResponse.data);
+        } catch (mailError) {
+          console.error("Mail API Hatası:", mailError.message);
+        }
+        
         Alert.alert(
             "Başarılı",
             "Veriler başarıyla kaydedildi.",
@@ -559,7 +568,7 @@ useEffect(() => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      navigation.replace('AlinanSiparis');
+                      //navigation.replace('AlinanSiparis');
                     }
                 }
             ],
