@@ -587,6 +587,7 @@ const validateQuantity = (quantity) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
       >
+        <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.modalContainerDetail}>
       <CustomHeader
         title="Ürün Detayı"
@@ -1020,6 +1021,7 @@ const validateQuantity = (quantity) => {
           </TouchableOpacity>
         </View>
       </View>
+      </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
     </Modal>
