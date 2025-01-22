@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator, Button, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from '@react-native-community/checkbox';
@@ -343,6 +343,12 @@ const validateQuantity = (quantity) => {
       animationType="slide"
       onRequestClose={handleClose}
     >
+       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
+      >
       <View style={MainStyles.modalContainerDetail}>
       <CustomHeader
         title="Ürün Detayı"
@@ -706,6 +712,8 @@ const validateQuantity = (quantity) => {
          
         </View>
         </View>
+        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     </Modal>
   );
 };
