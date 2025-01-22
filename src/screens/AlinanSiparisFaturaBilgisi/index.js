@@ -93,7 +93,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isCariDetayVisible, setIsCariDetayVisible] = useState(false);
   const [isOzelAlanDetayVisible, setIsOzelAlanVisible] = useState(false);
   const [isPickerModalVisible, setIsPickerModalVisible] = useState(false);
-  const [isDatePickerDisabled, setIsDatePickerDisabled] = useState(false);
+  const [isDatePickerDisabled, setIsDatePickerDisabled] = useState(true);
 
 // Tümü 
 
@@ -1339,9 +1339,16 @@ const AlinanSiparisFaturaBilgisi = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={MainStyles.formTitle}>Tarih </Text> 
+       <Text style={MainStyles.formTitle}>Tarih </Text>
         <View style={MainStyles.datePickerContainer}>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} >
+          <TouchableOpacity
+            onPress={() => {
+              if (!isDatePickerDisabled) {
+                setShowDatePicker(true);
+              }
+            }}
+            disabled={isDatePickerDisabled} 
+          >
             <View style={MainStyles.dateContainer}>
               <Takvim name="calendar-today" style={MainStyles.dateIcon} />
               <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
@@ -1349,12 +1356,11 @@ const AlinanSiparisFaturaBilgisi = () => {
           </TouchableOpacity>
           {showDatePicker && !isDatePickerDisabled && (
             <DateTimePicker
-              style={{position: 'absolute', backgroundColor: colors.textinputgray}}
+              style={{ position: 'absolute', backgroundColor: colors.textinputgray }}
               value={date}
               mode="date"
               display="default"
               onChange={handleDateChange}
-              disabled={isDatePickerDisabled}
             />
           )}
         </View>
