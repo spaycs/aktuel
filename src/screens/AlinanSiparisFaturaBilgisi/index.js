@@ -93,6 +93,7 @@ const AlinanSiparisFaturaBilgisi = () => {
   const [isCariDetayVisible, setIsCariDetayVisible] = useState(false);
   const [isOzelAlanDetayVisible, setIsOzelAlanVisible] = useState(false);
   const [isPickerModalVisible, setIsPickerModalVisible] = useState(false);
+  const [isDatePickerDisabled, setIsDatePickerDisabled] = useState(false);
 
 // Tümü 
 
