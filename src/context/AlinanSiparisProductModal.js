@@ -580,6 +580,7 @@ const validateQuantity = (quantity) => {
       transparent={true}
       animationType="slide"
       onRequestClose={handleClose}
+      avoidKeyboard
     >
        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
        <KeyboardAvoidingView
