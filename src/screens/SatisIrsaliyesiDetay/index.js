@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, ScrollView, Text, Modal, FlatList, SafeAreaView } from 'react-native';
+import { View, TextInput, TouchableOpacity, ScrollView, Text, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { MainStyles } from '../../res/style';
 import { ProductContext } from '../../context/ProductContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -85,6 +85,13 @@ const SatisIrsaliyesiDetay = () => {
 
   return (
     <ScrollView style={MainStyles.faturaContainerMenu}>
+       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
+      >
+      <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.faturaContainer}>
       <View style={MainStyles.inputContainer}>
           <View style={MainStyles.datePickerContainerDetail}>
@@ -258,6 +265,9 @@ const SatisIrsaliyesiDetay = () => {
           />
         </View>
       </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </ScrollView>
   );
 };
