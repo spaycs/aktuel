@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView } from 'react-native';
+import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { MainStyles } from '../../res/style';
 import Button from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -587,6 +587,7 @@ useEffect(() => {
   
   
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={[MainStyles.flex1, MainStyles.justifyContent, MainStyles.backgroundColorWhite]}>
       
       <View style={[MainStyles.flexDirection, MainStyles.justifyContent, MainStyles.alignItems]}>
@@ -840,6 +841,7 @@ useEffect(() => {
         </ScrollView>
       </Modal>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
