@@ -581,7 +581,6 @@ const validateQuantity = (quantity) => {
       animationType="slide"
       onRequestClose={handleClose}
     >
-      <ScrollView>
        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
        <KeyboardAvoidingView
         style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
@@ -1023,7 +1022,6 @@ const validateQuantity = (quantity) => {
       </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
-    </ScrollView>
     </Modal>
   );
 };
