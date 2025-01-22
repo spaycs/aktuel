@@ -580,13 +580,12 @@ const validateQuantity = (quantity) => {
       transparent={true}
       animationType="slide"
       onRequestClose={handleClose}
-      avoidKeyboard={true}
     >
        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-       <KeyboardAvoidingView
+       <KeyboardAvoidingView behavior={"padding"}
         style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} // iOS için varsayılan offset
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
       >
       <View style={MainStyles.modalContainerDetail}>
       <CustomHeader
