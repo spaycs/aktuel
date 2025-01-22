@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Image, BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, Modal, ScrollView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { MainStyles } from '../../res/style';
 import Button from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -588,6 +588,11 @@ useEffect(() => {
   
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
+      >
     <View style={[MainStyles.flex1, MainStyles.justifyContent, MainStyles.backgroundColorWhite]}>
       
       <View style={[MainStyles.flexDirection, MainStyles.justifyContent, MainStyles.alignItems]}>
@@ -841,6 +846,7 @@ useEffect(() => {
         </ScrollView>
       </Modal>
     </View>
+    </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
