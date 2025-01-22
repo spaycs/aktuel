@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, ScrollView, Text, Modal, FlatList, SafeAreaView } from 'react-native';
+import { View, TextInput, TouchableOpacity, ScrollView, Text, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { MainStyles } from '../../res/style';
 import { ProductContext } from '../../context/ProductContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
