@@ -91,7 +91,6 @@ const SatisIrsaliyesiDetay = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
       >
-      <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.faturaContainer}>
       <View style={MainStyles.inputContainer}>
           <View style={MainStyles.datePickerContainerDetail}>
@@ -265,7 +264,6 @@ const SatisIrsaliyesiDetay = () => {
           />
         </View>
       </View>
-      </ScrollView>
       </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </ScrollView>
