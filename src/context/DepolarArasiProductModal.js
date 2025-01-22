@@ -118,7 +118,6 @@ const DepolarArasiProductModal = ({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
       >
-      <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.modalStokContainer}>
         <View style={MainStyles.modalStokContent}>
           <Text style={MainStyles.modalTitle}>Ürün Detayı</Text>
@@ -166,7 +165,6 @@ const DepolarArasiProductModal = ({
           </TouchableOpacity>
         </View>
       </View>
-      </ScrollView>
       </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </Modal>
