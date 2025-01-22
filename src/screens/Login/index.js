@@ -712,20 +712,54 @@ useEffect(() => {
             />
               
             {/* Veritabanı Seçimi */}
-            <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Veri Tabanı Seçin</Text>
+            <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Veritabanı Seçin</Text>
             <View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
-                    <Picker
+              {Platform.OS === 'ios' ? (
+                <>
+                  <TouchableOpacity onPress={() => setIsDatabaseModalVisible(true)}>
+                    <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
+                      {selectedDatabase ? selectedDatabase : 'Veritabanı Seçin'}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {/* iOS Modal */}
+                  <Modal visible={isDatabaseModalVisible} animationType="slide" transparent>
+                    <View style={MainStyles.modalContainerPicker}>
+                      <View style={MainStyles.modalContentPicker}>
+                        <Picker
+                          selectedValue={selectedDatabase}
+                          onValueChange={(itemValue) => {
+                            handleDatabaseSelect(itemValue);
+                            setIsDatabaseModalVisible(false); // Modalı kapatma
+                          }}
+                          style={MainStyles.picker}
+                        >
+                          <Picker.Item label="Veritabanı Seçin" value="" style={MainStyles.textStyle} />
+                          {databases.map((db) => (
+                            <Picker.Item key={db.Database} label={db.Database} value={db.Database} style={MainStyles.textStyle} />
+                          ))}
+                        </Picker>
+                        <Button title="Kapat" onPress={() => setIsDatabaseModalVisible(false)} />
+                      </View>
+                    </View>
+                  </Modal>
+                </>
+              ) : (
+                // Android Picker
+                <Picker
                   selectedValue={selectedDatabase}
                   onValueChange={(itemValue) => handleDatabaseSelect(itemValue)}
                   itemStyle={{ height: 40, fontSize: 12 }}
                   style={{ marginHorizontal: -10 }}
                 >
-                  <Picker.Item label="Veritabanı Seçin" value=""  style={MainStyles.textStyle} />
+                  <Picker.Item label="Veritabanı Seçin" value="" style={MainStyles.textStyle} />
                   {databases.map((db) => (
-                    <Picker.Item key={db.Database} label={db.Database} value={db.Database}  style={MainStyles.textStyle} />
+                    <Picker.Item key={db.Database} label={db.Database} value={db.Database} style={MainStyles.textStyle} />
                   ))}
                 </Picker>
-              </View>
+              )}
+            </View>
+
                {/* 
             <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma Kodu</Text>
             <TextInput
