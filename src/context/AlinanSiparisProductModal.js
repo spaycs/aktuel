@@ -585,7 +585,7 @@ const validateQuantity = (quantity) => {
        <KeyboardAvoidingView
         style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} // iOS için varsayılan offset
       >
         <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.modalContainerDetail}>
