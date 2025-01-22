@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, Button, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { MainStyles } from '../res/style/MainStyles';
 import { colors } from '../res/colors';
@@ -318,6 +318,13 @@ const handleUpdate = async () => {
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType="slide"  onRequestClose={handleClose}>
+       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
+      >
+      <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.modalContainerDetail}>
       <CustomHeader
         title="Ürün Detayı"
@@ -547,6 +554,9 @@ const handleUpdate = async () => {
               </TouchableOpacity>
           </View>
       </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
