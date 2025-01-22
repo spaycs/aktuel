@@ -55,6 +55,7 @@ const Login = ({ navigation }) => {
   const [SubeNo, setSubeNo] = useState(0);
   const [isConnected, setIsConnected] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDatabaseModalVisible, setIsDatabaseModalVisible] = useState(false);
   const [AktivasyonKodu, setAktivasyonKodu] = useState('');
   const [databases, setDatabases] = useState([]); // Veritabanları listesi
   const [selectedDatabase, setSelectedDatabase] = useState(''); // Seçili veritabanı
