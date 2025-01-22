@@ -582,12 +582,10 @@ const validateQuantity = (quantity) => {
       onRequestClose={handleClose}
     >
        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
-      >
-           <KeyboardAvoidingView
-        style={{ flex: 1 }}
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} // iOS için varsayılan offset
       >
       <View style={MainStyles.modalContainerDetail}>
       <CustomHeader
@@ -1023,7 +1021,6 @@ const validateQuantity = (quantity) => {
         </View>
       </View>
       </KeyboardAvoidingView>
-      </View>
     </TouchableWithoutFeedback>
     </Modal>
   );
