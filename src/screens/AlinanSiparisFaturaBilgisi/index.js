@@ -1347,7 +1347,7 @@ const AlinanSiparisFaturaBilgisi = () => {
               <Text style={MainStyles.dateText}>{formatDate(date)}</Text>
             </View>
           </TouchableOpacity>
-          {showDatePicker && (
+          {showDatePicker && !isDatePickerDisabled && (
             <DateTimePicker
               style={{position: 'absolute', backgroundColor: colors.textinputgray}}
               value={date}
