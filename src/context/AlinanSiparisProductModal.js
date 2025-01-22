@@ -581,8 +581,9 @@ const validateQuantity = (quantity) => {
       animationType="slide"
       onRequestClose={handleClose}
     >
+      <ScrollView>
        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-       <KeyboardAvoidingView behavior={"padding"}
+       <KeyboardAvoidingView
         style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
@@ -1022,6 +1023,7 @@ const validateQuantity = (quantity) => {
       </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
+    </ScrollView>
     </Modal>
   );
 };
