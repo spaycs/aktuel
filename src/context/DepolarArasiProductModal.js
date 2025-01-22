@@ -114,7 +114,7 @@ const DepolarArasiProductModal = ({
     >
        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
        <KeyboardAvoidingView
-        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+        style={[MainStyles.flex1]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
       >
