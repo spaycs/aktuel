@@ -575,18 +575,19 @@ const validateQuantity = (quantity) => {
   };
   
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAvoidingView
+     style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+     keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
+   >
     <Modal
       visible={modalVisible}
       transparent={true}
       animationType="slide"
       onRequestClose={handleClose}
     >
-       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-       <KeyboardAvoidingView
-        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
-      >
+      
       <View style={MainStyles.modalContainerDetail}>
       <CustomHeader
         title="Ürün Detayı"
@@ -1020,9 +1021,10 @@ const validateQuantity = (quantity) => {
           </TouchableOpacity>
         </View>
       </View>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+      
     </Modal>
+    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
