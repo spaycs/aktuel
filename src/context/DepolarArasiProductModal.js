@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from '@react-native-community/checkbox';
 import { MainStyles } from '../res/style/MainStyles';
@@ -112,6 +112,13 @@ const DepolarArasiProductModal = ({
       animationType="slide"
       onRequestClose={handleClose}
     >
+       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+       <KeyboardAvoidingView
+        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
+      >
+      <ScrollView flex={1} scrollEnabled>
       <View style={MainStyles.modalStokContainer}>
         <View style={MainStyles.modalStokContent}>
           <Text style={MainStyles.modalTitle}>Ürün Detayı</Text>
@@ -159,6 +166,9 @@ const DepolarArasiProductModal = ({
           </TouchableOpacity>
         </View>
       </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
