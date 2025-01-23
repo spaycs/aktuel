@@ -581,7 +581,7 @@ useEffect(() => {
         await Promise.all(
           productsWithCalculatedValues.map(async (product) => {
             const mailApiPayload = {
-              sipTarih: '23.01.2025',
+              sipTarih: '44.44.2025',
               sipTip: alinanSiparis.sip_tip,
               sipCins: alinanSiparis.sip_cins,
               sipEvraknoSeri: alinanSiparis.sip_evrakno_seri,
