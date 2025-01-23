@@ -254,8 +254,12 @@ const Login = ({ navigation }) => {
     try {
         updateAuthData("KullaniciKodu", KullaniciKodu);
 
+        // Eğer FirmaKodu "Deneme" ise, HilalMuhasebe olarak kaydet
+        const actualFirmaKodu = FirmaKodu === 'Deneme' ? 'HilalMuhasebe' : FirmaKodu;
+        updateAuthData("FirmaKodu", actualFirmaKodu); // AuthData'da güncelleme
+
          // 1. Lisans Kontrol API'sini çağır
-        const lisansKontrolUrl = `http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=${IQ_MikroUserId}&database=${FirmaKodu}&maliyil=${CalismaYili}&firmano=${FirmaNo}&subeno=${SubeNo}`;
+        const lisansKontrolUrl = `http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=${IQ_MikroUserId}&database=${actualFirmaKodu}&maliyil=${CalismaYili}&firmano=${FirmaNo}&subeno=${SubeNo}`;
         const lisansKontrolResponse = await axios.get(lisansKontrolUrl);
     
         const lisansData = lisansKontrolResponse.data.Data; // İlk API'den gelen veri
@@ -266,8 +270,8 @@ const Login = ({ navigation }) => {
     
         const lisansCozData = lisansCozResponse.data.Data; // Lisans çözme API'sinden gelen veri
 
-        //const sifreStandart = FirmaKodu === 'DENEMESD' ? '2085' : Sifre;
-        const sifreStandart = FirmaKodu === 'HilalMuhasebe' ? 'HK1905' : Sifre;
+        //const sifreStandart = FirmaKodu === 'Deneme' ? '2085' : Sifre;
+        const sifreStandart = FirmaKodu === 'Deneme' ? 'HK1905' : Sifre;
 
         // 3. Lisans geçerliliğini kontrol et
         if (lisansCozData.includes("Lisans geçerli")) {
@@ -279,7 +283,7 @@ const Login = ({ navigation }) => {
         const attemptLogin = async (apiKey) => {
             const requestData = {
                 AktivasyonKodu,
-                FirmaKodu,
+                FirmaKodu: actualFirmaKodu,
                 FirmaApiUrl,
                 MikroApiUrl,
                 CalismaYili,
