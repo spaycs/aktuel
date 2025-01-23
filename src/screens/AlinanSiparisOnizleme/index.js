@@ -490,7 +490,7 @@ useEffect(() => {
           {
             evrak_aciklamalari: formatExplanations(),
             satirlar: productsWithCalculatedValues.map((product) => ({
-              sip_tarih: '23.01-2025',
+              sip_tarih: '23.01.2024',
               sip_tip: alinanSiparis.sip_tip,
               sip_cins: alinanSiparis.sip_cins,
               sip_evrakno_seri: alinanSiparis.sip_evrakno_seri,
