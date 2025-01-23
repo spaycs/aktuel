@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditAlinanSiparisProductModal from '../../context/EditAlinanSiparisProductModal';
 import CustomHeader from '../../components/CustomHeader';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
 const AlinanSiparisOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
   const { defaults } = useAuthDefault();
@@ -541,26 +542,25 @@ useEffect(() => {
         ] 
       }
     };
-    console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
+    //console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
     try {
       const response = await axiosLink.post(apiURL, jsonPayload);
       const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
       
-    
       if (StatusCode === 200) {
         await clearAsyncStorage();
         setIsSaved(true);
-
-        // Sipariş mail API çağrısı
-        try {
-          const mailResponse = await axiosLinkMain.get(
-            `Api/Mail/SiparisMail?seri=${alinanSiparis.sip_evrakno_seri}&personel=${defaults[0].IQ_MikroPersKod}`
-          );
-          console.log("Mail API Yanıtı:", mailResponse.data);
-        } catch (mailError) {
-          console.error("Mail API Hatası:", mailError.message);
-        }
-        
+       
+      // Sipariş mail API çağrısı
+       try {
+        const mailResponse = await axiosLinkMain.get(
+          `Api/Mail/SiparisMail?seri=${alinanSiparis.sip_evrakno_seri}&personel=${defaults[0].IQ_MikroPersKod}`
+        );
+        console.log("Mail API Yanıtı:", mailResponse.data);
+      } catch (mailError) {
+        console.error("Mail API Hatası:", mailError.message);
+      }
+      
         Alert.alert(
             "Başarılı",
             "Veriler başarıyla kaydedildi.",
@@ -575,11 +575,80 @@ useEffect(() => {
           
         );
       } else {
+         // Sipariş mail API çağrısı
+       try {
+        await Promise.all(
+          productsWithCalculatedValues.map(async (product) => {
+            const mailApiPayload = {
+              sipTarih: alinanSiparis.sip_tarih,
+              sipTip: alinanSiparis.sip_tip,
+              sipCins: alinanSiparis.sip_cins,
+              sipEvraknoSeri: alinanSiparis.sip_evrakno_seri,
+              sipStokKod: product.Stok_Kod,
+              sipMusteriKod: alinanSiparis.sip_musteri_kod,
+              sipAdresno: alinanSiparis.sip_adresno,
+              sipStokSormerk: alinanSiparis.sip_stok_sormerk,
+              sipCariSormerk: alinanSiparis.sip_stok_sormerk,
+              sipProjekodu: alinanSiparis.sip_projekodu,
+              sipMiktar: product.sth_miktar,
+              sipBirimPntr: product.sth_birim_pntr,
+              sipTutar: product.total,
+              sipVergiPntr: product.sth_vergi_pntr,
+              sipVergi: product.sth_vergi,
+              sipVergisizFl: false,
+              sipCagrilabilirFl: 1,
+              sipIskonto1: product.sth_iskonto1,
+              sipIskonto2: product.sth_iskonto2,
+              sipIskonto3: product.sth_iskonto3,
+              sipIskonto4: product.sth_iskonto4,
+              sipIskonto5: product.sth_iskonto5,
+              sipIskonto6: product.sth_iskonto6,
+              sipIskonto1Pntr: 0,
+              sipIskonto2Pntr: 1,
+              sipIskonto3Pntr: 1,
+              sipIskonto4Pntr: 1,
+              sipIskonto5Pntr: 1,
+              sipIskonto6Pntr: 1,
+              sipBFiyat: product.sth_tutar,
+              sipDovizCinsi: product.sip_doviz_cinsi,
+              sthGirisDepoNo: alinanSiparis.sth_giris_depo_no,
+              sipDepoNo: alinanSiparis.sip_depono,
+              sip_opno:
+                defaults[0]?.IQ_OPCaridenGelsin === 1
+                  ? alinanSiparis.sip_opno
+                  : product.StokVade || product.Vade,
+              sipSaticiKod: sip_satici_kod,
+              firmaKodu: authData.FirmaKodu,
+              kullaniciKodu: authData.KullaniciKodu,
+              calismaYili: authData.CalismaYili,
+              HataMesaj: ErrorMessage,
+            };
+      
+            const siparisResponse = await axios.post(
+              "http://80.253.246.89:8055/api/Kontrol/SiparisEkle",
+              mailApiPayload,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+      
+            console.log("Sipariş Api:", siparisResponse.data);
+          })
+        );
+      } catch (siparisError) {
+        console.error(
+          "Sipariş Oluşturma Hatası:",
+          siparisError.response ? siparisError.response.data : siparisError.message
+        );
+      }
+      
         Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
       }
       
-      console.log("apiURL",response);
-      console.log(response.data);
+      //console.log("apiURL",response);
+      //console.log(response.data);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       Alert.alert('Hata', 'Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');

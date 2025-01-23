@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     FirmaKodu: "HilalMuhasebe",
     FirmaApiUrl: "http://hilalapi.novatekcloud.com:8094",
     MikroApiUrl: "http://hilalapi.novatekcloud.com:8084",
-    CalismaYili: "2024",
+    CalismaYili: "2025",
     ApiKey: "",
     ApiKey1: "AJgbzKXca79D0gN4kmpyKtAVi4YxGi+sa69d9jyZVv5K3JYS48ocIsZXCgll6zUsrayaGbFTS79kTBkG8jMT3eYCDCfL473KOQ6t8/JOQwQ=",
     ApiKey2: "fzuHtApZA4Jop1b0sloOiWzGzCn066OJBRRPqNtkCgOnQ/6wxT52C57QOpPe7w02GSgxwt6GFdllMI9/8HpyTUWHd7P4IiWaQ3HQ6g2+N9k=",
