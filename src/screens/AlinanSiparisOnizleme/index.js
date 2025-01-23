@@ -548,9 +548,7 @@ useEffect(() => {
       const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
       
       if (StatusCode === 200) {
-        await clearAsyncStorage();
-        setIsSaved(true);
-       
+          
       // Sipariş mail API çağrısı
        try {
         const mailResponse = await axiosLinkMain.get(
@@ -560,6 +558,9 @@ useEffect(() => {
       } catch (mailError) {
         console.error("Mail API Hatası:", mailError.message);
       }
+        await clearAsyncStorage();
+        setIsSaved(true);
+     
       
         Alert.alert(
             "Başarılı",
@@ -568,7 +569,7 @@ useEffect(() => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      //navigation.replace('AlinanSiparis');
+                     navigation.replace('AlinanSiparis');
                     }
                 }
             ],
