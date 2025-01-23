@@ -490,7 +490,7 @@ useEffect(() => {
           {
             evrak_aciklamalari: formatExplanations(),
             satirlar: productsWithCalculatedValues.map((product) => ({
-              sip_tarih: alinanSiparis.sip_tarih,
+              sip_tarih: '23.01-2025',
               sip_tip: alinanSiparis.sip_tip,
               sip_cins: alinanSiparis.sip_cins,
               sip_evrakno_seri: alinanSiparis.sip_evrakno_seri,
@@ -581,7 +581,7 @@ useEffect(() => {
         await Promise.all(
           productsWithCalculatedValues.map(async (product) => {
             const mailApiPayload = {
-              sipTarih: '44.44.2025',
+              sipTarih: alinanSiparis.sip_tarih,
               sipTip: alinanSiparis.sip_tip,
               sipCins: alinanSiparis.sip_cins,
               sipEvraknoSeri: alinanSiparis.sip_evrakno_seri,
