@@ -275,7 +275,7 @@ const Login = ({ navigation }) => {
 
         // 3. Lisans geçerliliğini kontrol et
         if (lisansCozData.includes("Lisans geçerli")) {
-        // Lisans geçerli, login işlemlerine devam et
+        // Lisans geçerli, login işlemlerine devam ett
 
         const md5Response = await axiosLinkMain.get(`/Api/kullanici/MD5SifreDonustur?sifre=${sifreStandart}`);
         const hashedPassword = md5Response.data;
