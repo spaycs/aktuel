@@ -1998,6 +1998,30 @@ export const MainStyles = {
     modalContentPicker: {
       backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20
     },
+    loginModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginModalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  loginModalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  loginModalSubText: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 5,
+  },
 
 
     tableHeader: {
