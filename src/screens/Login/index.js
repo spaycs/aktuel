@@ -282,7 +282,7 @@ const Login = ({ navigation }) => {
           });
 
            if (response.status === 200) {
-                  console.log('Başarıyla çıkış yapıldı:', response.data);
+                  //console.log('Başarıyla çıkış yapıldı:', response.data);
                 } else {
                   console.log('Çıkış yapılamadı:', response.data);
                 }
