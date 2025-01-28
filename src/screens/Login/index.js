@@ -685,48 +685,59 @@ useEffect(() => {
     <View style={MainStyles.paddingHorizontal15}>
     <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Kullanıcı Seçin</Text>
     <View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
-      {Platform.OS === 'ios' ? (
-          <>
-            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-              <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
-                {selectedUser ? selectedUser.AD : 'Kullanıcı seçin'}
-              </Text>
-            </TouchableOpacity>
+  {Platform.OS === 'ios' ? (
+    <>
+      <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+        <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
+          {selectedUser ? (selectedUser.AD === 'HilalMuhasebe' ? 'Deneme' : selectedUser.AD) : 'Kullanıcı seçin'}
+        </Text>
+      </TouchableOpacity>
 
-            {/* iOS Modal */}
-            <Modal visible={isModalVisible} animationType="slide" transparent>
-              <View style={MainStyles.modalContainerPicker}>
-                <View style={MainStyles.modalContentPicker}>
-                <Picker
-                  selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
-                  onValueChange={(itemValue) => handleUserChange(itemValue)}
-                  style={MainStyles.picker}
-                >
-                  <Picker.Item label="Kullanıcı seçin" value=""  style={MainStyles.textStyle}/>
-                  {users.map((user) => (
-                    <Picker.Item key={user.KOD} label={user.AD} value={user.KOD}  style={MainStyles.textStyle} />
-                  ))}
-                </Picker>
-                  <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
-                </View>
-                </View>
-            </Modal>
-          </>
-        ) : (
-          // Android Picker
-          <Picker
-          selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
-          onValueChange={(itemValue) => handleUserChange(itemValue)}
-          itemStyle={{ height: 40, fontSize: 12 }}
-          style={{ marginHorizontal: -10 }}
-        >
-          <Picker.Item label="Kullanıcı seçin" value=""  style={MainStyles.textStyle}/>
-          {users.map((user) => (
-            <Picker.Item key={user.KOD} label={user.AD} value={user.KOD}  style={MainStyles.textStyle} />
-          ))}
-        </Picker>
-        )}
-      </View>
+      {/* iOS Modal */}
+      <Modal visible={isModalVisible} animationType="slide" transparent>
+        <View style={MainStyles.modalContainerPicker}>
+          <View style={MainStyles.modalContentPicker}>
+            <Picker
+              selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+              onValueChange={(itemValue) => handleUserChange(itemValue)}
+              style={MainStyles.picker}
+            >
+              <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
+              {users.map((user) => (
+                <Picker.Item
+                  key={user.KOD}
+                  label={user.AD === 'HilalMuhasebe' ? 'Deneme' : user.AD}
+                  value={user.KOD}
+                  style={MainStyles.textStyle}
+                />
+              ))}
+            </Picker>
+            <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+    </>
+  ) : (
+    // Android Picker
+    <Picker
+      selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+      onValueChange={(itemValue) => handleUserChange(itemValue)}
+      itemStyle={{ height: 40, fontSize: 12 }}
+      style={{ marginHorizontal: -10 }}
+    >
+      <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
+      {users.map((user) => (
+        <Picker.Item
+          key={user.KOD}
+          label={user.AD === 'HilalMuhasebe' ? 'Deneme' : user.AD}
+          value={user.KOD}
+          style={MainStyles.textStyle}
+        />
+      ))}
+    </Picker>
+  )}
+</View>
+
 
       <View>
       <Text style={[MainStyles.fontSize12, MainStyles.fontWeightBold]}>Kullanıcı Kodu</Text>
