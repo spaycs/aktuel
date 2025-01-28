@@ -266,10 +266,11 @@ const Login = ({ navigation }) => {
     try {
         updateAuthData("KullaniciKodu", KullaniciKodu);
 
+        // Eğer FirmaKodu "Deneme" ise, HilalMuhasebe olarak kaydet
         const actualFirmaKodu = FirmaKodu === 'Deneme' ? 'HilalMuhasebe' : FirmaKodu;
-        updateAuthData("FirmaKodu", actualFirmaKodu);
+        updateAuthData("FirmaKodu", actualFirmaKodu); // AuthData'da güncelleme
 
-         try {
+        try {
           const response = await axiosLink.post('/Api/apiMethods/APILogoffV2', {
             Mikro: {
               FirmaKodu: authData.FirmaKodu,
@@ -310,75 +311,104 @@ const Login = ({ navigation }) => {
             return;
         }
 
-        // 2. Lisans Kontrol API'sini çağır
+        // 1. Lisans Kontrol API'sini çağır
         const lisansKontrolUrl = `http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=${IQ_MikroUserId}&database=${actualFirmaKodu}&maliyil=${CalismaYili}&firmano=${FirmaNo}&subeno=${SubeNo}`;
         const lisansKontrolResponse = await axios.get(lisansKontrolUrl);
-        //console.log(lisansKontrolUrl);
-        const lisansData = lisansKontrolResponse.data.Data;
 
-        // 3. Lisans çözme API'sini çağır
+        const lisansData = lisansKontrolResponse.data.Data; // İlk API'den gelen veri
+
+        // 2. Lisans çözme API'sini çağır
         const lisansCozUrl = `http://80.253.246.89:8055/Api/Kontrol/LisansCoz?veri=${lisansData}`;
-        //console.log(lisansCozUrl);
         const lisansCozResponse = await axios.get(lisansCozUrl);
-        const lisansCozData = lisansCozResponse.data.Data;
 
-        // 4. Lisans geçerliliğini kontrol et
-        if (!lisansCozData.includes("Lisans geçerli")) {
+        const lisansCozData = lisansCozResponse.data.Data; // Lisans çözme API'sinden gelen veri
+
+        // Şifre Standart Ayarları
+        const sifreStandart = FirmaKodu === 'Deneme' ? 'HK1905' : Sifre;
+
+        // 3. Lisans geçerliliğini kontrol et
+        if (lisansCozData.includes("Lisans geçerli")) {
+            // Lisans geçerli, login işlemlerine devam et
+
+            // Yeni eklenen API çağrısı
+            const varsayilanlarUrl = `/Api/Kullanici/KullaniciVarsayilanlar?a=${IQ_MikroUserId}`;
+            const varsayilanlarResponse = await axiosLinkMain.get(varsayilanlarUrl);
+
+            if (!varsayilanlarResponse.data || varsayilanlarResponse.data === null) {
+                // API'den null değer dönerse
+                setLoading(false);
+                Alert.alert('Hata', 'Kullanıcı Varsayılan Değerleri Alınamadı. Giriş Yapılamadı.');
+                return;
+            }
+
+            const md5Response = await axiosLinkMain.get(`/Api/kullanici/MD5SifreDonustur?sifre=${sifreStandart}`);
+            const hashedPassword = md5Response.data;
+
+            const attemptLogin = async (apiKey) => {
+                const requestData = {
+                    AktivasyonKodu,
+                    FirmaKodu: actualFirmaKodu,
+                    FirmaApiUrl,
+                    MikroApiUrl,
+                    CalismaYili,
+                    ApiKey: apiKey,  // Burada ApiKey dinamik olarak atanıyor
+                    KullaniciKodu,
+                    Sifre: hashedPassword,
+                    sifreStandart,
+                    IQ_MikroUserId,
+                    FirmaNo,
+                    SubeNo,
+                    selectedUser
+                };
+
+                console.log('Denemede kullanılan ApiKey:', requestData.ApiKey);
+
+                try {
+                    const response = await axiosLink.post('/Api/APIMethods/APILogin', requestData);
+                    const responseData = response.data;
+
+                    if (responseData.result && responseData.result[0].StatusCode === 200) {
+                        console.log('Başarılı giriş ApiKey ile yapıldı:', apiKey);
+                        updateAuthData("ApiKey", apiKey);
+
+                        if (isRememberMeChecked) {
+                            storeRememberMe(KullaniciKodu, IQ_MikroUserId, hashedPassword, selectedUser);
+                        }
+                        updateAuthData('KullaniciKodu', KullaniciKodu);
+                        updateAuthData('IQ_MikroUserId', IQ_MikroUserId);
+                        updateAuthData('Sifre', hashedPassword);
+                        updateAuthData('OrijinalSifre', sifreStandart);
+                        updateAuthData('selectedUser', selectedUser);
+
+                        navigation.navigate("DrawerNavigator");
+                      } else {
+                        const errorMessage = responseData.result[0]?.ErrorMessage || "Bilinmeyen bir hata oluştu.";
+                        Alert.alert('Hata', errorMessage);
+                      }
+                } catch (error) {
+                    throw new Error('Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
+                }
+            };
+
+            try {
+                await attemptLogin(ApiKey1);
+            } catch (error) {
+                try {
+                    await attemptLogin(ApiKey2);
+                } catch (err) {
+                    setLoading(false);
+                    Alert.alert('Hata', 'Giriş başarısız oldu. Lütfen tekrar deneyin.');
+                }
+            }
+
+        } else {
+            // Lisans geçerli değil, login işlemi yapılmasın
             setLoading(false);
             Alert.alert('Lisans Hatası', 'MikroIQ Lisans geçerli değil. Lütfen lisansınızı kontrol edin.');
-            return;
-        }
-
-        // 5. Şifreyi dönüştür ve giriş yap
-        const sifreStandart = FirmaKodu === 'Deneme' ? 'HK1905' : Sifre;
-        const md5Response = await axiosLinkMain.get(`/Api/kullanici/MD5SifreDonustur?sifre=${sifreStandart}`);
-        const hashedPassword = md5Response.data;
-
-        const attemptLogin = async (apiKey) => {
-            const requestData = {
-                AktivasyonKodu,
-                FirmaKodu: actualFirmaKodu,
-                FirmaApiUrl,
-                MikroApiUrl,
-                CalismaYili,
-                ApiKey: apiKey,
-                KullaniciKodu,
-                Sifre: hashedPassword,
-                sifreStandart,
-                IQ_MikroUserId,
-                FirmaNo,
-                SubeNo,
-                selectedUser,
-            };
-            const response = await axiosLink.post('/Api/APIMethods/APILogin', requestData);
-            const responseData = response.data;
-            //console.log('requestData',responseData);
-
-
-            if (responseData.result && responseData.result[0].StatusCode === 200) {
-                updateAuthData("ApiKey", apiKey);
-                if (isRememberMeChecked) {
-                    storeRememberMe(KullaniciKodu, IQ_MikroUserId, hashedPassword, selectedUser);
-                }
-                navigation.navigate("DrawerNavigator");
-            } else {
-              const errorMessage = responseData.result[0]?.ErrorMessage || "Bilinmeyen bir hata oluştu.";
-              Alert.alert('Hata', errorMessage);
-            }
-        };
-
-        try {
-            await attemptLogin(ApiKey1);
-        } catch (error) {
-            try {
-                await attemptLogin(ApiKey2);
-            } catch (err) {
-                setLoading(false);
-                Alert.alert('Hata', 'Giriş başarısız oldu. Lütfen tekrar deneyin.');
-            }
         }
 
         setLoading(false);
+
     } catch (error) {
         setLoading(false);
         const errorResponse = error.response?.data || {};

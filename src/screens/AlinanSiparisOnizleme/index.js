@@ -542,7 +542,7 @@ useEffect(() => {
         ] 
       }
     };
-    //console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
+    console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
     try {
       const response = await axiosLink.post(apiURL, jsonPayload);
       const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
@@ -648,8 +648,8 @@ useEffect(() => {
         Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
       }
       
-      //console.log("apiURL",response);
-      //console.log(response.data);
+      console.log("apiURL",response);
+      console.log(response.data);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       Alert.alert('Hata', 'Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
