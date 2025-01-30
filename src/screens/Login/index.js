@@ -182,7 +182,7 @@ const Login = ({ navigation }) => {
 
   useEffect(() => {
     retrieveRememberMe();
-    //fetchUsers();
+    fetchUsers();
     //console.log('authdata', authData);
   }, []);
 
@@ -206,24 +206,19 @@ const Login = ({ navigation }) => {
   }, [authData]);
   
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true); // API çağrısı başlamadan önce yükleniyor durumuna geç
-        const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
-
-        setUsers(response.data || []);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setUsers([]);
-      } finally {
-        setLoading(false); // API çağrısı tamamlandığında yüklenmeyi bitir
-      }
-    };
-
-    fetchUsers(); // Sayfa açıldığında API çağrısını başlat
-  }, []); // Boş bağımlılık dizisi, sadece ilk render’da çalışmasını sağlar.
-
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
+      
+      // Eğer response.data boş veya null ise boş bir dizi olarak ayarla
+      setUsers(response.data || []);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+  
+      // Hata durumunda users listesini boş bir dizi olarak ayarla
+      setUsers([]);
+    }
+  };
 
   const handleUpdate = async () => {
     try {
@@ -329,7 +324,7 @@ const Login = ({ navigation }) => {
         const lisansCozData = lisansCozResponse.data.Data; // Lisans çözme API'sinden gelen veri
 
         // Şifre Standart Ayarları
-        const sifreStandart = FirmaKodu === 'Deneme' ? 'HK1905' : Sifre;
+        const sifreStandart = FirmaKodu === 'TEST' ? 'HK1905' : Sifre;
 
         // 3. Lisans geçerliliğini kontrol et
         if (lisansCozData.includes("Lisans geçerli")) {
@@ -690,48 +685,59 @@ useEffect(() => {
     <View style={MainStyles.paddingHorizontal15}>
     <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Kullanıcı Seçin</Text>
     <View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
-      {Platform.OS === 'ios' ? (
-          <>
-            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-              <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
-                {selectedUser ? selectedUser.AD : 'Kullanıcı seçin'}
-              </Text>
-            </TouchableOpacity>
+  {Platform.OS === 'ios' ? (
+    <>
+      <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+        <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
+          {selectedUser ? (selectedUser.AD === 'HilalMuhasebe' ? 'Deneme' : selectedUser.AD) : 'Kullanıcı seçin'}
+        </Text>
+      </TouchableOpacity>
 
-            {/* iOS Modal */}
-            <Modal visible={isModalVisible} animationType="slide" transparent>
-              <View style={MainStyles.modalContainerPicker}>
-                <View style={MainStyles.modalContentPicker}>
-                <Picker
-                  selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
-                  onValueChange={(itemValue) => handleUserChange(itemValue)}
-                  style={MainStyles.picker}
-                >
-                  <Picker.Item label="Kullanıcı seçin" value=""  style={MainStyles.textStyle}/>
-                  {users.map((user) => (
-                    <Picker.Item key={user.KOD} label={user.AD} value={user.KOD}  style={MainStyles.textStyle} />
-                  ))}
-                </Picker>
-                  <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
-                </View>
-                </View>
-            </Modal>
-          </>
-        ) : (
-          // Android Picker
-          <Picker
-          selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
-          onValueChange={(itemValue) => handleUserChange(itemValue)}
-          itemStyle={{ height: 40, fontSize: 12 }}
-          style={{ marginHorizontal: -10 }}
-        >
-          <Picker.Item label="Kullanıcı seçin" value=""  style={MainStyles.textStyle}/>
-          {users.map((user) => (
-            <Picker.Item key={user.KOD} label={user.AD} value={user.KOD}  style={MainStyles.textStyle} />
-          ))}
-        </Picker>
-        )}
-      </View>
+      {/* iOS Modal */}
+      <Modal visible={isModalVisible} animationType="slide" transparent>
+        <View style={MainStyles.modalContainerPicker}>
+          <View style={MainStyles.modalContentPicker}>
+            <Picker
+              selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+              onValueChange={(itemValue) => handleUserChange(itemValue)}
+              style={MainStyles.picker}
+            >
+              <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
+              {users.map((user) => (
+                <Picker.Item
+                  key={user.KOD}
+                  label={user.AD === 'HilalMuhasebe' ? 'Deneme' : user.AD}
+                  value={user.KOD}
+                  style={MainStyles.textStyle}
+                />
+              ))}
+            </Picker>
+            <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+    </>
+  ) : (
+    // Android Picker
+    <Picker
+      selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+      onValueChange={(itemValue) => handleUserChange(itemValue)}
+      itemStyle={{ height: 40, fontSize: 12 }}
+      style={{ marginHorizontal: -10 }}
+    >
+      <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
+      {users.map((user) => (
+        <Picker.Item
+          key={user.KOD}
+          label={user.AD === 'HilalMuhasebe' ? 'Deneme' : user.AD}
+          value={user.KOD}
+          style={MainStyles.textStyle}
+        />
+      ))}
+    </Picker>
+  )}
+</View>
+
 
       <View>
       <Text style={[MainStyles.fontSize12, MainStyles.fontWeightBold]}>Kullanıcı Kodu</Text>
@@ -817,64 +823,53 @@ useEffect(() => {
             />
               
             {/* Veritabanı Seçimi */}
-<Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Veritabanı Seçin</Text>
-<View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
-  {Platform.OS === 'ios' ? (
-    <>
-      <TouchableOpacity onPress={() => setIsDatabaseModalVisible(true)}>
-        <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
-          {selectedDatabase ? (selectedDatabase === 'HilalMuhasebe' ? 'Deneme' : selectedDatabase) : 'Veritabanı Seçin'}
-        </Text>
-      </TouchableOpacity>
+            <Text style={[MainStyles.fontSize12, MainStyles.textColorBlack, MainStyles.marginBottom10, MainStyles.fontWeightBold]}>Veritabanı Seçin</Text>
+            <View style={[MainStyles.inputStyle, MainStyles.marginBottom10]}>
+              {Platform.OS === 'ios' ? (
+                <>
+                  <TouchableOpacity onPress={() => setIsDatabaseModalVisible(true)}>
+                    <Text style={[MainStyles.textColorBlack, MainStyles.fontSize11, MainStyles.paddingLeft10]}>
+                      {selectedDatabase ? selectedDatabase : 'Veritabanı Seçin'}
+                    </Text>
+                  </TouchableOpacity>
 
-      {/* iOS Modal */}
-      <Modal visible={isDatabaseModalVisible} animationType="slide" transparent>
-        <View style={MainStyles.modalContainerPicker}>
-          <View style={MainStyles.modalContentPicker}>
-            <Picker
-              selectedValue={selectedDatabase}
-              onValueChange={(itemValue) => {
-                handleDatabaseSelect(itemValue);
-                setIsDatabaseModalVisible(false); // Modalı kapatma
-              }}
-              style={MainStyles.picker}
-            >
-              <Picker.Item label="Veritabanı Seçin" value="" style={MainStyles.textStyle} />
-              {databases.map((db) => (
-                <Picker.Item
-                  key={db.Database}
-                  label={db.Database === 'HilalMuhasebe' ? 'Deneme' : db.Database}
-                  value={db.Database}
-                  style={MainStyles.textStyle}
-                />
-              ))}
-            </Picker>
-            <Button title="Kapat" onPress={() => setIsDatabaseModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
-    </>
-  ) : (
-    // Android Picker
-    <Picker
-      selectedValue={selectedDatabase}
-      onValueChange={(itemValue) => handleDatabaseSelect(itemValue)}
-      itemStyle={{ height: 40, fontSize: 12 }}
-      style={{ marginHorizontal: -10 }}
-    >
-      <Picker.Item label="Veritabanı Seçin" value="" style={MainStyles.textStyle} />
-      {databases.map((db) => (
-        <Picker.Item
-          key={db.Database}
-          label={db.Database === 'HilalMuhasebe' ? 'Deneme' : db.Database}
-          value={db.Database}
-          style={MainStyles.textStyle}
-        />
-      ))}
-    </Picker>
-  )}
-</View>
-
+                  {/* iOS Modal */}
+                  <Modal visible={isDatabaseModalVisible} animationType="slide" transparent>
+                    <View style={MainStyles.modalContainerPicker}>
+                      <View style={MainStyles.modalContentPicker}>
+                        <Picker
+                          selectedValue={selectedDatabase}
+                          onValueChange={(itemValue) => {
+                            handleDatabaseSelect(itemValue);
+                            setIsDatabaseModalVisible(false); // Modalı kapatma
+                          }}
+                          style={MainStyles.picker}
+                        >
+                          <Picker.Item label="Veritabanı Seçin" value="" style={MainStyles.textStyle} />
+                          {databases.map((db) => (
+                            <Picker.Item key={db.Database} label={db.Database} value={db.Database} style={MainStyles.textStyle} />
+                          ))}
+                        </Picker>
+                        <Button title="Kapat" onPress={() => setIsDatabaseModalVisible(false)} />
+                      </View>
+                    </View>
+                  </Modal>
+                </>
+              ) : (
+                // Android Picker
+                <Picker
+                  selectedValue={selectedDatabase}
+                  onValueChange={(itemValue) => handleDatabaseSelect(itemValue)}
+                  itemStyle={{ height: 40, fontSize: 12 }}
+                  style={{ marginHorizontal: -10 }}
+                >
+                  <Picker.Item label="Veritabanı Seçin" value="" style={MainStyles.textStyle} />
+                  {databases.map((db) => (
+                    <Picker.Item key={db.Database} label={db.Database} value={db.Database} style={MainStyles.textStyle} />
+                  ))}
+                </Picker>
+              )}
+            </View>
 
                {/* 
             <Text style={[MainStyles.fontSize12, MainStyles.marginBottom5, MainStyles.marginTop10, MainStyles.fontWeightBold]}>Firma Kodu</Text>
