@@ -20,10 +20,13 @@ const CustomDrawerContent = (props) => {
   const [isSatinAlmaExpanded, setIsSatinAlmaxpanded] = useState(false); 
   const [isCikisYapExpanded, setIsCikisYapExpanded] = useState(false); 
   const [isRaporlarExpanded, setIsRaporlarExpanded] = useState(false); 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
 
   // Çıkış yapma işlemi
   const handleLogout = async () => {
+    if (isLoggingOut) return; // Eğer zaten çıkış işlemi devam ediyorsa, tekrar çalıştırma
+    setIsLoggingOut(true); // Butonu disable et
     try {
       const response = await axiosLink.post('/Api/apiMethods/APILogoffV2', {
         Mikro: {
@@ -54,6 +57,8 @@ const CustomDrawerContent = (props) => {
     } catch (error) {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
       console.error(error);
+    } finally {
+      setIsLoggingOut(false); // İşlem bittiğinde butonu tekrar aktif hale getir
     }
   };
 
