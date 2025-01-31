@@ -121,10 +121,9 @@ const Login = ({ navigation }) => {
     }
   }, [authData]);
 
-  {/* 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('http://213.14.109.246:8084/Api/APIMethods/HealthCheck')
+      axios.get('http://hilalapi.novatekcloud.com:8084/Api/APIMethods/HealthCheck')
         .then((response) => {
           console.log(response.data);
           if (response.data.result && response.data.result.includes("200")) {
@@ -136,14 +135,14 @@ const Login = ({ navigation }) => {
         .catch(() => {
           setAxiosLinkStatus('Kapalı');
         });
-    }, 300220); // 3 saniye
+    }, 3000); // 3 saniye
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('http://213.14.109.246:8094/Api/Kullanici/KullaniciListesi')
+      axios.get('http://hilalapi.novatekcloud.com:8094/Api/Kullanici/KullaniciListesi')
         .then((response) => {
           console.log('axiosLinkMain response:', response.data);
           if (response.data && response.data.length > 0) {
@@ -155,14 +154,14 @@ const Login = ({ navigation }) => {
         .catch(() => {
           setAxiosLinkMainStatus('Kapalı');
         });
-    }, 302200); // 3 saniye
+    }, 3000); // 3 saniye
   
     return () => clearInterval(interval); // bileşen kapanınca temizleme
   }, []);
  
   useEffect(() => {
       // Üçüncü API çağrısı (axiosLinkMains)
-      axios.get('http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=1&database=HilalMuhasebe&maliyil=2024&firmano=0&subeno=3')
+      axios.get('http://80.253.246.89:8055/Api/Kontrol/LisansKontrol?kod=1&database=TEST&maliyil=2025&firmano=0&subeno=0')
       .then((response) => {
         console.log('axiosLinkMains response:', response.data);
         if (response.data) {
@@ -178,7 +177,6 @@ const Login = ({ navigation }) => {
       });
 
   }, []);
- */}
 
   useEffect(() => {
     retrieveRememberMe();
@@ -223,7 +221,7 @@ const Login = ({ navigation }) => {
     }
 };
  */}
- 
+
 const fetchUsers = async () => {
   try {
     const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
@@ -829,6 +827,12 @@ useEffect(() => {
           )}
 
       </View>
+      <View style={[  MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5, MainStyles.borderRadius10, MainStyles.paddingHorizontal15]}>
+              <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
+              <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
+              <Text style={{color: colors.black, fontSize: 11}}>Kullanici Listesi: {axiosLinkMainStatus}</Text>
+              <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
+            </View>
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -977,14 +981,7 @@ useEffect(() => {
   
           </View>
 
-          {/*
-            <View style={[  MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5, MainStyles.borderRadius10, MainStyles.paddingHorizontal15]}>
-              <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
-              <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
-              <Text style={{color: colors.black, fontSize: 11}}>Local: {axiosLinkMainStatus}</Text>
-              <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
-            </View>
-          */}
+            
         </ScrollView>
       </Modal>
     </View>
