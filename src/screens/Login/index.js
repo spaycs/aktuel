@@ -575,24 +575,18 @@ useEffect(() => {
 
  
   const handleUserChange = (selectedKOD) => {
-    console.log("Seçilen Kullanıcı KOD1:", selectedKOD);
-    console.log("Mevcut Kullanıcı Listesi1:", users);
-
-    // Seçilen kullanıcıyı bul
+    // Kullanıcı KOD'una göre eşleşme yap
     const user = users.find(user => user.KOD === selectedKOD);
-
     if (user) {
-        console.log("Eşleşen Kullanıcı:", user);
-        setSelectedUser(user);
-        setKullaniciKodu(user.KOD);
-        updateIQMikroUserId(user.KOD);
-        setSifre('');
-        setSifreStandart('');
+      setSelectedUser(user); // Eşleşen kullanıcıyı ayarla
+      setKullaniciKodu(user.KOD); // Kullanıcı kodunu TextInput'a yazdır
+      updateIQMikroUserId(user.KOD);
+      setSifre('');
+      setSifreStandart('');
     } else {
-        Alert.alert('Hata', `Seçilen kullanıcı (${selectedKOD}) listede bulunamadı.`);
+      Alert.alert('Hata', 'Seçilen kullanıcı listede bulunamadı.');
     }
-};
-
+  };
 
   const updateIQMikroUserId = (kullaniciKodu) => {
     try {
@@ -692,10 +686,7 @@ useEffect(() => {
     }
   }, [selectedUser, users]);
   
-  useEffect(() => {
-    console.log("selectedUser başlangıç değeri:", selectedUser);
-    console.log("users başlangıç değeri:", users);
-  }, [users, selectedUser]);
+  
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
        <KeyboardAvoidingView
@@ -734,32 +725,21 @@ useEffect(() => {
       <Modal visible={isModalVisible} animationType="slide" transparent>
         <View style={MainStyles.modalContainerPicker}>
           <View style={MainStyles.modalContentPicker}>
-          <Picker
-  selectedValue={selectedUser?.KOD || ""}
-  onValueChange={(itemValue) => {
-    console.log("Picker'dan Seçilen Değer:", itemValue);
-    handleUserChange(itemValue);
-  }}
-  itemStyle={{ height: 40, fontSize: 12 }}
-  style={{ marginHorizontal: -10 }}
->
-  {users.length === 0 ? (
-    <Picker.Item label="Kullanıcı bulunamadı" value="" style={MainStyles.textStyle} />
-  ) : (
-    <>
-      <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
-      {users.map((user) => (
-        <Picker.Item
-          key={user.KOD}
-          label={user.AD}
-          value={user.KOD}
-          style={MainStyles.textStyle}
-        />
-      ))}
-    </>
-  )}
-</Picker>
-
+            <Picker
+              selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
+              onValueChange={(itemValue) => handleUserChange(itemValue)}
+              style={MainStyles.picker}
+            >
+              <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
+              {users.map((user) => (
+                <Picker.Item
+                  key={user.KOD}
+                  label={user.AD }
+                  value={user.KOD}
+                  style={MainStyles.textStyle}
+                />
+              ))}
+            </Picker>
             <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
           </View>
         </View>
