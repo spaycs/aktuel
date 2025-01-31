@@ -120,7 +120,7 @@ const Login = ({ navigation }) => {
       setSelectedDatabase(authData.FirmaKodu); // useAuth'taki FirmaKodu'nu başlangıç seçimi olarak ayarla
     }
   }, [authData]);
-
+{/* 
   useEffect(() => {
     const interval = setInterval(() => {
       axios.get('http://hilalapi.novatekcloud.com:8084/Api/APIMethods/HealthCheck')
@@ -177,6 +177,7 @@ const Login = ({ navigation }) => {
       });
 
   }, []);
+*/}
 
   useEffect(() => {
     retrieveRememberMe();
@@ -203,7 +204,6 @@ const Login = ({ navigation }) => {
     }
   }, [authData]);
   
-{/*
  const fetchUsers = async () => {
     try {
       const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
@@ -220,16 +220,17 @@ const Login = ({ navigation }) => {
       setUsers([]);
     }
 };
- */}
+{/*
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+*/}
 
-const fetchUsers = async () => {
-  try {
-    const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
-    setUsers(response.data);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-  }
-};
 
   const handleUpdate = async () => {
     try {
