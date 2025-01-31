@@ -815,12 +815,14 @@ useEffect(() => {
           )}
 
       </View>
+      {/* 
       <View style={[  MainStyles.right0, MainStyles.backgroundColorBlue, MainStyles.padding5, MainStyles.borderRadius10, MainStyles.paddingHorizontal15]}>
               <Text>{isConnected ? 'Connected' : 'No Connection'}</Text>
               <Text style={{color: colors.black, fontSize: 11}}>Mikro: {axiosLinkStatus}</Text>
               <Text style={{color: colors.black, fontSize: 11}}>Kullanici Listesi: {axiosLinkMainStatus}</Text>
               <Text style={{color: colors.balck, fontSize: 11}}>Lisans: {axiosLinkMainsStatus}</Text>
             </View>
+        */}
       <Modal
         visible={modalVisible}
         animationType="slide"
