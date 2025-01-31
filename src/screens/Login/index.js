@@ -206,7 +206,7 @@ const Login = ({ navigation }) => {
   }, [authData]);
   
 
-  const fetchUsers = async () => {
+ const fetchUsers = async () => {
     try {
       const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
       console.log("Kullanıcı Listesi API Yanıtı:", response.data); // Konsola yazdır
@@ -575,22 +575,18 @@ useEffect(() => {
 
  
   const handleUserChange = (selectedKOD) => {
-    console.log("Seçilen Kullanıcı KOD (String):", String(selectedKOD));
-    
-    const user = users.find(user => String(user.KOD) === String(selectedKOD));
-
+    // Kullanıcı KOD'una göre eşleşme yap
+    const user = users.find(user => user.KOD === selectedKOD);
     if (user) {
-        console.log("Eşleşen Kullanıcı:", user);
-        setSelectedUser(user);
-        setKullaniciKodu(user.KOD);
-        updateIQMikroUserId(user.KOD);
-        setSifre('');
-        setSifreStandart('');
+      setSelectedUser(user); // Eşleşen kullanıcıyı ayarla
+      setKullaniciKodu(user.KOD); // Kullanıcı kodunu TextInput'a yazdır
+      updateIQMikroUserId(user.KOD);
+      setSifre('');
+      setSifreStandart('');
     } else {
-        Alert.alert('Hata', `Seçilen kullanıcı (${selectedKOD}) listede bulunamadı.`);
+      Alert.alert('Hata', 'Seçilen kullanıcı listede bulunamadı.');
     }
-};
-
+  };
 
   const updateIQMikroUserId = (kullaniciKodu) => {
     try {
@@ -738,7 +734,7 @@ useEffect(() => {
               {users.map((user) => (
                 <Picker.Item
                   key={user.KOD}
-                  label={user.AD }
+                  label={user.AD === 'HilalMuhasebe' ? 'Deneme' : user.AD}
                   value={user.KOD}
                   style={MainStyles.textStyle}
                 />
@@ -761,7 +757,7 @@ useEffect(() => {
       {users.map((user) => (
         <Picker.Item
           key={user.KOD}
-          label={user.AD }
+          label={user.AD === 'HilalMuhasebe' ? 'Deneme' : user.AD}
           value={user.KOD}
           style={MainStyles.textStyle}
         />
