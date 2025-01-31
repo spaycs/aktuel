@@ -729,21 +729,32 @@ useEffect(() => {
       <Modal visible={isModalVisible} animationType="slide" transparent>
         <View style={MainStyles.modalContainerPicker}>
           <View style={MainStyles.modalContentPicker}>
-            <Picker
-              selectedValue={selectedUser?.KOD} // Seçili değeri KOD ile karşılaştır
-              onValueChange={(itemValue) => handleUserChange(itemValue)}
-              style={MainStyles.picker}
-            >
-              <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
-              {users.map((user) => (
-                <Picker.Item
-                  key={user.KOD}
-                  label={user.AD }
-                  value={user.KOD}
-                  style={MainStyles.textStyle}
-                />
-              ))}
-            </Picker>
+          <Picker
+  selectedValue={selectedUser?.KOD || ""}
+  onValueChange={(itemValue) => {
+    console.log("Picker'dan Seçilen Değer:", itemValue);
+    handleUserChange(itemValue);
+  }}
+  itemStyle={{ height: 40, fontSize: 12 }}
+  style={{ marginHorizontal: -10 }}
+>
+  {users.length === 0 ? (
+    <Picker.Item label="Kullanıcı bulunamadı" value="" style={MainStyles.textStyle} />
+  ) : (
+    <>
+      <Picker.Item label="Kullanıcı seçin" value="" style={MainStyles.textStyle} />
+      {users.map((user) => (
+        <Picker.Item
+          key={user.KOD}
+          label={user.AD}
+          value={user.KOD}
+          style={MainStyles.textStyle}
+        />
+      ))}
+    </>
+  )}
+</Picker>
+
             <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
           </View>
         </View>
