@@ -396,21 +396,8 @@ const fetchUsers = async () => {
                         const errorMessage = responseData.result[0]?.ErrorMessage || "Bilinmeyen bir hata oluştu.";
                         Alert.alert('Hata', errorMessage);
                       }
-                }catch (err) {
-                  setLoading(false);
-                  
-                  // Hata mesajını belirleme
-                  let errorMessage = err.message || "Giriş başarısız oldu. Lütfen tekrar deneyin.";
-          
-                  // Eğer API'den detaylı hata döndüyse onu göster
-                  if (err.response && err.response.data) {
-                      errorMessage = err.response.data.message || JSON.stringify(err.response.data);
-                  }
-          
-                  // Alert içinde hatayı göster
-                  Alert.alert('Hata', errorMessage);
-                  
-                  console.error('Giriş Hatası:', errorMessage); // Konsolda hatayı göster
+                }catch (error) {
+                  throw new Error('Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
               }
             };
 
