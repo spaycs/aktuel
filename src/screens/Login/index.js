@@ -223,14 +223,6 @@ const Login = ({ navigation }) => {
     }
 };
 
-useEffect(() => {
-  if (!selectedUser && users.length > 0) {
-    console.log("İlk kullanıcı varsayılan olarak atanıyor:", users[0]);
-    setSelectedUser(users[0]);
-  }
-}, [users]);
-
-
   const handleUpdate = async () => {
     try {
       const response = await axios.get(
