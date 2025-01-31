@@ -205,7 +205,7 @@ const Login = ({ navigation }) => {
     }
   }, [authData]);
   
-
+{/*
  const fetchUsers = async () => {
     try {
       const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
@@ -221,6 +221,16 @@ const Login = ({ navigation }) => {
       console.error("API'den kullanıcı listesi çekilirken hata oluştu:", error);
       setUsers([]);
     }
+};
+ */}
+ 
+const fetchUsers = async () => {
+  try {
+    const response = await axiosLinkMain.get('/Api/Kullanici/KullaniciListesi');
+    setUsers(response.data);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  }
 };
 
   const handleUpdate = async () => {
