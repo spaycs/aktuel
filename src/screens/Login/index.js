@@ -575,18 +575,22 @@ useEffect(() => {
 
  
   const handleUserChange = (selectedKOD) => {
-    // Kullanıcı KOD'una göre eşleşme yap
-    const user = users.find(user => user.KOD === selectedKOD);
+    console.log("Seçilen Kullanıcı KOD (String):", String(selectedKOD));
+    
+    const user = users.find(user => String(user.KOD) === String(selectedKOD));
+
     if (user) {
-      setSelectedUser(user); // Eşleşen kullanıcıyı ayarla
-      setKullaniciKodu(user.KOD); // Kullanıcı kodunu TextInput'a yazdır
-      updateIQMikroUserId(user.KOD);
-      setSifre('');
-      setSifreStandart('');
+        console.log("Eşleşen Kullanıcı:", user);
+        setSelectedUser(user);
+        setKullaniciKodu(user.KOD);
+        updateIQMikroUserId(user.KOD);
+        setSifre('');
+        setSifreStandart('');
     } else {
-      Alert.alert('Hata', 'Seçilen kullanıcı listede bulunamadı.');
+        Alert.alert('Hata', `Seçilen kullanıcı (${selectedKOD}) listede bulunamadı.`);
     }
-  };
+};
+
 
   const updateIQMikroUserId = (kullaniciKodu) => {
     try {
