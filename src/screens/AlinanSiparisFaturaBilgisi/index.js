@@ -767,7 +767,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       const adresList = await fetchAdresList(selectedCariKodu);
       if (adresList && adresList.length > 0) {
         const firstAddress = adresList[0];
-        setSip_adresno(firstAddress.Adres);
+        setSip_adresno(`${firstAddress.Adres},${firstAddress.Il},${firstAddress.Ilce}`);
         setAlinanSiparis((prevState) => ({
           ...prevState,
           sip_adresno: firstAddress.Adres_No,
@@ -878,7 +878,7 @@ const AlinanSiparisFaturaBilgisi = () => {
     };
   
     const handleAdresSelect = async (item) => {
-      setSip_adresno(item.Adres);
+      setSip_adresno(`${item.Adres},${item.Il},${item.Ilce}`);
       setAlinanSiparis(prevState => ({
         ...prevState,
         sip_adresno: item.Adres_No,

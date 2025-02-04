@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import CheckBox from '@react-native-community/checkbox';
@@ -51,7 +51,17 @@ const SatisFaturasiProductModal = ({
   const [Birim_KDV, setBirim_KDV] = useState('');
   const [KDV, setKDV] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState(selectedProduct?.sth_vergi_pntr || '');
+   const miktarInputRef = useRef(null); // Referans oluştur
   
+    useEffect(() => {
+      if (modalVisible) {
+        setTimeout(() => {
+          if (miktarInputRef.current) {
+            miktarInputRef.current.focus();
+          }
+        }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
+      }
+    }, [modalVisible]); 
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -413,6 +423,8 @@ const SatisFaturasiProductModal = ({
             <View style={MainStyles.inputBirimGroup}>
               <Text style={MainStyles.productModalText}>Miktar:</Text>
               <TextInput
+                ref={miktarInputRef}
+                selectTextOnFocus={true}
                 style={MainStyles.productModalMiktarInput} 
                 placeholderTextColor={colors.placeholderTextColor}
                 keyboardType="numeric"

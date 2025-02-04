@@ -230,7 +230,7 @@ const TeklifFisiBilgisi = () => {
       if (adresList && adresList.length > 0) {
         // İlk adresi otomatik olarak seç
         const firstAddress = adresList[0];
-        setSth_adres_no(firstAddress.Adres);
+        setSth_adres_no(`${firstAddress.Adres},${firstAddress.Il},${firstAddress.Ilce}`);
         setFaturaBilgileri((prevState) => ({
           ...prevState,
           sth_adres_no: firstAddress.Adres_No,
@@ -358,7 +358,7 @@ const TeklifFisiBilgisi = () => {
     };
   
     const handleAdresSelect = (item) => {
-      setSth_adres_no(item.Adres);
+      setSth_adres_no(`${item.Adres},${item.Il},${item.Ilce}`);
       setFaturaBilgileri(prevState => ({
         ...prevState,
         sth_adres_no: item.Adres_No,

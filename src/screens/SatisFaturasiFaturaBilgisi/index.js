@@ -290,7 +290,7 @@ const SatisFaturasiFaturaBilgisi = () => {
       if (adresList && adresList.length > 0) {
         // İlk adresi otomatik olarak seç
         const firstAddress = adresList[0];
-        setCha_adres_no(firstAddress.Adres);
+        setCha_adres_no(`${firstAddress.Adres},${firstAddress.Il},${firstAddress.Ilce}`);
         setFaturaBilgileri((prevState) => ({
           ...prevState,
           cha_adres_no: firstAddress.Adres_No,
@@ -439,7 +439,7 @@ const SatisFaturasiFaturaBilgisi = () => {
     };
 
     const handleAdresSelect = (item) => {
-      setCha_adres_no(item.Adres); // Seçilen adresi state'e ata
+      setCha_adres_no(`${item.Adres},${item.Il},${item.Ilce}`);
       setFaturaBilgileri(prevState => ({
         ...prevState,
         cha_adres_no: item.Adres_No,
