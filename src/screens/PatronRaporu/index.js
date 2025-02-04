@@ -113,19 +113,21 @@ const PatronRaporu = () => {
       ) : data.length > 0 ? (
         <ScrollView style={styles.resultContainer}>
           <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>Tip</DataTable.Title>
-              <DataTable.Title numeric>Veri</DataTable.Title>
-            </DataTable.Header>
+          <DataTable.Header>
+            <DataTable.Title>Tip</DataTable.Title>
+            <DataTable.Title numeric>Veri</DataTable.Title>
+          </DataTable.Header>
 
-            {data.map((item, index) => (
-              <DataTable.Row key={index}>
-                <DataTable.Cell>{item.Tip}</DataTable.Cell>
-                <DataTable.Cell numeric>{item.veri.toFixed(2)}</DataTable.Cell>
-              </DataTable.Row>
-            ))}
+          {data.map((item, index) => (
+            <DataTable.Row key={index}>
+              <DataTable.Cell>{item.Tip}</DataTable.Cell>
+              <DataTable.Cell numeric>
+                {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.veri)}
+              </DataTable.Cell>
+            </DataTable.Row>
+          ))}
+        </DataTable>
 
-          </DataTable>
         </ScrollView>
       ) : (
         <Text style={styles.noDataText}></Text>

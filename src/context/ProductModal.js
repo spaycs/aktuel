@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Alert, SafeAreaView, ActivityIndicator, Button, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from '@react-native-picker/picker';
@@ -59,17 +59,16 @@ const ProductModal = ({
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [loading, setLoading] = useState(false); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
-  const miktarInputRef = useRef(null); // Referans oluştur
-
-  useEffect(() => {
-    if (modalVisible) {
-      setTimeout(() => {
-        if (miktarInputRef.current) {
-          miktarInputRef.current.focus();
-        }
-      }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
-    }
-  }, [modalVisible]); 
+   const miktarInputRef = useRef(null); // Referans oluştur
+       
+    useEffect(() => {
+        setTimeout(() => {
+          if (miktarInputRef.current) {
+            miktarInputRef.current.focus();
+          }
+        }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
+    }, ); 
+  
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -638,8 +637,8 @@ const validateQuantity = (quantity) => {
             <View style={MainStyles.inputBirimGroup}>
             <Text style={MainStyles.inputtip}>Miktar:</Text>
             <TextInput
-              ref={miktarInputRef}
-              selectTextOnFocus={true}
+            ref={miktarInputRef}
+            selectTextOnFocus={true}
               style={MainStyles.productModalMiktarInput}
               placeholderTextColor={colors.placeholderTextColor}
               keyboardType="numeric"

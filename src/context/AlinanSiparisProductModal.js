@@ -64,17 +64,15 @@ const AlinanSiparisProductModal = ({
   const [loading, setLoading] = useState(false); 
   const [stokDetayOzelAlanData, setStokDetayOzelAlanData] = useState(''); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
-   const miktarInputRef = useRef(null); // Referans oluştur
-  
-    useEffect(() => {
-      if (modalVisible) {
-        setTimeout(() => {
-          if (miktarInputRef.current) {
-            miktarInputRef.current.focus();
-          }
-        }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
-      }
-    }, [modalVisible]); 
+  const miktarInputRef = useRef(null); // Referans oluştur
+
+  useEffect(() => {
+      setTimeout(() => {
+        if (miktarInputRef.current) {
+          miktarInputRef.current.focus();
+        }
+      }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
+  }, ); 
   
 
   // Kullanıcının yetkilerine göre fiyat ve iskonto düzenleme izinleri kontrol ediliyor
