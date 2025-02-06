@@ -22,15 +22,18 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
   const [allData, setAllData] = useState([]);
 
   // Cari verilerini yükleme fonksiyonu
-  const fetchCaris = useCallback(async () => {
+  const fetchCaris = useCallback(async (searchTerm = '') => {
+    if (!searchTerm.trim()) {
+      setCaris([]);
+      setFilteredCaris([]);
+      return;
+    }
+
     try {
       setLoading(true);
       const personelKodu = defaults[0]?.IQ_MikroPersKod || '';
-      const response = await axiosLinkMain.get(`/Api/Cari/CariListesi?temsilci=${personelKodu}`);
-      console.log(personelKodu);
-  
-      // Tüm veriyi sakla
-      setAllData(response.data || []);
+      const response = await axiosLinkMain.get(`/Api/Cari/CariListesiV2?temsilci=${personelKodu}&value=${searchTerm}`);
+      setCaris(response.data || []);
       setFilteredCaris(response.data || []);
     } catch (error) {
       console.error('Error fetching caris:', error);
@@ -39,13 +42,15 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
       setLoading(false);
     }
   }, [defaults]);
-  
 
+  // Arama işlemini 500ms gecikmeli yapma
   useEffect(() => {
-    if (isVisible) {
-      fetchCaris(); // Modal görünürse verileri yükle
-    }
-  }, [isVisible, fetchCaris]);
+    const timeoutId = setTimeout(() => {
+      fetchCaris(searchTerm);
+    }, 500); // 500ms gecikme
+
+    return () => clearTimeout(timeoutId); // Component unmount veya searchTerm değiştiğinde temizleme
+  }, [searchTerm, fetchCaris]);
 
   useEffect(() => {
     // Arama terimi değiştiğinde filtreleme yap

@@ -40,31 +40,44 @@ const CariList = ({ navigation }) => {
 // Menü İzinlerini Getir
 
 // Cari Verilerini Getir
-  const fetchCaris = useCallback(async (searchTerm = '') => {
-    setLoading(true);
-    try {
-      const personelKodu = defaults[0]?.IQ_MikroPersKod || ''; 
-      const response = await axiosLinkMain.get(`/Api/Cari/CariListesi?temsilci=${personelKodu}`);
-      
-      const filteredData = response.data
-        .filter(item =>
-          normalizeText(item.Ünvan).toLowerCase().includes(normalizeText(searchTerm).toLowerCase()) ||
-          normalizeText(item.Cari_Kod).includes(normalizeText(searchTerm))
-        );
+const fetchCaris = useCallback(async (searchTerm = '') => {
+  if (!searchTerm.trim()) {
+    setCaris([]);
+    setFilteredCaris([]);
+    return;
+  }
 
-      setCaris(filteredData || []);
-      setFilteredCaris(filteredData || []);
-    } catch (error) {
-      console.error('Error fetching caris:', error);
-      Alert.alert('Error', 'Failed to load data. Please try again later.');
-    } finally {
-      setLoading(false); 
-    }
-  }, [defaults]);
+  setLoading(true);
+  try {
+    const personelKodu = defaults[0]?.IQ_MikroPersKod || ''; 
+    const response = await axiosLinkMain.get(`/Api/Cari/CariListesiV2?temsilci=${personelKodu}&value=${searchTerm}`);
+    
+    const filteredData = response.data
+      .filter(item =>
+        normalizeText(item.Ünvan).toLowerCase().includes(normalizeText(searchTerm).toLowerCase()) ||
+        normalizeText(item.Cari_Kod).includes(normalizeText(searchTerm))
+      );
 
-  useEffect(() => {
+    setCaris(filteredData || []);
+    setFilteredCaris(filteredData || []);
+  } catch (error) {
+    console.error('Error fetching caris:', error);
+    Alert.alert('Error', 'Failed to load data. Please try again later.');
+  } finally {
+    setLoading(false); 
+  }
+}, [defaults]);
+
+// Arama fonksiyonunu 500ms gecikmeli yapma
+useEffect(() => {
+  const timeoutId = setTimeout(() => {
     fetchCaris(searchTerm);
-  }, [searchTerm, fetchCaris]);
+  }, 500); // 500ms gecikme
+
+  return () => clearTimeout(timeoutId); // Component unmount veya searchTerm değiştiğinde temizle
+}, [searchTerm, fetchCaris]);
+
+
 // Cari Verilerini Getir
   
 // Modal İşlemleri
