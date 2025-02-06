@@ -62,7 +62,7 @@ const fetchCaris = useCallback(async (searchTerm = '') => {
     setFilteredCaris(filteredData || []);
   } catch (error) {
     console.error('Error fetching caris:', error);
-    Alert.alert('Error', 'Failed to load data. Please try again later.');
+    Alert.alert('Error', 'Tekrar Deneyin.');
   } finally {
     setLoading(false); 
   }
