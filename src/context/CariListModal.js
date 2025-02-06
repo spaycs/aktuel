@@ -23,12 +23,6 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
 
   // Cari verilerini yükleme fonksiyonu
   const fetchCaris = useCallback(async (searchTerm = '') => {
-    if (!searchTerm.trim()) {
-      setCaris([]);
-      setFilteredCaris([]);
-      return;
-    }
-
     try {
       setLoading(true);
       const personelKodu = defaults[0]?.IQ_MikroPersKod || '';

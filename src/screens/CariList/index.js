@@ -41,12 +41,6 @@ const CariList = ({ navigation }) => {
 
 // Cari Verilerini Getir
 const fetchCaris = useCallback(async (searchTerm = '') => {
-  if (!searchTerm.trim()) {
-    setCaris([]);
-    setFilteredCaris([]);
-    return;
-  }
-
   setLoading(true);
   try {
     const personelKodu = defaults[0]?.IQ_MikroPersKod || ''; 
