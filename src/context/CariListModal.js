@@ -37,7 +37,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
       setFilteredCaris(response.data || []);
     } catch (error) {
       console.error('Error fetching caris:', error);
-      Alert.alert('Error', 'Failed to load data. Please try again later.');
+      Alert.alert('Error', 'Tekrar Deneyin');
     } finally {
       setLoading(false);
     }
