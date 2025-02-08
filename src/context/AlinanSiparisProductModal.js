@@ -67,12 +67,14 @@ const AlinanSiparisProductModal = ({
   const miktarInputRef = useRef(null); // Referans oluştur
 
   useEffect(() => {
+    if (modalVisible) {
       setTimeout(() => {
         if (miktarInputRef.current) {
           miktarInputRef.current.focus();
         }
-      }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
-  }, ); 
+      }, 300); // UI tam yüklenene kadar 300ms bekletiyoruz
+    }
+  }, [modalVisible]);
   
 
   // Kullanıcının yetkilerine göre fiyat ve iskonto düzenleme izinleri kontrol ediliyor

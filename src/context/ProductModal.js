@@ -60,14 +60,16 @@ const ProductModal = ({
   const [loading, setLoading] = useState(false); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
    const miktarInputRef = useRef(null); // Referans oluştur
-       
-    useEffect(() => {
-        setTimeout(() => {
-          if (miktarInputRef.current) {
-            miktarInputRef.current.focus();
-          }
-        }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
-    }, ); 
+   const [isFirstFocusDone, setIsFirstFocusDone] = useState(false); // Yeni state
+
+   useEffect(() => {
+     if (modalVisible && !isFirstFocusDone) {
+       setTimeout(() => {
+         miktarInputRef.current?.focus();
+         setIsFirstFocusDone(true); // İlk fokus tamamlandı
+       }, 300);
+     }
+   }, [modalVisible, isFirstFocusDone]);
   
 
   useEffect(() => {
@@ -124,8 +126,7 @@ const ProductModal = ({
         const stok = selectedProduct?.Stok_Kod;
         const somkod = faturaBilgileri.sth_stok_srm_merkezi || faturaBilgileri.sip_stok_sormerk || faturaBilgileri.cha_srmrkkodu;
         const odpno = faturaBilgileri.sth_odeme_op || faturaBilgileri.sip_opno  || faturaBilgileri.cha_vade;
-        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
-        
+        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno || ''}`;
         try {
           const response = await axiosLinkMain.get(apiUrl);
           const data = response.data;
@@ -307,6 +308,7 @@ const validateQuantity = (quantity) => {
   };
 
   const handleClose = () => {
+    setIsFirstFocusDone(false); // Modal kapandığında sıfırla
     setModalVisible(false);
   };
 

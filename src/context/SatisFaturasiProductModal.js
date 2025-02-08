@@ -51,15 +51,18 @@ const SatisFaturasiProductModal = ({
   const [Birim_KDV, setBirim_KDV] = useState('');
   const [KDV, setKDV] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState(selectedProduct?.sth_vergi_pntr || '');
-  const miktarInputRef = useRef(null); // Referans oluştur
-     
-  useEffect(() => {
-      setTimeout(() => {
-        if (miktarInputRef.current) {
-          miktarInputRef.current.focus();
-        }
-      }, 300); // 300ms gecikme UI tam yüklenene kadar bekler
-  }, ); 
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+   const miktarInputRef = useRef(null); // Referans oluştur
+   const [isFirstFocusDone, setIsFirstFocusDone] = useState(false); // Yeni state
+
+   useEffect(() => {
+     if (modalVisible && !isFirstFocusDone) {
+       setTimeout(() => {
+         miktarInputRef.current?.focus();
+         setIsFirstFocusDone(true); // İlk fokus tamamlandı
+       }, 300);
+     }
+   }, [modalVisible, isFirstFocusDone]);
 
   useEffect(() => {
     if (defaults && defaults[0]) {

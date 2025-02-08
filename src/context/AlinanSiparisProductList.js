@@ -246,12 +246,6 @@ const AlinanSiparisProductList = () => {
   );
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-       <KeyboardAvoidingView
-        style={[MainStyles.flex1, MainStyles.backgroundColorWhite]}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // iOS için varsayılan offset
-      >
     <View style={MainStyles.irsaliyeContainer}>
 
       {/* Üst Alan - Arama Kriteri Seçimi */}
@@ -375,8 +369,7 @@ const AlinanSiparisProductList = () => {
         setAddedAlinanSiparisProducts={setAddedAlinanSiparisProducts}
       />
     </View>
-    </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+   
   );
 };
 
