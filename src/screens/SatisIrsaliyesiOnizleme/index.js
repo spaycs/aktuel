@@ -380,6 +380,7 @@ const SatisIrsaliyesiOnizleme = () => {
   };
 
   const handleSave = async () => {
+    console.log("StokVade",addedProducts.StokVade)
 
     if (addedProducts.length === 0) {
       Alert.alert(
@@ -486,7 +487,9 @@ const SatisIrsaliyesiOnizleme = () => {
               sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
               sth_cikis_depo_no: faturaBilgileri.sth_cikis_depo_no,
               sth_malkbl_sevk_tarihi: faturaBilgileri.sevkTarihi,
-              sth_odeme_op: faturaBilgileri.sth_odeme_op,
+              sth_odeme_op: defaults[0]?.IQ_OPCaridenGelsin === 1 
+              ? faturaBilgileri.sth_odeme_op 
+              : product.StokVade || product.Vade,
               sth_plasiyer_kodu: sth_plasiyer_kodu,
               sth_aciklama: product.aciklama,
               seriler: "",
@@ -503,7 +506,7 @@ const SatisIrsaliyesiOnizleme = () => {
       },
     };
   
-    // console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
+     console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
   
     try {
       const response = await axiosLink.post(apiURL, jsonPayload);
@@ -519,7 +522,7 @@ const SatisIrsaliyesiOnizleme = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      navigation.replace('SatisIrsaliyesi');
+                      //navigation.replace('SatisIrsaliyesi');
                     }
                 }
             ],
@@ -528,7 +531,7 @@ const SatisIrsaliyesiOnizleme = () => {
     } else {
         Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
       }
-      console.log("apiURL", response);
+      //console.log("apiURL", response);
       //console.log(response.data);
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);

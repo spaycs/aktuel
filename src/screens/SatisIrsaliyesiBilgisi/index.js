@@ -64,6 +64,7 @@ const SatisIrsaliyesiBilgisi = () => {
   // Kurallar 
   const [isEditable, setIsEditable] = useState(false);
   const [pickerEditable, setPickerEditable] = useState(true);
+  const [vadeEditable, setVadeEditable] = useState(true);
 
   // Datatable
   const [data, setData] = useState([]); 
@@ -96,9 +97,10 @@ const SatisIrsaliyesiBilgisi = () => {
   // Değiştirilebilir Alanlar 
     useEffect(() => {
       if (defaults && defaults[0]) {
-        const { IQ_SatisIrsaliyeSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
+        const { IQ_SatisIrsaliyeSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin } = defaults[0];
         setIsEditable(IQ_SatisIrsaliyeSeriNoDegistirebilir === 1);
         setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
+        setVadeEditable(IQ_VadePasifGelsin === 1);
       }
     }, [defaults]);
   // Değiştirilebilir Alanlar 
@@ -1050,17 +1052,18 @@ const SatisIrsaliyesiBilgisi = () => {
               <TextInput
                 style={MainStyles.inputVade}
                 placeholder="Vade"
-                value={sth_odeme_op}
-                onFocus={handleVadeClick} 
+                value={sth_odeme_op ? sth_odeme_op.toString() : ''}
+                onFocus={handleVadeClick}
+                editable={!vadeEditable}
                 placeholderTextColor={colors.placeholderTextColor}
               />
-              <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade}>
+              <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade} disabled={vadeEditable}>
               <Ara />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG}>
+              <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG} disabled={vadeEditable}>
                 <Text style={MainStyles.buttonbuttonVadeGText}>-</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT}>
+              <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT} disabled={vadeEditable}>
                 <TakvimVade />
               </TouchableOpacity>
 

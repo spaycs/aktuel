@@ -569,7 +569,7 @@ useEffect(() => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                     navigation.replace('AlinanSiparis');
+                     //navigation.replace('AlinanSiparis');
                     }
                 }
             ],

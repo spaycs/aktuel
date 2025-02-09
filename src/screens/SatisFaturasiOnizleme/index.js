@@ -36,6 +36,7 @@ const SatisFaturasiOnizleme = () => {
 
   useEffect(() => {
     // defaults içindeki IQ_MikroPersKod değerini sth_plasiyer_kodu'na atayın
+    console.log("caridengelsin", defaults[0].IQ_OPCaridenGelsin);
     if (defaults && defaults[0].IQ_MikroPersKod) {
       setSth_plasiyer_kodu(defaults[0].IQ_MikroPersKod);
     }
@@ -469,7 +470,11 @@ const detailedProducts = products.map((product) => {
           cha_EXIMkodu: faturaBilgileri.cha_exim_kodu,
           cha_projekodu: faturaBilgileri.cha_projekodu,
           cha_srmrkkodu: faturaBilgileri.cha_srmrkkodu,
-          cha_vade: faturaBilgileri.cha_vade,
+          cha_vade: defaults[0]?.IQ_OPCaridenGelsin === 1 
+          ? faturaBilgileri.cha_vade 
+          : products.length > 0 
+              ? (products[0]?.StokVade || products[0]?.Vade) 
+              : "",
           cha_aciklama: faturaBilgileri.cha_aciklama,
           detay: detailedProducts, // sth alanları
           cha_adres_no: faturaBilgileri.cha_adres_no,
@@ -497,7 +502,9 @@ const detailedProducts = products.map((product) => {
               cha_kod: faturaBilgileri.cha_kod,
               cha_projekodu: faturaBilgileri.cha_projekodu,
               cha_srmrkkodu: faturaBilgileri.cha_srmrkkodu,
-              cha_vade: faturaBilgileri.cha_vade,
+              cha_vade: defaults[0]?.IQ_OPCaridenGelsin === 1 
+                ? faturaBilgileri.cha_vade 
+                : (service?.StokVade || service?.Vade) || "",
               cha_EXIMkodu: faturaBilgileri.cha_exim_kodu,
               cha_aciklama: service?.aciklama,
               cha_kasa_hizkod: service?.Stok_Kod || "",
@@ -546,7 +553,7 @@ const detailedProducts = products.map((product) => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                     // navigation.replace('SatisFaturasi');
+                      navigation.replace('SatisFaturasi');
                     }
                 }
             ],
@@ -579,22 +586,9 @@ const detailedProducts = products.map((product) => {
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.faturaBilgileriText}>cha_evrakno_seri: {faturaBilgileri.cha_evrakno_seri}</Text>
         <Text style={MainStyles.faturaBilgileriText}>cha_evrakno_sira: {faturaBilgileri.cha_evrakno_sira}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_tip: {faturaBilgileri.cha_tip}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_cinsi: {faturaBilgileri.cha_cinsi}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_normal_iade: {faturaBilgileri.cha_normal_iade}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_evrak_tip: {faturaBilgileri.cha_evrak_tip}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_ticaret_turu: {faturaBilgileri.cha_ticaret_turu}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_tarihi: {faturaBilgileri.cha_tarihi}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_cari_cins: {faturaBilgileri.cha_cari_cins}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_kod: {faturaBilgileri.cha_kod}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_cari_unvan1: {faturaBilgileri.cha_cari_unvan1}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_adres_no: {faturaBilgileri.cha_adres_no}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_projekodu: {faturaBilgileri.cha_projekodu}</Text>
+        
         <Text style={MainStyles.faturaBilgileriText}>cha_vade: {faturaBilgileri.cha_vade}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_srmrkkodu: {faturaBilgileri.cha_srmrkkodu}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>cha_d_cins: {faturaBilgileri.cha_d_cins}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sth_cikis_depo_no: {faturaBilgileri.sth_cikis_depo_no}</Text>
-        <Text style={MainStyles.faturaBilgileriText}>sth_cikis_depo_no: {faturaBilgileri.cha_exim_kodu}</Text>
+        
       </View>
     {/* Apiye Giden Değerler */}
 

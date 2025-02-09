@@ -140,6 +140,7 @@ const AlinanSiparisProductList = () => {
   
       // Gelen veriler arasında productCode ile eşleşeni bul
       const selectedProduct = stokData.find((item) => item.Stok_Kod === productCode);
+      const IQ_OPCaridenGelsin = defaults[0]?.IQ_OPCaridenGelsin;
   
       if (selectedProduct) {
         const vade = selectedProduct.Vade; // Vade değerini al

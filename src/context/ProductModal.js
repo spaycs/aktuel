@@ -40,6 +40,7 @@ const ProductModal = ({
   const [sth_isk4, setSth_isk4] = useState(''); 
   const [sth_isk5, setSth_isk5] = useState(''); 
   const [sth_isk6, setSth_isk6] = useState(''); 
+  const [StokVade, setStokVade] = useState(''); 
   const [stokDetayData, setStokDetayData] = useState(''); 
   const [birimListesi, setBirimListesi] = useState([]);
   const [katsayi, setKatsayi] = useState({});
@@ -122,10 +123,11 @@ const ProductModal = ({
   useEffect(() => {
     if (modalVisible && selectedProduct) {
       const fetchSatisFiyati = async () => {
+        console.log('selectedProduct?.Vade', selectedProduct?.Vade);
         const cari = faturaBilgileri.sth_cari_kodu || faturaBilgileri.sip_musteri_kod  || faturaBilgileri.cha_kod;
-        const stok = selectedProduct?.Stok_Kod;
+        const stok = selectedProduct?.Stok_Kod ? selectedProduct.Stok_Kod.replace(/\s/g, '%20') : '';
         const somkod = faturaBilgileri.sth_stok_srm_merkezi || faturaBilgileri.sip_stok_sormerk || faturaBilgileri.cha_srmrkkodu;
-        const odpno = faturaBilgileri.sth_odeme_op || faturaBilgileri.sip_opno  || faturaBilgileri.cha_vade;
+        const odpno = faturaBilgileri.sth_odeme_op || faturaBilgileri.sip_opno  || faturaBilgileri.cha_vade || selectedProduct?.Vade || 0;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno || ''}`;
         try {
           const response = await axiosLinkMain.get(apiUrl);
@@ -134,10 +136,14 @@ const ProductModal = ({
           if (Array.isArray(data) && data.length > 0) {
             const firstItem = data[0];
   
-            if (firstItem.fiyat) {
+            if (firstItem.fiyat !== undefined && firstItem.fiyat !== null) {
               setSth_tutar(firstItem.fiyat.toString());
             }
             
+            if (firstItem.fiyat !== undefined && firstItem.fiyat !== null) {
+              setBirimFiyat(firstItem.fiyat.toString());
+            }
+
             if (firstItem.fiyat) {
               setBirimFiyat(firstItem.fiyat.toString());
             }
@@ -376,6 +382,7 @@ const validateQuantity = (quantity) => {
                               sth_iskonto6: updatedİsk6.toFixed(2),
                               total: calculateTotal(),
                               modalId: 0,
+                              StokVade: StokVade,
                           }
                           : product
                   );
@@ -417,6 +424,7 @@ const validateQuantity = (quantity) => {
                       sth_isk6: sth_iskonto6,
                       total: calculateTotal(),
                       modalId: 0,
+                      StokVade: StokVade,
                     },
                   ]);
   
@@ -464,6 +472,7 @@ const validateQuantity = (quantity) => {
                       sth_isk6: sth_iskonto6,
                       total: calculateTotal(),
                       modalId: 0,
+                      StokVade: StokVade,
                     },
                   ]);
   
@@ -509,6 +518,7 @@ const validateQuantity = (quantity) => {
               sth_isk6: sth_iskonto6,
               total: calculateTotal(),
               modalId: 0,
+              StokVade: StokVade,
             },
           ]);
   
@@ -560,79 +570,78 @@ const validateQuantity = (quantity) => {
           <Text style={MainStyles.modalStokAd}>Stok Kod:{selectedProduct?.Stok_Kod} </Text>
           <Text style={MainStyles.modalStokKodu}>Stok Adı:{selectedProduct?.Stok_Ad}</Text>
         </View>
-
           <View style={MainStyles.productModalContainer}>
             <View style={MainStyles.inputBirimGroup}>
               <Text style={MainStyles.inputtip}>Birim:</Text>
               <View style={MainStyles.productModalPickerContainer}>
               {Platform.OS === 'ios' ? (
-  <>
-    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-      <Text style={MainStyles.pickerText}>
-        {sth_birim_pntr || 'Birim seçin'}
-      </Text>
-    </TouchableOpacity>
+                <>
+                  <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                    <Text style={MainStyles.pickerText}>
+                      {sth_birim_pntr || 'Birim seçin'}
+                    </Text>
+                  </TouchableOpacity>
 
-    {/* iOS Modal */}
-    <Modal visible={isModalVisible} animationType="slide" transparent>
-      <View style={MainStyles.modalContainerPicker}>
-        <View style={MainStyles.modalContentPicker}>
-          <Picker
-            selectedValue={sth_birim_pntr}
-            onValueChange={(itemValue) => {
-              setSth_birim_pntr(itemValue);
-              handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
-              setIsModalVisible(false); // Modal'ı kapat
-            }}
-            style={MainStyles.picker}
-          >
-            {birimListesi.map((birim, index) => (
-              <Picker.Item
-                key={index}
-                label={`${birim} (${
-                  index === 1
-                    ? katsayi.sto_birim2_katsayi
-                    : index === 2
-                    ? katsayi.sto_birim3_katsayi
-                    : katsayi.sto_birim4_katsayi
-                })`}
-                value={birim}
-                style={MainStyles.textStyle}
-              />
-            ))}
-          </Picker>
-          <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
-        </View>
-      </View>
-    </Modal>
-  </>
-) : (
-  // Android için düz Picker
-  <Picker
-    selectedValue={sth_birim_pntr}
-    itemStyle={{ height: 40, fontSize: 10 }}
-    style={{ marginHorizontal: -10 }}
-    onValueChange={(itemValue) => {
-      setSth_birim_pntr(itemValue);
-      handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
-    }}
-  >
-    {birimListesi.map((birim, index) => (
-      <Picker.Item
-        key={index}
-        label={`${birim} (${
-          index === 1
-            ? katsayi.sto_birim2_katsayi
-            : index === 2
-            ? katsayi.sto_birim3_katsayi
-            : katsayi.sto_birim4_katsayi
-        })`}
-        value={birim}
-        style={MainStyles.textStyle}
-      />
-    ))}
-  </Picker>
-)}
+                  {/* iOS Modal */}
+                  <Modal visible={isModalVisible} animationType="slide" transparent>
+                    <View style={MainStyles.modalContainerPicker}>
+                      <View style={MainStyles.modalContentPicker}>
+                        <Picker
+                          selectedValue={sth_birim_pntr}
+                          onValueChange={(itemValue) => {
+                            setSth_birim_pntr(itemValue);
+                            handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+                            setIsModalVisible(false); // Modal'ı kapat
+                          }}
+                          style={MainStyles.picker}
+                        >
+                          {birimListesi.map((birim, index) => (
+                            <Picker.Item
+                              key={index}
+                              label={`${birim} (${
+                                index === 1
+                                  ? katsayi.sto_birim2_katsayi
+                                  : index === 2
+                                  ? katsayi.sto_birim3_katsayi
+                                  : katsayi.sto_birim4_katsayi
+                              })`}
+                              value={birim}
+                              style={MainStyles.textStyle}
+                            />
+                          ))}
+                        </Picker>
+                        <Button title="Kapat" onPress={() => setIsModalVisible(false)} />
+                      </View>
+                    </View>
+                  </Modal>
+                </>
+              ) : (
+                // Android için düz Picker
+                <Picker
+                  selectedValue={sth_birim_pntr}
+                  itemStyle={{ height: 40, fontSize: 10 }}
+                  style={{ marginHorizontal: -10 }}
+                  onValueChange={(itemValue) => {
+                    setSth_birim_pntr(itemValue);
+                    handleMiktarChange(sth_miktar); // Miktar değişikliği işlemi
+                  }}
+                >
+                  {birimListesi.map((birim, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={`${birim} (${
+                        index === 1
+                          ? katsayi.sto_birim2_katsayi
+                          : index === 2
+                          ? katsayi.sto_birim3_katsayi
+                          : katsayi.sto_birim4_katsayi
+                      })`}
+                      value={birim}
+                      style={MainStyles.textStyle}
+                    />
+                  ))}
+                </Picker>
+              )}
               </View>
             </View>
             <View style={MainStyles.inputBirimGroup}>

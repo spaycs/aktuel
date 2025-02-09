@@ -21,7 +21,7 @@ const normalizeText = (text) => {
 const SatisFaturasiProductList = () => {
   const { authData } = useAuth();
   const { defaults } = useAuthDefault();
-  const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
+  const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -86,15 +86,42 @@ const SatisFaturasiProductList = () => {
         AnaGrup: item.AnaGrup,
         Reyon: item.Reyon,
         HareketTipi: item.HareketTipi, // Yeni eklendi
+        Vade: item.Vade,
       }));
 
       setFilteredData(filtered);
+
+      const IQ_OPCaridenGelsin = defaults[0]?.IQ_OPCaridenGelsin;
+      if (selectedProduct) {
+        const vade = selectedProduct.Vade; // Vade değerini al
+        return vade; // Vade değerini döndür
+        console.log('VADEEEEEEEEEEEEEE', vade)
+      } else {
+        return 0;
+      }
+      
+       // StokVade ve BekleyenSiparis değerlerini kontrol et
+       const stokVadeValue = filteredData.find((item) => item.Vade)?.Vade;
+  
+       // Vade değerini sadece stok listesi verisi varsa güncelle
+       if (stokVadeValue && stokVadeValue !== '0') {
+         updatealinanSiparis({
+           StokVade: stokVadeValue,
+         });
+       }
     } catch (err) {
       Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
-  }, [searchCriteria, searchTerm, defaults, faturaBilgileri]);
+  }, [searchCriteria, searchTerm, defaults, faturaBilgileri, updatealinanSiparis]);
+
+   const updatealinanSiparis = useCallback((newValues) => {
+      setFaturaBilgileri(prev => ({
+        ...prev,
+        ...newValues,
+      }));
+    }, [setFaturaBilgileri]);
   
 
   const handlePickerChange = (itemValue) => {

@@ -140,7 +140,7 @@ const EditAlinanSiparisProductModal = ({ selectedProduct, modalVisible, setModal
         const stok = selectedProduct?.Stok_Kod;
         const somkod = alinanSiparis?.sth_stok_srm_merkezi || alinanSiparis?.sip_stok_sormerk || alinanSiparis?.cha_srmrkkodu ;
         const odpno = alinanSiparis?.sth_odeme_op || alinanSiparis?.sip_opno || alinanSiparis?.cha_vade|| 0;
-        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
+        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno || ''}`;
         console.log(apiUrl);
   
         try {

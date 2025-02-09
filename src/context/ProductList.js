@@ -144,13 +144,10 @@ const ProductList = () => {
       //console.log("IQ_OPCaridenGelsin",IQ_OPCaridenGelsin)
       
       if (selectedProduct) {
-        const vade = selectedProduct.Vade;
-        
-        if (IQ_OPCaridenGelsin === 0) {
-          updatealinanSiparis({ StokVade: vade, sip_opno: vade });
-        }
+        const vade = selectedProduct.Vade; // Vade değerini al
+        return vade; // Vade değerini döndür
       } else {
-        //console.log('Selected product not found!');
+        return 0;
       }
     } catch (error) {
       console.error('Error fetching stock details:', error);
@@ -159,17 +156,32 @@ const ProductList = () => {
   }, [faturaBilgileri.sip_musteri_kod, defaults, updatealinanSiparis]);
   
 
-  const handleItemClick = (item) => {
-    const existingProductCount = addedProducts.filter(product => product.Stok_Kod === item.Stok_Kod).length;
+ const handleItemClick = async (item) => {
+   
 
-    if (existingProductCount >= 2) {
-      Alert.alert('Uyarı', 'Bu ürün zaten 2 kez eklenmiştir, daha fazla ekleyemezsiniz.');
-      return;
+    // Stok detaylarını getir ve Vade bilgisini al
+    const vade = await fetchStockDetails(item.Stok_Kod);
+
+    if (vade !== null) {
+      // Ürün listesinde güncelleme yap
+      setAddedProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.Stok_Kod === item.Stok_Kod
+            ? { ...product, StokVade: vade } // StokVade'yi güncelle
+            : product // Diğer ürünleri aynı bırak
+        )
+      );
+
+      console.log(`Updated product with StokVade: ${vade}`);
+    } else {
+      console.warn(`Vade bilgisi alınamadı: ${item.Stok_Kod}`);
     }
-    fetchStockDetails(item.Stok_Kod)
+
+    // Modalı aç ve seçilen ürünü ayarla
     setSelectedProduct(item);
     setModalVisible(true);
   };
+
 
   
 

@@ -69,7 +69,7 @@ const EditProductModal = ({ selectedProduct, modalVisible, setModalVisible, setA
         const stok = selectedProduct?.Stok_Kod;
         const somkod = faturaBilgileri?.sth_stok_srm_merkezi || faturaBilgileri?.sip_stok_sormerk || faturaBilgileri?.cha_srmrkkodu ;
         const odpno = faturaBilgileri?.sth_odeme_op || faturaBilgileri?.sip_opno || faturaBilgileri?.cha_vade;
-        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno}`;
+        const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno || ''}`;
   
         try {
           const response = await axiosLinkMain.get(apiUrl);

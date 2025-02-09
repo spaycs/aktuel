@@ -63,6 +63,7 @@ const SatisFaturasiFaturaBilgisi = () => {
     // Kurallar 
     const [isEditable, setIsEditable] = useState(false);
     const [pickerEditable, setPickerEditable] = useState(true);
+    const [vadeEditable, setVadeEditable] = useState(true);
     
     // Datatable
     const [data, setData] = useState([]); 
@@ -90,9 +91,11 @@ const SatisFaturasiFaturaBilgisi = () => {
   // Kullanıcının Değiştirebilir Alan Yönetimi 
     useEffect(() => {
       if (defaults && defaults[0]) {
-        const { IQ_SatisFaturaSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir } = defaults[0];
+        const { IQ_SatisFaturaSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin } = defaults[0];
         setIsEditable(IQ_SatisFaturaSeriNoDegistirebilir === 1);
         setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
+        setVadeEditable(IQ_VadePasifGelsin === 1);
+        console.log('IQ_VadePasifGelsin', IQ_VadePasifGelsin);
       }
     }, [defaults]);
   // Kullanıcının Değiştirebilir Alan Yönetimi 
@@ -268,13 +271,17 @@ const SatisFaturasiFaturaBilgisi = () => {
 
     const handleCariSelect = async (cari) => {
       const selectedCariKodu = cari.Cari_Kod;
+      const selectedCariUnvan = cari.Ünvan;
+      let selectedOdemePlanNo = cari.cari_odemeplan_no;
+
+      console.log(selectedOdemePlanNo);
     
       setCha_kod(selectedCariKodu);
-      setCha_cari_unvan1(cari.Ünvan);
+      setCha_cari_unvan1(selectedCariUnvan);
       setFaturaBilgileri((prevState) => ({
         ...prevState,
         cha_kod: selectedCariKodu,
-        cha_cari_unvan1: cari.Ünvan,
+        cha_cari_unvan1: selectedCariUnvan,
       }));
     
       setCha_adres_no('');
@@ -282,6 +289,46 @@ const SatisFaturasiFaturaBilgisi = () => {
         ...prevState,
         cha_adres_no: null,
       }));
+
+       // Ödeme plan numarasına göre işlem
+        if (selectedOdemePlanNo === 0) {
+          // Peşin ise
+          setCha_vade("PEŞİN");
+          setFaturaBilgileri((prevState) => ({
+            ...prevState,
+            cha_vade: 0, // 0 gönderecek
+          }));
+        } else if (selectedOdemePlanNo < 0) {
+          // Negatif ise
+          const gunSayisi = Math.abs(selectedOdemePlanNo); // Negatif değeri pozitife çevir
+          const textIcerik = `${gunSayisi} GÜN`;
+          setCha_vade(textIcerik);
+          setFaturaBilgileri((prevState) => ({
+            ...prevState,
+            cha_vade: selectedOdemePlanNo, // Negatif değeri gönderecek
+          }));
+        } else if (selectedOdemePlanNo > 0) {
+          // Pozitif ise ödeme planları listesine bak
+          try {
+            const odemePlanlariList = await fetchVadeList();
+            if (odemePlanlariList && odemePlanlariList.length > 0) {
+              const selectedOdemePlan = odemePlanlariList.find((plan) => plan.No === selectedOdemePlanNo);
+              if (selectedOdemePlan) {
+                setCha_vade(selectedOdemePlan.Isim); // İsmini göster
+                setFaturaBilgileri((prevState) => ({
+                  ...prevState,
+                  cha_vade: selectedOdemePlan.No, // Numarasını gönderecek
+                }));
+              } else {
+                console.log("Eşleşen ödeme planı bulunamadı.");
+              }
+            } else {
+              console.log("Ödeme planları listesi boş.");
+            }
+          } catch (error) {
+            console.error("Ödeme planı fetch edilirken hata:", error);
+          }
+        }
       
       fetchDovizList(selectedCariKodu);
       // Adres listesini tekrar API'den çek
@@ -297,41 +344,6 @@ const SatisFaturasiFaturaBilgisi = () => {
         }));
       } else {
         console.log("Adres listesi boş geldi.");
-      }
-
-      // Ödeme planını seçme işlemi
-      if (cari.cari_odemeplan_no) {
-        const odemePlanNo = cari.cari_odemeplan_no;
-
-        try {
-          // Ödeme planlarını API'den fetch et
-          const odemePlanlariList = await fetchVadeList();
-          
-          // Gelen listenin varlığını ve doluluğunu kontrol et
-          if (odemePlanlariList && odemePlanlariList.length > 0) {
-            // Ödeme planı listesinde cari_odemeplan_no ile eşleşen değeri bul
-            const selectedOdemePlan = odemePlanlariList.find(
-              (plan) => plan.No === odemePlanNo
-            );
-
-            if (selectedOdemePlan) {
-              // Ödeme planını set et
-              setCha_vade(selectedOdemePlan.Isim);
-              
-              // Fatura bilgilerini güncelle
-              setFaturaBilgileri(prevState => ({
-                ...prevState,
-                cha_vade: selectedOdemePlan.No, // Burada No'yu gönderiyoruz
-              }));
-            } else {
-              console.log("Eşleşen ödeme planı bulunamadı.");
-            }
-          } else {
-            console.log("Ödeme planları listesi boş.");
-          }
-        } catch (error) {
-          console.error("Odeme planı fetch edilirken hata:", error);
-        }
       }
 
       setIsCariListModalVisible(false);
@@ -1045,17 +1057,19 @@ const SatisFaturasiFaturaBilgisi = () => {
             <TextInput
               style={MainStyles.inputVade}
               placeholder="Vade"
-              value={cha_vade}
-              onFocus={handleVadeClick} 
+              value={cha_vade ? cha_vade.toString() : ''}
+              //value={cha_vade}
+              onFocus={handleVadeClick}
+              editable={!vadeEditable}
               placeholderTextColor={colors.placeholderTextColor}
             />
-            <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade}>
+            <TouchableOpacity onPress={handleVadeClick} style={MainStyles.buttonVade} disabled={vadeEditable}>
             <Ara />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG}>
+            <TouchableOpacity onPress={handleGClick} style={MainStyles.buttonVadeG} disabled={vadeEditable}>
               <Text style={MainStyles.buttonbuttonVadeGText}>-</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT}>
+            <TouchableOpacity onPress={handleTClick} style={MainStyles.buttonVadeT} disabled={vadeEditable}>
               <TakvimVade />
             </TouchableOpacity>
 
