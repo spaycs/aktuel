@@ -59,17 +59,17 @@ const ProductModal = ({
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [loading, setLoading] = useState(false); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
-   const miktarInputRef = useRef(null); // Referans oluştur
-   const [isFirstFocusDone, setIsFirstFocusDone] = useState(false); // Yeni state
+  const miktarInputRef = useRef(null); // Referans oluştur
 
-   useEffect(() => {
-     if (modalVisible && !isFirstFocusDone) {
-       setTimeout(() => {
-         miktarInputRef.current?.focus();
-         setIsFirstFocusDone(true); // İlk fokus tamamlandı
-       }, 300);
-     }
-   }, [modalVisible, isFirstFocusDone]);
+    useEffect(() => {
+      if (modalVisible) {
+        setTimeout(() => {
+          if (miktarInputRef.current) {
+            miktarInputRef.current.focus();
+          }
+        }, 300); // UI tam yüklenene kadar 300ms bekletiyoruz
+      }
+    }, [modalVisible]);
   
 
   useEffect(() => {
@@ -308,7 +308,6 @@ const validateQuantity = (quantity) => {
   };
 
   const handleClose = () => {
-    setIsFirstFocusDone(false); // Modal kapandığında sıfırla
     setModalVisible(false);
   };
 

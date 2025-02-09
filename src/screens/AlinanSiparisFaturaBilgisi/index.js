@@ -472,6 +472,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       setIsEditable(IQ_AlisSiparisSeriNoDegistirebilir === 1);
       setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1); 
       setVadeEditable(IQ_VadePasifGelsin === 1); 
+      console.log('IQ_OPCaridenGelsin', IQ_OPCaridenGelsin);
     }
     }, [defaults]);
 
@@ -708,7 +709,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       const selectedCariKodu = cari.Cari_Kod;
       const selectedCariUnvan = cari.Ünvan;
       let selectedOdemePlanNo = cari.cari_odemeplan_no;
-      console.log(selectedOdemePlanNo);
+      console.log('selectedOdemePlanNo',selectedOdemePlanNo);
     
       // Cari kodu ve unvanını set et
       setSip_musteri_kod(selectedCariKodu);
@@ -1106,6 +1107,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       try {
         const response = await axiosLinkMain.get(`/Api/Siparis/SiparisGetir?seri=${sip_evrakno_seri}`);
         setData(response.data); 
+        console.log(response);
 
         setIsModalVisible(true); 
       } catch (error) {

@@ -75,21 +75,7 @@ const SatisIrsaliyesi = ({navigation, route}) => {
         [{ text: "Tamam" }]
       );
       return false;
-    } else if (!faturaBilgileri.sth_odeme_op) {
-      Alert.alert(
-        "Uyarı",
-        "Vade seçimi yapmalısınız.",
-        [{ text: "Tamam" }]
-      );
-      return false;
-    } else if (!faturaBilgileri.sth_stok_srm_merkezi) {
-      Alert.alert(
-        "Uyarı",
-        "Sorumluluk merkezi seçimi yapmalısınız.",
-        [{ text: "Tamam" }]
-      );
-      return false;
-    }
+    } 
     return true;
   };
 

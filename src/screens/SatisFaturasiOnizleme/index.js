@@ -546,7 +546,7 @@ const detailedProducts = products.map((product) => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      navigation.replace('SatisFaturasi');
+                     // navigation.replace('SatisFaturasi');
                     }
                 }
             ],

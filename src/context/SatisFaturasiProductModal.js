@@ -52,17 +52,17 @@ const SatisFaturasiProductModal = ({
   const [KDV, setKDV] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState(selectedProduct?.sth_vergi_pntr || '');
   const [isModalVisible, setIsModalVisible] = useState(false); 
-   const miktarInputRef = useRef(null); // Referans oluştur
-   const [isFirstFocusDone, setIsFirstFocusDone] = useState(false); // Yeni state
+  const miktarInputRef = useRef(null); // Referans oluştur
 
-   useEffect(() => {
-     if (modalVisible && !isFirstFocusDone) {
-       setTimeout(() => {
-         miktarInputRef.current?.focus();
-         setIsFirstFocusDone(true); // İlk fokus tamamlandı
-       }, 300);
-     }
-   }, [modalVisible, isFirstFocusDone]);
+    useEffect(() => {
+      if (modalVisible) {
+        setTimeout(() => {
+          if (miktarInputRef.current) {
+            miktarInputRef.current.focus();
+          }
+        }, 300); // UI tam yüklenene kadar 300ms bekletiyoruz
+      }
+    }, [modalVisible]);
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -423,7 +423,7 @@ const SatisFaturasiProductModal = ({
           <View style={MainStyles.productModalContainer}>
             <View style={MainStyles.inputBirimGroup}>
               <Text style={MainStyles.productModalText}>Miktar:</Text>
-              <TextInput
+               <TextInput
                 ref={miktarInputRef}
                 selectTextOnFocus={true}
                 style={MainStyles.productModalMiktarInput} 

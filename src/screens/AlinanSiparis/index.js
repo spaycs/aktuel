@@ -90,20 +90,6 @@ const AlinanSiparis = ({navigation}) => {
         [{ text: "Tamam" }]
       );
       return false;
-    } else if (alinanSiparis.sip_opno === undefined || alinanSiparis.sip_opno === null || alinanSiparis.sip_opno === "") {
-      Alert.alert(
-        "Uyarı",
-        "Vade seçimi yapmalısınız.",
-        [{ text: "Tamam" }]
-      );
-      return false;
-    } else if (!alinanSiparis.sip_stok_sormerk) {
-      Alert.alert(
-        "Uyarı",
-        "Sorumluluk merkezi seçimi yapmalısınız.",
-        [{ text: "Tamam" }]
-      );
-      return false;
     }
     return true;
   };

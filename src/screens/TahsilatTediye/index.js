@@ -60,13 +60,6 @@ const TahsilatTediye = ({navigation}) => {
         [{ text: "Tamam" }]
       );
       return false;
-    }  else if (!faturaBilgileri.cha_vade) {
-      Alert.alert(
-        "Uyarı",
-        "Vade seçimi yapmalısınız.",
-        [{ text: "Tamam" }]
-      );
-      return false;
     } 
     return true;
   };
