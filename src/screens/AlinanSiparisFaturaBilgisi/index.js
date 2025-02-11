@@ -473,6 +473,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1); 
       setVadeEditable(IQ_VadePasifGelsin === 1); 
       console.log('IQ_OPCaridenGelsin', IQ_OPCaridenGelsin);
+      console.log('IQ_VadePasifGelsin', IQ_VadePasifGelsin );
     }
     }, [defaults]);
 
@@ -724,6 +725,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       // Ödeme plan numarasına göre işlem
       if (selectedOdemePlanNo === 0) {
         // Peşin ise
+        console.log("Ödeme Planı: PEŞİN");
         setSip_opno("PEŞİN");
         setAlinanSiparis((prevState) => ({
           ...prevState,
@@ -731,6 +733,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         }));
       } else if (selectedOdemePlanNo < 0) {
         // Negatif ise
+        console.log("Ödeme Planı: Negatif değer");
         const gunSayisi = Math.abs(selectedOdemePlanNo); // Negatif değeri pozitife çevir
         const textIcerik = `${gunSayisi} GÜN`;
         setSip_opno(textIcerik);
@@ -740,12 +743,16 @@ const AlinanSiparisFaturaBilgisi = () => {
         }));
       } else if (selectedOdemePlanNo > 0) {
         // Pozitif ise ödeme planları listesine bak
+        console.log("Ödeme Planı: Pozitif değer, liste kontrol ediliyor...");
         try {
           const odemePlanlariList = await fetchVadeList();
+          console.log("Alınan Ödeme Planları Listesi:", odemePlanlariList);
           if (odemePlanlariList && odemePlanlariList.length > 0) {
             const selectedOdemePlan = odemePlanlariList.find((plan) => plan.No === selectedOdemePlanNo);
+            console.log("Seçilen Ödeme Planı:", selectedOdemePlan);
             if (selectedOdemePlan) {
               setSip_opno(selectedOdemePlan.Isim); // İsmini göster
+              console.log("Seçilen Ödeme Plan İsmi:", selectedOdemePlan.Isim);
               setAlinanSiparis((prevState) => ({
                 ...prevState,
                 sip_opno: selectedOdemePlan.No, // Numarasını gönderecek

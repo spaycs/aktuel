@@ -91,11 +91,12 @@ const SatisFaturasiFaturaBilgisi = () => {
   // Kullanıcının Değiştirebilir Alan Yönetimi 
     useEffect(() => {
       if (defaults && defaults[0]) {
-        const { IQ_SatisFaturaSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_VadePasifGelsin } = defaults[0];
+        const { IQ_SatisFaturaSeriNoDegistirebilir, IQ_CikisDepoNoDegistirebilir, IQ_OPCaridenGelsin, IQ_VadePasifGelsin } = defaults[0];
         setIsEditable(IQ_SatisFaturaSeriNoDegistirebilir === 1);
         setPickerEditable(IQ_CikisDepoNoDegistirebilir === 1);
         setVadeEditable(IQ_VadePasifGelsin === 1);
-        console.log('IQ_VadePasifGelsin', IQ_VadePasifGelsin);
+        console.log('IQ_OPCaridenGelsin', IQ_OPCaridenGelsin);
+        console.log('IQ_VadePasifGelsin', IQ_VadePasifGelsin );
       }
     }, [defaults]);
   // Kullanıcının Değiştirebilir Alan Yönetimi 

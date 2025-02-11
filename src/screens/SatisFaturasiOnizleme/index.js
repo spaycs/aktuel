@@ -36,7 +36,7 @@ const SatisFaturasiOnizleme = () => {
 
   useEffect(() => {
     // defaults içindeki IQ_MikroPersKod değerini sth_plasiyer_kodu'na atayın
-    console.log("caridengelsin", defaults[0].IQ_OPCaridenGelsin);
+    //console.log("caridengelsin", defaults[0].IQ_OPCaridenGelsin);
     if (defaults && defaults[0].IQ_MikroPersKod) {
       setSth_plasiyer_kodu(defaults[0].IQ_MikroPersKod);
     }
@@ -553,7 +553,7 @@ const detailedProducts = products.map((product) => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      navigation.replace('SatisFaturasi');
+                     navigation.replace('SatisFaturasi');
                     }
                 }
             ],
@@ -582,7 +582,7 @@ const detailedProducts = products.map((product) => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler 
+    {/* Apiye Giden Değerler
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.faturaBilgileriText}>cha_evrakno_seri: {faturaBilgileri.cha_evrakno_seri}</Text>
         <Text style={MainStyles.faturaBilgileriText}>cha_evrakno_sira: {faturaBilgileri.cha_evrakno_sira}</Text>

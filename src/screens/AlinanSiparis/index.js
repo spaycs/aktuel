@@ -74,8 +74,8 @@ const AlinanSiparis = ({navigation}) => {
 
   
   const validateFields = () => {
-    console.log('vade', alinanSiparis.sip_opno)
-    console.log('sip_adresno', alinanSiparis.sip_adresno)
+    //console.log('vade', alinanSiparis.sip_opno)
+    //console.log('sip_adresno', alinanSiparis.sip_adresno)
     if (!alinanSiparis.sip_musteri_kod|| !alinanSiparis.sip_cari_unvan1) {
       Alert.alert(
         "Uyarı",

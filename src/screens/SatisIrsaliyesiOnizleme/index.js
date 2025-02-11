@@ -522,7 +522,7 @@ const SatisIrsaliyesiOnizleme = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                      //navigation.replace('SatisIrsaliyesi');
+                     navigation.replace('SatisIrsaliyesi');
                     }
                 }
             ],
@@ -564,7 +564,7 @@ const SatisIrsaliyesiOnizleme = () => {
           <Text style={MainStyles.faturaBilgileriText}>sth_cari_cinsi: {faturaBilgileri.sth_cari_cinsi}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_cari_kodu: {faturaBilgileri.sth_cari_kodu}</Text>
           <Text style={MainStyles.faturaBilgileriText}>sth_cari_unvan1: {faturaBilgileri.sth_cari_unvan1}</Text>
-          <Text style={MainStyles.faturaBilgileriText}>sth_adres_no: {faturaBilgileri.sth_adres_no}</Text>
+          <Text style={MainStyles.faturaBilgileriText}>sth_odeme_op: {faturaBilgileri.sth_odeme_op}</Text>
      
         </View>
     {/* Apiye Giden Değerler */}

@@ -172,7 +172,7 @@ const ProductList = () => {
         )
       );
 
-      console.log(`Updated product with StokVade: ${vade}`);
+      console.log(`Vade Güncellendi StokVade: ${vade}`);
     } else {
       console.warn(`Vade bilgisi alınamadı: ${item.Stok_Kod}`);
     }

@@ -36,7 +36,7 @@ const AlinanSiparisOnizleme = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log('addedAlinanSiparisProducts', addedAlinanSiparisProducts);
+    //console.log('addedAlinanSiparisProducts', addedAlinanSiparisProducts);
   }, []);
 
   const saveDataToAsyncStorage = async (addedAlinanSiparisProducts, alinanSiparis) => {
@@ -83,7 +83,7 @@ const AlinanSiparisOnizleme = () => {
 
   useEffect(() => {
     loadDataFromAsyncStorage();
-    console.log("caridengelsin", defaults[0].IQ_OPCaridenGelsin);
+    //console.log("caridengelsin", defaults[0].IQ_OPCaridenGelsin);
   }, []);
 
   useEffect(() => {
@@ -425,7 +425,7 @@ useEffect(() => {
 
   const handleSave = async () => {
 
-    console.log("API yanı", addedAlinanSiparisProducts.StokVade);
+    console.log("API yanıtı alinan sipariş önizleme StokVade değeri", addedAlinanSiparisProducts.StokVade);
     if (addedAlinanSiparisProducts.length === 0) {
       Alert.alert(
           "Uyarı",
@@ -569,7 +569,7 @@ useEffect(() => {
                 {
                     text: "Tamam",
                     onPress: () => {
-                     //navigation.replace('AlinanSiparis');
+                     navigation.replace('AlinanSiparis');
                     }
                 }
             ],
@@ -669,7 +669,7 @@ useEffect(() => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler 
+    {/* Apiye Giden Değerler */}
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.fontSize11}>sip_evrakno_seri: {alinanSiparis.sip_evrakno_seri}</Text>
         <Text style={MainStyles.fontSize11}>sip_evrakno_sira: {alinanSiparis.sip_evrakno_sira}</Text>
