@@ -1663,6 +1663,11 @@ export const MainStyles = {
       flexDirection: 'column',
       width: "48%", 
     },
+    inputDepoSecim: {
+      flexDirection: 'column',
+      width: "100%", 
+      marginBottom: 12,
+    },
     inputBirimOzelGroup: {
       flex: 1,
     },

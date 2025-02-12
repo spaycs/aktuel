@@ -72,6 +72,7 @@ const SatisFaturasiProductList = () => {
       const url = `/Api/Stok/StokListesiEvraklar2?cari=${faturaBilgileri.cha_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
       console.log(url);
       const response = await axiosLinkMain.get(url);
+      console.log(response);
 
       const data = response.data || [];
       const filtered = data.map(item => ({
@@ -87,6 +88,10 @@ const SatisFaturasiProductList = () => {
         Reyon: item.Reyon,
         HareketTipi: item.HareketTipi, // Yeni eklendi
         Vade: item.Vade,
+        Depodaki_Miktar: item.Depodaki_Miktar,
+        Depo1Miktar: item.Depo1Miktar,
+        Depo2Miktar: item.Depo2Miktar,
+        BekleyenSiparis: item.BekleyenSiparis,
       }));
 
       setFilteredData(filtered);
@@ -219,11 +224,14 @@ const SatisFaturasiProductList = () => {
       {/* Detay alanları */}
       <View style={MainStyles.itemContainerDetailPL}>
         <View style={MainStyles.leftDetails}>
-          <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
           <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
           <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 3 Miktar: {item.Depo3Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 4 Miktar: {item.Depo4Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 5 Miktar: {item.Depo5Miktar}</Text>
         </View>
         <View style={MainStyles.rightDetails}>
+          <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
           <Text style={MainStyles.itemTextPL}>Vergi: {item.sth_vergi}</Text>
           <Text style={MainStyles.itemTextPL}>Ana Grup: {item.AnaGrup}</Text>
           <Text style={MainStyles.itemTextPL}>Alt Grup: {item.AltGrup}</Text>

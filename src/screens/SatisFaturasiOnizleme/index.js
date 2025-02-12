@@ -256,7 +256,6 @@ return (
     <View style={MainStyles.productContainer}>
       <View style={MainStyles.stokContainer}>
         <Text style={MainStyles.productName}>Stok Adı: {item.Stok_Ad}</Text>
-        <Text style={MainStyles.productTitle}>Stok Kodu: {item.Stok_Kod}</Text>
       </View>
 
       <View style={MainStyles.rowContainer}>
@@ -446,7 +445,7 @@ const detailedProducts = products.map((product) => {
       sth_iskonto6: product.sth_iskonto6,
       sth_isk_mas1: 0,
       sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
-      sth_cikis_depo_no: faturaBilgileri.sth_cikis_depo_no,
+      sth_cikis_depo_no: product.sth_cikis_depo_no,
       sth_plasiyer_kodu: sth_plasiyer_kodu,
   };
 });

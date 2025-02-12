@@ -228,18 +228,21 @@ const AlinanSiparisProductList = () => {
       {/* Detay alanları */}
       <View style={MainStyles.itemContainerDetailPL}>
         <View style={MainStyles.leftDetails}>
-          <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
           <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
           <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 3 Miktar: {item.Depo3Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 4 Miktar: {item.Depo4Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>Depo 5 Miktar: {item.Depo5Miktar}</Text>
           <Text style={MainStyles.itemTextPL}>BekleyenSiparis: {item.BekleyenSiparis}</Text>
-          <Text style={MainStyles.itemTextPL}>Vade: {item.Vade}</Text>
+
         </View>
         <View style={MainStyles.rightDetails}>
+          <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
           <Text style={MainStyles.itemTextPL}>Vergi: {item.sth_vergi}</Text>
           <Text style={MainStyles.itemTextPL}>Ana Grup: {item.AnaGrup}</Text>
           <Text style={MainStyles.itemTextPL}>Alt Grup: {item.AltGrup}</Text>
           <Text style={MainStyles.itemTextPL}>Reyon: {item.Reyon}</Text>
-          
+          <Text style={MainStyles.itemTextPL}>Vade: {item.Vade}</Text>
         </View>
       </View>
     </View>

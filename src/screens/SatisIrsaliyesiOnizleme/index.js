@@ -485,7 +485,7 @@ const SatisIrsaliyesiOnizleme = () => {
               sth_iskonto5: product.sth_iskonto5,
               sth_iskonto6: product.sth_iskonto6,
               sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
-              sth_cikis_depo_no: faturaBilgileri.sth_cikis_depo_no,
+              sth_cikis_depo_no: product.sth_cikis_depo_no,
               sth_malkbl_sevk_tarihi: faturaBilgileri.sevkTarihi,
               sth_odeme_op: defaults[0]?.IQ_OPCaridenGelsin === 1 
               ? faturaBilgileri.sth_odeme_op 

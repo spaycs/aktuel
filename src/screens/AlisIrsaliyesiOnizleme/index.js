@@ -447,7 +447,7 @@ const AlisIrsaliyesiOnizleme = () => {
               sth_iskonto5: product.sth_iskonto5,
               sth_iskonto6: product.sth_iskonto6,
               sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
-              sth_cikis_depo_no: faturaBilgileri.sth_cikis_depo_no,
+              sth_cikis_depo_no: product.sth_cikis_depo_no,
               sth_malkbl_sevk_tarihi: faturaBilgileri.sevkTarihi,
               sth_odeme_op: faturaBilgileri.sth_odeme_op,
               sth_plasiyer_kodu: sth_plasiyer_kodu,

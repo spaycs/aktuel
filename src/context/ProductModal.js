@@ -11,6 +11,7 @@ import { ProductContext } from '../context/ProductContext';
 import axiosLinkMain from '../utils/axiosMain';
 import axios from 'axios';
 import { Left,Down } from '../res/images';
+import { Col, Grid, Row } from 'react-native-easy-grid';
 import CustomHeader from '../components/CustomHeader';
 import FastImage from 'react-native-fast-image';
 
@@ -58,19 +59,43 @@ const ProductModal = ({
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
   const [toplam_vergi, setToplam_vergi] = useState();
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
+  const [isStokOzelDetayVisible, setIsStokOzelDetayVisible] = useState(false);
   const [loading, setLoading] = useState(false); 
+  const [stokDetayOzelAlanData, setStokDetayOzelAlanData] = useState(''); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const miktarInputRef = useRef(null); // Referans oluştur
 
-    useEffect(() => {
+  const initialDepoNo = addedProducts.find(
+    (product) => product.Stok_Kod === selectedProduct?.Stok_Kod
+  )?.sth_cikis_depo_no || faturaBilgileri.sth_cikis_depo_no || "";
+
+  const [productDepo, setProductDepo] = useState(initialDepoNo); // Seçili depo
+  const [depoList, setDepoList] = useState([]);
+  const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
+  const [pickerEditable, setPickerEditable] = useState(true);
+
+  useEffect(() => {
+    if (modalVisible) {
+      setTimeout(() => {
+        if (miktarInputRef.current) {
+          miktarInputRef.current.focus();
+        }
+      }, 300); // UI tam yüklenene kadar 300ms bekletiyoruz
+    }
+  }, [modalVisible]);
+
+  useEffect(() => {
       if (modalVisible) {
-        setTimeout(() => {
-          if (miktarInputRef.current) {
-            miktarInputRef.current.focus();
-          }
-        }, 300); // UI tam yüklenene kadar 300ms bekletiyoruz
+        fetchDepoList();
+        setProductDepo(initialDepoNo); // Modal açıldığında güncel depo değerini al
       }
-    }, [modalVisible]);
+    }, [modalVisible, initialDepoNo]);
+  
+    const handleDepoChange = (itemValue) => {
+      console.log("Yeni seçilen depo:", itemValue);
+      setProductDepo(itemValue);
+    };
+  
   
 
   useEffect(() => {
@@ -96,27 +121,59 @@ const ProductModal = ({
     }
   }, [modalVisible, selectedProduct, birimListesi]);
 
+  // Seçilen ürünün detay bilgilerini getirir
   const fetchStokDetayData = async () => {
     if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
   
-    setLoading(true); // Yükleniyor state'i aktif et
+    setLoading(true); 
     try {
-      // API'yi çağır
       const response = await axiosLinkMain.get(`/api/Raporlar/StokDurum?stok=${selectedProduct.Stok_Kod}&userno=${defaults[0].IQ_MikroPersKod}`);
       const data = response.data || []; // Hata durumunda boş dizi döner
   
-      // Veriyi state'e ata
       setStokDetayData(data);
     } catch (error) {
       console.error('Bağlantı Hatası Stok Detay:', error);
     } finally {
-      setLoading(false); // Yükleniyor state'ini kaldır
-      setIsStokDetayVisible(true); // Modalı aç
+      setLoading(false); 
+      setIsStokDetayVisible(true); 
+    }
+  };
+
+  // Seçilen ürünün özel alan detaylarını getirir
+  const fetchStokOzelAlanDetayData = async () => {
+    if (!selectedProduct?.Stok_Kod) return; // Stok kodu olmadan isteği yapma
+  
+    setLoading(true);
+    try {
+      const cari = faturaBilgileri.sth_cari_kodu || faturaBilgileri.sip_musteri_kod  || faturaBilgileri.cha_kod;
+      const response = await axiosLinkMain.get(`/api/Raporlar/StokOzelAlan?stok=${selectedProduct.Stok_Kod}&cari=${cari}&userno=${defaults[0].IQ_MikroPersKod}`);
+      const data = response.data || []; 
+      console.log(response);
+
+  
+      setStokDetayOzelAlanData(data);
+    } catch (error) {
+      console.error('Bağlantı Hatası Stok Detay:', error);
+    } finally {
+      setLoading(false); 
+      setIsStokOzelDetayVisible(true); 
     }
   };
   
   const closeModal = () => {
     setIsStokDetayVisible(false);
+    setIsStokOzelDetayVisible(false);
+  };
+
+  const fetchDepoList = async () => {
+    try {
+      const response = await axiosLinkMain.get('/Api/Depo/Depolar');
+      const depoData = response.data;
+      setDepoList(depoData);
+  
+    } catch (error) {
+      console.error('Bağlantı Hatası Depo List:', error);
+    }
   };
 
 
@@ -383,6 +440,7 @@ const validateQuantity = (quantity) => {
                               total: calculateTotal(),
                               modalId: 0,
                               StokVade: StokVade,
+                              sth_cikis_depo_no: productDepo,
                           }
                           : product
                   );
@@ -425,6 +483,7 @@ const validateQuantity = (quantity) => {
                       total: calculateTotal(),
                       modalId: 0,
                       StokVade: StokVade,
+                      sth_cikis_depo_no: productDepo,
                     },
                   ]);
   
@@ -473,6 +532,7 @@ const validateQuantity = (quantity) => {
                       total: calculateTotal(),
                       modalId: 0,
                       StokVade: StokVade,
+                      sth_cikis_depo_no: productDepo,
                     },
                   ]);
   
@@ -519,6 +579,7 @@ const validateQuantity = (quantity) => {
               total: calculateTotal(),
               modalId: 0,
               StokVade: StokVade,
+              sth_cikis_depo_no: productDepo,
             },
           ]);
   
@@ -712,6 +773,194 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
+
+
+   {/* Depo Seçim Alanı */}
+              <View style={MainStyles.inputDepoSecim}>
+                <Text style={MainStyles.inputtip}>Depo Seçimi:</Text>
+                <View style={MainStyles.productModalPickerContainer}>
+                  {Platform.OS === "ios" ? (
+                    <>
+                      <TouchableOpacity onPress={() => setIsDepoModalVisible(true)}>
+                        <Text style={MainStyles.pickerText}>
+                          {depoList.find((depo) => depo.No.toString() === productDepo)?.Adı || "Depo Seçin"}
+                        </Text>
+                      </TouchableOpacity>
+                      <Modal visible={isDepoModalVisible} animationType="slide" transparent>
+                        <View style={MainStyles.modalContainerPicker}>
+                          <View style={MainStyles.modalContentPicker}>
+                            <Picker
+                              selectedValue={productDepo}
+                              onValueChange={handleDepoChange}
+                              style={MainStyles.picker}
+                              enabled={pickerEditable}
+                            >
+                              <Picker.Item label="Depo Seçin" value="" />
+                              {depoList.map((depo) => (
+                                <Picker.Item key={depo.No} label={depo.Adı} value={depo.No.toString()} />
+                              ))}
+                            </Picker>
+                            <Button title="Kapat" onPress={() => setIsDepoModalVisible(false)} />
+                          </View>
+                        </View>
+                      </Modal>
+                    </>
+                  ) : (
+                    <Picker
+                      selectedValue={productDepo}
+                      onValueChange={handleDepoChange}
+                      enabled={pickerEditable}
+                      itemStyle={{ height: 40, fontSize: 10 }}
+                      style={{ marginHorizontal: -10 }}
+                    >
+                      <Picker.Item label="Depo Seçin" value="" />
+                      {depoList.map((depo) => (
+                        <Picker.Item key={depo.No} label={depo.Adı} value={depo.No.toString()} style={MainStyles.textStyle}/>
+                      ))}
+                    </Picker>
+                  )}
+                </View>
+              </View>
+              {/* Depo Seçim Alanı Bitti */}
+
+
+
+
+
+
+          <View style={{flexDirection: 'row',}}>
+              <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
+              onPress={fetchStokDetayData} 
+            >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Depo Detayları</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, paddingHorizontal: 5, marginBottom: 10,marginLeft: 2, borderRadius: 5, width: '49%' }}
+              onPress={fetchStokOzelAlanDetayData} 
+            >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Modal
+            visible={isStokDetayVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={closeModal}
+        >
+             <View style={[MainStyles.modalBackground]}>
+             <View style={MainStyles.modalCariDetayContent}>
+                  <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                    <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                  </TouchableOpacity>
+                    {loading ? (
+                        <FastImage
+                        style={MainStyles.loadingGif}
+                        source={require('../res/images/image/pageloading.gif')}
+                        resizeMode={FastImage.resizeMode.contain}/>
+                    ) : (
+                        <>
+                            {stokDetayData && stokDetayData.length > 0 ? (
+                              <ScrollView >
+                                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                                    <Grid>
+                                        {/* Başlık Satırı */}
+                                        <Row style={MainStyles.tableHeader}>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo No</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Adı</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Miktar</Text>
+                                            </Col>
+                                        </Row>
+
+                                        {/* Veri Satırları */}
+                                        {stokDetayData.map((item, index) => (
+                                            <Row key={index} style={MainStyles.tableRow}>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.dep_no}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                    <Text style={MainStyles.colText}>{item.dep_adi}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.DepoMiktarı}</Text>
+                                                </Col>
+                                            </Row>
+                                        ))}
+                                    </Grid>
+                                </ScrollView>
+                                </ScrollView>
+                            ) : (
+                                <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                            )}
+                        </>
+                    )}
+                </View>
+            </View>
+        </Modal>
+
+          <Modal
+            visible={isStokOzelDetayVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={closeModal}
+        >
+            <View style={MainStyles.modalBackground}>
+                <View style={MainStyles.modalCariDetayContent}>
+                <TouchableOpacity onPress={closeModal} style={MainStyles.closeAlinanProductButton}>
+                        <Text style={MainStyles.closeButtonText}>Kapat</Text>
+                    </TouchableOpacity>
+                    {loading ? (
+                        <FastImage
+                        style={MainStyles.loadingGif}
+                        source={require('../res/images/image/pageloading.gif')}
+                        resizeMode={FastImage.resizeMode.contain}/>
+                    ) : (
+                        <>
+                            {stokDetayOzelAlanData && stokDetayOzelAlanData.length > 0 ? (
+                              <ScrollView >
+                                <ScrollView horizontal={true} style={MainStyles.horizontalScroll}>
+                                    <Grid>
+                                        {/* Başlık Satırı */}
+                                        <Row style={MainStyles.tableHeader}>
+                                            <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo No</Text>
+                                            </Col>
+                                            <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                <Text style={MainStyles.colTitle}>Depo Adı</Text>
+                                            </Col>
+                                          
+                                        </Row>
+
+                                        {/* Veri Satırları */}
+                                        {stokDetayOzelAlanData.map((item, index) => (
+                                            <Row key={index} style={MainStyles.tableRow}>
+                                                <Col style={[MainStyles.tableCell, { width: 100 }]}>
+                                                    <Text style={MainStyles.colText}>{item.Tip}</Text>
+                                                </Col>
+                                                <Col style={[MainStyles.tableCell, { width: 150 }]}>
+                                                    <Text style={MainStyles.colText}>{item.Deger}</Text>
+                                                </Col>
+                                              
+                                            </Row>
+                                        ))}
+                                    </Grid>
+                                </ScrollView>
+                                </ScrollView>
+                            ) : (
+                                <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
+                            )}
+                        </>
+                    )}
+                  
+                </View>
+            </View>
+        </Modal>
           {/* 
            <TouchableOpacity
             style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}
@@ -720,46 +969,6 @@ const validateQuantity = (quantity) => {
             <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Bilgi Detay</Text>
           </TouchableOpacity>
           */}
-
-          <Modal
-  visible={isStokDetayVisible}
-  transparent={true}
-  animationType="slide"
-  onRequestClose={closeModal}
->
-  <View style={[MainStyles.modalBackground]}>
-    <View style={MainStyles.modalCariDetayContent}>
-      {loading ? (
-       <FastImage
-       style={MainStyles.loadingGif}
-       source={require('../res/images/image/pageloading.gif')}
-       resizeMode={FastImage.resizeMode.contain}/>
-      ) : (
-        <>
-          {/* Stok Detay Verisi Modal */}
-          {stokDetayData && stokDetayData.length > 0 ? (
-            <View>
-              <Text style={MainStyles.modalCariDetayTextTitle}>
-                Depo Durum Detayı
-              </Text>
-              {stokDetayData.map((item, index) => (
-                <View key={index} style={MainStyles.modalAlinanSiparisItem}>
-                  <Text style={MainStyles.modalCariDetayText}>Depo No: {item.dep_no} -  Depo Adı: {item.dep_adi} - Depo Miktar {item.DepoMiktarı}</Text>
-                </View>
-              ))}
-            </View>
-          ) : (
-            // Veri bulunamadı durumu
-            <Text style={MainStyles.modalCariDetayText}>Veri bulunamadı.</Text>
-          )}
-        </>
-      )}
-      <TouchableOpacity onPress={closeModal} style={MainStyles.closeButton}>
-        <Text style={MainStyles.closeButtonText}>X</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
 
 
             <View style={MainStyles.modalInfoContainer}>

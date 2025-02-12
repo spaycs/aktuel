@@ -49,6 +49,7 @@ const CariHareketFoyu = ({ navigation, route }) => {
       if (defaults) {
       const firmaNo = defaults[0].IQ_FirmaNo;
       const response = await axiosLinkMain.get(`/Api/Raporlar/CariHaraketFoyu?firmano=${firmaNo}&cari=${cariKod}&ilktarih=${formatDateForApi(startDate)}&sontarih=${formatDateForApi(endDate)}`);
+      console.log(response);
       setData(response.data);
       setFilteredData(response.data);
     } else {

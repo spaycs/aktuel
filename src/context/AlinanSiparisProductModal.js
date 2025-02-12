@@ -19,7 +19,7 @@ const AlinanSiparisProductModal = ({
   selectedProduct,
   modalVisible,
   setModalVisible,
-  setAddedAlinanSiparisProducts
+  setAddedAlinanSiparisProducts,
 }) => {
   const { defaults } = useAuthDefault();
   const { addedAlinanSiparisProducts, alinanSiparis } = useContext(ProductContext);
@@ -66,6 +66,15 @@ const AlinanSiparisProductModal = ({
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const miktarInputRef = useRef(null); // Referans oluştur
 
+  const initialDepoNo = addedAlinanSiparisProducts.find(
+    (product) => product.Stok_Kod === selectedProduct?.Stok_Kod
+  )?.sip_depono || alinanSiparis.sip_depono || "";
+
+  const [productDepo, setProductDepo] = useState(initialDepoNo); // Seçili depo
+  const [depoList, setDepoList] = useState([]);
+  const [isDepoModalVisible, setIsDepoModalVisible] = useState(false);
+  const [pickerEditable, setPickerEditable] = useState(true);
+
   useEffect(() => {
     if (modalVisible) {
       setTimeout(() => {
@@ -75,7 +84,18 @@ const AlinanSiparisProductModal = ({
       }, 300); // UI tam yüklenene kadar 300ms bekletiyoruz
     }
   }, [modalVisible]);
-  
+
+  useEffect(() => {
+    if (modalVisible) {
+      fetchDepoList();
+      setProductDepo(initialDepoNo); // Modal açıldığında güncel depo değerini al
+    }
+  }, [modalVisible, initialDepoNo]);
+
+  const handleDepoChange = (itemValue) => {
+    console.log("Yeni seçilen depo:", itemValue);
+    setProductDepo(itemValue);
+  };
 
   // Kullanıcının yetkilerine göre fiyat ve iskonto düzenleme izinleri kontrol ediliyor
   useEffect(() => {
@@ -140,6 +160,17 @@ const AlinanSiparisProductModal = ({
   const closeModal = () => {
     setIsStokDetayVisible(false);
     setIsStokOzelDetayVisible(false);
+  };
+
+  const fetchDepoList = async () => {
+    try {
+      const response = await axiosLinkMain.get('/Api/Depo/Depolar');
+      const depoData = response.data;
+      setDepoList(depoData);
+  
+    } catch (error) {
+      console.error('Bağlantı Hatası Depo List:', error);
+    }
   };
 
   useEffect(() => {
@@ -416,6 +447,7 @@ const validateQuantity = (quantity) => {
                               total: calculateTotal(),
                               modalId: 0,
                               StokVade: StokVade,
+                              sip_depono: productDepo,
                           }
                           : product
                   );
@@ -459,6 +491,7 @@ const validateQuantity = (quantity) => {
                       total: calculateTotal(),
                       modalId: 0,
                       StokVade: StokVade,
+                      sip_depono: productDepo,
                     },
                   ]);
   
@@ -508,6 +541,7 @@ const validateQuantity = (quantity) => {
                       total: calculateTotal(),
                       modalId: 0,
                       StokVade: StokVade,
+                      sip_depono: productDepo,
                     },
                   ]);
   
@@ -555,6 +589,7 @@ const validateQuantity = (quantity) => {
               total: calculateTotal(),
               modalId: 0,
               StokVade: StokVade,
+              sip_depono: productDepo,
             },
           ]);
   
@@ -752,6 +787,58 @@ const validateQuantity = (quantity) => {
             onChangeText={setAciklama}
             numberOfLines={1}
           />
+
+               {/* Depo Seçim Alanı */}
+              <View style={MainStyles.inputDepoSecim}>
+                <Text style={MainStyles.inputtip}>Depo Seçimi:</Text>
+                <View style={MainStyles.productModalPickerContainer}>
+                  {Platform.OS === "ios" ? (
+                    <>
+                      <TouchableOpacity onPress={() => setIsDepoModalVisible(true)}>
+                        <Text style={MainStyles.pickerText}>
+                          {depoList.find((depo) => depo.No.toString() === productDepo)?.Adı || "Depo Seçin"}
+                        </Text>
+                      </TouchableOpacity>
+                      <Modal visible={isDepoModalVisible} animationType="slide" transparent>
+                        <View style={MainStyles.modalContainerPicker}>
+                          <View style={MainStyles.modalContentPicker}>
+                            <Picker
+                              selectedValue={productDepo}
+                              onValueChange={handleDepoChange}
+                              style={MainStyles.picker}
+                              enabled={pickerEditable}
+                            >
+                              <Picker.Item label="Depo Seçin" value="" />
+                              {depoList.map((depo) => (
+                                <Picker.Item key={depo.No} label={depo.Adı} value={depo.No.toString()} />
+                              ))}
+                            </Picker>
+                            <Button title="Kapat" onPress={() => setIsDepoModalVisible(false)} />
+                          </View>
+                        </View>
+                      </Modal>
+                    </>
+                  ) : (
+                    <Picker
+                      selectedValue={productDepo}
+                      onValueChange={handleDepoChange}
+                      enabled={pickerEditable}
+                      itemStyle={{ height: 40, fontSize: 10 }}
+                      style={{ marginHorizontal: -10 }}
+                    >
+                      <Picker.Item label="Depo Seçin" value="" />
+                      {depoList.map((depo) => (
+                        <Picker.Item key={depo.No} label={depo.Adı} value={depo.No.toString()} style={MainStyles.textStyle}/>
+                      ))}
+                    </Picker>
+                  )}
+                </View>
+              </View>
+              {/* Depo Seçim Alanı Bitti */}
+
+
+
+
           <View style={{flexDirection: 'row',}}>
            <TouchableOpacity
             style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
