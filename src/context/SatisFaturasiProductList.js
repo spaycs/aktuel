@@ -91,6 +91,9 @@ const SatisFaturasiProductList = () => {
         Depodaki_Miktar: item.Depodaki_Miktar,
         Depo1Miktar: item.Depo1Miktar,
         Depo2Miktar: item.Depo2Miktar,
+        Depo3Miktar: item.Depo3Miktar,
+        Depo4Miktar: item.Depo4Miktar,
+        Depo5Miktar: item.Depo5Miktar,
         BekleyenSiparis: item.BekleyenSiparis,
       }));
 
