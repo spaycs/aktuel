@@ -69,7 +69,7 @@ const SatisFaturasiProductList = () => {
       const tip = getTipForValue(searchCriteria);
       const depo = defaults[0]?.IQ_CikisDepoNo || '';
 
-      const url = `/Api/Stok/StokListesiEvraklar2?cari=${faturaBilgileri.cha_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
+      const url = `/Api/Stok/StokListesiEvraklarFaturaV2?cari=${faturaBilgileri.cha_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
       console.log(url);
       const response = await axiosLinkMain.get(url);
       console.log(response);
@@ -224,11 +224,11 @@ const SatisFaturasiProductList = () => {
       {/* Detay alanları */}
       <View style={MainStyles.itemContainerDetailPL}>
         <View style={MainStyles.leftDetails}>
-          <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 3 Miktar: {item.Depo3Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 4 Miktar: {item.Depo4Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 5 Miktar: {item.Depo5Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo1Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo3Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo4Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo5Miktar}</Text>
         </View>
         <View style={MainStyles.rightDetails}>
           <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>

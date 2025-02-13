@@ -63,7 +63,7 @@ const ProductList = () => {
         const tip = getTipForValue(searchCriteria);
   
         const response = await axiosLinkMain.get(
-          `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
+          `/Api/Stok/StokListesiEvraklarV2?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
         );
   
         const data = response.data;
@@ -135,7 +135,7 @@ const ProductList = () => {
     const deger = searchTerm || '';
     try {
       const response = await axiosLinkMain.get(
-        `/Api/Stok/StokListesiEvraklar?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
+        `/Api/Stok/StokListesiEvraklarV2?cari=${faturaBilgileri.sip_musteri_kod}&deger=${deger}&tip=${getTipForValue(searchCriteria)}&depo=${defaults[0].IQ_CikisDepoNo}&iskcaridengelsin=${defaults[0].IQ_OPCaridenGelsin}`
       );
       const stokData = response.data;
   
@@ -231,12 +231,12 @@ const ProductList = () => {
       {/* Detay alanları */}
       <View style={MainStyles.itemContainerDetailPL}>
         <View style={MainStyles.leftDetails}>
-          <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 3 Miktar: {item.Depo3Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 4 Miktar: {item.Depo4Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 5 Miktar: {item.Depo5Miktar}</Text>
           <Text style={MainStyles.itemTextPL}>BekleyenSiparis: {item.BekleyenSiparis}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo1Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo3Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo4Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo5Miktar}</Text>
         </View>
         <View style={MainStyles.rightDetails}>
           <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>

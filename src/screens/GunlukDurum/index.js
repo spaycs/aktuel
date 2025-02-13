@@ -13,7 +13,7 @@ const GunlukDurum = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await axiosLinkMain.get('/Api/Stok/StokListesi');
+      const response = await axiosLinkMain.get('/Api/Stok/StokListesiV2');
       if (response.data.length > 0) {
         const firstItemQuantity = response.data[0].Depodaki_Miktar;
         setDepoQuantity(firstItemQuantity);

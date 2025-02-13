@@ -824,7 +824,21 @@ const validateQuantity = (quantity) => {
               {/* Depo Seçim Alanı Bitti */}
 
 
+ <View style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  }}>
+              {birimListesi.map((birimAdi, index) => {
+               const katsayiDegeri = katsayi[`sto_birim${index + 1}_katsayi`] || 1;
+               const hesaplanmisDeger = (parseFloat(sth_miktar.replace(',', '.')) || 0) / katsayiDegeri;
+           
+               // Virgülden sonra en fazla 4 basamak göstermek, ama gereksiz sıfırları silmek için:
+               const formattedValue = (Math.floor(hesaplanmisDeger * 10000) / 10000).toString();
 
+                return (
+                  <Text key={index} style={{ color: colors.black,  fontSize: 11 , paddingHorizontal: 10 }}>
+                    {`Birim ${index + 1} (${birimAdi}): ${formattedValue}`}
+                  </Text>
+                );
+              })}
+            </View>
 
 
 

@@ -182,7 +182,7 @@ const AlinanSiparisProductModal = ({
         const somkod = alinanSiparis.sth_stok_srm_merkezi || alinanSiparis.sip_stok_sormerk || alinanSiparis.cha_srmrkkodu;
         const odpno = alinanSiparis.sip_opno || alinanSiparis.sth_odeme_op  || alinanSiparis.cha_vade || selectedProduct?.Vade || 0;
         const apiUrl = `/Api/Stok/StokSatisFiyatı?cari=${cari}&stok=${stok}&somkod=${somkod}&odpno=${odpno || ''}`;
-        
+        console.log(apiUrl);
         try {
           const response = await axiosLinkMain.get(apiUrl);
           const data = response.data;
@@ -326,7 +326,6 @@ const validateQuantity = (quantity) => {
 // Miktar değişimini yöneten fonksiyon
   const handleMiktarChange = (value) => {
     const quantityFloat = parseFloat(value.replace(',', '.')) || 0;
-    
     // Seçilen birime göre katsayı ile çarpıyoruz
     let finalQuantity = quantityFloat;
 
@@ -836,22 +835,35 @@ const validateQuantity = (quantity) => {
               </View>
               {/* Depo Seçim Alanı Bitti */}
 
+            <View style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  }}>
+              {birimListesi.map((birimAdi, index) => {
+               const katsayiDegeri = katsayi[`sto_birim${index + 1}_katsayi`] || 1;
+               const hesaplanmisDeger = (parseFloat(sth_miktar.replace(',', '.')) || 0) / katsayiDegeri;
+           
+               // Virgülden sonra en fazla 4 basamak göstermek, ama gereksiz sıfırları silmek için:
+               const formattedValue = (Math.floor(hesaplanmisDeger * 10000) / 10000).toString();
 
-
+                return (
+                  <Text key={index} style={{ color: colors.black,  fontSize: 11 , paddingHorizontal: 10 }}>
+                    {`Birim ${index + 1} (${birimAdi}): ${formattedValue}`}
+                  </Text>
+                );
+              })}
+            </View>
 
           <View style={{flexDirection: 'row',}}>
-           <TouchableOpacity
-            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
-            onPress={fetchStokDetayData} 
-          >
-            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Depo Detayları</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, paddingHorizontal: 5, marginBottom: 10,marginLeft: 2, borderRadius: 5, width: '49%' }}
-            onPress={fetchStokOzelAlanDetayData} 
-          >
-            <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5, width: '49%' }}
+              onPress={fetchStokDetayData} 
+            >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Stok Depo Detayları</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, paddingHorizontal: 5, marginBottom: 10,marginLeft: 2, borderRadius: 5, width: '49%' }}
+              onPress={fetchStokOzelAlanDetayData} 
+            >
+              <Text style={{ color: colors.black, textAlign: 'center', fontSize: 11 }}>Özel Alan</Text>
+            </TouchableOpacity>
           </View>
 
           <Modal
@@ -981,7 +993,7 @@ const validateQuantity = (quantity) => {
               <View style={MainStyles.modalInfoKdv}>
                   <Text style={MainStyles.inputtip}>StokVade : {selectedProduct?.Vade}</Text>
                 </View>
-                </View>
+            </View>
             <View style={MainStyles.modalInfoContainer}>
           
               <View style={MainStyles.modalInfoDoviz}>

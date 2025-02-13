@@ -58,7 +58,7 @@ const FiyatGor = () => {
       setLoading(true);
       try {
         const tip = getTipForValue(criteria);
-        const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${term}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`);
+        const response = await axiosLinkMain.get(`/Api/Stok/StokListesiV2?deger=${term}&tip=${tip}&depo=${defaults[0].IQ_CikisDepoNo}`);
         console.log(response);
         setData(response.data);
       } catch (err) {
@@ -146,8 +146,8 @@ const FiyatGor = () => {
       <View style={MainStyles.itemContainerDetailPL}>
         <View style={MainStyles.leftDetails}>
           <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo1Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo2Miktar}</Text>
         </View>
         <View style={MainStyles.rightDetails}>
           <Text style={MainStyles.itemTextPL}>Vergi: {item.sth_vergi}</Text>

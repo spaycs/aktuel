@@ -23,7 +23,7 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
   const fetchStoklar = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosLinkMain.get(`/Api/Stok/StokListesi?deger=${searchTerm}&tip=1&depo=1`);
+      const response = await axiosLinkMain.get(`/Api/Stok/StokListesiV2?deger=${searchTerm}&tip=1&depo=1`);
       
       setStoklar(response.data); // Tüm stokları set ediyoruz
       setFilteredStoklar(response.data); // İlk başta tüm stokları gösteriyoruz

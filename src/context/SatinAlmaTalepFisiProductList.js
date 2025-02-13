@@ -71,7 +71,7 @@ const SatinAlmaTalepFisiProductList = () => {
       const tip = getTipForValue(searchCriteria);
       const depo = defaults[0]?.IQ_CikisDepoNo || '';
 
-      const url = `/Api/Stok/StokListesiEvraklar2?cari=&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
+      const url = `/Api/Stok/StokListesiEvraklarV2?cari=&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
       console.log(url);
       const response = await axiosLinkMain.get(url);
 
@@ -186,8 +186,8 @@ const SatinAlmaTalepFisiProductList = () => {
       <View style={MainStyles.itemContainerDetailPL}>
         <View style={MainStyles.leftDetails}>
           <Text style={MainStyles.itemTextPL}>Birim: {item.Birim}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 1 Miktar: {item.Depo1Miktar}</Text>
-          <Text style={MainStyles.itemTextPL}>Depo 2 Miktar: {item.Depo2Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo1Miktar}</Text>
+          <Text style={MainStyles.itemTextPL}>{item.Depo2Miktar}</Text>
         </View>
         <View style={MainStyles.rightDetails}>
           <Text style={MainStyles.itemTextPL}>Vergi: {item.sth_vergi}</Text>

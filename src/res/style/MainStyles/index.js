@@ -1776,7 +1776,7 @@ export const MainStyles = {
     },
     modalInfoContainer:{
       flexDirection: 'row',
-      marginBottom: 10,
+      marginBottom: 3,
     },
     modalInfoDoviz:{
       width: "50%",
