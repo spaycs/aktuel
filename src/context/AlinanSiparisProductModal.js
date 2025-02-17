@@ -381,13 +381,19 @@ const validateQuantity = (quantity) => {
     }, [sth_birim_pntr, sth_miktar]); // 🛑 Sadece birim değiştiğinde çalışacak!
 
 
-    // 🔹 KDV dahil fiyat hesaplayan fonksiyon
+    // 🔹 KDV dahil fiyat hesaplayan fonksiyon (toplam tutara göre)
     const calculateTotalWithKDV = () => {
-      const total = parseFloat(sth_tutar.replace(',', '.')) || 0;
-      const kdvOrani = parseFloat(KDV.replace('%', '')) / 100 || 0; // Örnek: "%20" → 0.20
-      return total * (1 + kdvOrani); // KDV dahil toplam tutar
+      const totalWithoutKDV = parseFloat(calculateTotal()) || 0;
+      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
+      return totalWithoutKDV * (1 + kdvRate); // KDV dahil toplam tutar
     };
 
+    // 🔹 Birim fiyat için KDV dahil hesaplama fonksiyonu
+    const calculateBirimFiyatWithKDV = () => {
+      const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
+      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
+      return unitPrice * (1 + kdvRate); // KDV dahil birim fiyat
+    };
 
 
   const calculateTotal = () => {
@@ -806,7 +812,11 @@ const validateQuantity = (quantity) => {
                     setSth_tutar(finalValue);
                   }}
                 />
-
+               <View style={MainStyles.inputGroupBirimKdv}>
+                  <Text style={{ fontSize: 10, color: colors.blue, fontWeight: 'bold'  }}>
+                  KDV Dahil Birim: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateBirimFiyatWithKDV())} ₺
+                  </Text>
+                </View>
             </View>
               <View style={MainStyles.inputGroup}>
                 <Text style={MainStyles.inputtip}>Tutar:</Text>
@@ -814,12 +824,12 @@ const validateQuantity = (quantity) => {
                   style={MainStyles.productModalMiktarInput}
                   placeholderTextColor={colors.placeholderTextColor}
                   editable={false}
-                  value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(sth_tutar) || 0)}
+                  value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
                   keyboardType="numeric"  
                   />
                 <View style={MainStyles.inputGroupKdv}>
                   <Text style={{ fontSize: 10, color: colors.blue, fontWeight: 'bold'  }}>
-                    KDV Dahil: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithKDV())} ₺
+                  KDV Dahil: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithKDV())} ₺
                   </Text>
                 </View>
               </View>

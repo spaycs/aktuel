@@ -1771,6 +1771,11 @@ export const MainStyles = {
       width: "100%", 
       marginTop: -10,
     },
+    inputGroupBirimKdv: {
+      width: "100%", 
+      marginTop: -10,
+      marginBottom: 10,
+    },
     inputtip: {
       fontSize: 11,
       marginBottom: 2,
