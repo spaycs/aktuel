@@ -1767,6 +1767,10 @@ export const MainStyles = {
     inputGroup: {
       width: "48%", 
     },
+    inputGroupKdv: {
+      width: "100%", 
+      marginTop: -10,
+    },
     inputtip: {
       fontSize: 11,
       marginBottom: 2,
