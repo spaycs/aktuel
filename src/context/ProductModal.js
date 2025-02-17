@@ -352,6 +352,48 @@ const validateQuantity = (quantity) => {
     return finalQuantity; // Hesaplanan miktarı döndürüyoruz
   };
 
+
+  // 🔹 Yeni hesaplama fonksiyonu (handleMiktarChange bağımsız)
+      const handleBirimChange = (selectedBirim) => {
+        const miktarNum = parseFloat(sth_miktar.replace(',', '.')) || 0;
+  
+        // 🔹 Seçili birimin indeksini bul
+        const selectedIndex = birimListesi.indexOf(selectedBirim);
+        if (selectedIndex === -1) return;
+  
+        // 🔹 Seçili birimin katsayısını al (Varsa, yoksa 1 kullan)
+        const selectedBirimKatsayi = katsayi[`sto_birim${selectedIndex + 1}_katsayi`] || 1;
+  
+        // 🔹 Tüm birimler için değer hesapla
+        const yeniBirimHesaplamalari = birimListesi.map((birimAdi, index) => {
+          const katsayiDegeri = katsayi[`sto_birim${index + 1}_katsayi`] || 1;
+          return {
+            ad: birimAdi,
+            deger: (miktarNum * selectedBirimKatsayi) / katsayiDegeri, // Seçilen birime göre dönüştür
+          };
+        });
+  
+        // 🔹 Güncellenmiş değerleri state'e yaz
+        setHesaplanmisBirimler(yeniBirimHesaplamalari);
+      };
+  
+      // 🔹 Başlangıçta hesaplanmış değerleri saklamak için state
+      const [hesaplanmisBirimler, setHesaplanmisBirimler] = useState([]);
+  
+      // 🔹 Kullanıcı birim değiştirdiğinde hesaplamaları tetikleyen useEffect
+      useEffect(() => {
+        handleBirimChange(sth_birim_pntr);
+      }, [sth_birim_pntr, sth_miktar]); // 🛑 Sadece birim değiştiğinde çalışacak!
+  
+  
+      // 🔹 KDV dahil fiyat hesaplayan fonksiyon
+      const calculateTotalWithKDV = () => {
+        const total = parseFloat(sth_tutar.replace(',', '.')) || 0;
+        const kdvOrani = parseFloat(KDV.replace('%', '')) / 100 || 0; // Örnek: "%20" → 0.20
+        return total * (1 + kdvOrani); // KDV dahil toplam tutar
+      };
+  
+
   
   const calculateTotal = () => {
     let newmiktar = handleMiktarChange(sth_miktar);
@@ -759,10 +801,14 @@ const validateQuantity = (quantity) => {
               style={MainStyles.productModalMiktarInput}
               placeholderTextColor={colors.placeholderTextColor}
               editable={false}
-              value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
+              value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(sth_tutar) || 0)}
               keyboardType="numeric"  
             />
-
+             <View style={MainStyles.inputGroupKdv}>
+                  <Text style={{ fontSize: 10, color: colors.blue, fontWeight: 'bold'  }}>
+                    KDV Dahil: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithKDV())} ₺
+                  </Text>
+                </View>
               </View>
           </View>
           <Text style={MainStyles.inputtip}>Açıklama:</Text>
@@ -824,21 +870,13 @@ const validateQuantity = (quantity) => {
               {/* Depo Seçim Alanı Bitti */}
 
 
- <View style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5,  }}>
-              {birimListesi.map((birimAdi, index) => {
-               const katsayiDegeri = katsayi[`sto_birim${index + 1}_katsayi`] || 1;
-               const hesaplanmisDeger = (parseFloat(sth_miktar.replace(',', '.')) || 0) / katsayiDegeri;
-           
-               // Virgülden sonra en fazla 4 basamak göstermek, ama gereksiz sıfırları silmek için:
-               const formattedValue = (Math.floor(hesaplanmisDeger * 10000) / 10000).toString();
-
-                return (
-                  <Text key={index} style={{ color: colors.black,  fontSize: 11 , paddingHorizontal: 10 }}>
-                    {`Birim ${index + 1} (${birimAdi}): ${formattedValue}`}
+            <View style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}>
+                {hesaplanmisBirimler.map((birim, index) => (
+                  <Text key={index} style={{ color: colors.black, fontSize: 11, paddingHorizontal: 10 }}>
+                    {`Birim ${index + 1} (${birim.ad}): ${birim.deger.toFixed(4).replace(/\.?0+$/, '')}`}
                   </Text>
-                );
-              })}
-            </View>
+                ))}
+              </View>
 
 
 

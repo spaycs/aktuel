@@ -883,12 +883,12 @@ const validateQuantity = (quantity) => {
               {/* Depo Seçim Alanı Bitti */}
 
               <View style={{ backgroundColor: colors.textInputBg, paddingVertical: 5, marginBottom: 10, borderRadius: 5 }}>
-  {hesaplanmisBirimler.map((birim, index) => (
-    <Text key={index} style={{ color: colors.black, fontSize: 11, paddingHorizontal: 10 }}>
-      {`Birim ${index + 1} (${birim.ad}): ${birim.deger.toFixed(4).replace(/\.?0+$/, '')}`}
-    </Text>
-  ))}
-</View>
+                {hesaplanmisBirimler.map((birim, index) => (
+                  <Text key={index} style={{ color: colors.black, fontSize: 11, paddingHorizontal: 10 }}>
+                    {`Birim ${index + 1} (${birim.ad}): ${birim.deger.toFixed(4).replace(/\.?0+$/, '')}`}
+                  </Text>
+                ))}
+              </View>
 
           <View style={{flexDirection: 'row',}}>
             <TouchableOpacity
