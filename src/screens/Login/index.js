@@ -397,7 +397,7 @@ const Login = ({ navigation }) => {
                         const errorMessage = responseData.result[0]?.ErrorMessage || "Bilinmeyen bir hata oluştu.";
                         Alert.alert('Hata', errorMessage);
                       }
-                }catch (error) {
+                }catch (error) { 
                   throw new Error('Kullanıcı adı veya Şifre Hatalı. Tekrar Deneyin');
               }
             };
