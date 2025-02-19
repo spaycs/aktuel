@@ -346,6 +346,7 @@ const validateQuantity = (quantity) => {
     }
 
     return finalQuantity; // Hesaplanan miktarı döndürüyoruz
+   
   };
 
   // 🔹 Yeni hesaplama fonksiyonu (handleMiktarChange bağımsız)
@@ -370,15 +371,22 @@ const validateQuantity = (quantity) => {
 
       // 🔹 Güncellenmiş değerleri state'e yaz
       setHesaplanmisBirimler(yeniBirimHesaplamalari);
+
     };
 
     // 🔹 Başlangıçta hesaplanmış değerleri saklamak için state
     const [hesaplanmisBirimler, setHesaplanmisBirimler] = useState([]);
 
-    // 🔹 Kullanıcı birim değiştirdiğinde hesaplamaları tetikleyen useEffect
+   // 🔹 Birim değiştiğinde miktarı sıfırlayıp hesaplamaları çalıştır
+    useEffect(() => {
+      setSth_miktar(''); // 🛑 Sadece birim değiştiğinde miktarı sıfırla
+      handleBirimChange(sth_birim_pntr);
+    }, [sth_birim_pntr]);
+
+    // 🔹 Miktar değiştiğinde sadece hesaplamaları çalıştır (miktarı sıfırlamaz!)
     useEffect(() => {
       handleBirimChange(sth_birim_pntr);
-    }, [sth_birim_pntr, sth_miktar]); // 🛑 Sadece birim değiştiğinde çalışacak!
+    }, [sth_miktar]);
 
 
     // 🔹 KDV dahil fiyat hesaplayan fonksiyon (toplam tutara göre)
@@ -427,6 +435,10 @@ const validateQuantity = (quantity) => {
   };
 
   const handleAddProduct = async () => {
+    if (!sth_tutar || parseFloat(sth_tutar) === 0) {
+          Alert.alert('Geçersiz İşlem', 'Birim fiyatı 0 TL olamaz.');
+          return;
+        }
     const calculatedQuantity = handleMiktarChange(sth_miktar);
     
     if (validateQuantity(sth_miktar)) {

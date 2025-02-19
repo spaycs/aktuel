@@ -142,22 +142,25 @@ useEffect(() => {
 // Cari Eylem ve Raporları
   
   
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => openModal(item)}>
-      <View style={MainStyles.itemContainerCariList}>
-        <View style={MainStyles.itemTextContainer}>
-          <Text style={MainStyles.itemText}>Cari Kodu: {item.Cari_Kod}</Text>
-          <Text style={MainStyles.itemText}>Cari Ünvan: {item.Ünvan}</Text>
-          <Text style={MainStyles.itemText}>Bakiye: {item.Bakiye}</Text>
-          <Text style={MainStyles.itemText}>Adres: {item.Adres}</Text>
-          <Text style={MainStyles.itemText}>Temsilci: {item.Temsilci}</Text>
-        </View>
-        <View style={MainStyles.detailContainer}>
-          <Text style={MainStyles.itemTextCariList}>Detay</Text>
-        </View>
+const renderItem = ({ item }) => (
+  <TouchableOpacity onPress={() => openModal(item)}>
+    <View style={MainStyles.itemContainerCariList}>
+      <View style={MainStyles.itemTextContainer}>
+        <Text style={MainStyles.itemText}>Cari Kodu: {item.Cari_Kod}</Text>
+        <Text style={MainStyles.itemText}>Cari Ünvan: {item.Ünvan}</Text>
+        <Text style={MainStyles.itemText}>
+          {`Bakiye: ${new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.Bakiye)} ₺`}
+        </Text>
+        <Text style={MainStyles.itemText}>Adres: {item.Adres}</Text>
+        <Text style={MainStyles.itemText}>Temsilci: {item.Temsilci}</Text>
       </View>
-    </TouchableOpacity>
-  );
+      <View style={MainStyles.detailContainer}>
+        <Text style={MainStyles.itemTextCariList}>Detay</Text>
+      </View>
+    </View>
+  </TouchableOpacity>
+);
+
 
   return (
     <View style={MainStyles.cariListesiContainer}>
