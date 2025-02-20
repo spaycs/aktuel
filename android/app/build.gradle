@@ -79,8 +79,8 @@ android {
         applicationId "com2.mikroiq"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
-        versionName "16.0.8"
+        versionCode 25
+        versionName "16.0.9"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
