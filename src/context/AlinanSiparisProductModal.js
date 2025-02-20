@@ -786,17 +786,13 @@ const validateQuantity = (quantity) => {
               style={MainStyles.productModalMiktarInput}
               placeholderTextColor={colors.placeholderTextColor}
               keyboardType="numeric"
-              value={sth_miktar} 
+              value={sth_miktar}
               onChangeText={(value) => {
-                // Karakter filtreleme (sadece rakamlar)
-                const numericValue = value.replace(/[^0-9]/g, '');
+                let filteredValue = value.replace(/[^0-9.,]/g, ''); // Sadece rakam, nokta ve virgül
 
-                // İlk karakterin 0 olmasını engelleme
-                if (numericValue === '' || numericValue === '0') {
-                  setSth_miktar(''); // Eğer giriş 0 ise boş değer ayarlanır
-                } else {
-                  setSth_miktar(numericValue); // Sadece geçerli sayısal değer ayarlanır
-                }
+                // Birden fazla nokta veya virgüle izin verme
+                filteredValue = filteredValue.replace(/([.,])(?=.*\1)/g, '');
+                setSth_miktar(filteredValue);
               }}
             />
           </View>
