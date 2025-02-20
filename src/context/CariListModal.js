@@ -41,7 +41,7 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetchCaris(searchTerm);
-    }, 500); // 500ms gecikme
+    }, 2000); // 500ms gecikme
 
     return () => clearTimeout(timeoutId); // Component unmount veya searchTerm değiştiğinde temizleme
   }, [searchTerm, fetchCaris]);

@@ -243,18 +243,19 @@ const Login = ({ navigation }) => {
       // Gelen verilerle state'i güncelle
       //setAktivasyonKodu(data.AktivasyonKodu || '');
       updateAuthData('AktivasyonKodu', AktivasyonKodu);
-      updateAuthData('FirmaKodu', FirmaKodu);
+      //updateAuthData('FirmaKodu', FirmaKodu);
       updateAuthData('FirmaApiUrl', FirmaApiUrl);
       updateAuthData('MikroApiUrl', MikroApiUrl);
       updateAuthData('CalismaYili', CalismaYili);
       updateAuthData('FirmaNo', FirmaNo);
       updateAuthData('SubeNo', SubeNo);
-      setFirmaKodu(data.FirmaKodu || '');
+      setFirmaKodu('');
       setCalismaYili(data.CalismaYil?.toString() || '');
       setFirmaApiUrl(data.FirmaApiUrl || '');
       setMikroApiUrl(data.MikroApiUrl || '');
       setFirmaNo(data.FirmaNo?.toString() || '');
       setSubeNo(data.SubeNo?.toString() || '');
+      setSelectedDatabase(null);
 
       // İşlem tamamlandığında alert göster
         Alert.alert('Başarılı', 'Bilgiler güncellendi.');
@@ -642,6 +643,11 @@ useEffect(() => {
 
   const handleModalSave = async () => { 
     try {
+
+      if (!selectedDatabase) {
+        Alert.alert("Hata", "Lütfen bir veritabanı seçin!");
+        return;
+      }
       // Yeni değerlerle güncelleme
       updateAuthData('AktivasyonKodu', AktivasyonKodu);
       updateAuthData('FirmaKodu', FirmaKodu);
