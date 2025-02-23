@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Home, GetStarted, Login, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, PatronRaporu, AlinanSiparis, AlinanSiparisOnizleme, SatinAlmaTalepFisi, TahsilatTediye, SatisIrsaliye, SatisIrsaliyeOnizleme, SatisIrsaliyesiOnizleme, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, SatisIrsaliyesi, FiyatGor, TeklifFisi, TeklifFisiOnizleme, Raporlar, CariBakiyeYaslandirmaAylik, CariBakiyeYasladirmaCoklu, ExtreFoy, NelerSattik, PatronEkrani, Sohbet, CariHareketFoyu, StokHareketFoyu, CariSiparisFoyu, StokEklemeOnizleme, CariEklemeOnizleme, Loading, SatinAlmaTalepFisiBilgi, CariStokHareketFoyu } from "../screens"
+import { Home, GetStarted, Login, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, PatronRaporu, AlinanSiparis, AlinanSiparisOnizleme, SatinAlmaTalepFisi, TahsilatTediye, SatisIrsaliye, SatisIrsaliyeOnizleme, SatisIrsaliyesiOnizleme, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, SatisIrsaliyesi, FiyatGor, TeklifFisi, TeklifFisiOnizleme, Raporlar, CariBakiyeYaslandirmaAylik, CariBakiyeYasladirmaCoklu, ExtreFoy, NelerSattik, PatronEkrani, Sohbet, CariHareketFoyu, StokHareketFoyu, CariSiparisFoyu, StokEklemeOnizleme, CariEklemeOnizleme, Loading, SatinAlmaTalepFisiBilgi, CariStokHareketFoyu, DepoOtomasyonu } from "../screens"
 import { Iptal, Kartlas, KartlasLogin, Kaydet, MikroIQ, MikroIQM, SohbetIQ, Takvim, Yazdir,} from "../res/images";
 import { Text, TouchableOpacity, View } from "react-native";
 import { handleLogout } from '../utils/logout';
@@ -828,6 +828,19 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerTitleAlign: 'center',
                     headerTitle: "Satın Alma Talep Fişi Bilgi",
+                    headerBackTitleVisible: false,
+                    headerTitleStyle: {
+                      fontSize: 16,
+                    },
+                    
+                    })}
+            />
+            <Stack.Screen
+                name="DepoOtomasyonu"
+                component={DepoOtomasyonu}
+                options={({ navigation, route }) => ({
+                    headerTitleAlign: 'center',
+                    headerTitle: "Depo Otomasyonu",
                     headerBackTitleVisible: false,
                     headerTitleStyle: {
                       fontSize: 16,

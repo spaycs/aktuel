@@ -28,6 +28,7 @@ import SarfMalzeme from "./SarfMalzeme";
 import SarfMalzemeOnizleme from "./SarfMalzemeOnizleme";
 import PatronRaporu from "./PatronRaporu";
 import FiyatGor from "./FiyatGor";
+import DepoOtomasyonu from "./DepoOtomasyonu";
 import Raporlar from "./Raporlar";
 import CariBakiyeYaslandirmaAylik from "./Raporlar/CariBakiyeYaslandirmaAylik";
 import CariBakiyeYasladirmaCoklu from "./Raporlar/CariBakiyeYasladirmaCoklu";
@@ -44,7 +45,7 @@ import Loading from "./Loading";
 import SatinAlmaTalepFisi from "./SatinAlmaTalepFisi";
 import SatinAlmaTalepFisiBilgi from "./SatinAlmaTalepFisiBilgi";
 
-export { Home, GetStarted, Login,Sohbet, CariHareketFoyu, CariStokHareketFoyu, StokHareketFoyu,CariSiparisFoyu, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, AlinanSiparis, AlinanSiparisOnizleme, TahsilatTediye, TahsilatTediyeOnizleme, SatisIrsaliyesi, SatisIrsaliyesiOnizleme, SatisIrsaliyesiDetay, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, DepoSayim, DepoSayimOnizleme, DepolarArasiSevkFisi, DepolarArasiSevkFisiOnizleme, TeklifFisi, TeklifFisiOnizleme, PatronRaporu, FiyatGor, Raporlar,
+export { Home, GetStarted, Login,Sohbet, DepoOtomasyonu, CariHareketFoyu, CariStokHareketFoyu, StokHareketFoyu,CariSiparisFoyu, StokList, CariList, SatisFaturasi, SatisFaturasiOnizleme, AlinanSiparis, AlinanSiparisOnizleme, TahsilatTediye, TahsilatTediyeOnizleme, SatisIrsaliyesi, SatisIrsaliyesiOnizleme, SatisIrsaliyesiDetay, AlisIrsaliyesi, AlisIrsaliyesiOnizleme, DepoSayim, DepoSayimOnizleme, DepolarArasiSevkFisi, DepolarArasiSevkFisiOnizleme, TeklifFisi, TeklifFisiOnizleme, PatronRaporu, FiyatGor, Raporlar,
     CariBakiyeYaslandirmaAylik, 
     CariBakiyeYasladirmaCoklu,
     ExtreFoy,

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, BackHandler, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MainStyles } from '../../res/style';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AlinanSiparis, Alisİrsaliyesi, Back, BeklenenOdeme, CariList, FiyatGor, DepolarArasiSevkFisi, DepoSayim, Doviz, Ekle,GunlukDurum, GunlukKazanc, GunlukSiparis, GunlukStardant, MikroIqTek, Rapor, SarfMalzeme, SatinAlmaTalepFisi, SatisFaturasi, Satisİrsaliyesi, SezginYilmaz, SMStokListele, StokList, TahsilatTediye, TeklifFisi } from '../../res/images';
+import { AlinanSiparis, Alisİrsaliyesi, Back, BeklenenOdeme, CariList, FiyatGor,DepoOtomasyonu, DepolarArasiSevkFisi, DepoSayim, Doviz, Ekle,GunlukDurum, GunlukKazanc, GunlukSiparis, GunlukStardant, MikroIqTek, Rapor, SarfMalzeme, SatinAlmaTalepFisi, SatisFaturasi, Satisİrsaliyesi, SezginYilmaz, SMStokListele, StokList, TahsilatTediye, TeklifFisi } from '../../res/images';
 import { colors } from '../../res/colors';
 import { useAuth } from '../../components/userDetail/Id';
 import { useFocusEffect } from '@react-navigation/native';
@@ -174,8 +174,9 @@ const Home = ({ navigation }) => {  //tset4
     { key: '13', title: 'Stok Ekle', icon: <Ekle width={25} height={25} />, screen: 'StokEkleme', izinKey: 'IQM_StokEkle', color: '#D6D6D6' },
     { key: '14', title: 'Cari Ekle', icon: <Ekle width={25} height={25} />, screen: 'CariEkleme', izinKey: 'IQM_CariEkle', color: '#D6D6D6' },
     { key: '11', title: 'Patron Raporu', icon: <GunlukDurum width={25} height={25} />, screen: 'PatronRaporu', izinKey: 'IQM_PatronEkrani', color: '#D6D6D6' },
-    { key: '16', title: 'Satın Alma Talep Fişi', icon: <SatinAlmaTalepFisi width={25} height={25} />, screen: 'SatinAlmaTalepFisi', izinKey: 'IQM_SatinAlmaTalepFisi', color: '#D6D6D6' },
+    { key: '16', title: 'Satın Alma T.Fişi', icon: <SatinAlmaTalepFisi width={25} height={25} />, screen: 'SatinAlmaTalepFisi', izinKey: 'IQM_SatinAlmaTalepFisi', color: '#D6D6D6' },
     { key: '17', title: 'Fiyat Gör', icon: <FiyatGor width={25} height={25} />, screen: 'FiyatGor', izinKey: 'IQM_StokListesi', color: '#D6D6D6' },
+    { key: '18', title: 'Depo Otomasyonu', icon: <DepoSayim width={25} height={25} />, screen: 'DepoOtomasyonu', izinKey: 'IQM_StokListesi', color: '#D6D6D6' },
 
   ];
   
