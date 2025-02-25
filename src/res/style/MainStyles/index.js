@@ -364,6 +364,7 @@ export const MainStyles = {
       borderColor: colors.textInputBg,
       borderWidth: 1,
     },
+    
     slbuttonUrunAra: {
       flex: 1,
       backgroundColor: colors.textinputgray,
@@ -376,6 +377,87 @@ export const MainStyles = {
       marginTop:12,
       borderColor: colors.textInputBg,
       borderWidth: 1,
+    },
+    depoOtomasyonuContainer: {
+      flex: 1,
+      backgroundColor: colors.textinputgray,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 30,
+      borderRadius: 5,
+      marginTop:5,
+      borderColor: colors.textInputBg,
+      borderWidth: 1,
+    },
+    depoOtomasyonuButton: {
+      backgroundColor: colors.red,
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    depoOtomasyonInputUrunAra: {
+      marginTop: 12,
+      marginBottom: 10,
+      backgroundColor: colors.textinputgray,
+      height: 40,
+      borderColor: colors.textInputBg,
+      borderWidth: 1,
+      borderRadius: 5,
+    },
+    depoOtomasyonuBarkodButton: {
+      width: '100%',
+      backgroundColor: colors.textInputBg,
+      padding: 10,
+      borderRadius: 5,
+      alignSelf: 'center',
+      textAlign: 'center',
+      marginTop: 10,
+      borderWidth: 1,
+      borderColor: colors.textinputgray,
+    },
+    depoOtomasyonuButtonText: {
+      color: colors.white,
+      fontSize: 12,
+    },
+    depoOtomasyonuTitle: {
+     fontSize: 11,
+     textAlign: 'center',
+     fontWeight: 'bold',
+     marginBottom: 10,
+    },
+    depoOtomasyonuUrunAdı: {
+     fontSize: 11,
+     textAlign: 'center',
+    },
+    fullWidthButton: {
+      width: '100%', 
+      backgroundColor: colors.red, 
+      padding: 15, 
+      borderRadius: 5, 
+      alignItems: 'center', 
+      marginBottom: 10,
+    },
+    halfWidthButton: {
+      width: '48%',  
+      backgroundColor: colors.textInputBg, 
+      padding: 15, 
+      borderRadius: 5, 
+      alignItems: 'center', 
+    },
+    doButtonRow: {
+      flexDirection: 'row',  
+      justifyContent: 'space-between',  
+    },
+    depoOtomasyonButtunText: {
+      color: colors.white,  
+      fontWeight: 'bold', 
+      textAlign: 'center',
+    },
+    doButtonText: {
+      color: colors.black,  
+      fontWeight: 'bold', 
+      textAlign: 'center',
     },
     cameraContainer: {
       width: '100%',
@@ -948,6 +1030,13 @@ export const MainStyles = {
       marginTop: 10,
       paddingHorizontal: 10,
       paddingVertical: 10,
+    },
+    satisFaturasiModalContent: {
+      width: '100%',
+      backgroundColor: colors.white,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      position: 'relative',
     },
     modalContentSonKaydedilen: {
       width: '100%',
@@ -1634,6 +1723,7 @@ export const MainStyles = {
       backgroundColor: colors.white,
       borderBottomWidth: 1,
       borderColor: colors.textInputBg,
+      borderRadius: 10,
     },
     detailContainer: {
       backgroundColor: colors.red,
@@ -1909,9 +1999,21 @@ export const MainStyles = {
       textAlign: 'center',
       fontSize: 16,
     },
-
-    
-    
+    depoOtomasyonuKaydetButton: {
+      marginBottom: 3,
+      backgroundColor: colors.red, 
+      height: 40,
+      borderRadius: 8,
+      justifyContent: 'center',
+      width: '100%', 
+      alignSelf: 'center', 
+    },
+    depoOtomasyonuButtonText: {
+      color: '#fff', // 📌 Beyaz renk yazı
+      fontSize: 16,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
    
     tableHeaderContainer: {
       backgroundColor: '#f1f1f1',

@@ -492,6 +492,7 @@ const SatisIrsaliyesiOnizleme = () => {
               : product.StokVade || product.Vade,
               sth_plasiyer_kodu: sth_plasiyer_kodu,
               sth_aciklama: product.aciklama,
+              sth_special3: 'iq',
               seriler: "",
               renk_beden: [
                 {

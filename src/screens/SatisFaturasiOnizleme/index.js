@@ -33,6 +33,8 @@ const SatisFaturasiOnizleme = () => {
   const [editSatisFaturasiModalVisible, setEditSatisFaturasiModalVisible] = useState(false);
   const [editProductModalVisible, setEditProductModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [faturaAciklama, setFaturaAciklama] = useState(""); 
+
 
   useEffect(() => {
     // defaults içindeki IQ_MikroPersKod değerini sth_plasiyer_kodu'na atayın
@@ -434,6 +436,7 @@ const detailedProducts = products.map((product) => {
       sth_tutar: product.total,
       sth_vergi: product.sth_vergi,
       sth_aciklama: product.aciklama || faturaBilgileri.cha_aciklama,
+      cha_special3: 'iq',
       sth_cari_srm_merkezi: faturaBilgileri.cha_srmrkkodu,
       sth_stok_srm_merkezi: faturaBilgileri.cha_srmrkkodu,
       sth_subeno: 0,
@@ -474,7 +477,7 @@ const detailedProducts = products.map((product) => {
           : products.length > 0 
               ? (products[0]?.StokVade || products[0]?.Vade) 
               : "",
-          cha_aciklama: faturaBilgileri.cha_aciklama,
+          cha_aciklama: faturaAciklama,
           detay: detailedProducts, // sth alanları
           cha_adres_no: faturaBilgileri.cha_adres_no,
           cha_satici_kodu: sth_plasiyer_kodu,
@@ -689,10 +692,17 @@ const detailedProducts = products.map((product) => {
                 onChangeText={(text) => handleExplanationChange(index, text)}
               />
             ))}
+               <View style={MainStyles.satisFaturasiModalContent}>
+               <TextInput 
+                style={MainStyles.textInput}
+                placeholder="Fatura Açıklama Ekle"
+                value={faturaAciklama}
+                onChangeText={setFaturaAciklama}
+              />
+              </View>
             <TouchableOpacity onPress={saveExplanations} style={MainStyles.addButton}>
               <Text style={MainStyles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
-        
           </View>
         </View>
       </Modal>

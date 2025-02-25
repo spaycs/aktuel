@@ -528,6 +528,7 @@ useEffect(() => {
             : product.StokVade || product.Vade,
               sip_satici_kod : sip_satici_kod ,
               sip_aciklama: product.aciklama,
+              sip_aciklama2 : 'iq',
               seriler: "",
               renk_beden: [
                 {

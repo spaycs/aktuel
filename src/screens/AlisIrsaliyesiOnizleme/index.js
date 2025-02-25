@@ -452,6 +452,7 @@ const AlisIrsaliyesiOnizleme = () => {
               sth_odeme_op: faturaBilgileri.sth_odeme_op,
               sth_plasiyer_kodu: sth_plasiyer_kodu,
               sth_aciklama: product.aciklama,
+              sth_special3: 'iq',
               seriler: "",
               renk_beden: [
                 {

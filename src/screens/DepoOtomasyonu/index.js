@@ -1,48 +1,311 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Image, Modal, TouchableWithoutFeedback } from 'react-native';
+import React, { useState } from 'react';
+import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Modal } from 'react-native';
 import { useAuth } from '../../components/userDetail/Id';
-import { useAuthDefault } from '../../components/DefaultUser';
-import { ProductContext } from '../../context/ProductContext';
 import axiosLinkMain from '../../utils/axiosMain';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
-import { Picker } from '@react-native-picker/picker';
 import { RNCamera } from 'react-native-camera';
-import { Camera, Nokta, Down } from '../../res/images';
-import FastImage from 'react-native-fast-image';
-import Button from '../../components/Button';
-
-const normalizeText = (text) => {
-  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-};
+import { Camera } from '../../res/images';
+import axiosLink from '../../utils/axios';
+import { useNavigation } from '@react-navigation/native';
+import { useAuthDefault } from '../../components/DefaultUser';
 
 const DepoOtomasyonu = () => {
-    const { authData } = useAuth();
-    const { defaults } = useAuthDefault();
-    const [cameraModalVisible, setCameraModalVisible] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+  const { authData } = useAuth();
+  const { defaults } = useAuthDefault();
+  const [seri, setSeri] = useState('');
+  const [siparisListesi, setSiparisListesi] = useState([]);
+  const [selectedSiparis, setSelectedSiparis] = useState(null);
+  const [miktar, setMiktar] = useState('');
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [cameraVisible, setCameraVisible] = useState(false);
+  const [barkodCameraVisible, setBarkodCameraVisible] = useState(false);
+  const [barkod, setBarkod] = useState('');
+  const [barkodVerified, setBarkodVerified] = useState(false);
+  const [teslimMiktarlari, setTeslimMiktarlari] = useState({});
+  const navigation = useNavigation();
+
+  const handleSeriBarkodRead = ({ data }) => {
+    console.log("📸 Okunan Barkod:", data);
+    
+    setSeri(data); 
+    setCameraVisible(false);
+  
+    // State'in güncellendiğinden emin olmak için doğrudan yeni değeri alarak fetchSiparis çağır
+    setTimeout(() => {
+      fetchSiparis(data);
+    }, 100);
+  };
+
+  const fetchSiparis = async (seriNumarasi) => {
+    const aktifSeri = seriNumarasi || seri; // Eğer parametre yoksa state'ten al
+  
+    if (!aktifSeri) {
+      Alert.alert('Hata', 'Lütfen bir seri numarası girin veya barkod okutun.');
+      return;
+    }
+  
+    try {
+      const response = await axiosLinkMain.get(`/Api/Siparis/DO_SiparisBilgisiGetir?sipno=${aktifSeri}`);
+      setSiparisListesi(response.data || []);
+    } catch (error) {
+      console.error('Sipariş getirme hatası:', error);
+      Alert.alert('Hata', 'Sipariş getirilemedi.');
+    }
+  };
+
+   // 📌 Teslim edilen miktara göre arka plan rengini belirle
+   const getBackgroundColor = (stokKod, toplamMiktar) => {
+    const teslimEdilen = teslimMiktarlari[stokKod] || 0;
+
+    if (teslimEdilen === toplamMiktar) {
+      return 'green'; // 🟩 Tam teslim edildi
+    } else if (teslimEdilen > 0) {
+      return 'orange'; // 🟧 Eksik teslim edildi
+    } else {
+      return 'red'; // 🟥 Hiç teslim edilmedi
+    }
+  };
+
+   // 📌 "Tamam" butonuna basıldığında veriyi hafızaya kaydet
+   const handleTamam = () => {
+    if (!selectedSiparis || miktar === '') {
+      Alert.alert('Hata', 'Lütfen teslim miktarını girin.');
+      return;
+    }
+    const kalanMiktar = selectedSiparis.Miktar - (teslimMiktarlari[selectedSiparis.StokKod] || 0);
+    
+    if (parseInt(miktar) > kalanMiktar) {
+      Alert.alert('Hata', `En fazla ${kalanMiktar} adet teslim edebilirsiniz.`);
+      return;
+    }
+
+    // 📌 Teslim edilen miktarı güncelle (hafızada tut)
+    setTeslimMiktarlari(prev => ({
+      ...prev,
+      [selectedSiparis.StokKod]: (prev[selectedSiparis.StokKod] || 0) + parseInt(miktar)
+    }));
+
+    closePopup();
+  };
+
+
+  const handleEvrakKaydet = async () => {
+    const todayDate = new Date().toLocaleDateString('tr-TR', {
+      day : '2-digit',
+      month : '2-digit',
+      year : 'numeric'
+      }
+    );
+    console.log(todayDate);
+    // 🔹 Sadece miktar girilmiş siparişleri filtrele
+    const teslimEdilenSiparisler = siparisListesi
+      .filter(item => teslimMiktarlari[item.StokKod] > 0) // **Sadece işlem yapılanları al**
+      .map(product => ({
+        sth_tarih: todayDate,
+        sth_stok_kod: product.StokKod,
+        sth_miktar: teslimMiktarlari[product.StokKod] || 0,
+        sth_tip: 1,
+        sth_cins: 0,
+        sth_cari_kodu: product.Cari,
+        sth_normal_iade: 0,
+        sth_evraktip: 1,
+        sth_evrakno_seri: defaults[0]?.IQ_SatisIrsaliyeSeriNo,
+        sth_cari_cinsi: 0,
+        sth_adres_no: product.AdresNo,
+        sth_stok_srm_merkezi: product.SorumlulukM,
+        sth_proje_kodu: product.ProjeKod,
+        sth_birim_pntr: product.Birim,
+        sth_vergi_pntr: product.VergiPntr,
+        sth_vergi: product.Vergi,
+        sth_vergisiz_fl: false,
+        sth_iskonto1: 0,
+        sth_iskonto2: 0,
+        sth_iskonto3: 0,
+        sth_iskonto4: 0,
+        sth_iskonto5: 0,
+        sth_iskonto6: 0,
+        sth_giris_depo_no: product.Depo,
+        sth_cikis_depo_no: product.Depo,
+        sth_malkbl_sevk_tarihi: todayDate,
+        sth_odeme_op: product.OpNo,
+        sth_plasiyer_kodu: product.Temsilci,
+        sth_tutar: 0,
+        sth_belge_no: product.BelgeNo,
+        sth_stok_doviz_kuru: product.DovizKur,
+        sth_sip_uid: product.Guid,
+      }));
+  
+    if (teslimEdilenSiparisler.length === 0) {
+      Alert.alert("Uyarı", "Herhangi bir ürün için miktar girişi yapılmadı.");
+      return;
+    }
+  
+    const jsonPayload = {
+      Mikro: {
+        FirmaKodu: authData.FirmaKodu,
+        CalismaYili: authData.CalismaYili,
+        ApiKey: authData.ApiKey,
+        KullaniciKodu: authData.KullaniciKodu,
+        Sifre: authData.Sifre,
+        FirmaNo: authData.FirmaNo,
+        SubeNo: authData.SubeNo,
+        evraklar: [
+          {
+            evrak_aciklamalari: "Depo Teslimatı",
+            satirlar: teslimEdilenSiparisler
+          }
+        ]
+      }
+    };
+  
+    console.log("📤 Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
+  
+    try {
+      const response = await axiosLink.post(`/Api/apiMethods/IrsaliyeKaydetV2`, jsonPayload);
+      
+      console.log("📥 API Yanıtı:", response.data);
+  
+      if (response.data.result[0].StatusCode === 200) {
+
+       await updateSiparisMiktarlari(teslimEdilenSiparisler);
+
+        Alert.alert("Başarılı", "Tüm teslim edilen siparişler başarıyla kaydedildi ve miktarlar güncellendi.", [
+          { text: "Tamam", onPress: () => navigation.goBack() }
+        ]);
+      } else {
+        Alert.alert("Hata", response.data.result[0].ErrorMessage || "Evrak kaydedilemedi.");
+      }
+    } catch (error) {
+      console.error("❌ API Hatası:", error.response ? error.response.data : error.message);
+      Alert.alert("Hata", "Evrak kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
+    }
+  };
+
+ const updateSiparisMiktarlari = async (siparisler) => {
+     try {
+         const updatePromises = siparisler.map(async (item) => {
+             const miktar = item.sth_miktar;
+             const guid = item.sth_sip_uid; // 📌 API'de kullanılacak GUID
+ 
+             const updateUrl = `/Api/Siparis/DO_SiparisTeslimMiktarGuncelle?miktar=${miktar}&guid=${guid}`;
+             console.log("📡 Güncelleme API'ye gönderiliyor:", updateUrl);
+ 
+             const response = await axiosLinkMain.post(updateUrl);
+ 
+             console.log("✅ Güncelleme API Yanıtı:", response.data);
+         });
+ 
+         // **Tüm isteklerin tamamlanmasını bekle**
+         await Promise.all(updatePromises);
+     } catch (error) {
+         console.error("❌ Sipariş miktar güncelleme hatası:", error.response ? error.response.data : error.message);
+         Alert.alert("Hata", "Sipariş miktarları güncellenirken bir hata oluştu.");
+     }
+ };
   
 
-  // Modal İşlemleri
-    const openModal = (item) => {
-      setSelectedItem(item);
-      setModalVisible(true);
-    };
+  const handleBarkodRead = async ({ data }) => {
+    setBarkod(data);
+    setBarkodCameraVisible(false);
+  
+    try {
+      const response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${data}`);
+  
+      console.log("📌 API Yanıtı:", response.data);
+  
+      // API dizininin ilk elemanını al
+      const stokKodFromApi = response.data.length > 0 ? response.data[0].Stok_Kod : null;
+  
+      console.log("📌 API'den gelen Stok Kodu:", stokKodFromApi); 
+  
+      if (selectedSiparis && stokKodFromApi === selectedSiparis.StokKod) {
+        setBarkodVerified(true);
+      } else {
+        Alert.alert('Hata', 'Barkod eşleşmedi, lütfen tekrar deneyin.');
+        setBarkod('');
+        setBarkodVerified(false);
+      }
+    } catch (error) {
+      console.error('❌ Barkod API hatası:', error);
+      Alert.alert('Hata', 'Barkod bilgisi getirilemedi.');
+      setBarkod('');
+      setBarkodVerified(false);
+    }
+  };
+  
+  
+  // 📌 Teslim Miktarı Güncelleme
+  const handleTeslimEt = async () => {
+    if (!selectedSiparis || miktar === '') {
+      Alert.alert('Hata', 'Lütfen teslim miktarını girin.');
+      return;
+    }
+    const kalanMiktar = selectedSiparis.Miktar - (teslimMiktarlari[selectedSiparis.StokKod] || 0);
+    
+    if (parseInt(miktar) > kalanMiktar) {
+      Alert.alert('Hata', `En fazla ${kalanMiktar} adet teslim edebilirsiniz.`);
+      return;
+    }
 
-    const closeModal = () => {
-      setModalVisible(false);
-      setSelectedItem(null);
-    };
-  // Modal İşlemleri
+    try {
+      await axiosLinkMain.post(`/Api/Siparis/TeslimEt`, {
+        stokKodu: selectedSiparis.StokKod,
+        teslimMiktar: parseInt(miktar),
+      });
 
-  // Kamera İşlemleri
-    const handleCameraOpen = () => {setCameraModalVisible(true);};
-    const handleCameraClose = () => {setCameraModalVisible(false);};
+      Alert.alert('Başarılı', 'Teslimat başarıyla güncellendi.');
 
-    const handleBarCodeRead = ({ data }) => {
-      setCameraModalVisible(false);
-    };
-  // Kamera İşlemleri 
+      // 📌 Teslim edilen miktarı güncelle
+      setTeslimMiktarlari(prev => ({
+        ...prev,
+        [selectedSiparis.StokKod]: (prev[selectedSiparis.StokKod] || 0) + parseInt(miktar)
+      }));
+
+      closePopup();
+    } catch (error) {
+      console.error('Teslimat güncelleme hatası:', error);
+      Alert.alert('Hata', 'Teslimat güncellenemedi.');
+    }
+  };
+
+  // 📌 Popup açılınca seçilen siparişi kaydet
+  const openPopup = (siparis) => {
+    setSelectedSiparis(siparis);
+    setMiktar('');
+    setPopupVisible(true);
+    setBarkodVerified(false);
+    setBarkod('');
+  };
+
+  // 📌 Popup kapatma fonksiyonu
+  const closePopup = () => {
+    setPopupVisible(false);
+    setSelectedSiparis(null);
+    setBarkodVerified(false);
+    setBarkod('');
+  };
+
+ // 🔹 FlatList için renderItem fonksiyonu
+ const renderSiparisItem = ({ item }) => {
+  const teslimEdilen = teslimMiktarlari[item.StokKod] || 0;
+  const kalanMiktar = item.Miktar - teslimEdilen;
+
+  return (
+    <TouchableOpacity onPress={() => openPopup(item)}>
+      <View style={[MainStyles.itemContainerCariList, { backgroundColor: getBackgroundColor(item.StokKod, item.Miktar) }]}>
+        <View style={MainStyles.itemTextContainer}>
+          <Text style={MainStyles.itemText}>Cari Unvan: {item.CariUnvan}</Text>
+          <Text style={MainStyles.itemText}>Stok Kodu: {item.StokKod}</Text>
+          <Text style={MainStyles.itemText}>Stok Adı: {item.StokAd}</Text>
+          <Text style={MainStyles.itemText}>Miktar: {item.Miktar}</Text>
+          <Text style={MainStyles.itemText}>Teslim Edilen: {teslimEdilen}</Text>
+          <Text style={MainStyles.itemText}>Kalan Miktar: {kalanMiktar}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
   return (
     <View style={MainStyles.slContainer}>
@@ -50,42 +313,155 @@ const DepoOtomasyonu = () => {
         <TextInput
           style={MainStyles.slinputUrunAra}
           placeholder="Evrak Seri Sıra Okut"
+          value={seri}
+          onChangeText={setSeri}
           placeholderTextColor={colors.placeholderTextColor}
         />
-        <TouchableOpacity onPress={handleCameraOpen} style={MainStyles.slbuttonUrunAra}>
-          <Camera/>
+        <TouchableOpacity onPress={() => setCameraVisible(true)} style={MainStyles.slbuttonUrunAra}>
+          <Camera />
         </TouchableOpacity>
       </View>
 
-      <Modal visible={cameraModalVisible} animationType="slide">
-        <View style={MainStyles.cameraContainer}>
-        <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
-        <View style={MainStyles.cameraWrapper}>
-            <RNCamera
-              style={{ flex: 1 }}
-              onBarCodeRead={handleBarCodeRead}
-              captureAudio={false}
-              androidCameraPermissionOptions={{
-                title: 'Kamera İzni',
-                message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
-                buttonPositive: 'Tamam',
-                buttonNegative: 'İptal',
-              }}
-            />
-            <View style={MainStyles.overlay}>
-                <View style={MainStyles.overlayMask} />
-                  <View style={MainStyles.overlayBox}>
-                    <View style={MainStyles.overlayLine} />
-                  </View>
+      <TouchableOpacity  onPress={() => fetchSiparis()} style={MainStyles.depoOtomasyonuButton}>
+        <Text style={MainStyles.depoOtomasyonuButtonText}>Getir</Text>
+      </TouchableOpacity>
+
+      <Text style={MainStyles.depoOtomasyonuTitle}>Sipariş Ürün Bilgileri</Text>
+
+      <FlatList 
+        data={siparisListesi}
+        renderItem={renderSiparisItem}
+        keyExtractor={(item, index) => `${item.StokKod}-${index}`}
+      />
+
+      {/* 📌 Kamera Modal */}
+      <Modal visible={cameraVisible} animationType="slide">
+            <View style={MainStyles.cameraContainer}>
+            <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+            <View style={MainStyles.cameraWrapper}>
+                <RNCamera
+                  style={{ flex: 1 }}
+                  onBarCodeRead={handleSeriBarkodRead}
+                  captureAudio={false}
+                  androidCameraPermissionOptions={{
+                    title: 'Kamera İzni',
+                    message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+                    buttonPositive: 'Tamam',
+                    buttonNegative: 'İptal',
+                  }}
+                />
+                <View style={MainStyles.overlay}>
+                    <View style={MainStyles.overlayMask} />
+                      <View style={MainStyles.overlayBox}>
+                        <View style={MainStyles.overlayLine} />
+                      </View>
+                    </View>
                 </View>
-            </View>
-            </View>
-        <TouchableOpacity onPress={handleCameraClose} style={MainStyles.kapat}>
-        <Text style={MainStyles.kapatTitle}>Kapat</Text>
-        </TouchableOpacity>
+              </View>
+            <TouchableOpacity onPress={() => setCameraVisible(false)}style={MainStyles.kapat}>
+              <Text style={MainStyles.kapatTitle}>Kapat</Text>
+            </TouchableOpacity>
       </Modal>
 
-     
+     {/* 📌 Popup Modal */}
+     <Modal visible={popupVisible} transparent>
+        <View style={MainStyles.modalContainer}>
+          <View style={MainStyles.modalContent}>
+            {selectedSiparis && (
+              <>
+                <Text style={MainStyles.itemText}>
+                  {selectedSiparis.StokKod} - {selectedSiparis.StokAd}
+                </Text>
+
+                {/* 📌 Barkod Okutma veya Elle Girme */}
+                <TouchableOpacity onPress={() => setBarkodCameraVisible(true)} style={MainStyles.depoOtomasyonuBarkodButton}>
+                  <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
+                </TouchableOpacity>
+
+                <TextInput
+                  style={MainStyles.depoOtomasyonInputUrunAra}
+                  placeholder="Barkodu Elle Girin"
+                  placeholderTextColor={colors.black}
+                  value={barkod}
+                  onChangeText={setBarkod}
+                  keyboardType="numeric"
+                />
+
+                {/* 📌 Onayla Butonu */}
+                <TouchableOpacity onPress={() => handleBarkodRead({ data: barkod })} style={MainStyles.fullWidthButton}>
+                  <Text style={MainStyles.depoOtomasyonButtunText}>Ürünü Getir</Text>
+                </TouchableOpacity>
+
+                {barkodVerified && (
+                  <TextInput
+                    style={MainStyles.depoOtomasyonInputUrunAra}
+                    placeholder="Teslim Miktarı"
+                    placeholderTextColor={colors.black}
+                    keyboardType="numeric"
+                    value={miktar}
+                    onChangeText={setMiktar}
+                  />
+                )}
+
+                {/* 📌 Tamam ve Vazgeç Butonları  */}
+                <View style={MainStyles.doButtonRow}>
+                  <TouchableOpacity onPress={handleTamam} style={MainStyles.halfWidthButton}>
+                    <Text style={MainStyles.doButtonText}>Tamam</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={closePopup} style={MainStyles.halfWidthButton}>
+                    <Text style={MainStyles.doButtonText}>Vazgeç</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* 📌 Barkod Okuma Kamerası Modal */}
+      <Modal visible={barkodCameraVisible} animationType="slide">
+            <View style={MainStyles.cameraContainer}>
+            <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+            <View style={MainStyles.cameraWrapper}>
+                <RNCamera
+                  style={{ flex: 1 }}
+                  onBarCodeRead={handleBarkodRead}
+                  captureAudio={false}
+                  androidCameraPermissionOptions={{
+                    title: 'Kamera İzni',
+                    message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+                    buttonPositive: 'Tamam',
+                    buttonNegative: 'İptal',
+                  }}
+                />
+                <View style={MainStyles.overlay}>
+                    <View style={MainStyles.overlayMask} />
+                      <View style={MainStyles.overlayBox}>
+                        <View style={MainStyles.overlayLine} />
+                      </View>
+                    </View>
+                </View>
+              </View>
+            <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
+              <Text style={MainStyles.kapatTitle}>Kapat</Text>
+            </TouchableOpacity>
+      </Modal>
+
+      <View style={MainStyles.saveContainer}>
+              <TouchableOpacity
+                style={MainStyles.saveButton}
+                onPress={handleEvrakKaydet}
+              >
+                <Text style={MainStyles.saveButtonText}>Kaydet</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={MainStyles.saveButton}
+                onPress={navigation.goBack}
+              >
+                <Text style={MainStyles.saveButtonText}>Vazgeç</Text>
+              </TouchableOpacity>
+            </View>
+
     </View>
   );
 };
