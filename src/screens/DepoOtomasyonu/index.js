@@ -414,7 +414,7 @@ const DepoOtomasyonu = () => {
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
                 </TouchableOpacity>
 
-                <TextInput
+                <TextInput 
                   style={MainStyles.depoOtomasyonInputUrunAra}
                   placeholder="Barkodu Elle Girin"
                   placeholderTextColor={colors.black}
