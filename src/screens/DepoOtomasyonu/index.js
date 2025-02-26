@@ -476,7 +476,11 @@ const DepoOtomasyonu = () => {
             </TouchableOpacity>
       </Modal>
 
-      <View style={MainStyles.saveContainer}>
+     
+          
+    </View>
+    </ScrollView>
+    <View style={MainStyles.saveContainer}>
               <TouchableOpacity
                 style={MainStyles.saveButton}
                 onPress={handleEvrakKaydet}
@@ -490,9 +494,6 @@ const DepoOtomasyonu = () => {
                 <Text style={MainStyles.saveButtonText}>Vazgeç</Text>
               </TouchableOpacity>
             </View>
-          
-    </View>
-    </ScrollView>
             </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
   );
