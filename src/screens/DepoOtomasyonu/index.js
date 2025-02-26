@@ -406,7 +406,7 @@ const DepoOtomasyonu = () => {
             {selectedSiparis && (
               <>
                 <Text style={MainStyles.itemText}>
-                  {selectedSiparis.StokKod} - {selectedSiparis.StokAd}
+                  {selectedSiparis.StokKod} - {selectedSiparis.StokAd} 
                 </Text>
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
