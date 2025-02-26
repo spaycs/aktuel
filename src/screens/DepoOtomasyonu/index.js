@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Modal, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAuth } from '../../components/userDetail/Id';
 import axiosLinkMain from '../../utils/axiosMain';
@@ -307,6 +307,11 @@ const DepoOtomasyonu = () => {
     setBarkod('');
   };
 
+  useEffect(() => {
+    console.log("🔍 barkodCameraVisible:", barkodCameraVisible);
+  }, [barkodCameraVisible]);
+
+  
  // 🔹 FlatList için renderItem fonksiyonu
  const renderSiparisItem = ({ item }) => {
   const teslimEdilen = teslimMiktarlari[item.StokKod] || 0;
@@ -328,9 +333,6 @@ const DepoOtomasyonu = () => {
   );
 };
 
-useEffect(() => {
-  console.log("🔍 barkodCameraVisible:", barkodCameraVisible);
-}, [barkodCameraVisible]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
