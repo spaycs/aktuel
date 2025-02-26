@@ -17,6 +17,7 @@ const DepoOtomasyonu = () => {
   const [siparisListesi, setSiparisListesi] = useState([]);
   const [selectedSiparis, setSelectedSiparis] = useState(null);
   const [miktar, setMiktar] = useState('');
+  const [kalanMiktar, setKalanMiktar] = useState(0);
   const [popupVisible, setPopupVisible] = useState(false);
   const [cameraVisible, setCameraVisible] = useState(false);
   const [barkodCameraVisible, setBarkodCameraVisible] = useState(false);
@@ -59,11 +60,11 @@ const DepoOtomasyonu = () => {
     const teslimEdilen = teslimMiktarlari[stokKod] || 0;
 
     if (teslimEdilen === toplamMiktar) {
-      return 'green'; // 🟩 Tam teslim edildi
+      return '#6ef173'; // 🟩 Tam teslim edildi
     } else if (teslimEdilen > 0) {
-      return 'orange'; // 🟧 Eksik teslim edildi
+      return '#fdcc69'; // 🟧 Eksik teslim edildi
     } else {
-      return 'red'; // 🟥 Hiç teslim edilmedi
+      return '#ff7a7a'; // 🟥 Hiç teslim edilmedi
     }
   };
 
@@ -292,7 +293,11 @@ const DepoOtomasyonu = () => {
 
   // 📌 Popup açılınca seçilen siparişi kaydet
   const openPopup = (siparis) => {
+    const teslimEdilen = teslimMiktarlari[siparis.StokKod] || 0;
+    const kalan = siparis.Miktar - teslimEdilen;
+
     setSelectedSiparis(siparis);
+    setKalanMiktar(kalan);
     setMiktar('');
     setPopupVisible(true);
     setBarkodVerified(false);
@@ -393,7 +398,7 @@ const DepoOtomasyonu = () => {
                     </View>
                 </View>
               </View>
-            <TouchableOpacity onPress={() => setCameraVisible(false)}style={MainStyles.kapat}>
+            <TouchableOpacity onPress={() => setCameraVisible(false)} style={MainStyles.kapat}>
               <Text style={MainStyles.kapatTitle}>Kapat</Text>
             </TouchableOpacity>
       </Modal>
@@ -412,13 +417,23 @@ const DepoOtomasyonu = () => {
             {selectedSiparis && (
               <>
                 <Text style={MainStyles.itemText}>
-                  {selectedSiparis.StokKod} - {selectedSiparis.StokAd} 
+                  {selectedSiparis.StokKod} - {selectedSiparis.StokAd} -   Kalan Miktar: {kalanMiktar}
                 </Text>
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
-                <TouchableOpacity onPress={() => setBarkodCameraVisible(true)} style={MainStyles.depoOtomasyonuBarkodButton}>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("📸 Barkod Kamera Açılıyor...");
+                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
+                    setTimeout(() => {
+                      setBarkodCameraVisible(true);
+                    }, 100);
+                  }}
+                  style={MainStyles.depoOtomasyonuBarkodButton}
+                >
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
                 </TouchableOpacity>
+
 
                 <TextInput
                   style={MainStyles.depoOtomasyonInputUrunAra}
@@ -487,22 +502,7 @@ const DepoOtomasyonu = () => {
               </View>
             </View>
           </View>
-
-          {/* 📌 Elle Barkod Girişi */}
-          <TextInput
-            style={MainStyles.depoOtomasyonInputUrunAra}
-            placeholder="Barkodu Elle Girin"
-            placeholderTextColor={colors.black}
-            value={barkod}
-            onChangeText={setBarkod}
-            keyboardType="numeric"
-          />
-
-          {/* 📌 Onay Butonu */}
-          <TouchableOpacity onPress={() => handleBarkodRead({ data: barkod })} style={MainStyles.fullWidthButton}>
-            <Text style={MainStyles.depoOtomasyonButtunText}>Ürünü Getir</Text>
-          </TouchableOpacity>
-
+ 
           {/* 📌 Kapat Butonu */}
           <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
             <Text style={MainStyles.kapatTitle}>Kapat</Text>

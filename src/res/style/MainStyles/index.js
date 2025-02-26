@@ -464,7 +464,6 @@ export const MainStyles = {
       flex: 1,
       alignItems: 'center',
       backgroundColor: colors.white,
-      padding: 15,
     },
     searchInput: {
       flex: 4, 
