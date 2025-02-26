@@ -335,7 +335,6 @@ const DepoOtomasyonu = () => {
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
   >
-  <ScrollView flex={1} scrollEnabled>
     <View style={MainStyles.slContainer}>
  
       <View style={MainStyles.inputContainer}>
@@ -509,7 +508,6 @@ const DepoOtomasyonu = () => {
      
           
     </View>
-    </ScrollView>
     <View style={MainStyles.saveContainer}>
               <TouchableOpacity
                 style={MainStyles.saveButton}
