@@ -410,12 +410,11 @@ const DepoOtomasyonu = () => {
                 </Text>
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
-                <TouchableOpacity  onPress={() => {
-    if (cameraVisible) setCameraVisible(false); // Önce diğer modali kapat
-    setBarkodCameraVisible(true);
-  }} style={MainStyles.depoOtomasyonuBarkodButton}>
-                  <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
-                </TouchableOpacity>
+                <View style={{ zIndex: 9999 }}>
+  <TouchableOpacity onPress={() => setBarkodCameraVisible(true)} style={MainStyles.depoOtomasyonuBarkodButton}>
+    <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
+  </TouchableOpacity>
+</View>
 
                 <TextInput
                   style={MainStyles.depoOtomasyonInputUrunAra}
