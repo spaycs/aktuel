@@ -410,10 +410,7 @@ const DepoOtomasyonu = () => {
                 </Text>
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
-                <TouchableOpacity  onPress={() => {
-    console.log("📸 Barkod Kamera Açılıyor...");
-    setBarkodCameraVisible(true);
-  }} style={MainStyles.depoOtomasyonuBarkodButton}>
+                <TouchableOpacity onPress={() => setBarkodCameraVisible(true)} style={MainStyles.depoOtomasyonuBarkodButton}>
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
                 </TouchableOpacity>
 
@@ -461,7 +458,8 @@ const DepoOtomasyonu = () => {
       </Modal>
 
    {/* 📌 Barkod Okuma Kamerası Modal */}
-<Modal visible={barkodCameraVisible} animationType="slide">
+<Modal visible={barkodCameraVisible}  presentationStyle="fullScreen"
+  key={barkodCameraVisible ? "modal-open" : "modal-closed"} animationType="slide">
  
         <View style={MainStyles.cameraContainer}>
           <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
