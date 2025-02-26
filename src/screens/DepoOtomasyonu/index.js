@@ -400,7 +400,7 @@ const DepoOtomasyonu = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}   style={{ flex: 1 }}>
         <View style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
             {selectedSiparis && (
