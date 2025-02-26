@@ -328,6 +328,10 @@ const DepoOtomasyonu = () => {
   );
 };
 
+useEffect(() => {
+  console.log("🔍 barkodCameraVisible:", barkodCameraVisible);
+}, [barkodCameraVisible]);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <KeyboardAvoidingView
@@ -410,12 +414,7 @@ const DepoOtomasyonu = () => {
                 </Text>
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
-                <TouchableOpacity  onPress={() => {
-    console.log("📸 Barkod Kamera Açılıyor...");
-    setTimeout(() => {
-      setBarkodCameraVisible(true);
-    }, 100); // 🔹 Küçük bir gecikme ekledik
-  }} style={MainStyles.depoOtomasyonuBarkodButton}>
+                <TouchableOpacity onPress={() => setBarkodCameraVisible(true)} style={MainStyles.depoOtomasyonuBarkodButton}>
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
                 </TouchableOpacity>
 
