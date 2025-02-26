@@ -400,7 +400,7 @@ const DepoOtomasyonu = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}   style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
             {selectedSiparis && (
@@ -414,7 +414,7 @@ const DepoOtomasyonu = () => {
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
                 </TouchableOpacity>
 
-                <TextInput 
+                <TextInput
                   style={MainStyles.depoOtomasyonInputUrunAra}
                   placeholder="Barkodu Elle Girin"
                   placeholderTextColor={colors.black}
