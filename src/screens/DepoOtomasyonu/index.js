@@ -361,7 +361,6 @@ const DepoOtomasyonu = () => {
         data={siparisListesi}
         renderItem={renderSiparisItem}
         keyExtractor={(item, index) => `${item.StokKod}-${index}`}
-        presentation="fullScreen"
       />
 
       {/* 📌 Kamera Modal */}
@@ -411,7 +410,10 @@ const DepoOtomasyonu = () => {
                 </Text>
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
-                <TouchableOpacity onPress={() => setBarkodCameraVisible(true)} style={MainStyles.depoOtomasyonuBarkodButton}>
+                <TouchableOpacity  onPress={() => {
+    console.log("📸 Barkod Kamera Açılıyor...");
+    setBarkodCameraVisible(true);
+  }} style={MainStyles.depoOtomasyonuBarkodButton}>
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
                 </TouchableOpacity>
 
