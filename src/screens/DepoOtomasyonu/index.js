@@ -449,6 +449,13 @@ const DepoOtomasyonu = () => {
 
       {/* 📌 Barkod Okuma Kamerası Modal */}
       <Modal visible={barkodCameraVisible} animationType="slide">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // iOS için varsayılan offset
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={MainStyles.cameraContainer}>
             <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
             <View style={MainStyles.cameraWrapper}>
@@ -474,6 +481,9 @@ const DepoOtomasyonu = () => {
             <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
               <Text style={MainStyles.kapatTitle}>Kapat</Text>
             </TouchableOpacity>
+            </ScrollView>
+            </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
       </Modal>
 
      
