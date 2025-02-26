@@ -57,6 +57,7 @@ const ProductModal = ({
   const [KDV, setKDV] = useState('');
   const [Carpan, setCarpan] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
+  const [KDVDahilMi, setKDVDahilMi] = useState(false);
   const [toplam_vergi, setToplam_vergi] = useState();
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [isStokOzelDetayVisible, setIsStokOzelDetayVisible] = useState(false);
@@ -218,6 +219,13 @@ const ProductModal = ({
             if (firstItem.KDV) {
               setKDV(firstItem.KDV.toString());  
             }
+            if (firstItem.KDVDahilMi !== undefined) {
+              setKDVDahilMi(firstItem.KDVDahilMi);
+            }
+
+            const kdvDahilFiyat = calculateBirimFiyatWithKDV(firstItem.fiyat, firstItem.KDV, firstItem.KDVDahilMi);
+            setBirimFiyat(kdvDahilFiyat.toString());
+
             if (firstItem.Carpan !== undefined) {
               setCarpan(firstItem.Carpan.toString());
             } else {
@@ -393,18 +401,31 @@ const validateQuantity = (quantity) => {
   
   
      // 🔹 KDV dahil fiyat hesaplayan fonksiyon (toplam tutara göre)
-    const calculateTotalWithKDV = () => {
-      const totalWithoutKDV = parseFloat(calculateTotal()) || 0;
-      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
-      return totalWithoutKDV * (1 + kdvRate); // KDV dahil toplam tutar
-    };
+      const calculateTotalWithKDV = () => {
+        const totalWithoutKDV = parseFloat(calculateTotal()) || 0;
+        const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
 
-    // 🔹 Birim fiyat için KDV dahil hesaplama fonksiyonu
-    const calculateBirimFiyatWithKDV = () => {
-      const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
-      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
-      return unitPrice * (1 + kdvRate); // KDV dahil birim fiyat
-    };
+        if (KDVDahilMi) {
+          // KDV'yi düşerek net toplamı hesapla
+          return totalWithoutKDV / (1 + kdvRate);
+        }
+
+        return totalWithoutKDV ; // KDV dahil toplam tutar
+      };
+
+
+      // 🔹 Birim fiyat için KDV dahil hesaplama fonksiyonu
+      const calculateBirimFiyatWithKDV = () => {
+        const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
+        const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%18" → 0.18
+      
+        if (KDVDahilMi) {
+          // KDV'yi düşerek net fiyatı hesapla
+          return unitPrice / (1 + kdvRate);
+        }
+      
+        return unitPrice; // Eğer KDVDahilMi false ise fiyatı değiştirme
+      };
   
 
   

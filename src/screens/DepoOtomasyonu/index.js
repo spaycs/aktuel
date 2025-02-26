@@ -92,55 +92,68 @@ const DepoOtomasyonu = () => {
 
   const handleEvrakKaydet = async () => {
     const todayDate = new Date().toLocaleDateString('tr-TR', {
-      day : '2-digit',
-      month : '2-digit',
-      year : 'numeric'
-      }
-    );
-    console.log(todayDate);
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+
+    console.log("📆 Günün Tarihi:", todayDate);
+
     // 🔹 Sadece miktar girilmiş siparişleri filtrele
     const teslimEdilenSiparisler = siparisListesi
       .filter(item => teslimMiktarlari[item.StokKod] > 0) // **Sadece işlem yapılanları al**
-      .map(product => ({
-        sth_tarih: todayDate,
-        sth_stok_kod: product.StokKod,
-        sth_miktar: teslimMiktarlari[product.StokKod] || 0,
-        sth_tip: 1,
-        sth_cins: 0,
-        sth_cari_kodu: product.Cari,
-        sth_normal_iade: 0,
-        sth_evraktip: 1,
-        sth_evrakno_seri: defaults[0]?.IQ_SatisIrsaliyeSeriNo,
-        sth_cari_cinsi: 0,
-        sth_adres_no: product.AdresNo,
-        sth_stok_srm_merkezi: product.SorumlulukM,
-        sth_proje_kodu: product.ProjeKod,
-        sth_birim_pntr: product.Birim,
-        sth_vergi_pntr: product.VergiPntr,
-        sth_vergi: product.Vergi,
-        sth_vergisiz_fl: false,
-        sth_iskonto1: 0,
-        sth_iskonto2: 0,
-        sth_iskonto3: 0,
-        sth_iskonto4: 0,
-        sth_iskonto5: 0,
-        sth_iskonto6: 0,
-        sth_giris_depo_no: product.Depo,
-        sth_cikis_depo_no: product.Depo,
-        sth_malkbl_sevk_tarihi: todayDate,
-        sth_odeme_op: product.OpNo,
-        sth_plasiyer_kodu: product.Temsilci,
-        sth_tutar: 0,
-        sth_belge_no: product.BelgeNo,
-        sth_stok_doviz_kuru: product.DovizKur,
-        sth_sip_uid: product.Guid,
-      }));
-  
+      .map(product => {
+        const miktar = teslimMiktarlari[product.StokKod] || 0;
+        const birimFiyat = parseFloat(product.Birim_Fiyat) || 0;
+        const vergi = parseFloat(product.Vergi) || 0;
+        const iskonto1 = parseFloat(product.BirimIsk1) || 0;
+        const iskonto2 = parseFloat(product.BirimIsk2) || 0;
+        const iskonto3 = parseFloat(product.BirimIsk3) || 0;
+        const iskonto4 = parseFloat(product.BirimIsk4) || 0;
+        const iskonto5 = parseFloat(product.BirimIsk5) || 0;
+        const iskonto6 = parseFloat(product.BirimIsk6) || 0;
+
+        return {
+          sth_tarih: todayDate,
+          sth_stok_kod: product.StokKod,
+          sth_miktar: miktar,
+          sth_tip: 1,
+          sth_cins: 0,
+          sth_cari_kodu: product.Cari,
+          sth_normal_iade: 0,
+          sth_evraktip: 1,
+          sth_evrakno_seri: defaults[0]?.IQ_SatisIrsaliyeSeriNo,
+          sth_cari_cinsi: 0,
+          sth_adres_no: product.AdresNo,
+          sth_stok_srm_merkezi: product.SorumlulukM,
+          sth_proje_kodu: product.ProjeKod,
+          sth_birim_pntr: product.Birim,
+          sth_vergi_pntr: product.VergiPntr,
+          sth_vergi: miktar * vergi, // 📌 Vergi hesaplama (Miktar * Vergi)
+          sth_vergisiz_fl: false,
+          sth_iskonto1: miktar * iskonto1, // 📌 İskonto hesaplama (Miktar * BirimIsk1)
+          sth_iskonto2: miktar * iskonto2,
+          sth_iskonto3: miktar * iskonto3,
+          sth_iskonto4: miktar * iskonto4,
+          sth_iskonto5: miktar * iskonto5,
+          sth_iskonto6: miktar * iskonto6,
+          sth_giris_depo_no: product.Depo,
+          sth_cikis_depo_no: product.Depo,
+          sth_malkbl_sevk_tarihi: todayDate,
+          sth_odeme_op: product.OpNo,
+          sth_plasiyer_kodu: product.Temsilci,
+          sth_tutar: miktar * birimFiyat, // 📌 Tutar hesaplama (Miktar * BirimFiyat)
+          sth_belge_no: product.BelgeNo,
+          sth_stok_doviz_kuru: product.DovizKur,
+          sth_sip_uid: product.Guid,
+        };
+      });
+
     if (teslimEdilenSiparisler.length === 0) {
       Alert.alert("Uyarı", "Herhangi bir ürün için miktar girişi yapılmadı.");
       return;
     }
-  
+
     const jsonPayload = {
       Mikro: {
         FirmaKodu: authData.FirmaKodu,
@@ -158,21 +171,28 @@ const DepoOtomasyonu = () => {
         ]
       }
     };
-  
+
     console.log("📤 Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
-  
+
     try {
       const response = await axiosLink.post(`/Api/apiMethods/IrsaliyeKaydetV2`, jsonPayload);
-      
+
       console.log("📥 API Yanıtı:", response.data);
-  
+
       if (response.data.result[0].StatusCode === 200) {
-
-       await updateSiparisMiktarlari(teslimEdilenSiparisler);
-
-        Alert.alert("Başarılı", "Tüm teslim edilen siparişler başarıyla kaydedildi ve miktarlar güncellendi.", [
-          { text: "Tamam", onPress: () => navigation.goBack() }
-        ]);
+        Alert.alert(
+          "Başarılı",
+          "Tüm teslim edilen siparişler başarıyla kaydedildi.",
+          [
+            {
+              text: "Tamam",
+              onPress: async () => {
+                // Kullanıcıyı geri yönlendir
+                navigation.goBack();
+              },
+            },
+          ]
+        );
       } else {
         Alert.alert("Hata", response.data.result[0].ErrorMessage || "Evrak kaydedilemedi.");
       }
@@ -181,6 +201,7 @@ const DepoOtomasyonu = () => {
       Alert.alert("Hata", "Evrak kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
+
 
  const updateSiparisMiktarlari = async (siparisler) => {
      try {

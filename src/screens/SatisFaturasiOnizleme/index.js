@@ -436,7 +436,6 @@ const detailedProducts = products.map((product) => {
       sth_tutar: product.total,
       sth_vergi: product.sth_vergi,
       sth_aciklama: product.aciklama || faturaBilgileri.cha_aciklama,
-      cha_special3: 'iq',
       sth_cari_srm_merkezi: faturaBilgileri.cha_srmrkkodu,
       sth_stok_srm_merkezi: faturaBilgileri.cha_srmrkkodu,
       sth_subeno: 0,
@@ -481,6 +480,7 @@ const detailedProducts = products.map((product) => {
           detay: detailedProducts, // sth alanları
           cha_adres_no: faturaBilgileri.cha_adres_no,
           cha_satici_kodu: sth_plasiyer_kodu,
+          cha_special3: "iq",
           evrak_aciklamalari: formatExplanations(),
       };
       documents.push(productPayload);
