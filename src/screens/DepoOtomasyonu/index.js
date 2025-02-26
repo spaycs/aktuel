@@ -394,6 +394,13 @@ const DepoOtomasyonu = () => {
 
      {/* 📌 Popup Modal */}
      <Modal visible={popupVisible} transparent>
+     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // iOS için varsayılan offset
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={MainStyles.modalContainer}>
           <View style={MainStyles.modalContent}>
             {selectedSiparis && (
@@ -445,22 +452,15 @@ const DepoOtomasyonu = () => {
             )}
           </View>
         </View>
+        </ScrollView>
+    </KeyboardAvoidingView>
+  </TouchableWithoutFeedback>
       </Modal>
 
-{/* 📌 Barkod Okuma Kamerası Modal */}
-<Modal
-  visible={barkodCameraVisible}
-  animationType="slide"
-  transparent={true} // Arka planı şeffaf yaparak klavyenin içeriği kapatmamasını sağlıyoruz
->
-  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-      <KeyboardAvoidingView
-        style={{ width: '90%', backgroundColor: 'white', padding: 20, borderRadius: 10 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-      >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+   {/* 📌 Barkod Okuma Kamerası Modal */}
+<Modal visible={barkodCameraVisible} animationType="slide">
+ 
+        <View style={MainStyles.cameraContainer}>
           <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
           <View style={MainStyles.cameraWrapper}>
             <RNCamera
@@ -474,6 +474,12 @@ const DepoOtomasyonu = () => {
                 buttonNegative: 'İptal',
               }}
             />
+            <View style={MainStyles.overlay}>
+              <View style={MainStyles.overlayMask} />
+              <View style={MainStyles.overlayBox}>
+                <View style={MainStyles.overlayLine} />
+              </View>
+            </View>
           </View>
 
           {/* 📌 Elle Barkod Girişi */}
@@ -495,12 +501,9 @@ const DepoOtomasyonu = () => {
           <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
             <Text style={MainStyles.kapatTitle}>Kapat</Text>
           </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
-  </TouchableWithoutFeedback>
+        </View>
+    
 </Modal>
-
 
 
      
