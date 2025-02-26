@@ -398,7 +398,7 @@ const DepoOtomasyonu = () => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // iOS için varsayılan offset
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0} // iOS için varsayılan offset
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={MainStyles.modalContainer}>
