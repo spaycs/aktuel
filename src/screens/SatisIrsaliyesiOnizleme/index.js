@@ -253,8 +253,8 @@ const SatisIrsaliyesiOnizleme = () => {
       const totalPrice = (item.sth_miktar * item.sth_tutar).toFixed(2);
       const netPrice = calculateItemDiscount();
 
-      console.log('sth_tutar',item.sth_tutar);
-      console.log('sth_miktar',item.sth_miktar);
+      //console.log('sth_tutar',item.sth_tutar);
+      //console.log('sth_miktar',item.sth_miktar);
     
       return (
         <TouchableOpacity onPress={() => openModal(item)}>
