@@ -34,6 +34,7 @@ const SatisIrsaliyesiOnizleme = () => {
   const [isSaved, setIsSaved] = useState(true);
   const [netfiyat, setNetFiyat] = useState(0);
   const [loading, setLoading] = useState(false);
+  //const [KDVDahilMi, setKDVDahilMi] = useState(false);
     
   useEffect(() => {
     // defaults içindeki IQ_MikroPersKod değerini sth_plasiyer_kodu'na atayın
@@ -266,6 +267,7 @@ const SatisIrsaliyesiOnizleme = () => {
             <View style={MainStyles.rowContainer}>
               <View style={MainStyles.columnContainer}>
                 <Text style={MainStyles.productDetail}>Miktar: {item.sth_miktar}</Text>
+                <Text style={MainStyles.productDetail}>KDVDahilMi: {item.KDVDahilMi.toString()}</Text>
                 <Text style={MainStyles.productDetail}>
                   Birim Fiyat: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.sth_tutar)}
                 </Text>

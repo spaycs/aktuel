@@ -57,6 +57,7 @@ const ProductModal = ({
   const [KDV, setKDV] = useState('');
   const [Carpan, setCarpan] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
+  const [KDVDahilMi, setKDVDahilMi] = useState('');
   const [toplam_vergi, setToplam_vergi] = useState();
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
   const [isStokOzelDetayVisible, setIsStokOzelDetayVisible] = useState(false);
@@ -218,6 +219,10 @@ const ProductModal = ({
             if (firstItem.KDV) {
               setKDV(firstItem.KDV.toString());  
             }
+            if (firstItem.KDVDahilMi !== undefined) {
+              setKDVDahilMi(firstItem.KDVDahilMi);
+            }
+
             if (firstItem.Carpan !== undefined) {
               setCarpan(firstItem.Carpan.toString());
             } else {
@@ -392,20 +397,32 @@ const validateQuantity = (quantity) => {
         }, [sth_miktar]);
   
   
-     // 🔹 KDV dahil fiyat hesaplayan fonksiyon (toplam tutara göre)
-    const calculateTotalWithKDV = () => {
-      const totalWithoutKDV = parseFloat(calculateTotal()) || 0;
-      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
-      return totalWithoutKDV * (1 + kdvRate); // KDV dahil toplam tutar
-    };
+      // 🔹 KDV dahil fiyat hesaplayan fonksiyon (toplam tutara göre)
+      const calculateTotalWithKDV = () => {
+        const totalWithoutKDV = parseFloat(calculateTotal()) || 0;
+        const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
 
-    // 🔹 Birim fiyat için KDV dahil hesaplama fonksiyonu
-    const calculateBirimFiyatWithKDV = () => {
-      const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
-      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
-      return unitPrice * (1 + kdvRate); // KDV dahil birim fiyat
-    };
-  
+        if (!KDVDahilMi) {
+          // Eğer KDV dahil değilse, KDV'yi ekleyerek hesapla
+          return totalWithoutKDV * (1 + kdvRate);
+        }
+
+        return totalWithoutKDV; // Zaten KDV dahilse, olduğu gibi bırak
+      };
+
+      // 🔹 Birim fiyat için KDV hesaplama fonksiyonu
+      const calculateBirimFiyatWithKDV = () => {
+        const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
+        const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%18" → 0.18
+
+        if (!KDVDahilMi) {
+          // Eğer KDV dahil değilse, fiyatın üstüne KDV ekle
+          return unitPrice * (1 + kdvRate);
+        }
+
+        return unitPrice; // Zaten KDV dahilse, fiyatı değiştirme
+      };
+
 
   
   const calculateTotal = () => {
@@ -543,6 +560,7 @@ const validateQuantity = (quantity) => {
                       modalId: 0,
                       StokVade: StokVade,
                       sth_cikis_depo_no: productDepo,
+                      KDVDahilMi: 1,
                     },
                   ]);
   
@@ -592,6 +610,7 @@ const validateQuantity = (quantity) => {
                       modalId: 0,
                       StokVade: StokVade,
                       sth_cikis_depo_no: productDepo,
+                      KDVDahilMi: KDVDahilMi,
                     },
                   ]);
   
@@ -639,8 +658,11 @@ const validateQuantity = (quantity) => {
               modalId: 0,
               StokVade: StokVade,
               sth_cikis_depo_no: productDepo,
+              KDVDahilMi: KDVDahilMi,
             },
           ]);
+
+          console.log("KdvDahil Mi", KDVDahilMi)
   
           // State'leri sıfırlama
           setCarpan();
