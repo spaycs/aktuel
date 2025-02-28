@@ -312,11 +312,13 @@ const DepoOtomasyonu = () => {
   
   const openBarkodCamera = () => {
     console.log("📸 Barkod Kamera Açılıyor...");
-    setBarkodCameraVisible(false);
+  
+    // Popup modalını kapatıp barkod kamerasını açmadan önce bekleyelim
+    setPopupVisible(false);
   
     setTimeout(() => {
       setBarkodCameraVisible(true);
-    }, 200);
+    }, 500); // 📌 iOS için küçük bir bekleme süresi
   };
   
   const openSeriCamera = () => {
@@ -449,7 +451,13 @@ const DepoOtomasyonu = () => {
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
                 <TouchableOpacity
-                   onPress={openBarkodCamera}
+                  onPress={() => {
+                    console.log("📸 Barkod Kamera Açılıyor...");
+                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
+                    setTimeout(() => {
+                      setBarkodCameraVisible(true);
+                    }, 100);
+                  }}
                   style={MainStyles.depoOtomasyonuBarkodButton}
                 >
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
@@ -500,8 +508,13 @@ const DepoOtomasyonu = () => {
       </Modal>
 
    {/* 📌 Barkod Okuma Kamerası Modal */}
-<Modal visible={barkodCameraVisible} animationType="slide"  presentationStyle="overFullScreen" transparent={true} >
- 
+   <Modal
+  visible={barkodCameraVisible}
+  animationType="fade" // 📌 iOS'ta daha hızlı geçiş için fade ekledik
+  transparent={true}
+  onRequestClose={() => setBarkodCameraVisible(false)}
+>
+
         <View style={MainStyles.cameraContainer}>
           <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
           <View style={MainStyles.cameraWrapper}>
