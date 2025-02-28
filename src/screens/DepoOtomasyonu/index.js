@@ -346,6 +346,7 @@ const DepoOtomasyonu = () => {
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
   >
+  <ScrollView flex={1} scrollEnabled>
     <View style={MainStyles.slContainer}>
  
       <View style={MainStyles.inputContainer}>
@@ -423,7 +424,7 @@ const DepoOtomasyonu = () => {
                 <TouchableOpacity
                   onPress={() => {
                     console.log("📸 Barkod Kamera Açılıyor...");
-                    if (popupVisible)  // 🔹 Eğer başka bir modal açıksa kapat
+                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
                     setTimeout(() => {
                       setBarkodCameraVisible(true);
                     }, 100);
@@ -514,6 +515,7 @@ const DepoOtomasyonu = () => {
      
           
     </View>
+    </ScrollView>
     <View style={MainStyles.saveContainer}>
               <TouchableOpacity
                 style={MainStyles.saveButton}
