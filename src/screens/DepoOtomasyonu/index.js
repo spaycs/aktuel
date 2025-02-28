@@ -312,7 +312,7 @@ const DepoOtomasyonu = () => {
   
   const openBarkodCamera = () => {
     console.log("📸 Barkod Kamera Açılıyor...");
-    setPopupVisible(false);
+    setBarkodCameraVisible(false);
   
     setTimeout(() => {
       setBarkodCameraVisible(true);
