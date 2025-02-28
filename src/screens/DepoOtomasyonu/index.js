@@ -316,18 +316,6 @@ const DepoOtomasyonu = () => {
     console.log("🔍 barkodCameraVisible:", barkodCameraVisible);
   }, [barkodCameraVisible]);
 
-
-  const openBarkodCamera = () => {
-    console.log("📸 Barkod Kamerası Açılmaya Çalışılıyor...");
-  
-    // Popup'ı kapatmadan direkt barkod kamerasını aç
-    setTimeout(() => {
-      console.log("📸 Barkod Kamerası Açılıyor...");
-      setBarkodCameraVisible(true);
-    }, Platform.OS === 'ios' ? 500 : 0); // 📌 iOS için 500ms gecikme ekledik
-  };
-  
-  
   
  // 🔹 FlatList için renderItem fonksiyonu
  const renderSiparisItem = ({ item }) => {
@@ -434,7 +422,13 @@ const DepoOtomasyonu = () => {
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
                 <TouchableOpacity
-                  onPress={openBarkodCamera} 
+                  onPress={() => {
+                    console.log("📸 Barkod Kamera Açılıyor...");
+                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
+                    setTimeout(() => {
+                      setBarkodCameraVisible(true);
+                    }, 100);
+                  }}
                   style={MainStyles.depoOtomasyonuBarkodButton}
                 >
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
@@ -443,7 +437,7 @@ const DepoOtomasyonu = () => {
 
                 <TextInput
                   style={MainStyles.depoOtomasyonInputUrunAra}
-                  placeholder="Barkodu Elle Girin veya Kameradan Okutun"
+                  placeholder="Barkodu Elle Girin"
                   placeholderTextColor={colors.black}
                   value={barkod}
                   onChangeText={setBarkod}
@@ -455,7 +449,7 @@ const DepoOtomasyonu = () => {
                   <Text style={MainStyles.depoOtomasyonButtunText}>Ürünü Getir</Text>
                 </TouchableOpacity>
 
-                {/* {barkodVerified && ( */}
+                {barkodVerified && (
                   <TextInput
                     style={MainStyles.depoOtomasyonInputUrunAra}
                     placeholder="Teslim Miktarı"
@@ -464,7 +458,7 @@ const DepoOtomasyonu = () => {
                     value={miktar}
                     onChangeText={setMiktar}
                   />
-                {/*)}*/}
+                )}
 
                 {/* 📌 Tamam ve Vazgeç Butonları  */}
                 <View style={MainStyles.doButtonRow}>
@@ -484,53 +478,38 @@ const DepoOtomasyonu = () => {
   </TouchableWithoutFeedback>
       </Modal>
 
-      {barkodCameraVisible && (
-  <Modal
-    visible={barkodCameraVisible}
-    animationType="slide"
-    presentationStyle="fullScreen" // 📌 iOS için tam ekran yapıyoruz
-    transparent={false} // 📌 Arka planın düzgün açıldığını doğrulamak için
-    onShow={() => console.log("📸 Barkod Kamerası Açıldı!")}
-    onRequestClose={() => setBarkodCameraVisible(false)}
-  >
-    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)' }}> 
-      {/* 📌 Modal gerçekten açılıyor mu kontrol için arka plan rengi ekledik */}
-      <Text style={{ color: 'white', textAlign: 'center', marginTop: 20, fontSize: 18 }}>
-        📸 Barkodu Okutunuz (Modal Açıldı mı?)
-      </Text>
-
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {console.log("🔍 Kamera Render Ediliyor...")}
-        <RNCamera
-          style={{ width: '100%', height: '100%', flex: 1 }} // 📌 Kamera tam ekran olacak
-          onBarCodeRead={handleBarkodRead}
-          captureAudio={false}
-          androidCameraPermissionOptions={{
-            title: 'Kamera İzni',
-            message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
-            buttonPositive: 'Tamam',
-            buttonNegative: 'İptal',
-          }}
-        />
-      </View>
-
-      {/* 📌 Kapat Butonu */}
-      <TouchableOpacity 
-        onPress={() => setBarkodCameraVisible(false)} 
-        style={{
-          backgroundColor: 'red', 
-          padding: 15, 
-          alignSelf: 'center', 
-          borderRadius: 10,
-          marginBottom: 20
-        }}
-      >
-        <Text style={{ color: 'white', fontSize: 16 }}>Kapat</Text>
-      </TouchableOpacity>
-    </View>
-  </Modal>
-)}
-
+   {/* 📌 Barkod Okuma Kamerası Modal */}
+<Modal visible={barkodCameraVisible} animationType="slide">
+ 
+        <View style={MainStyles.cameraContainer}>
+          <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+          <View style={MainStyles.cameraWrapper}>
+            <RNCamera
+              style={{ flex: 1 }}
+              onBarCodeRead={handleBarkodRead}
+              captureAudio={false}
+              androidCameraPermissionOptions={{
+                title: 'Kamera İzni',
+                message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+                buttonPositive: 'Tamam',
+                buttonNegative: 'İptal',
+              }}
+            />
+            <View style={MainStyles.overlay}>
+              <View style={MainStyles.overlayMask} />
+              <View style={MainStyles.overlayBox}>
+                <View style={MainStyles.overlayLine} />
+              </View>
+            </View>
+          </View>
+ 
+          {/* 📌 Kapat Butonu */}
+          <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
+            <Text style={MainStyles.kapatTitle}>Kapat</Text>
+          </TouchableOpacity>
+        </View>
+    
+</Modal>
 
 
      
