@@ -318,12 +318,15 @@ const DepoOtomasyonu = () => {
 
 
   const openBarkodCamera = () => {
-    console.log("📸 Barkod Kamera Açılma İşlemi Başlatıldı...");
+    console.log("📸 Barkod Kamerası Açılmaya Çalışılıyor...");
   
-    setBarkodCameraVisible(true); // Önce popup'ı kapat
-  
-    console.log("📸 Barkod Kamerası Açılıyor...");
+    // Popup'ı kapatmadan direkt barkod kamerasını aç
+    setTimeout(() => {
+      console.log("📸 Barkod Kamerası Açılıyor...");
+      setBarkodCameraVisible(true);
+    }, Platform.OS === 'ios' ? 500 : 0); // 📌 iOS için 500ms gecikme ekledik
   };
+  
   
   
  // 🔹 FlatList için renderItem fonksiyonu
@@ -481,44 +484,47 @@ const DepoOtomasyonu = () => {
   </TouchableWithoutFeedback>
       </Modal>
 
-   {/* 📌 Barkod Okuma Kamerası Modal */}
-   <Modal
-  visible={barkodCameraVisible}
-  animationType="slide"
-  presentationStyle="overFullScreen"
-  transparent={true}
-  onShow={() => console.log("📸 Barkod Kamerası Açıldı!")}
-  onRequestClose={() => setBarkodCameraVisible(false)}
->
-  <View style={MainStyles.cameraContainer}>
-    <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
-    <View style={MainStyles.cameraWrapper}>
-      <RNCamera
-        style={{ flex: 1 }}
-        onBarCodeRead={handleBarkodRead}
-        captureAudio={false}
-        androidCameraPermissionOptions={{
-          title: 'Kamera İzni',
-          message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
-          buttonPositive: 'Tamam',
-          buttonNegative: 'İptal',
-        }}
-      />
-      <View style={MainStyles.overlay}>
-        <View style={MainStyles.overlayMask} />
-        <View style={MainStyles.overlayBox}>
-          <View style={MainStyles.overlayLine} />
+      {barkodCameraVisible && (
+  <Modal
+    visible={barkodCameraVisible}
+    animationType="slide"
+    presentationStyle="overFullScreen"
+    transparent={true}
+    onShow={() => console.log("📸 Barkod Kamerası Açıldı!")}
+    onRequestClose={() => setBarkodCameraVisible(false)}
+  >
+    <View style={MainStyles.cameraContainer}>
+      <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+      <View style={MainStyles.cameraWrapper}>
+        <RNCamera
+          style={{ flex: 1 }}
+          onBarCodeRead={handleBarkodRead}
+          captureAudio={false}
+          androidCameraPermissionOptions={{
+            title: 'Kamera İzni',
+            message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+            buttonPositive: 'Tamam',
+            buttonNegative: 'İptal',
+          }}
+        />
+        <View style={MainStyles.overlay}>
+          <View style={MainStyles.overlayMask} />
+          <View style={MainStyles.overlayBox}>
+            <View style={MainStyles.overlayLine} />
+          </View>
         </View>
       </View>
+
+      {/* 📌 Kapat Butonu */}
+      <TouchableOpacity 
+        onPress={() => setBarkodCameraVisible(false)} 
+        style={MainStyles.kapat}
+      >
+        <Text style={MainStyles.kapatTitle}>Kapat</Text>
+      </TouchableOpacity>
     </View>
-
-    {/* 📌 Kapat Butonu */}
-    <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
-      <Text style={MainStyles.kapatTitle}>Kapat</Text>
-    </TouchableOpacity>
-  </View>
-</Modal>
-
+  </Modal>
+)}
 
      
           
