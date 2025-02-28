@@ -404,6 +404,7 @@ const DepoOtomasyonu = () => {
       </Modal>
 
      {/* 📌 Popup Modal */}
+     <View>
      <Modal visible={popupVisible} transparent>
      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <KeyboardAvoidingView
@@ -437,7 +438,7 @@ const DepoOtomasyonu = () => {
 
                 <TextInput
                   style={MainStyles.depoOtomasyonInputUrunAra}
-                  placeholder="Barkodu Elle Girin"
+                  placeholder="Barkodu Elle Girin veya Kameradan Okutun"
                   placeholderTextColor={colors.black}
                   value={barkod}
                   onChangeText={setBarkod}
@@ -449,7 +450,7 @@ const DepoOtomasyonu = () => {
                   <Text style={MainStyles.depoOtomasyonButtunText}>Ürünü Getir</Text>
                 </TouchableOpacity>
 
-                {barkodVerified && (
+                {/* {barkodVerified && ( */}
                   <TextInput
                     style={MainStyles.depoOtomasyonInputUrunAra}
                     placeholder="Teslim Miktarı"
@@ -458,7 +459,7 @@ const DepoOtomasyonu = () => {
                     value={miktar}
                     onChangeText={setMiktar}
                   />
-                )}
+                {/*)}*/}
 
                 {/* 📌 Tamam ve Vazgeç Butonları  */}
                 <View style={MainStyles.doButtonRow}>
@@ -477,6 +478,7 @@ const DepoOtomasyonu = () => {
     </KeyboardAvoidingView>
   </TouchableWithoutFeedback>
       </Modal>
+      </View>
 
    {/* 📌 Barkod Okuma Kamerası Modal */}
 <Modal visible={barkodCameraVisible} animationType="slide">
