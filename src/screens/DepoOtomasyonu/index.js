@@ -311,8 +311,6 @@ const DepoOtomasyonu = () => {
   };
   
   const openBarkodCamera = () => {
-    setPopupVisible(false);
-    setCameraVisible(false);
     setBarkodCameraVisible(false);
   
     setTimeout(() => {
@@ -501,7 +499,7 @@ const DepoOtomasyonu = () => {
       </Modal>
 
    {/* 📌 Barkod Okuma Kamerası Modal */}
-<Modal visible={barkodCameraVisible} animationType="slide">
+<Modal visible={barkodCameraVisible} animationType="slide"  presentationStyle="overFullScreen">
  
         <View style={MainStyles.cameraContainer}>
           <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
