@@ -489,15 +489,19 @@ const DepoOtomasyonu = () => {
     visible={barkodCameraVisible}
     animationType="slide"
     presentationStyle="overFullScreen"
-    transparent={true}
+    transparent={false} // 📌 Tam ekran görünmesini sağla
     onShow={() => console.log("📸 Barkod Kamerası Açıldı!")}
     onRequestClose={() => setBarkodCameraVisible(false)}
   >
-    <View style={MainStyles.cameraContainer}>
-      <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
-      <View style={MainStyles.cameraWrapper}>
+    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)' }}> 
+      {/* 📌 Arka planı siyah yaparak modalın görünürlüğünü test ediyoruz */}
+      <Text style={{ color: 'white', textAlign: 'center', marginTop: 20, fontSize: 18 }}>
+        📸 Barkodu Okutunuz
+      </Text>
+
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <RNCamera
-          style={{ flex: 1 }}
+          style={{ width: '100%', height: '100%', flex: 1 }} // 📌 Kamera tam ekran olacak
           onBarCodeRead={handleBarkodRead}
           captureAudio={false}
           androidCameraPermissionOptions={{
@@ -507,24 +511,25 @@ const DepoOtomasyonu = () => {
             buttonNegative: 'İptal',
           }}
         />
-        <View style={MainStyles.overlay}>
-          <View style={MainStyles.overlayMask} />
-          <View style={MainStyles.overlayBox}>
-            <View style={MainStyles.overlayLine} />
-          </View>
-        </View>
       </View>
 
       {/* 📌 Kapat Butonu */}
       <TouchableOpacity 
         onPress={() => setBarkodCameraVisible(false)} 
-        style={MainStyles.kapat}
+        style={{
+          backgroundColor: 'red', 
+          padding: 15, 
+          alignSelf: 'center', 
+          borderRadius: 10,
+          marginBottom: 20
+        }}
       >
-        <Text style={MainStyles.kapatTitle}>Kapat</Text>
+        <Text style={{ color: 'white', fontSize: 16 }}>Kapat</Text>
       </TouchableOpacity>
     </View>
   </Modal>
 )}
+
 
      
           
