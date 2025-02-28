@@ -415,6 +415,7 @@ export const MainStyles = {
       marginTop: 10,
       borderWidth: 1,
       borderColor: colors.textinputgray,
+      flex: 1,
     },
     depoOtomasyonuButtonText: {
       color: colors.white,
