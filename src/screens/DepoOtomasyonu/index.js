@@ -315,7 +315,6 @@ const DepoOtomasyonu = () => {
   useEffect(() => {
     console.log("🔍 barkodCameraVisible:", barkodCameraVisible);
   }, [barkodCameraVisible]);
-  
 
   
  // 🔹 FlatList için renderItem fonksiyonu
@@ -405,7 +404,6 @@ const DepoOtomasyonu = () => {
       </Modal>
 
      {/* 📌 Popup Modal */}
-     <View>
      <Modal visible={popupVisible} transparent>
      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <KeyboardAvoidingView
@@ -426,7 +424,7 @@ const DepoOtomasyonu = () => {
                 <TouchableOpacity
                   onPress={() => {
                     console.log("📸 Barkod Kamera Açılıyor...");
-                    if (popupVisible)  // 🔹 Eğer başka bir modal açıksa kapat
+                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
                     setTimeout(() => {
                       setBarkodCameraVisible(true);
                     }, 100);
@@ -479,17 +477,19 @@ const DepoOtomasyonu = () => {
     </KeyboardAvoidingView>
   </TouchableWithoutFeedback>
       </Modal>
-      </View>
 
-      <Modal
-  visible={barkodCameraVisible}
-  animationType="slide"
-  presentationStyle="fullScreen"
-  key={barkodCameraVisible ? "modal-open" : "modal-closed"} // 🔹 Güncellemeyi zorlar
->
-<View style={{ ...MainStyles.cameraContainer, zIndex: 9999 }}>
-    <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
-    <View style={MainStyles.cameraWrapper}>
+   {/* Barkod Kamera Ekranı (Modal Kullanmadan) */}
+{barkodCameraVisible && (
+  <View style={{
+    position: 'absolute', 
+    top: 0, left: 0, right: 0, bottom: 0, 
+    backgroundColor: 'black', 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  }}>
+    <Text style={{ color: 'white', fontSize: 18, marginBottom: 10 }}>📸 Barkodu Okutunuz</Text>
+
+    <View style={{ width: '100%', height: '80%' }}>
       <RNCamera
         style={{ flex: 1 }}
         onBarCodeRead={handleBarkodRead}
@@ -502,12 +502,20 @@ const DepoOtomasyonu = () => {
         }}
       />
     </View>
-  </View>
-  <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
-    <Text style={MainStyles.kapatTitle}>Kapat</Text>
-  </TouchableOpacity>
-</Modal>
 
+    <TouchableOpacity 
+      onPress={() => setBarkodCameraVisible(false)} 
+      style={{
+        marginTop: 20,
+        backgroundColor: 'red',
+        padding: 15,
+        borderRadius: 10,
+      }}
+    >
+      <Text style={{ color: 'white', fontSize: 16 }}>Kapat</Text>
+    </TouchableOpacity>
+  </View>
+)}
 
 
      
