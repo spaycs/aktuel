@@ -293,16 +293,44 @@ const DepoOtomasyonu = () => {
 
   // 📌 Popup açılınca seçilen siparişi kaydet
   const openPopup = (siparis) => {
-    const teslimEdilen = teslimMiktarlari[siparis.StokKod] || 0;
-    const kalan = siparis.Miktar - teslimEdilen;
-
-    setSelectedSiparis(siparis);
-    setKalanMiktar(kalan);
-    setMiktar('');
-    setPopupVisible(true);
-    setBarkodVerified(false);
-    setBarkod('');
+    setPopupVisible(false);
+    setBarkodCameraVisible(false);
+    setCameraVisible(false);
+  
+    setTimeout(() => {
+      const teslimEdilen = teslimMiktarlari[siparis.StokKod] || 0;
+      const kalan = siparis.Miktar - teslimEdilen;
+  
+      setSelectedSiparis(siparis);
+      setKalanMiktar(kalan);
+      setMiktar('');
+      setPopupVisible(true);
+      setBarkodVerified(false);
+      setBarkod('');
+    }, 200); // Modal değişimini garantiye almak için küçük gecikme eklendi
   };
+  
+  const openBarkodCamera = () => {
+    setPopupVisible(false);
+    setCameraVisible(false);
+    setBarkodCameraVisible(false);
+  
+    setTimeout(() => {
+      setBarkodCameraVisible(true);
+    }, 200);
+  };
+  
+  const openSeriCamera = () => {
+    setPopupVisible(false);
+    setBarkodCameraVisible(false);
+    setCameraVisible(false);
+  
+    setTimeout(() => {
+      setCameraVisible(true);
+    }, 200);
+  };
+  
+  
 
   // 📌 Popup kapatma fonksiyonu
   const closePopup = () => {
@@ -357,7 +385,7 @@ const DepoOtomasyonu = () => {
           onChangeText={setSeri}
           placeholderTextColor={colors.placeholderTextColor}
         />
-        <TouchableOpacity onPress={() => setCameraVisible(true)} style={MainStyles.slbuttonUrunAra}>
+        <TouchableOpacity onPress={openSeriCamera} style={MainStyles.slbuttonUrunAra}>
           <Camera />
         </TouchableOpacity>
       </View>
@@ -422,13 +450,7 @@ const DepoOtomasyonu = () => {
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
                 <TouchableOpacity
-                  onPress={() => {
-                    console.log("📸 Barkod Kamera Açılıyor...");
-                    if (popupVisible)  // 🔹 Eğer başka bir modal açıksa kapat
-                    setTimeout(() => {
-                      setBarkodCameraVisible(true);
-                    }, 1);
-                  }}
+                   onPress={openBarkodCamera}
                   style={MainStyles.depoOtomasyonuBarkodButton}
                 >
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
@@ -443,7 +465,6 @@ const DepoOtomasyonu = () => {
                   onChangeText={setBarkod}
                   keyboardType="numeric"
                 />
-                
 
                 {/* 📌 Onayla Butonu */}
                 <TouchableOpacity onPress={() => handleBarkodRead({ data: barkod })} style={MainStyles.fullWidthButton}>
