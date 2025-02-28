@@ -25,30 +25,6 @@ const DepoOtomasyonu = () => {
   const [barkodVerified, setBarkodVerified] = useState(false);
   const [teslimMiktarlari, setTeslimMiktarlari] = useState({});
   const navigation = useNavigation();
-  const [wasPopupVisible, setWasPopupVisible] = useState(false); // 🔥 Popup durumu kaydetmek için
-
-  const openBarkodCamera = () => {
-    console.log("📸 Barkod Kamerası Açılıyor...");
-  
-    setWasPopupVisible(popupVisible); // 🔥 Popup açık mı kaydediyoruz
-    setPopupVisible(false); // Popup kapanmasın ama geçici olarak false yapıyoruz
-  
-    setTimeout(() => {
-      setBarkodCameraVisible(true);
-    }, 200);
-  };
-  
-  const closeBarkodCamera = () => {
-    setBarkodCameraVisible(false);
-    
-    // 🔥 Eğer popup önceden açıksa, tekrar aç
-    if (wasPopupVisible) {
-      setTimeout(() => {
-        setPopupVisible(true);
-      }, 200);
-    }
-  };
-  
 
   const handleSeriBarkodRead = ({ data }) => {
     console.log("📸 Okunan Barkod:", data);
@@ -370,7 +346,6 @@ const DepoOtomasyonu = () => {
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // iOS için varsayılan offset
   >
-  <ScrollView flex={1} scrollEnabled>
     <View style={MainStyles.slContainer}>
  
       <View style={MainStyles.inputContainer}>
@@ -502,44 +477,43 @@ const DepoOtomasyonu = () => {
   </TouchableWithoutFeedback>
       </Modal>
 
-      <Modal 
-  visible={barkodCameraVisible} 
-  animationType="slide" 
-  transparent
-  presentationStyle="overFullScreen" // 🔥 iOS'ta başka modalın üstüne gelmesini sağlar
->
-  <View style={MainStyles.cameraContainer}>
-    <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
-    <View style={MainStyles.cameraWrapper}>
-      <RNCamera
-        style={{ flex: 1 }}
-        onBarCodeRead={handleBarkodRead}
-        captureAudio={false}
-        androidCameraPermissionOptions={{
-          title: 'Kamera İzni',
-          message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
-          buttonPositive: 'Tamam',
-          buttonNegative: 'İptal',
-        }}
-      />
-      <View style={MainStyles.overlay}>
-        <View style={MainStyles.overlayMask} />
-        <View style={MainStyles.overlayBox}>
-          <View style={MainStyles.overlayLine} />
+   {/* 📌 Barkod Okuma Kamerası Modal */}
+<Modal visible={barkodCameraVisible} animationType="slide">
+ 
+        <View style={MainStyles.cameraContainer}>
+          <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+          <View style={MainStyles.cameraWrapper}>
+            <RNCamera
+              style={{ flex: 1 }}
+              onBarCodeRead={handleBarkodRead}
+              captureAudio={false}
+              androidCameraPermissionOptions={{
+                title: 'Kamera İzni',
+                message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+                buttonPositive: 'Tamam',
+                buttonNegative: 'İptal',
+              }}
+            />
+            <View style={MainStyles.overlay}>
+              <View style={MainStyles.overlayMask} />
+              <View style={MainStyles.overlayBox}>
+                <View style={MainStyles.overlayLine} />
+              </View>
+            </View>
+          </View>
+ 
+          {/* 📌 Kapat Butonu */}
+          <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
+            <Text style={MainStyles.kapatTitle}>Kapat</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-    </View>
-    <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
-      <Text style={MainStyles.kapatTitle}>Kapat</Text>
-    </TouchableOpacity>
-  </View>
+    
 </Modal>
 
 
      
           
     </View>
-    </ScrollView>
     <View style={MainStyles.saveContainer}>
               <TouchableOpacity
                 style={MainStyles.saveButton}
