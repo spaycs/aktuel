@@ -478,26 +478,38 @@ const DepoOtomasyonu = () => {
   </TouchableWithoutFeedback>
       </Modal>
 
-      {barkodCameraVisible && (
-  <Modal 
-    key={Math.random()} // 🔥 Her açıldığında yeni bir Modal olarak render edilir.
-    visible={barkodCameraVisible} 
-    animationType="slide"
-  >
-    <View style={MainStyles.cameraContainer}>
-      <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+      <Modal 
+  visible={barkodCameraVisible} 
+  animationType="slide" 
+  transparent
+  presentationStyle="overFullScreen" // 🔥 iOS'ta başka modalın üstüne gelmesini sağlar
+>
+  <View style={MainStyles.cameraContainer}>
+    <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
+    <View style={MainStyles.cameraWrapper}>
       <RNCamera
         style={{ flex: 1 }}
         onBarCodeRead={handleBarkodRead}
         captureAudio={false}
+        androidCameraPermissionOptions={{
+          title: 'Kamera İzni',
+          message: 'Barkod okutmak için kameranıza erişim izni vermelisiniz.',
+          buttonPositive: 'Tamam',
+          buttonNegative: 'İptal',
+        }}
       />
-      <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
-        <Text style={MainStyles.kapatTitle}>Kapat</Text>
-      </TouchableOpacity>
+      <View style={MainStyles.overlay}>
+        <View style={MainStyles.overlayMask} />
+        <View style={MainStyles.overlayBox}>
+          <View style={MainStyles.overlayLine} />
+        </View>
+      </View>
     </View>
-  </Modal>
-)}
-
+    <TouchableOpacity onPress={() => setBarkodCameraVisible(false)} style={MainStyles.kapat}>
+      <Text style={MainStyles.kapatTitle}>Kapat</Text>
+    </TouchableOpacity>
+  </View>
+</Modal>
 
 
      
