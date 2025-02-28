@@ -487,7 +487,7 @@ const DepoOtomasyonu = () => {
   presentationStyle="fullScreen"
   key={barkodCameraVisible ? "modal-open" : "modal-closed"} // 🔹 Güncellemeyi zorlar
 >
-  <View style={MainStyles.cameraContainer}>
+<View style={{ ...MainStyles.cameraContainer, zIndex: 9999 }}>
     <Text style={MainStyles.barcodeTitle}>Barkodu Okutunuz</Text>
     <View style={MainStyles.cameraWrapper}>
       <RNCamera
