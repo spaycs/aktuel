@@ -229,7 +229,7 @@ const DepoOtomasyonu = () => {
 
   const handleBarkodRead = async ({ data }) => {
     setBarkod(data);
-    setBarkodCameraVisible(true);
+    setBarkodCameraVisible(false);
   
     try {
       const response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${data}`);
