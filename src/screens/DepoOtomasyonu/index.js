@@ -424,7 +424,7 @@ const DepoOtomasyonu = () => {
                 <TouchableOpacity
                   onPress={() => {
                     console.log("📸 Barkod Kamera Açılıyor...");
-                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
+                    if (popupVisible)  // 🔹 Eğer başka bir modal açıksa kapat
                     setTimeout(() => {
                       setBarkodCameraVisible(true);
                     }, 100);
@@ -443,6 +443,7 @@ const DepoOtomasyonu = () => {
                   onChangeText={setBarkod}
                   keyboardType="numeric"
                 />
+                
 
                 {/* 📌 Onayla Butonu */}
                 <TouchableOpacity onPress={() => handleBarkodRead({ data: barkod })} style={MainStyles.fullWidthButton}>
