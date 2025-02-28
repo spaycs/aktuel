@@ -488,18 +488,19 @@ const DepoOtomasyonu = () => {
   <Modal
     visible={barkodCameraVisible}
     animationType="slide"
-    presentationStyle="overFullScreen"
-    transparent={false} // 📌 Tam ekran görünmesini sağla
+    presentationStyle="fullScreen" // 📌 iOS için tam ekran yapıyoruz
+    transparent={false} // 📌 Arka planın düzgün açıldığını doğrulamak için
     onShow={() => console.log("📸 Barkod Kamerası Açıldı!")}
     onRequestClose={() => setBarkodCameraVisible(false)}
   >
-    <View style={{ flex: 1, zIndex: 9999, backgroundColor: 'rgba(0,0,0,0.9)' }}> 
-      {/* 📌 Arka planı siyah yaparak modalın görünürlüğünü test ediyoruz */}
+    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)' }}> 
+      {/* 📌 Modal gerçekten açılıyor mu kontrol için arka plan rengi ekledik */}
       <Text style={{ color: 'white', textAlign: 'center', marginTop: 20, fontSize: 18 }}>
-        📸 Barkodu Okutunuz
+        📸 Barkodu Okutunuz (Modal Açıldı mı?)
       </Text>
 
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {console.log("🔍 Kamera Render Ediliyor...")}
         <RNCamera
           style={{ width: '100%', height: '100%', flex: 1 }} // 📌 Kamera tam ekran olacak
           onBarCodeRead={handleBarkodRead}
@@ -529,6 +530,7 @@ const DepoOtomasyonu = () => {
     </View>
   </Modal>
 )}
+
 
 
      
