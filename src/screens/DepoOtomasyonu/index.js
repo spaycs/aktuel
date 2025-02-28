@@ -320,12 +320,9 @@ const DepoOtomasyonu = () => {
   const openBarkodCamera = () => {
     console.log("📸 Barkod Kamera Açılma İşlemi Başlatıldı...");
   
-    setPopupVisible(false); // Önce popup'ı kapat
+    setBarkodCameraVisible(true); // Önce popup'ı kapat
   
-    setTimeout(() => {
-      console.log("📸 Barkod Kamerası Açılıyor...");
-      setBarkodCameraVisible(true);
-    }, 500); // 📌 iOS için modalın tam kapanmasını beklemek adına 500ms gecikme ekledik
+    console.log("📸 Barkod Kamerası Açılıyor...");
   };
   
   
@@ -434,13 +431,7 @@ const DepoOtomasyonu = () => {
 
                 {/* 📌 Barkod Okutma veya Elle Girme */}
                 <TouchableOpacity
-                  onPress={() => {
-                    console.log("📸 Barkod Kamera Açılıyor...");
-                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
-                    setTimeout(() => {
-                      setBarkodCameraVisible(true);
-                    }, 100);
-                  }}
+                  onPress={openBarkodCamera} 
                   style={MainStyles.depoOtomasyonuBarkodButton}
                 >
                   <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
