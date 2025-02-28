@@ -243,13 +243,15 @@ const calculateItemDiscount = () => {
   return discountedPrice.toFixed(2);
 };
 
-// Ürün başına KDV hesaplama fonksiyonu
-const calculateItemTax = () => {
-  const discountedTotal = calculateItemDiscount(); // İskonto sonrası tutar
-  const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
-  const taxAmount = (discountedTotal * kdvRate).toFixed(2);
-  return taxAmount;
-};
+  // Ürün başına KDV hesaplama fonksiyonu
+  const calculateItemTax = () => {
+    const discountedTotal = parseFloat(calculateItemDiscount()) || 0; // İskonto sonrası tutar
+    const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
+
+    // Eğer KDVDahilMi false ise klasik KDV hesaplama yöntemi
+    const taxAmount = (discountedTotal * kdvRate).toFixed(2);
+    return taxAmount;
+  };
 const totalPrice = (item.sth_miktar * item.sth_tutar).toFixed(2);
 const netPrice = calculateItemDiscount();
 
@@ -408,6 +410,10 @@ const handleSave = async () => {
 const detailedProducts = products.map((product) => {
   const { discountedPrice, calculatedTax } = calculateValuesForProduct(product);
   
+   // 🔹 Eğer `KDVDahilMi` true ise net fiyatı gönder, false ise `product.total`
+   const netFiyat = product.sth_tutar * product.sth_miktar;
+   const sthTutarValue = product.KDVDahilMi ? netFiyat.toFixed(2) : product.total;
+
   // cha_cins'e göre sth_cins değerini ayarla
   let sthCins = 0;
   if (faturaBilgileri.cha_cinsi === 6) {
@@ -433,7 +439,7 @@ const detailedProducts = products.map((product) => {
       sth_exim_kodu: faturaBilgileri.cha_exim_kodu,
       sth_miktar: product.sth_miktar,
       sth_birim_pntr: product.sth_birim_pntr,
-      sth_tutar: product.total,
+      sth_tutar: sthTutarValue,
       sth_vergi: product.sth_vergi,
       sth_aciklama: product.aciklama || faturaBilgileri.cha_aciklama,
       sth_cari_srm_merkezi: faturaBilgileri.cha_srmrkkodu,

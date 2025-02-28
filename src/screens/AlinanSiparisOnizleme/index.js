@@ -303,13 +303,15 @@ useEffect(() => {
         return discountedPrice.toFixed(2);
       };
 
-      // Ürün başına KDV hesaplama fonksiyonu
-      const calculateItemTax = () => {
-        const discountedTotal = calculateItemDiscount(); // İskonto sonrası tutar
-        const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
-        const taxAmount = (discountedTotal * kdvRate).toFixed(2);
-        return taxAmount;
-      };
+     // Ürün başına KDV hesaplama fonksiyonu
+     const calculateItemTax = () => {
+      const discountedTotal = parseFloat(calculateItemDiscount()) || 0; // İskonto sonrası tutar
+      const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
+      // Eğer KDVDahilMi false ise klasik KDV hesaplama yöntemi
+      const taxAmount = (discountedTotal * kdvRate).toFixed(2);
+      return taxAmount;
+    };
+
       const totalPrice = (item.sth_miktar * item.sth_tutar).toFixed(2);
       const netPrice = calculateItemDiscount();
 
@@ -489,7 +491,14 @@ useEffect(() => {
         evraklar: [
           {
             evrak_aciklamalari: formatExplanations(),
-            satirlar: productsWithCalculatedValues.map((product) => ({
+            satirlar: productsWithCalculatedValues.map((product) => {
+            // ✅ Eğer `KDVDahilMi` true ise Net Fiyatı gönder, false ise `product.total`
+            const netFiyat = (product.sth_tutar * product.sth_miktar);
+            console.log("netFiyat", netFiyat)
+            console.log("sth_tutar", product.sth_tutar)
+            console.log("sth_miktar", product.KDVDahilMi)
+            const sthTutarValue = product.KDVDahilMi ? netFiyat : product.total;
+          return {
               sip_tarih: alinanSiparis.sip_tarih,
               sip_tip: alinanSiparis.sip_tip,
               sip_cins: alinanSiparis.sip_cins,
@@ -502,7 +511,7 @@ useEffect(() => {
               sip_projekodu: alinanSiparis.sip_projekodu,
               sip_miktar: product.sth_miktar,
               sip_birim_pntr: product.sth_birim_pntr,
-              sip_tutar: product.total,
+              sip_tutar: sthTutarValue,
               sip_vergi_pntr: product.sth_vergi_pntr,
               sip_vergi: product.sth_vergi,
               sip_vergisiz_fl: false,
@@ -537,8 +546,8 @@ useEffect(() => {
                   miktar: 0
                 }
               ],
-            
-            }))
+            };
+            })
           }
         ] 
       }
@@ -649,8 +658,8 @@ useEffect(() => {
         Alert.alert("Hata", ErrorMessage || errorText || "Bilinmeyen bir hata oluştu.");
       }
       
-      console.log("apiURL",response);
-      console.log(response.data);
+      //console.log("apiURL",response);
+      //console.log(response.data);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       Alert.alert('Hata', 'Veriler kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');

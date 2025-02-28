@@ -458,11 +458,16 @@ const validateQuantity = (quantity) => {
       );
 
       // Eğer KDVDahilMi true ise KDV'yi düşerek net fiyat hesapla
-  const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
-  const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0;
+      const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
+      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0;
 
       const newQuantity = parseFloat(sth_miktar.replace(',', '.')) || 0;
-      const newTotalPrice = calculateTotal(); // Toplam tutar hesaplandı
+      const grossTotalPrice = calculateTotal();
+      const kdvExcludedTotal = grossTotalPrice / (1 + kdvRate); // KDV'siz hale getirme
+      const taxAmount = (grossTotalPrice - kdvExcludedTotal).toFixed(2); // KDV tutarı
+
+      // Sonuç olarak, KDVDahilMi true ise KDV düşülmüş tutarı, değilse orijinal değeri al
+      const newTotalPrice = KDVDahilMi ? kdvExcludedTotal.toFixed(2) : grossTotalPrice;
       const newTotalMiktarPrice = (newQuantity * newTotalPrice).toFixed(2);
       const netUnitPrice = KDVDahilMi ? (unitPrice / (1 + kdvRate)) : unitPrice;
   
@@ -566,7 +571,7 @@ const validateQuantity = (quantity) => {
                       modalId: 0,
                       StokVade: StokVade,
                       sth_cikis_depo_no: productDepo,
-                      KDVDahilMi: 1,
+                      KDVDahilMi: KDVDahilMi,
                     },
                   ]);
   
@@ -667,8 +672,6 @@ const validateQuantity = (quantity) => {
               KDVDahilMi: KDVDahilMi,
             },
           ]);
-
-          console.log("sth_tutar", sth_tutar)
   
           // State'leri sıfırlama
           setCarpan();

@@ -243,13 +243,15 @@ const SatisIrsaliyesiOnizleme = () => {
         return discountedPrice.toFixed(2);
       };
     
-      // Ürün başına KDV hesaplama fonksiyonu
+    // Ürün başına KDV hesaplama fonksiyonu
       const calculateItemTax = () => {
-        const discountedTotal = calculateItemDiscount(); // İskonto sonrası tutar
+        const discountedTotal = parseFloat(calculateItemDiscount()) || 0; // İskonto sonrası tutar
         const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
+        // Eğer KDVDahilMi false ise klasik KDV hesaplama yöntemi
         const taxAmount = (discountedTotal * kdvRate).toFixed(2);
         return taxAmount;
       };
+
       const totalPrice = (item.sth_miktar * item.sth_tutar).toFixed(2);
       const netPrice = calculateItemDiscount();
 
@@ -267,7 +269,6 @@ const SatisIrsaliyesiOnizleme = () => {
             <View style={MainStyles.rowContainer}>
               <View style={MainStyles.columnContainer}>
                 <Text style={MainStyles.productDetail}>Miktar: {item.sth_miktar}</Text>
-                <Text style={MainStyles.productDetail}>KDVDahilMi: {item.KDVDahilMi.toString()}</Text>
                 <Text style={MainStyles.productDetail}>
                   Birim Fiyat: {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.sth_tutar)}
                 </Text>
@@ -456,60 +457,71 @@ const SatisIrsaliyesiOnizleme = () => {
               eir_matbu_tarih: faturaBilgileri.sth_tarih,
               eir_sofor_tckn: faturaBilgileri.eir_sofor_tckn,
               eir_sofor2_tckn: faturaBilgileri.eir_sofor2_tckn,
-              eir_eirs_olrk_gonderilsin: 0, // Cari listesi apisinden gelen değer bu sayfaya getirilecek.
+              eir_eirs_olrk_gonderilsin: 0,
               eir_baslama_zamani: faturaBilgileri.eir_baslama_zamani,
               eir_bitis_zamani: faturaBilgileri.eir_bitis_zamani,
             },
-            satirlar: productsWithCalculatedValues.map((product) => ({
-              sth_tarih: faturaBilgileri.sth_tarih,
-              sth_tip: faturaBilgileri.sth_tip,
-              sth_cins: faturaBilgileri.sth_cins,
-              sth_normal_iade: faturaBilgileri.sth_normal_iade,
-              sth_evraktip: faturaBilgileri.sth_evraktip,
-              sth_evrakno_seri: faturaBilgileri.sth_evrakno_seri,
-              sth_stok_kod: product.Stok_Kod,
-              sth_cari_cinsi: faturaBilgileri.sth_cari_cinsi, // Denenecek.
-              sth_cari_kodu: faturaBilgileri.sth_cari_kodu,
-              sth_adres_no: faturaBilgileri.sth_adres_no,
-              sth_stok_srm_merkezi: faturaBilgileri.sth_stok_srm_merkezi,
-              sth_proje_kodu: faturaBilgileri.sth_proje_kodu,
-              sth_exim_kodu: faturaBilgileri.sth_exim_kodu,
-              sth_miktar: product.sth_miktar,
-              sth_birim_pntr: product.sth_birim_pntr,
-              sth_tutar: product.total,
-              sth_vergi_pntr: product.sth_vergi_pntr,
-              sth_vergi: product.sth_vergi,
-              sth_vergisiz_fl: false,
-              sth_iskonto1: product.sth_iskonto1,
-              sth_iskonto2: product.sth_iskonto2,
-              sth_iskonto3: product.sth_iskonto3,
-              sth_iskonto4: product.sth_iskonto4,
-              sth_iskonto5: product.sth_iskonto5,
-              sth_iskonto6: product.sth_iskonto6,
-              sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
-              sth_cikis_depo_no: product.sth_cikis_depo_no,
-              sth_malkbl_sevk_tarihi: faturaBilgileri.sevkTarihi,
-              sth_odeme_op: defaults[0]?.IQ_OPCaridenGelsin === 1 
-              ? faturaBilgileri.sth_odeme_op 
-              : product.StokVade || product.Vade,
-              sth_plasiyer_kodu: sth_plasiyer_kodu,
-              sth_aciklama: product.aciklama,
-              sth_special3: 'iq',
-              seriler: "",
-              renk_beden: [
-                {
-                  renk_kirilim_kodu: "",
-                  beden_kirilim_kodu: "",
-                  miktar: 0,
-                },
-              ],
-            })),
+            satirlar: productsWithCalculatedValues.map((product) => {
+              // ✅ Eğer `KDVDahilMi` true ise Net Fiyatı gönder, false ise `product.total`
+              const netFiyat = (product.sth_tutar * product.sth_miktar);
+              console.log("netFiyat", netFiyat)
+              console.log("sth_tutar", product.sth_tutar)
+              console.log("sth_miktar", product.KDVDahilMi)
+              const sthTutarValue = product.KDVDahilMi ? netFiyat : product.total;
+    
+              return {
+                sth_tarih: faturaBilgileri.sth_tarih,
+                sth_tip: faturaBilgileri.sth_tip,
+                sth_cins: faturaBilgileri.sth_cins,
+                sth_normal_iade: faturaBilgileri.sth_normal_iade,
+                sth_evraktip: faturaBilgileri.sth_evraktip,
+                sth_evrakno_seri: faturaBilgileri.sth_evrakno_seri,
+                sth_stok_kod: product.Stok_Kod,
+                sth_cari_cinsi: faturaBilgileri.sth_cari_cinsi,
+                sth_cari_kodu: faturaBilgileri.sth_cari_kodu,
+                sth_adres_no: faturaBilgileri.sth_adres_no,
+                sth_stok_srm_merkezi: faturaBilgileri.sth_stok_srm_merkezi,
+                sth_proje_kodu: faturaBilgileri.sth_proje_kodu,
+                sth_exim_kodu: faturaBilgileri.sth_exim_kodu,
+                sth_miktar: product.sth_miktar,
+                sth_birim_pntr: product.sth_birim_pntr,
+                sth_tutar: sthTutarValue, // ✅ KDVDahilMi true ise Net Fiyat, false ise `product.total`
+                sth_vergi_pntr: product.sth_vergi_pntr,
+                sth_vergi: product.sth_vergi,
+                sth_vergisiz_fl: false,
+                sth_iskonto1: product.sth_iskonto1,
+                sth_iskonto2: product.sth_iskonto2,
+                sth_iskonto3: product.sth_iskonto3,
+                sth_iskonto4: product.sth_iskonto4,
+                sth_iskonto5: product.sth_iskonto5,
+                sth_iskonto6: product.sth_iskonto6,
+                sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
+                sth_cikis_depo_no: product.sth_cikis_depo_no,
+                sth_malkbl_sevk_tarihi: faturaBilgileri.sevkTarihi,
+                sth_odeme_op:
+                  defaults[0]?.IQ_OPCaridenGelsin === 1
+                    ? faturaBilgileri.sth_odeme_op
+                    : product.StokVade || product.Vade,
+                sth_plasiyer_kodu: sth_plasiyer_kodu,
+                sth_aciklama: product.aciklama,
+                sth_special3: 'iq',
+                seriler: '',
+                renk_beden: [
+                  {
+                    renk_kirilim_kodu: '',
+                    beden_kirilim_kodu: '',
+                    miktar: 0,
+                  },
+                ],
+              };
+            }),
           },
         ],
       },
     };
-  
-     console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
+    
+    console.log("Gönderilecek JSON Payload:", JSON.stringify(jsonPayload, null, 2));
+    
   
     try {
       const response = await axiosLink.post(apiURL, jsonPayload);

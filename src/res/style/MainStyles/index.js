@@ -433,15 +433,14 @@ export const MainStyles = {
     fullWidthButton: {
       width: '100%', 
       backgroundColor: colors.red, 
-      padding: 15, 
+      padding: 10, 
       borderRadius: 5, 
       alignItems: 'center', 
-      marginBottom: 10,
     },
     halfWidthButton: {
       width: '48%',  
       backgroundColor: colors.textInputBg, 
-      padding: 15, 
+      padding: 10, 
       borderRadius: 5, 
       alignItems: 'center', 
     },
@@ -496,7 +495,7 @@ export const MainStyles = {
       flex: 1,
     },
     itemText: {
-      fontSize: 12,
+      fontSize: 14,
     },
     modalStokContainer: {
       flex: 1,
@@ -1023,8 +1022,7 @@ export const MainStyles = {
     modalContent: {
       width: '100%',
       backgroundColor: colors.white,
-      borderTopLeftRadius: 10,
-      borderTopRightRadius: 10,
+      borderRadius: 10,
       position: 'relative',
       marginTop: 10,
       paddingHorizontal: 10,
@@ -1513,9 +1511,10 @@ export const MainStyles = {
     
     modalContainer: {
       flex: 1,
-      justifyContent: 'flex-end', 
+      justifyContent: 'center', 
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      paddingHorizontal: 15,
     },
     modalContainerProduct: {
       flex: 1,

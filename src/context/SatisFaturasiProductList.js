@@ -72,7 +72,6 @@ const SatisFaturasiProductList = () => {
       const url = `/Api/Stok/StokListesiEvraklarFaturaV2?cari=${faturaBilgileri.cha_kod}&deger=${searchTerm}&tip=${tip}&depo=${depo}&iskcaridengelsin=${defaults[0]?.IQ_OPCaridenGelsin}`;
       console.log(url);
       const response = await axiosLinkMain.get(url);
-      console.log(response);
 
       const data = response.data || [];
       const filtered = data.map(item => ({

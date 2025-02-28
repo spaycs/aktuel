@@ -57,6 +57,7 @@ const AlinanSiparisProductModal = ({
   const [KDV, setKDV] = useState('');
   const [Carpan, setCarpan] = useState('');
   const [sth_vergi_pntr, setSth_vergi_pntr] = useState('');
+  const [KDVDahilMi, setKDVDahilMi] = useState('');
   const [sip_doviz_cinsi, setSip_doviz_cinsi] = useState('');
   const [toplam_vergi, setToplam_vergi] = useState();
   const [isStokDetayVisible, setIsStokDetayVisible] = useState(false);
@@ -216,6 +217,9 @@ const AlinanSiparisProductModal = ({
             }
             if (firstItem.KDV) {
               setKDV(firstItem.KDV.toString());  
+            }
+            if (firstItem.KDVDahilMi !== undefined) {
+              setKDVDahilMi(firstItem.KDVDahilMi);
             }
             if (firstItem.Carpan !== undefined) {
               setCarpan(firstItem.Carpan.toString());
@@ -393,14 +397,26 @@ const validateQuantity = (quantity) => {
     const calculateTotalWithKDV = () => {
       const totalWithoutKDV = parseFloat(calculateTotal()) || 0;
       const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
-      return totalWithoutKDV * (1 + kdvRate); // KDV dahil toplam tutar
+
+      if (!KDVDahilMi) {
+        // Eğer KDV dahil değilse, KDV'yi ekleyerek hesapla
+        return totalWithoutKDV * (1 + kdvRate);
+      }
+
+      return totalWithoutKDV; // Zaten KDV dahilse, olduğu gibi bırak
     };
 
     // 🔹 Birim fiyat için KDV dahil hesaplama fonksiyonu
     const calculateBirimFiyatWithKDV = () => {
       const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
-      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%20" → 0.20
-      return unitPrice * (1 + kdvRate); // KDV dahil birim fiyat
+      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0; // "%18" → 0.18
+
+      if (!KDVDahilMi) {
+        // Eğer KDV dahil değilse, fiyatın üstüne KDV ekle
+        return unitPrice * (1 + kdvRate);
+      }
+
+      return unitPrice; // Zaten KDV dahilse, fiyatı değiştirme
     };
 
 
@@ -445,9 +461,20 @@ const validateQuantity = (quantity) => {
       const existingProduct = addedAlinanSiparisProducts.find(
         (product) => product.Stok_Kod === selectedProduct?.Stok_Kod
       );
+
+      // Eğer KDVDahilMi true ise KDV'yi düşerek net fiyat hesapla
+      const unitPrice = parseFloat(sth_tutar.replace(',', '.')) || 0;
+      const kdvRate = parseFloat(KDV.replace('%', '')) / 100 || 0;
+
       const newQuantity = parseFloat(sth_miktar.replace(',', '.')) || 0;
-      const newTotalPrice = calculateTotal(); // Toplam tutar hesaplandı
+      const grossTotalPrice = calculateTotal();
+      const kdvExcludedTotal = grossTotalPrice / (1 + kdvRate); // KDV'siz hale getirme
+      const taxAmount = (grossTotalPrice - kdvExcludedTotal).toFixed(2); // KDV tutarı
+
+      // Sonuç olarak, KDVDahilMi true ise KDV düşülmüş tutarı, değilse orijinal değeri al
+      const newTotalPrice = KDVDahilMi ? kdvExcludedTotal.toFixed(2) : grossTotalPrice;
       const newTotalMiktarPrice = (newQuantity * newTotalPrice).toFixed(2);
+      const netUnitPrice = KDVDahilMi ? (unitPrice / (1 + kdvRate)) : unitPrice;
   
       try {
         // İlk API çağrısı - mevcut iskontoları hesaplamak için
@@ -496,7 +523,7 @@ const validateQuantity = (quantity) => {
                           ? {
                               ...product,
                               sth_miktar: updatedQuantity.toFixed(2),
-                              sth_tutar:sth_tutar, 
+                              sth_tutar: netUnitPrice.toFixed(2), 
                               sth_iskonto1: updatedİsk1.toFixed(2),
                               sth_iskonto2: updatedİsk2.toFixed(2),
                               sth_iskonto3: updatedİsk3.toFixed(2),
@@ -527,7 +554,7 @@ const validateQuantity = (quantity) => {
                       id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
                       ...selectedProduct,
                       sth_miktar: calculatedQuantity,
-                      sth_tutar: sth_tutar,
+                      sth_tutar: netUnitPrice.toFixed(2),
                       sth_birim_pntr: '1',
                       Birim_KDV: Birim_KDV,
                       sth_vergi_pntr: sth_vergi_pntr,
@@ -551,6 +578,7 @@ const validateQuantity = (quantity) => {
                       modalId: 0,
                       StokVade: StokVade,
                       sip_depono: productDepo,
+                      KDVDahilMi: KDVDahilMi,
                     },
                   ]);
   
@@ -577,7 +605,7 @@ const validateQuantity = (quantity) => {
                       id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
                       ...selectedProduct,
                       sth_miktar: calculatedQuantity,
-                      sth_tutar: sth_tutar,
+                      sth_tutar: netUnitPrice.toFixed(2),
                       sth_birim_pntr: '1',
                       Birim_KDV: Birim_KDV,
                       sth_vergi_pntr: sth_vergi_pntr,
@@ -601,6 +629,7 @@ const validateQuantity = (quantity) => {
                       modalId: 0,
                       StokVade: StokVade,
                       sip_depono: productDepo,
+                      KDVDahilMi: KDVDahilMi,
                     },
                   ]);
   
@@ -624,7 +653,7 @@ const validateQuantity = (quantity) => {
               id: `${selectedProduct?.Stok_Kod}-${Date.now()}`,
               ...selectedProduct,
               sth_miktar: calculatedQuantity,
-              sth_tutar: sth_tutar,
+              sth_tutar: netUnitPrice.toFixed(2),
               sth_birim_pntr: '1',
               Birim_KDV: Birim_KDV,
               sth_vergi_pntr: sth_vergi_pntr,
@@ -649,6 +678,7 @@ const validateQuantity = (quantity) => {
               modalId: 0,
               StokVade: StokVade,
               sip_depono: productDepo,
+              KDVDahilMi: KDVDahilMi,
             },
           ]);
   

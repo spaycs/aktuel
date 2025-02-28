@@ -237,13 +237,14 @@ const AlisIrsaliyesiOnizleme = () => {
       return discountedPrice.toFixed(2);
     };
   
-  // Ürün başına KDV hesaplama fonksiyonu
-  const calculateItemTax = () => {
-    const discountedTotal = calculateItemDiscount(); // İskonto sonrası tutar
-    const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
-    const taxAmount = (discountedTotal * kdvRate).toFixed(2);
-    return taxAmount;
-  };
+ // Ürün başına KDV hesaplama fonksiyonu
+ const calculateItemTax = () => {
+  const discountedTotal = parseFloat(calculateItemDiscount()) || 0; // İskonto sonrası tutar
+  const kdvRate = parseFloat(item.sth_vergi.replace('%', '').replace(',', '.')) / 100;
+  // Eğer KDVDahilMi false ise klasik KDV hesaplama yöntemi
+  const taxAmount = (discountedTotal * kdvRate).toFixed(2);
+  return taxAmount;
+};
   const totalPrice = (item.sth_miktar * item.sth_tutar).toFixed(2);
   const netPrice = calculateItemDiscount();
   
@@ -420,7 +421,14 @@ const AlisIrsaliyesiOnizleme = () => {
         evraklar: [
           {
             evrak_aciklamalari: formatExplanations(),
-            satirlar: productsWithCalculatedValues.map((product) => ({
+            satirlar: productsWithCalculatedValues.map((product) => {
+              const netFiyat = (product.sth_tutar * product.sth_miktar);
+              console.log("netFiyat", netFiyat)
+              console.log("sth_tutar", product.sth_tutar)
+              console.log("sth_miktar", product.KDVDahilMi)
+              const sthTutarValue = product.KDVDahilMi ? netFiyat : product.total;
+    
+              return {
               sth_tarih: faturaBilgileri.sth_tarih,
               sth_tip: faturaBilgileri.sth_tip,
               sth_cins: faturaBilgileri.sth_cins,
@@ -436,7 +444,7 @@ const AlisIrsaliyesiOnizleme = () => {
               sth_exim_kodu: faturaBilgileri.sth_exim_kodu,
               sth_miktar: product.sth_miktar,
               sth_birim_pntr: product.sth_birim_pntr,
-              sth_tutar: product.total,
+              sth_tutar: sthTutarValue,
               sth_vergi_pntr: product.sth_vergi_pntr,
               sth_vergi: product.sth_vergi,
               sth_vergisiz_fl: false,
@@ -461,7 +469,8 @@ const AlisIrsaliyesiOnizleme = () => {
                   miktar: 0
                 }
               ],
-            }))
+            };
+            })
           }
         ]
       }
