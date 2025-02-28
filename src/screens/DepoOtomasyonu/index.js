@@ -493,7 +493,7 @@ const DepoOtomasyonu = () => {
     onShow={() => console.log("📸 Barkod Kamerası Açıldı!")}
     onRequestClose={() => setBarkodCameraVisible(false)}
   >
-    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)' }}> 
+    <View style={{ flex: 1, zIndex: 9999, backgroundColor: 'rgba(0,0,0,0.9)' }}> 
       {/* 📌 Arka planı siyah yaparak modalın görünürlüğünü test ediyoruz */}
       <Text style={{ color: 'white', textAlign: 'center', marginTop: 20, fontSize: 18 }}>
         📸 Barkodu Okutunuz
