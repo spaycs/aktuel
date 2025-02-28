@@ -427,7 +427,7 @@ const DepoOtomasyonu = () => {
                     if (popupVisible)  // 🔹 Eğer başka bir modal açıksa kapat
                     setTimeout(() => {
                       setBarkodCameraVisible(true);
-                    }, 100);
+                    }, 1);
                   }}
                   style={MainStyles.depoOtomasyonuBarkodButton}
                 >
