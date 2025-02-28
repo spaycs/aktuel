@@ -25,6 +25,30 @@ const DepoOtomasyonu = () => {
   const [barkodVerified, setBarkodVerified] = useState(false);
   const [teslimMiktarlari, setTeslimMiktarlari] = useState({});
   const navigation = useNavigation();
+  const [wasPopupVisible, setWasPopupVisible] = useState(false); // 🔥 Popup durumu kaydetmek için
+
+  const openBarkodCamera = () => {
+    console.log("📸 Barkod Kamerası Açılıyor...");
+  
+    setWasPopupVisible(popupVisible); // 🔥 Popup açık mı kaydediyoruz
+    setPopupVisible(false); // Popup kapanmasın ama geçici olarak false yapıyoruz
+  
+    setTimeout(() => {
+      setBarkodCameraVisible(true);
+    }, 200);
+  };
+  
+  const closeBarkodCamera = () => {
+    setBarkodCameraVisible(false);
+    
+    // 🔥 Eğer popup önceden açıksa, tekrar aç
+    if (wasPopupVisible) {
+      setTimeout(() => {
+        setPopupVisible(true);
+      }, 200);
+    }
+  };
+  
 
   const handleSeriBarkodRead = ({ data }) => {
     console.log("📸 Okunan Barkod:", data);
