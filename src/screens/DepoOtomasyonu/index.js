@@ -420,30 +420,29 @@ const DepoOtomasyonu = () => {
                   {selectedSiparis.StokKod} - {selectedSiparis.StokAd} -   Kalan Miktar: {kalanMiktar}
                 </Text>
 
-              <View style={MainStyles.inputContainer}>
-                      <TextInput
-                        style={MainStyles.slinputUrunAra}
-                        placeholder="Barkodu Elle Girin veya Kameradan Okutun"
-                        value={barkod}
-                        onChangeText={setBarkod}
-                        placeholderTextColor={colors.black}
-                        keyboardType="numeric"
-                      />
-                        {/* 📌 Barkod Okutma veya Elle Girme */}
-                        <TouchableOpacity
-                                onPress={() => {
-                                  console.log("📸 Barkod Kamera Açılıyor...");
-                                  if (popupVisible)  // 🔹 Eğer başka bir modal açıksa kapat
-                                  setTimeout(() => {
-                                    setBarkodCameraVisible(true);
-                                  }, 100);
-                                }}
-                                style={MainStyles.slbuttonUrunAra}
-                              >
-                                <Camera />
-                              </TouchableOpacity>
-                    </View>
+                {/* 📌 Barkod Okutma veya Elle Girme */}
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("📸 Barkod Kamera Açılıyor...");
+                    if (popupVisible) setPopupVisible(false); // 🔹 Eğer başka bir modal açıksa kapat
+                    setTimeout(() => {
+                      setBarkodCameraVisible(true);
+                    }, 100);
+                  }}
+                  style={MainStyles.depoOtomasyonuBarkodButton}
+                >
+                  <Text style={MainStyles.doButtonText}>Barkod Okutun</Text>
+                </TouchableOpacity>
 
+
+                <TextInput
+                  style={MainStyles.depoOtomasyonInputUrunAra}
+                  placeholder="Barkodu Elle Girin veya Kameradan Okutun"
+                  placeholderTextColor={colors.black}
+                  value={barkod}
+                  onChangeText={setBarkod}
+                  keyboardType="numeric"
+                />
 
                 {/* 📌 Onayla Butonu */}
                 <TouchableOpacity onPress={() => handleBarkodRead({ data: barkod })} style={MainStyles.fullWidthButton}>
