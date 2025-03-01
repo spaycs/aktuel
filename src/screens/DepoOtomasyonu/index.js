@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Alert, TextInput, TouchableOpacity, Text, FlatList, Modal, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAuth } from '../../components/userDetail/Id';
 import axiosLinkMain from '../../utils/axiosMain';
@@ -25,6 +25,8 @@ const DepoOtomasyonu = () => {
   const [barkodVerified, setBarkodVerified] = useState(false);
   const [teslimMiktarlari, setTeslimMiktarlari] = useState({});
   const navigation = useNavigation();
+ const isScanningRef = useRef(false);
+
 
   const handleSeriBarkodRead = ({ data }) => {
     console.log("📸 Okunan Barkod:", data);
@@ -227,34 +229,40 @@ const DepoOtomasyonu = () => {
  };
   
 
-  const handleBarkodRead = async ({ data }) => {
-    setBarkod(data);
-    setBarkodCameraVisible(false);
-  
-    try {
-      const response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${data}`);
-  
-      console.log("📌 API Yanıtı:", response.data);
-  
-      // API dizininin ilk elemanını al
-      const stokKodFromApi = response.data.length > 0 ? response.data[0].Stok_Kod : null;
-  
-      console.log("📌 API'den gelen Stok Kodu:", stokKodFromApi); 
-  
-      if (selectedSiparis && stokKodFromApi === selectedSiparis.StokKod) {
-        setBarkodVerified(true);
-      } else {
-        Alert.alert('Hata', 'Barkod eşleşmedi, lütfen tekrar deneyin.');
-        setBarkod('');
-        setBarkodVerified(false);
-      }
-    } catch (error) {
-      console.error('❌ Barkod API hatası:', error);
-      Alert.alert('Hata', 'Barkod bilgisi getirilemedi.');
-      setBarkod('');
-      setBarkodVerified(false);
-    }
-  };
+
+ const handleBarkodRead = async ({ data }) => {
+   if (isScanningRef.current) return;
+   
+   isScanningRef.current = true; // ✅ Kilit açılıyor, yeni okuma engelleniyor
+   setBarkod(data);
+   setBarkodCameraVisible(false);
+ 
+   try {
+     const response = await axiosLinkMain.get(`/Api/Barkod/BarkodAra?barkod=${data}`);
+     console.log("📌 API Yanıtı:", response.data);
+ 
+     const stokKodFromApi = response.data.length > 0 ? response.data[0].Stok_Kod : null;
+     console.log("📌 API'den gelen Stok Kodu:", stokKodFromApi);
+ 
+     if (selectedSiparis && stokKodFromApi === selectedSiparis.StokKod) {
+       setBarkodVerified(true);
+     } else {
+       Alert.alert('Hata', 'Barkod eşleşmedi, lütfen tekrar deneyin.');
+       setBarkod('');
+       setBarkodVerified(false);
+     }
+   } catch (error) {
+     console.error('❌ Barkod API hatası:', error);
+     Alert.alert('Hata', 'Barkod bilgisi getirilemedi.');
+     setBarkod('');
+     setBarkodVerified(false);
+   } finally {
+     setTimeout(() => {
+       isScanningRef.current = false; // ⏳ 2 saniye sonra tekrar okutmaya izin ver
+     }, 2000);
+   }
+ };
+ 
   
   
   // 📌 Teslim Miktarı Güncelleme
