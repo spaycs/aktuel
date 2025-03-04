@@ -1723,6 +1723,8 @@ export const MainStyles = {
       borderBottomWidth: 1,
       borderColor: colors.textInputBg,
       borderRadius: 10,
+      marginBottom: 5,
+
     },
     detailContainer: {
       backgroundColor: colors.red,
@@ -2013,6 +2015,12 @@ export const MainStyles = {
       fontWeight: 'bold',
       textAlign: 'center',
     },
+    depoOtomasyonRowContainer:{
+      flexDirection: "row",
+      justifyContent: "space-between", // 📌 Elemanları eşit yay
+      alignItems: "center", // 📌 Dikey hizalama
+      marginTop: 5,
+      },
    
     tableHeaderContainer: {
       backgroundColor: '#f1f1f1',

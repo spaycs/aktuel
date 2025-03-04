@@ -237,7 +237,7 @@ const calculateTotal = () => {
 const calculateTotalWithoutDiscount = () => {
   const newQuantity = parseFloat(quantity) || 0;
   const newPrice = parseFloat(price) || 0;
-  return (newQuantity * newPrice).toFixed(2); // Sadece miktar ve fiyatı çarp
+  return newQuantity * newPrice; // Sadece miktar ve fiyatı çarp
 };
 
 
@@ -450,7 +450,7 @@ const handleUpdate = async () => {
                   style={MainStyles.productModalMiktarInput}
                   placeholderTextColor="#999"
                   editable={false}
-                  value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotalWithoutDiscount())}
+                  value={String(calculateTotalWithoutDiscount()).replace('.', ',')}
                 />
               </View>
             </View>

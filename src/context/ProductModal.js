@@ -439,7 +439,7 @@ const validateQuantity = (quantity) => {
       let sth_iskonto7 = parseFloat(sth_iskonto7) || 0;
       sth_tutarPriceFloat = sth_tutarPriceFloat * (1 - sth_iskonto1 / 100) * (1 - sth_iskonto2 / 100) * (1 - sth_iskonto3 / 100) * (1 - sth_iskonto4 / 100) * (1 - sth_iskonto5 / 100) * (1 - sth_iskonto6 / 100);
     
-    return (sth_miktarFloat * sth_tutarPriceFloat).toFixed(2);
+      return sth_miktarFloat * sth_tutarPriceFloat;
   };
 
   const handleClose = () => {
@@ -850,7 +850,7 @@ const validateQuantity = (quantity) => {
               style={MainStyles.productModalMiktarInput}
               placeholderTextColor={colors.placeholderTextColor}
               editable={false}
-              value={new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTotal())}
+              value={String(calculateTotal()).replace('.', ',')}
               keyboardType="numeric"  
             />
              <View style={MainStyles.inputGroupKdv}>

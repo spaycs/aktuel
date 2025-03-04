@@ -412,7 +412,7 @@ const detailedProducts = products.map((product) => {
   
    // 🔹 Eğer `KDVDahilMi` true ise net fiyatı gönder, false ise `product.total`
    const netFiyat = product.sth_tutar * product.sth_miktar;
-   const sthTutarValue = product.KDVDahilMi ? netFiyat.toFixed(2) : product.total;
+   const sthTutarValue = product.KDVDahilMi ? netFiyat : product.total;
 
   // cha_cins'e göre sth_cins değerini ayarla
   let sthCins = 0;
@@ -455,6 +455,7 @@ const detailedProducts = products.map((product) => {
       sth_giris_depo_no: faturaBilgileri.sth_giris_depo_no,
       sth_cikis_depo_no: product.sth_cikis_depo_no,
       sth_plasiyer_kodu: sth_plasiyer_kodu,
+      sth_special3: "iq",
   };
 });
 

@@ -325,27 +325,35 @@ const DepoOtomasyonu = () => {
   }, [barkodCameraVisible]);
 
   
- // 🔹 FlatList için renderItem fonksiyonu
- const renderSiparisItem = ({ item }) => {
-  const teslimEdilen = teslimMiktarlari[item.StokKod] || 0;
-  const kalanMiktar = item.Miktar - teslimEdilen;
-
-  return (
-    <TouchableOpacity onPress={() => openPopup(item)}>
-      <View style={[MainStyles.itemContainerCariList, { backgroundColor: getBackgroundColor(item.StokKod, item.Miktar) }]}>
-        <View style={MainStyles.itemTextContainer}>
-          <Text style={MainStyles.itemText}>Cari Unvan: {item.CariUnvan}</Text>
-          <Text style={MainStyles.itemText}>Stok Kodu: {item.StokKod}</Text>
-          <Text style={MainStyles.itemText}>Stok Adı: {item.StokAd}</Text>
-          <Text style={MainStyles.itemText}>Miktar: {item.Miktar}</Text>
-          <Text style={MainStyles.itemText}>Teslim Edilen: {teslimEdilen}</Text>
-          <Text style={MainStyles.itemText}>Kalan Miktar: {kalanMiktar}</Text>
+  const renderSiparisItem = ({ item, index }) => {
+    const teslimEdilen = teslimMiktarlari[item.StokKod] || 0;
+    const kalanMiktar = item.Miktar - teslimEdilen;
+  
+    return (
+      <TouchableOpacity onPress={() => openPopup(item)}>
+        {index === 0 && (
+              <Text style={MainStyles.depoOtomasyonuTitle}>{item.CariUnvan}</Text>
+            )}
+        <View style={[MainStyles.itemContainerCariList, { backgroundColor: getBackgroundColor(item.StokKod, item.Miktar) }]}>
+          <View style={MainStyles.itemTextContainer}>
+            {/* 📌 Sadece İlk Üründe Cari Unvanı Göster */}
+            
+  
+            <Text style={MainStyles.itemText}>Stok Kodu: {item.StokKod} | {item.Barkod}</Text>
+            <Text style={MainStyles.itemText}>Stok Adı: {item.StokAd}</Text>
+  
+            {/* 📌 Tek Satırda 3 Değer */}
+            <View style={MainStyles.depoOtomasyonRowContainer}>
+              <Text style={MainStyles.columnText}>Miktar: {item.Miktar}</Text>
+              <Text style={MainStyles.columnText}>Teslim Edilen: {teslimEdilen}</Text>
+              <Text style={MainStyles.columnText}>Kalan: {kalanMiktar}</Text>
+            </View>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
+      </TouchableOpacity>
+    );
+  };
+  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -373,7 +381,7 @@ const DepoOtomasyonu = () => {
         <Text style={MainStyles.depoOtomasyonuButtonText}>Getir</Text>
       </TouchableOpacity>
 
-      <Text style={MainStyles.depoOtomasyonuTitle}>Sipariş Ürün Bilgileri</Text>
+     
 
       <FlatList 
         data={siparisListesi}
@@ -452,14 +460,20 @@ const DepoOtomasyonu = () => {
                     </TouchableOpacity>
 
                     {/* {barkodVerified && ( */}
-                      <TextInput
-                        style={MainStyles.depoOtomasyonInputUrunAra}
-                        placeholder="Teslim Miktarı"
-                        placeholderTextColor={colors.black}
-                        keyboardType="numeric"
-                        value={miktar}
-                        onChangeText={setMiktar}
-                      />
+                    <TextInput
+                            style={MainStyles.depoOtomasyonInputUrunAra}
+                            placeholder="Teslim Miktarı"
+                            placeholderTextColor={colors.black}
+                            keyboardType="numeric"
+                            value={miktar}
+                            onChangeText={(text) => {
+                              // 🔹 Yalnızca sayısal değerler ve boş string kabul edilir, "-" işareti engellenir
+                              if (/^\d*$/.test(text)) {
+                                setMiktar(text);
+                              }
+                            }}
+                          />
+
                     {/*)}*/}
 
                     {/* 📌 Tamam ve Vazgeç Butonları  */}
