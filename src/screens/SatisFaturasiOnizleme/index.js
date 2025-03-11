@@ -456,6 +456,7 @@ const detailedProducts = products.map((product) => {
       sth_cikis_depo_no: product.sth_cikis_depo_no,
       sth_plasiyer_kodu: sth_plasiyer_kodu,
       sth_special3: "iq",
+      sth_adres_no: faturaBilgileri.cha_adres_no,
   };
 });
 
@@ -485,7 +486,7 @@ const detailedProducts = products.map((product) => {
               : "",
           cha_aciklama: faturaAciklama,
           detay: detailedProducts, // sth alanları
-          cha_adres_no: faturaBilgileri.cha_adres_no,
+          cha_adres_no: 1,
           cha_satici_kodu: sth_plasiyer_kodu,
           cha_special3: "iq",
           evrak_aciklamalari: formatExplanations(),
@@ -530,7 +531,7 @@ const detailedProducts = products.map((product) => {
               cha_isk_mas1: "0",
               cha_satici_kodu: sth_plasiyer_kodu,
               evrak_aciklamalari: formatExplanations(),
-              cha_adres_no: faturaBilgileri.cha_adres_no,
+              cha_adres_no: 1,
           };
           documents.push(servicePayload);
       });
