@@ -139,16 +139,8 @@ const formatDateForApi = (date) => {
 
   const handlePdfClick = async (seri, sira) => {
     try {
-      if (!seri || !sira) {
-        Alert.alert('Hata', 'Eksik veri: Evrak Seri veya Sıra bulunamadı.');
-        return;
-      }
-  
-      console.log(`📄 API'ye İstek: Seri=${seri}, Sıra=${sira}`);
-  
       const response = await axiosLinkMain.get(`/Api/PDF/FaturaPDF?seri=${seri}&sira=${sira}`);
-  
-      console.log('📄 API Yanıtı:', response.data);
+      console.log(response);
   
       if (response.status !== 200) {
         throw new Error(`API Yanıt Kodu: ${response.status}`);
