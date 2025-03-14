@@ -11,6 +11,8 @@ import { Filtre } from '../../res/images';
 import { Grid, Row, Col } from 'react-native-easy-grid';
 import { useAuthDefault } from '../../components/DefaultUser';
 import { MainStyles } from '../../res/style';
+import { PDF } from '../../res/images'; 
+import { Linking, Alert } from 'react-native';
 
 const normalizeText = (text) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -49,7 +51,7 @@ const CariHareketFoyu = ({ navigation, route }) => {
       if (defaults) {
       const firmaNo = defaults[0].IQ_FirmaNo;
       const response = await axiosLinkMain.get(`/Api/Raporlar/CariHaraketFoyu?firmano=${firmaNo}&cari=${cariKod}&ilktarih=${formatDateForApi(startDate)}&sontarih=${formatDateForApi(endDate)}`);
-      console.log(response);
+      //console.log(response);
       setData(response.data);
       setFilteredData(response.data);
     } else {
@@ -135,24 +137,66 @@ const formatDateForApi = (date) => {
     );
   };
 
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.row}>
-        {Object.values(item).map((value, colIndex) => (
-          <Text key={colIndex} style={styles.cell}>
-            {value === null || value === undefined
-              ? '-' // Boş değerler için gösterim
-              : typeof value === 'number'
-              ? new Intl.NumberFormat('tr-TR', {
-                  minimumFractionDigits: 3,
-                  maximumFractionDigits: 3,
-                }).format(value) // Binlik ayracı ve 3 ondalık
-              : value}
-          </Text>
-        ))}
-      </View>
-    );
+  const handlePdfClick = async (seri, sira) => {
+    try {
+      if (!seri || !sira) {
+        Alert.alert('Hata', 'Eksik veri: Evrak Seri veya Sıra bulunamadı.');
+        return;
+      }
+  
+      console.log(`📄 API'ye İstek: Seri=${seri}, Sıra=${sira}`);
+  
+      const response = await axiosLinkMain.get(`/Api/PDF/FaturaPDF?seri=${seri}&sira=${sira}`);
+  
+      console.log('📄 API Yanıtı:', response.data);
+  
+      if (response.status !== 200) {
+        throw new Error(`API Yanıt Kodu: ${response.status}`);
+      }
+  
+      const pdfPath = response.data;
+  
+      if (!pdfPath || pdfPath.includes('hata') || pdfPath.includes('error')) {
+        Alert.alert('Hata', 'API PDF dosya yolu döndüremedi.');
+        return;
+      }
+  
+      Linking.openURL(pdfPath); // PDF'yi aç
+    } catch (error) {
+      console.error('❌ PDF Hata:', error.response ? error.response.data : error.message);
+      Alert.alert('Hata', error.response?.data?.message || 'PDF alınırken bir hata oluştu.');
+    }
   };
+  
+  
+ // 📌 **FlatList ile Satırları Gösterme ve PDF Butonunu Ekleme**
+const renderItem = ({ item }) => {
+  return (
+    <View style={styles.row}>
+      {Object.entries(item).map(([key, value], colIndex) => (
+        <Text key={colIndex} style={styles.cell}>
+          {value === null || value === undefined
+            ? '-' // Boş değerler için gösterim
+            : key === "Sıra"
+            ? value // 📌 **Sıra değerini değiştirmeden göster**
+            : typeof value === "number"
+            ? new Intl.NumberFormat("tr-TR", {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3,
+              }).format(value) // 📌 **Diğer sayıları formatla**
+            : value}
+        </Text>
+      ))}
+
+      {/* 📌 **PDF Butonu Ekleyelim** */}
+      <TouchableOpacity onPress={() => handlePdfClick(item.Seri, item.Sıra)} style={styles.pdfButton}>
+        <PDF width={25} height={25} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+  
 
   // Filtreleme işlevi
   const handleSearch = (term) => {
@@ -322,6 +366,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,
+  },
+  pdfButton: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5,
   },
   buttonText: {
     color: '#fff',
