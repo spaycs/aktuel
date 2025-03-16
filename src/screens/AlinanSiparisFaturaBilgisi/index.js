@@ -338,7 +338,7 @@ const AlinanSiparisFaturaBilgisi = () => {
       console.error('Error loading irsaliyeTipi from AsyncStorage:', error);
     }
   };
-  
+  /*
   const loadDateFromAsyncStorage = async () => {
       const currentDate = new Date();
   
@@ -350,6 +350,7 @@ const AlinanSiparisFaturaBilgisi = () => {
         sip_tarih: formattedDate,
       }));
   };
+  */
 
 // Veriyi AsyncStorage'a kaydet
   const saveDataToAsyncStorage = async () => {
@@ -642,12 +643,12 @@ const AlinanSiparisFaturaBilgisi = () => {
     
       // alinanSiparis içinde sip_tarih yoksa veya boşsa ekle
       if (!alinanSiparis?.sip_tarih) {
-        setDate(currentDate); // Yerel state'teki tarihi güncelle
         setAlinanSiparis(prevState => ({
           ...prevState,
           sip_tarih: formattedDate, // Güncellenmiş tarihi ekle
         }));
       }
+      setDate(currentDate); // Yerel state'teki tarihi güncelle
     }, [alinanSiparis]); 
     
 

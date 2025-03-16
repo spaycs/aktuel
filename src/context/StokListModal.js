@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Alert, SafeAreaView } from 'react-native';
 import axiosLinkMain from '../utils/axiosMain';
 import { colors } from '../res/colors';
@@ -6,40 +6,56 @@ import FastImage from 'react-native-fast-image';
 import { MainStyles } from '../res/style';
 import { Left } from '../res/images';
 import CustomHeader from '../components/CustomHeader';
+import { useAuthDefault } from '../components/DefaultUser';
 
 const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
+  const { defaults } = useAuthDefault();
   const [stoklar, setStoklar] = useState([]); // API'den gelen stoklar
   const [filteredStoklar, setFilteredStoklar] = useState([]); // Filtrelenmiş stoklar
   const [searchTerm, setSearchTerm] = useState(initialStokKod || ''); // İlk değer initialStokKod olacak
   const [loading, setLoading] = useState(false);
+  const searchTimeoutRef = useRef(null);
 
   useEffect(() => {
-    // initialStokKod değiştiğinde searchTerm'i güncelle
-    if (initialStokKod) {
+    if (isVisible && initialStokKod) {
       setSearchTerm(initialStokKod);
+      fetchStoklar(initialStokKod);
     }
-  }, [initialStokKod]);
+  }, [isVisible, initialStokKod]);
 
-  const fetchStoklar = useCallback(async () => {
+  const fetchStoklar = async (term) => {
     try {
       setLoading(true);
-      const response = await axiosLinkMain.get(`/Api/Stok/StokListesiV2?deger=${searchTerm}&tip=1&depo=1`);
+      const response = await axiosLinkMain.get(`/Api/Stok/StokListesiV2?deger=${term}&tip=1&depo=${defaults[0].IQ_CikisDepoNo}`);
       
-      setStoklar(response.data); // Tüm stokları set ediyoruz
-      setFilteredStoklar(response.data); // İlk başta tüm stokları gösteriyoruz
+      setStoklar(response.data); // Tüm stokları kaydediyoruz
+      setFilteredStoklar(response.data); // Filtrelenen listeyi güncelliyoruz
     } catch (error) {
       console.error('Error fetching stoklar:', error);
-      Alert.alert('Error', 'Failed to load data. Please try again later.');
+      Alert.alert('Error', 'Veri yüklenirken hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (isVisible) {
-      fetchStoklar(); // Modal ilk açıldığında stokları getiriyoruz
+      fetchStoklar(searchTerm); // **Modal açıldığında ilk veri çekilir**
     }
-  }, [isVisible, fetchStoklar]);
+  }, [isVisible]);
+
+  // 📌 **Kullanıcı yazdıkça gecikmeli API çağrısı yap**
+  const handleSearchTermChange = (text) => {
+    setSearchTerm(text);
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchStoklar(text);
+    }, 500); // **500ms bekleyip API'ye istek yapar**
+  };
 
   useEffect(() => {
     // Arama terimi değiştiğinde stokları filtrele
@@ -57,16 +73,22 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
     onClose(stok); // Stok seçildiğinde modal kapanır
   };
 
+  const handleClose = () => {
+    setSearchTerm(''); // **TextInput içeriğini temizle**
+    setFilteredStoklar([]); // **Listeyi temizle**
+    onClose(); // **Ana fonksiyonu çağır**
+  };
+
   return (
     <Modal
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
      <View style={styles.modalContainer}>
       <CustomHeader
         title="Stok Listesi"
-        onClose={onClose}
+        onClose={handleClose}
       />
        <View style={styles.modalContent}>
           <View style={styles.searchContainer}>
@@ -75,9 +97,16 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
               placeholder="Stok kodu veya adı ile ara"
               placeholderTextColor={colors.placeholderTextColor}
               value={searchTerm} // searchTerm state'ine bağladık
-              onChangeText={setSearchTerm} // Kullanıcı yazdığında searchTerm güncellenir
+              onChangeText={handleSearchTermChange} // Kullanıcı yazdığında searchTerm güncellenir
               editable={!loading} // loading sırasında TextInput'u kilitliyoruz
             />
+             
+          {/* X Butonu */}
+          {searchTerm.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchTerm('')} style={styles.clearButton}>
+              <Text style={styles.clearButtonText}>✕</Text>
+            </TouchableOpacity>
+          )}
           </View>
 
           {loading ? (
@@ -149,6 +178,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontSize: 11,
     height: 40,
+  },
+  clearButton: {
+    position: 'absolute',
+    right: 5,
+    top: 3,
+    padding: 5,
+  },
+  clearButtonText: {
+    fontSize: 16,
+    color: 'gray',
   },
   itemContainer: {
     paddingVertical: 10,

@@ -590,6 +590,27 @@ export const MainStyles = {
       color:'#979797',
       marginBottom: 2,
     },
+    barkodKaydet:{
+      marginTop: 10,
+    },
+    barkodHeader:{
+      fontSize: 14,
+      color: colors.black,
+      marginVertical: 5,
+      
+    },
+    barkodListContainer: {
+      backgroundColor: colors.textinputgray,
+      borderRadius: 8,
+      paddingHorizontal: 5,
+    },
+    barkodItem: {
+      marginVertical: 5,
+    },
+    barkodText: {
+      fontSize: 13,
+      color: colors.black,
+    },
     input: {
       borderRadius: 10,
       backgroundColor: colors.textinputgray,

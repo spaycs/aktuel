@@ -183,12 +183,19 @@ const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false
   
   const handleCloseModal = (selectedStok) => {
     if (selectedStok) {
-      // Seçilen stok kodunu ve adını set edin
       setSto_kod(selectedStok.Stok_Kod);
-      setSth_stok_adi(selectedStok.Stok_Ad);
+      setSto_isim(selectedStok.Stok_Ad);
+  
+      // 📌 **faturaBilgileri içinde de güncelle**
+      setFaturaBilgileri((prev) => ({
+        ...prev,
+        sto_kod: selectedStok.Stok_Kod,
+        sto_isim: selectedStok.Stok_Ad,
+      }));
     }
     setIsStokListModalVisible(false); // Modalı kapat
   };
+  
   
 
 // Cari Seçim

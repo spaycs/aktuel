@@ -24,9 +24,11 @@ const StokEklemeDetay = () => {
 // Tüm Değişken Değerleri
   // Bilgi Sayfası
   const [bar_kodu, setBar_kodu] = useState('');
+  const [barkodList, setBarkodList] = useState([]); 
   const [bar_barkodtipi, setBar_barkodtipi] = useState('');
   const [bar_birimpntr, setBar_birimpntr] = useState('');
   const [bar_master, setBar_master] = useState('');
+  const [loading, setLoading] = useState(false);
 // Tüm Değişken Değerleri
   const [barkodTipiList, setBarkodTipiList] = useState([]);
   const [selectedBarkod, setSelectedBarkod] = useState('');
@@ -90,6 +92,70 @@ const handleInputChange = (field, value) => {
     }, [])
   );
 
+  const handleSaveBarcode = async () => {
+    console.log('Barkod:', bar_kodu);
+    console.log('Stok Kodu:', faturaBilgileri.sto_kod);
+    
+    if (!faturaBilgileri.sto_kod || !bar_kodu) {
+      Alert.alert('Hata', 'Stok kodu ve barkod bilgisi boş olamaz.');
+      return;
+    }
+  
+    try {
+      setLoading(true);
+  
+      // 📌 **URL'yi manuel olarak oluşturuyoruz**
+      const url = `/Api/Barkod/BarkodSorgulaEkle?barkod=${bar_kodu}&stokkod=${faturaBilgileri.sto_kod}`;
+      
+      const response = await axiosLinkMain.get(url);
+  
+      console.log("API Yanıtı:", response.data);
+  
+      // 📌 **API'den gelen yanıtı kontrol edelim**
+      if (response.data?.Sonuc) {
+        if (response.data.Sonuc === "Barkod var") {
+          Alert.alert('Bilgi', 'Bu barkod sistemde zaten kayıtlı.');
+        } else if (response.data.Sonuc === "Başarılı") {
+          Alert.alert('Başarılı', 'Barkod başarıyla kaydedildi.');
+          setBar_kodu(''); // 📌 Input alanını temizle
+          fetchBarkodList(); // 📌 Listeyi güncelle
+        } else {
+          Alert.alert('Hata', response.data.Sonuc || 'Bilinmeyen bir hata oluştu.');
+        }
+      } else {
+        Alert.alert('Hata', 'API yanıtı beklenen formatta değil.');
+      }
+  
+    } catch (error) {
+      Alert.alert('Hata', 'Barkod kaydedilirken hata oluştu.');
+      console.error('API Hatası:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
+
+  // 📌 **Barkodları Listeleme**
+  const fetchBarkodList = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosLinkMain.get(`/Api/Barkod/BarkodGetir?stokkod=${faturaBilgileri.sto_kod}`);
+      console.log(response);
+      setBarkodList(response.data); // 📌 API'den gelen barkodları kaydet
+    } catch (error) {
+      console.error('Barkodları çekerken hata oluştu:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (faturaBilgileri.sto_kod) {
+      fetchBarkodList();
+    }
+  }, [faturaBilgileri.sto_kod]);
+
     // Kamera İşlemleri
     const handleCameraOpen = () => {setCameraModalVisible(true);};
     const handleCameraClose = () => {setCameraModalVisible(false);};
@@ -102,7 +168,6 @@ const handleInputChange = (field, value) => {
   // Kamera İşlemleri 
 
   return (
-    <ScrollView>
       <View style={MainStyles.faturaContainer}>
          {/* Stok Kodu */}
          <Text style={MainStyles.formTitle}>Barkod</Text>
@@ -200,6 +265,35 @@ const handleInputChange = (field, value) => {
       )}
           </View>
 
+            {/* 📌 **Barkodu Kaydet Butonu** */}
+            <View  style={MainStyles.barkodKaydet}>
+        <Button title="Barkodu Kaydet" onPress={handleSaveBarcode} disabled={loading} />
+        </View>
+
+    {/* 📌 **Barkodları Listeleme** */}
+{barkodList.length > 0 && (
+  <>
+    <Text style={MainStyles.barkodHeader}>Kayıtlı Barkodlar</Text>
+    {loading ? (
+      <ActivityIndicator size="large" color={colors.primary} />
+    ) : (
+      <View style={MainStyles.barkodListContainer}>
+        <FlatList
+          data={barkodList}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={MainStyles.barkodItem}>
+              <Text style={MainStyles.barkodText}>{item.Barkod}</Text>
+            </View>
+          )}
+        />
+      </View>
+    )}
+  </>
+)}
+
+
+
         {/* Barkod Birim Pntr
           <View style={MainStyles.inputStyle}>
             <Picker
@@ -231,7 +325,6 @@ const handleInputChange = (field, value) => {
 
        
     </View>
-    </ScrollView>
   );
 };
 
