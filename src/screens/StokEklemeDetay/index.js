@@ -9,6 +9,7 @@ import { useAuthDefault } from '../../components/DefaultUser';
 import ProductModal from '../../context/ProductModal';
 import CariListModal from '../../context/CariListModal';
 import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axiosLinkMain from '../../utils/axiosMain';
 import { colors } from '../../res/colors';
 import { useAuth } from '../../components/userDetail/Id';
@@ -23,6 +24,7 @@ const StokEklemeDetay = () => {
 
 // Tüm Değişken Değerleri
   // Bilgi Sayfası
+  const navigation = useNavigation();
   const [bar_kodu, setBar_kodu] = useState('');
   const [barkodList, setBarkodList] = useState([]); 
   const [bar_barkodtipi, setBar_barkodtipi] = useState('');
@@ -119,6 +121,7 @@ const handleInputChange = (field, value) => {
           Alert.alert('Başarılı', 'Barkod başarıyla kaydedildi.');
           setBar_kodu(''); // 📌 Input alanını temizle
           fetchBarkodList(); // 📌 Listeyi güncelle
+          navigation.replace('StokEkleme');
         } else {
           Alert.alert('Hata', response.data.Sonuc || 'Bilinmeyen bir hata oluştu.');
         }

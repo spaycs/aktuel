@@ -16,18 +16,19 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
   const [loading, setLoading] = useState(false);
   const searchTimeoutRef = useRef(null);
 
+  // 📌 **Modal açıldığında sıfırlama ve API isteği yapma**
   useEffect(() => {
-    if (isVisible && initialStokKod) {
-      setSearchTerm(initialStokKod);
-      fetchStoklar(initialStokKod);
+    if (isVisible) {
+      setSearchTerm('');  // **Arama kutusunu sıfırla**
+      setFilteredStoklar([]); // **Önceki listeyi temizle**
+      fetchStoklar(''); // **API'den stokları yeniden çek**
     }
-  }, [isVisible, initialStokKod]);
+  }, [isVisible]);
 
   const fetchStoklar = async (term) => {
     try {
       setLoading(true);
       const response = await axiosLinkMain.get(`/Api/Stok/StokListesiV2?deger=${term}&tip=1&depo=${defaults[0].IQ_CikisDepoNo}`);
-      
       setStoklar(response.data); // Tüm stokları kaydediyoruz
       setFilteredStoklar(response.data); // Filtrelenen listeyi güncelliyoruz
     } catch (error) {
