@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert, ActivityIndicatorBase, ActivityIndicator,  } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert, ActivityIndicatorBase, ActivityIndicator, Platform,  } from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
@@ -582,8 +582,9 @@ useEffect(() => {
                     onPress: () => {
                     // Hareket Logunu burada yazdır
                     const logHareket = async () => {
+                      const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
-                        Message: `Alınan Sipariş Kaydedildi ${alinanSiparis.sip_tarih} - ${alinanSiparis.sip_evrakno_seri} - ${alinanSiparis.sip_musteri_kod}`,
+                        Message: `Alınan Sipariş Kaydedildi ${alinanSiparis.sip_tarih} - ${alinanSiparis.sip_evrakno_seri} - ${alinanSiparis.sip_musteri_kod} - İşlem Yapılan Platform: ${platform}`,
                         User: defaults[0].IQ_MikroPersKod, 
                         database: defaults[0].IQ_Database,
                         data: 'Alınan Sipariş SiparisKaydetV2',

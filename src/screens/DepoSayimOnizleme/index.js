@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button,  TextInput, Alert, Linking } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button,  TextInput, Alert, Linking, Platform } from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
@@ -157,8 +157,9 @@ const DepoSayimOnizleme = () => {
               await handlePdfClick(Evrak_No, Depo_No); // Yazdırma işlemi
                 // Hareket Logunu burada yazdır
                 const logHareket = async () => {
+                  const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                   const body = {
-                    Message: `Depo Sayım Kaydedildi ${faturaBilgileri.sym_tarihi} - ${faturaBilgileri.sym_depono} - ${faturaBilgileri.rafKodu}`,
+                    Message: `Depo Sayım Kaydedildi ${faturaBilgileri.sym_tarihi} - ${faturaBilgileri.sym_depono} - ${faturaBilgileri.rafKodu} - İşlem Yapılan Platform: ${platform}`,
                     User: defaults[0].IQ_MikroPersKod, 
                     database: defaults[0].IQ_Database,
                     data: 'Depo Sayım SayimSonuclariKaydetV2',

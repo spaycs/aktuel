@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert,  ActivityIndicator, SafeAreaView, ActivityIndicatorBase} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Button, TextInput, Alert,  ActivityIndicator, SafeAreaView, ActivityIndicatorBase, Platform} from 'react-native';
 import { ProductContext } from '../../context/ProductContext';
 import { MainStyles } from '../../res/style';
 import { colors } from '../../res/colors';
@@ -540,8 +540,9 @@ const SatisIrsaliyesiOnizleme = () => {
                     onPress: () => {
                       // Hareket Logunu burada yazdır
                     const logHareket = async () => {
+                      const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
-                        Message: `Satış İrsaliyesi Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri} - ${faturaBilgileri.sth_cari_kodu}`,
+                        Message: `Satış İrsaliyesi Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri} - ${faturaBilgileri.sth_cari_kodu} - İşlem Yapılan Platform: ${platform}`,
                         User: defaults[0].IQ_MikroPersKod, 
                         database: defaults[0].IQ_Database,
                         data: 'Satış İrsaliyesi IrsaliyeKaydetV2',
