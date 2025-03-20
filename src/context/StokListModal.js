@@ -53,7 +53,7 @@ const StokListModal = ({ isVisible, onClose, initialStokKod }) => {
 
     searchTimeoutRef.current = setTimeout(() => {
       fetchStoklar(searchTerm);
-    }, 1800); // **500ms bekleyip API'ye istek yapar**
+    }, 2200); // **500ms bekleyip API'ye istek yapar**
   }, [searchTerm]);
 
   handleClearSearch = () =>{

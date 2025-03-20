@@ -10,9 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
 import CustomHeader from '../../components/CustomHeader';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
+import { useAuthDefault } from '../../components/DefaultUser';
 
 const DepolarArasiSevkFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
+   const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -184,6 +187,28 @@ const DepolarArasiSevkFisiOnizleme = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
+                        // Hareket Logunu burada yazdır
+                    const logHareket = async () => {
+                      const body = {
+                        Message: `Depolar Arası Sevk Fişi Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri}`,
+                        User: defaults[0].IQ_MikroPersKod, 
+                        database: defaults[0].IQ_Database,
+                        data: 'Depolar Arası Sevk Fişi DahiliStokHareketKaydetV2',
+                      };
+
+                      try {
+                        const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                        if (logResponse.status === 200) {
+                          console.log('Hareket Logu başarıyla eklendi');
+                        } else {
+                          console.log('Hareket Logu eklenirken bir hata oluştu');
+                        }
+                      } catch (error) {
+                        console.error('API çağrısı sırasında hata oluştu:', error);
+                      }
+                    };
+
+                    logHareket();
                       navigation.replace('DepolarArasiSevkFisi');
                     }
                 }
@@ -273,6 +298,7 @@ const DepolarArasiSevkFisiOnizleme = () => {
               <TextInput
                 key={index}
                 style={MainStyles.textInput}
+                placeholderTextColor={colors.black}
                 placeholder={`Açıklama ${index + 1}`}
                 value={explanations[index] || ""} // Her zaman 10 açıklama alanı olmasını sağla
                 onChangeText={(text) => handleExplanationChange(index, text)}

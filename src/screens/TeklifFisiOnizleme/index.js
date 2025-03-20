@@ -12,9 +12,11 @@ import EditProductModal from '../../context/EditProductModal';
 import axiosLinkMain from '../../utils/axiosMain';
 import CustomHeader from '../../components/CustomHeader';
 import FastImage from 'react-native-fast-image';
+import { useAuthDefault } from '../../components/DefaultUser';
 
 const TeklifFisiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -381,6 +383,28 @@ const TeklifFisiOnizleme = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
+                        // Hareket Logunu burada yazdır
+                    const logHareket = async () => {
+                      const body = {
+                        Message: `Teklif Fişi Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri} - ${faturaBilgileri.sth_cari_kodu}`,
+                        User: defaults[0].IQ_MikroPersKod, 
+                        database: defaults[0].IQ_Database,
+                        data: 'Teklif Fişi VerilenTeklifKaydetV2',
+                      };
+
+                      try {
+                        const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                        if (logResponse.status === 200) {
+                          console.log('Hareket Logu başarıyla eklendi');
+                        } else {
+                          console.log('Hareket Logu eklenirken bir hata oluştu');
+                        }
+                      } catch (error) {
+                        console.error('API çağrısı sırasında hata oluştu:', error);
+                      }
+                    };
+
+                    logHareket();
                       navigation.replace('TeklifFisi');
                     }
                 }
@@ -602,6 +626,7 @@ const TeklifFisiOnizleme = () => {
               <TextInput
                 key={index}
                 style={MainStyles.textInput}
+                placeholderTextColor={colors.black}
                 placeholder={`Açıklama ${index + 1}`}
                 value={explanations[index] || ""} // Her zaman 10 açıklama alanı olmasını sağla
                 onChangeText={(text) => handleExplanationChange(index, text)}

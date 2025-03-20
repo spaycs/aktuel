@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
 import CustomHeader from '../../components/CustomHeader';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
 
 const SatisFaturasiOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
@@ -563,6 +564,28 @@ const detailedProducts = products.map((product) => {
                 {
                     text: "Tamam",
                     onPress: () => {
+                    // Hareket Logunu burada yazdır
+                    const logHareket = async () => {
+                      const body = {
+                        Message: `Satış Faturası Kaydedildi ${faturaBilgileri.cha_tarihi} - ${faturaBilgileri.cha_evrakno_seri} - ${faturaBilgileri.cha_kod}`,
+                        User: defaults[0].IQ_MikroPersKod, 
+                        database: defaults[0].IQ_Database,
+                        data: 'Satış Faturası FaturaKaydetV3',
+                      };
+
+                      try {
+                        const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                        if (logResponse.status === 200) {
+                          console.log('Hareket Logu başarıyla eklendi');
+                        } else {
+                          console.log('Hareket Logu eklenirken bir hata oluştu');
+                        }
+                      } catch (error) {
+                        console.error('API çağrısı sırasında hata oluştu:', error);
+                      }
+                    };
+
+                    logHareket();
                      navigation.replace('SatisFaturasi');
                     }
                 }
@@ -695,6 +718,7 @@ const detailedProducts = products.map((product) => {
               <TextInput
                 key={index}
                 style={MainStyles.textInput}
+                placeholderTextColor={colors.black}
                 placeholder={`Açıklama ${index + 1}`}
                 value={explanations[index] || ""} // Her zaman 10 açıklama alanı olmasını sağla
                 onChangeText={(text) => handleExplanationChange(index, text)}
@@ -704,6 +728,7 @@ const detailedProducts = products.map((product) => {
                <TextInput 
                 style={MainStyles.textInput}
                 placeholder="Fatura Açıklama Ekle"
+                placeholderTextColor={colors.black}
                 value={faturaAciklama}
                 onChangeText={setFaturaAciklama}
               />

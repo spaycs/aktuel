@@ -173,7 +173,7 @@ const SatisFaturasiProductList = () => {
     // Yeni bir timeout ayarla
     searchTimeoutRef.current = setTimeout(() => {
       fetchProductData(searchTerm); // `searchTerm` dolu ya da boş olabilir
-    }, 500); // 500 ms sonra çalıştır
+    }, 2200); // 500 ms sonra çalıştır
   
     return () => {
       clearTimeout(searchTimeoutRef.current); // Cleanup

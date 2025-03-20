@@ -16,6 +16,7 @@ import { DataTable } from 'react-native-paper';
 import Button from '../../components/Button';
 import { useScrollToTop } from '@react-navigation/native';
 import StokListModal from '../../context/StokListModal';
+import axios from 'axios';
 
 const StokEklemeBilgisi = () => {
   const { authData } = useAuth();
@@ -68,6 +69,42 @@ const [isDovizModalVisible, setIsDovizModalVisible] = useState(false);
 const [isBirimModalVisible, setIsBirimModalVisible] = useState(false);
 const [isPerakendeVergiModalVisible, setIsPerakendeVergiModalVisible] = useState(false);
 const [isToptanVergiModalVisible, setIsToptanVergiModalVisible] = useState(false);
+// State Yönetimi
+const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
+
+useEffect(() => {
+  // İlk render'da sadece çalışacak
+  const logHareket = async () => {
+    if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
+
+    try {
+      if (!defaults || !defaults[0].IQ_MikroPersKod || !defaults[0].IQ_Database) {
+        console.log('IQ_MikroPersKod veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
+        return;
+      }
+
+      const body = {
+        Message: 'Stok Ekleme Sayfa Açıldı', // Hardcoded message
+        User: defaults[0].IQ_MikroPersKod, // Temsilci ID
+        database: defaults[0].IQ_Database, // Database ID
+        data: 'Stok Ekleme' // Hardcoded data
+      };
+
+      const response = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+
+      if (response.status === 200) {
+        console.log('Hareket Logu başarıyla eklendi');
+        setIsLogSent(true); // Başarıyla log eklendikten sonra flag'i true yap
+      } else {
+        console.log('Hareket Logu eklenirken bir hata oluştu');
+      }
+    } catch (error) {
+      console.error('API çağrısı sırasında hata oluştu:', error);
+    }
+  };
+
+  logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
+}, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
 
   {/* Cins Seçim */}
     useEffect(() => {

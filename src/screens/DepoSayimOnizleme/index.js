@@ -9,9 +9,12 @@ import EditDepolarArasiProductModal from '../../context/EditDepolarArasiProductM
 import { useNavigation } from '@react-navigation/native';
 import axiosLink from '../../utils/axios';
 import axiosLinkMain from '../../utils/axiosMain';
+import axios from 'axios';
+import { useAuthDefault } from '../../components/DefaultUser';
 
 const DepoSayimOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
+  const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts, faturaBilgileri } = useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigation = useNavigation();
@@ -152,6 +155,28 @@ const DepoSayimOnizleme = () => {
               const Evrak_No = faturaBilgileri.evrakNo; // Burada evrak numarasını alıyorsunuz
               const Depo_No = faturaBilgileri.sym_depono; // Depo numarasını alıyorsunuz
               await handlePdfClick(Evrak_No, Depo_No); // Yazdırma işlemi
+                // Hareket Logunu burada yazdır
+                const logHareket = async () => {
+                  const body = {
+                    Message: `Depo Sayım Kaydedildi ${faturaBilgileri.sym_tarihi} - ${faturaBilgileri.sym_depono} - ${faturaBilgileri.rafKodu}`,
+                    User: defaults[0].IQ_MikroPersKod, 
+                    database: defaults[0].IQ_Database,
+                    data: 'Depo Sayım SayimSonuclariKaydetV2',
+                  };
+
+                  try {
+                    const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                    if (logResponse.status === 200) {
+                      console.log('Hareket Logu başarıyla eklendi');
+                    } else {
+                      console.log('Hareket Logu eklenirken bir hata oluştu');
+                    }
+                  } catch (error) {
+                    console.error('API çağrısı sırasında hata oluştu:', error);
+                  }
+                };
+
+                logHareket();
               navigation.replace('DepoSayim')
             },
           },

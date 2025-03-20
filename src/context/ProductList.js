@@ -128,7 +128,7 @@ const ProductList = () => {
     // Yeni bir timeout ayarla
     searchTimeoutRef.current = setTimeout(() => {
       fetchProductData(text, searchCriteria); // Gecikmeli API çağrısı
-    }, 500); // 500 ms sonra API çağrısı yapılacak
+    }, 2200); // 500 ms sonra API çağrısı yapılacak
   };
 
 

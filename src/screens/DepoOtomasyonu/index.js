@@ -9,6 +9,7 @@ import { Camera } from '../../res/images';
 import axiosLink from '../../utils/axios';
 import { useNavigation } from '@react-navigation/native';
 import { useAuthDefault } from '../../components/DefaultUser';
+import axios from 'axios';
 
 const DepoOtomasyonu = () => {
   const { authData } = useAuth();
@@ -26,6 +27,42 @@ const DepoOtomasyonu = () => {
   const [teslimMiktarlari, setTeslimMiktarlari] = useState({});
   const navigation = useNavigation();
  const isScanningRef = useRef(false);
+ // State Yönetimi
+ const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
+
+ useEffect(() => {
+   // İlk render'da sadece çalışacak
+   const logHareket = async () => {
+     if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
+
+     try {
+       if (!defaults || !defaults[0].IQ_MikroPersKod || !defaults[0].IQ_Database) {
+         console.log('IQ_MikroPersKod veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
+         return;
+       }
+
+       const body = {
+         Message: 'Depo Otomasyonu Sayfa Açıldı', // Hardcoded message
+         User: defaults[0].IQ_MikroPersKod, // Temsilci ID
+         database: defaults[0].IQ_Database, // Database ID
+         data: 'Depo Otomasyonu' // Hardcoded data
+       };
+
+       const response = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+
+       if (response.status === 200) {
+         console.log('Hareket Logu başarıyla eklendi');
+         setIsLogSent(true); // Başarıyla log eklendikten sonra flag'i true yap
+       } else {
+         console.log('Hareket Logu eklenirken bir hata oluştu');
+       }
+     } catch (error) {
+       console.error('API çağrısı sırasında hata oluştu:', error);
+     }
+   };
+
+   logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
+ }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
 
 
   const handleSeriBarkodRead = ({ data }) => {

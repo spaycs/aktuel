@@ -10,9 +10,12 @@ import axiosLink from '../../utils/axios';
 import EditProductModal from '../../context/EditProductModal';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
+import { useAuthDefault } from '../../components/DefaultUser';
 
 const StokEklemeOnizleme = () => {
   const { authData, updateAuthData } = useAuth();
+    const { defaults } = useAuthDefault();
   const { addedProducts, setAddedProducts, faturaBilgileri, setFaturaBilgileri } = useContext(ProductContext);
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -124,6 +127,28 @@ const StokEklemeOnizleme = () => {
                 {
                     text: "Tamam",
                     onPress: () => {
+                        // Hareket Logunu burada yazdır
+                    const logHareket = async () => {
+                      const body = {
+                        Message: `Cari Kaydedildi ${faturaBilgileri.cari_kod} - ${faturaBilgileri.cari_unvan1} - ${faturaBilgileri.cari_unvan2}`,
+                        User: defaults[0].IQ_MikroPersKod, 
+                        database: defaults[0].IQ_Database,
+                        data: 'Cari CariKaydetV2',
+                      };
+
+                      try {
+                        const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                        if (logResponse.status === 200) {
+                          console.log('Hareket Logu başarıyla eklendi');
+                        } else {
+                          console.log('Hareket Logu eklenirken bir hata oluştu');
+                        }
+                      } catch (error) {
+                        console.error('API çağrısı sırasında hata oluştu:', error);
+                      }
+                    };
+
+                    logHareket();
                       navigation.replace('CariEkleme');
                     }
                 }

@@ -558,7 +558,7 @@ useEffect(() => {
       const response = await axiosLink.post(apiURL, jsonPayload);
       const { StatusCode, ErrorMessage, errorText } = response.data.result[0];
       
-      if (StatusCode === 200) {
+      if (StatusCode ) {
           
       // Sipariş mail API çağrısı
        try {
@@ -580,6 +580,28 @@ useEffect(() => {
                 {
                     text: "Tamam",
                     onPress: () => {
+                    // Hareket Logunu burada yazdır
+                    const logHareket = async () => {
+                      const body = {
+                        Message: `Alınan Sipariş Kaydedildi ${alinanSiparis.sip_tarih} - ${alinanSiparis.sip_evrakno_seri} - ${alinanSiparis.sip_musteri_kod}`,
+                        User: defaults[0].IQ_MikroPersKod, 
+                        database: defaults[0].IQ_Database,
+                        data: 'Alınan Sipariş SiparisKaydetV2',
+                      };
+
+                      try {
+                        const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                        if (logResponse.status === 200) {
+                          console.log('Hareket Logu başarıyla eklendi');
+                        } else {
+                          console.log('Hareket Logu eklenirken bir hata oluştu');
+                        }
+                      } catch (error) {
+                        console.error('API çağrısı sırasında hata oluştu:', error);
+                      }
+                    };
+
+                    logHareket();
                      navigation.replace('AlinanSiparis');
                     }
                 }
@@ -784,6 +806,7 @@ useEffect(() => {
               <TextInput
                 key={index}
                 style={MainStyles.textInput}
+                placeholderTextColor={colors.black}
                 placeholder={`Açıklama ${index + 1}`}
                 value={explanations[index] || ""} // Her zaman 10 açıklama alanı olmasını sağla
                 onChangeText={(text) => handleExplanationChange(index, text)}

@@ -16,6 +16,7 @@ import { useAuth } from '../../components/userDetail/Id';
 import { DataTable } from 'react-native-paper';
 import Button from '../../components/Button';
 import { RNCamera } from 'react-native-camera';
+import axios from 'axios';
 
 const StokEklemeDetay = () => {
   const { authData } = useAuth();
@@ -121,6 +122,28 @@ const handleInputChange = (field, value) => {
           Alert.alert('Başarılı', 'Barkod başarıyla kaydedildi.');
           setBar_kodu(''); // 📌 Input alanını temizle
           fetchBarkodList(); // 📌 Listeyi güncelle
+            // Hareket Logunu burada yazdır
+            const logHareket = async () => {
+              const body = {
+                Message: `Stok Barkodu Kaydedildi ${faturaBilgileri.sto_kod} - ${bar_kodu}`,
+                User: defaults[0].IQ_MikroPersKod, 
+                database: defaults[0].IQ_Database,
+                data: 'Stok Barkodu BarkodSorgulaEkle',
+              };
+
+              try {
+                const logResponse = await axios.post('http://80.253.246.89:8055/api/Kontrol/HareketLogEkle', body);
+                if (logResponse.status === 200) {
+                  console.log('Hareket Logu başarıyla eklendi');
+                } else {
+                  console.log('Hareket Logu eklenirken bir hata oluştu');
+                }
+              } catch (error) {
+                console.error('API çağrısı sırasında hata oluştu:', error);
+              }
+            };
+
+            logHareket();
           navigation.replace('StokEkleme');
         } else {
           Alert.alert('Hata', response.data.Sonuc || 'Bilinmeyen bir hata oluştu.');
