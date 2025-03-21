@@ -132,7 +132,7 @@ const StokEklemeOnizleme = () => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Cari Kaydedildi ${faturaBilgileri.cari_kod} - ${faturaBilgileri.cari_unvan1} - ${faturaBilgileri.cari_unvan2} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Cari CariKaydetV2',
                       };

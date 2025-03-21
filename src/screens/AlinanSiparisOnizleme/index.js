@@ -585,7 +585,7 @@ useEffect(() => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Alınan Sipariş Kaydedildi ${alinanSiparis.sip_tarih} - ${alinanSiparis.sip_evrakno_seri} - ${alinanSiparis.sip_musteri_kod} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Alınan Sipariş SiparisKaydetV2',
                       };

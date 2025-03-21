@@ -192,7 +192,7 @@ const DepolarArasiSevkFisiOnizleme = () => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Depolar Arası Sevk Fişi Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Depolar Arası Sevk Fişi DahiliStokHareketKaydetV2',
                       };

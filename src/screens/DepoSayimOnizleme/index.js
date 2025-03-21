@@ -160,7 +160,7 @@ const DepoSayimOnizleme = () => {
                   const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                   const body = {
                     Message: `Depo Sayım Kaydedildi ${faturaBilgileri.sym_tarihi} - ${faturaBilgileri.sym_depono} - ${faturaBilgileri.rafKodu} - İşlem Yapılan Platform: ${platform}`,
-                    User: defaults[0].IQ_MikroPersKod, 
+                    User: defaults[0].Adi, 
                     database: defaults[0].IQ_Database,
                     data: 'Depo Sayım SayimSonuclariKaydetV2',
                   };

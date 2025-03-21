@@ -253,7 +253,7 @@ const calculateTotalQuantity = () => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Sarf Malzeme Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Sarf Malzeme DahiliStokHareketKaydetV2',
                       };

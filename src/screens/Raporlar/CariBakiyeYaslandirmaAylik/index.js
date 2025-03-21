@@ -22,7 +22,7 @@ const CariBakiyeYaslandirmaAylik = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const [isCariListModalVisible, setIsCariListModalVisible] = useState(false);
   const [personelList, setPersonelList] = useState([]); 
-  const IQ_MikroPersKod = defaults[0]?.IQ_MikroPersKod || '';
+  const Adi = defaults[0]?.Adi || '';
   const IQ_Admin = defaults[0]?.IQ_Admin || '';
 
   const [searchClicked, setSearchClicked] = useState(false); 
@@ -38,14 +38,14 @@ const CariBakiyeYaslandirmaAylik = () => {
        if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
  
        try {
-         if (!defaults || !defaults[0].IQ_MikroPersKod || !defaults[0].IQ_Database) {
-           console.log('IQ_MikroPersKod veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
+         if (!defaults || !defaults[0].Adi || !defaults[0].IQ_Database) {
+           console.log('Adi veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
            return;
          }
  
          const body = {
            Message: 'Cari Bakiye Yaşlandırma Tekli Rapor Açıldı', // Hardcoded message
-           User: defaults[0].IQ_MikroPersKod, // Temsilci ID
+           User: defaults[0].Adi, // Temsilci ID
            database: defaults[0].IQ_Database, // Database ID
            data: 'Cari Bakiye Yaşlandırma Tekli Rapor' // Hardcoded data
          };
@@ -110,8 +110,8 @@ useEffect(() => {
 
 // API'den veri çekme fonksiyonu
 const fetchData = async () => {
-  if (!IQ_MikroPersKod) {
-    setError('IQ_MikroPersKod değeri bulunamadı.');
+  if (!Adi) {
+    setError('Adi değeri bulunamadı.');
     return;
   }
 
@@ -132,8 +132,8 @@ const fetchData = async () => {
       const personName = selectedPerson.No; // "Adi" değerini alın
       apiUrl = `/Api/Raporlar/CariBakiyeYasladirmaAylik?carikodyapisi=${personName}`;
     } else {
-      // SRV değilse IQ_MikroPersKod'u direkt gönder
-      apiUrl = `/Api/Raporlar/CariBakiyeYasladirmaAylik?carikodyapisi=${IQ_MikroPersKod}`;
+      // SRV değilse Adi'u direkt gönder
+      apiUrl = `/Api/Raporlar/CariBakiyeYasladirmaAylik?carikodyapisi=${Adi}`;
     }
 
     console.log('API URL:', apiUrl);

@@ -111,7 +111,7 @@ const StokEklemeOnizleme = () => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Stok Kaydedildi ${faturaBilgileri.sto_kod} - ${faturaBilgileri.sto_isim} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Stok StokKaydetV2',
                       };

@@ -27,7 +27,7 @@ const SiparisKarsilama = () => {
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const IQ_MikroPersKod = defaults[0]?.IQ_MikroPersKod || '';
+  const Adi = defaults[0]?.Adi || '';
    // State Yönetimi
    const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
 
@@ -37,14 +37,14 @@ const SiparisKarsilama = () => {
        if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
  
        try {
-         if (!defaults || !defaults[0].IQ_MikroPersKod || !defaults[0].IQ_Database) {
-           console.log('IQ_MikroPersKod veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
+         if (!defaults || !defaults[0].Adi || !defaults[0].IQ_Database) {
+           console.log('Adi veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
            return;
          }
  
          const body = {
            Message: 'Siparis Karşılama Rapor Açıldı', // Hardcoded message
-           User: defaults[0].IQ_MikroPersKod, // Temsilci ID
+           User: defaults[0].Adi, // Temsilci ID
            database: defaults[0].IQ_Database, // Database ID
            data: 'Siparis Karşılama Rapor' // Hardcoded data
          };
@@ -81,7 +81,7 @@ const SiparisKarsilama = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axiosLinkMain.get(`/Api/Raporlar/SiparisKarsilama?ilktarih=${formatDateForApi(startDate)}&sontarih=${formatDateForApi(endDate)}&temsilci=${IQ_MikroPersKod}`);
+      const response = await axiosLinkMain.get(`/Api/Raporlar/SiparisKarsilama?ilktarih=${formatDateForApi(startDate)}&sontarih=${formatDateForApi(endDate)}&temsilci=${Adi}`);
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {

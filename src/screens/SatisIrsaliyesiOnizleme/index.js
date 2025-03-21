@@ -543,7 +543,7 @@ const SatisIrsaliyesiOnizleme = () => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Satış İrsaliyesi Kaydedildi ${faturaBilgileri.sth_tarih} - ${faturaBilgileri.sth_evrakno_seri} - ${faturaBilgileri.sth_cari_kodu} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Satış İrsaliyesi IrsaliyeKaydetV2',
                       };

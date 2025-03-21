@@ -34,14 +34,14 @@ const SorumlulukBazindaBekleyenSiparis = () => {
        if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
  
        try {
-         if (!defaults || !defaults[0].IQ_MikroPersKod || !defaults[0].IQ_Database) {
-           console.log('IQ_MikroPersKod veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
+         if (!defaults || !defaults[0].Adi || !defaults[0].IQ_Database) {
+           console.log('Adi veya IQ_Database değeri bulunamadı, API çağrısı yapılmadı.');
            return;
          }
  
          const body = {
            Message: 'Sorumluluk Bazında Bekleyen Sipariş Rapor Açıldı', // Hardcoded message
-           User: defaults[0].IQ_MikroPersKod, // Temsilci ID
+           User: defaults[0].Adi, // Temsilci ID
            database: defaults[0].IQ_Database, // Database ID
            data: 'Sorumluluk Bazında Bekleyen Sipariş Rapor' // Hardcoded data
          };

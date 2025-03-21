@@ -157,7 +157,7 @@ const TahsilatTediyeOnizleme = () => {
                       const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
                       const body = {
                         Message: `Tahsilat Tediye Kaydedildi ${faturaBilgileri.cha_tarihi} - ${faturaBilgileri.cha_evrakno_seri} - ${faturaBilgileri.sth_cari_kodu} - İşlem Yapılan Platform: ${platform}`,
-                        User: defaults[0].IQ_MikroPersKod, 
+                        User: defaults[0].Adi, 
                         database: defaults[0].IQ_Database,
                         data: 'Tahsilat Tediye TahsilatTediyeKaydetV3',
                       };

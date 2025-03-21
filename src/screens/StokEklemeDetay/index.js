@@ -126,7 +126,7 @@ const handleInputChange = (field, value) => {
             const logHareket = async () => {
               const body = {
                 Message: `Stok Barkodu Kaydedildi ${faturaBilgileri.sto_kod} - ${bar_kodu}`,
-                User: defaults[0].IQ_MikroPersKod, 
+                User: defaults[0].Adi, 
                 database: defaults[0].IQ_Database,
                 data: 'Stok Barkodu BarkodSorgulaEkle',
               };
