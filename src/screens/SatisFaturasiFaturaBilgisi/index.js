@@ -312,8 +312,10 @@ const SatisFaturasiFaturaBilgisi = () => {
       const selectedCariKodu = cari.Cari_Kod;
       const selectedCariUnvan = cari.Ünvan;
       let selectedOdemePlanNo = cari.cari_odemeplan_no;
+      const selectedCariSatisFK = cari.cari_satis_fk;
 
       console.log(selectedOdemePlanNo);
+      console.log("Satış FK:", selectedCariSatisFK);
     
       setCha_kod(selectedCariKodu);
       setCha_cari_unvan1(selectedCariUnvan);
@@ -321,6 +323,7 @@ const SatisFaturasiFaturaBilgisi = () => {
         ...prevState,
         cha_kod: selectedCariKodu,
         cha_cari_unvan1: selectedCariUnvan,
+        cari_satis_fk: selectedCariSatisFK,
       }));
     
       setCha_adres_no('');

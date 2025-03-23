@@ -141,7 +141,8 @@ const CariListModal = ({ isVisible, onSelectCari, onClose, initialSearchTerm }) 
                       Adres: item.Adres,
                       Temsilci: item.Temsilci,
                       cari_odemeplan_no: item.cari_odemeplan_no,
-                      cari_VarsayilanCikisDepo: item.cari_VarsayilanCikisDepo
+                      cari_VarsayilanCikisDepo: item.cari_VarsayilanCikisDepo,
+                      cari_satis_fk: item.cari_satis_fk
                     })}
                   >
                     <View style={styles.itemRow}>

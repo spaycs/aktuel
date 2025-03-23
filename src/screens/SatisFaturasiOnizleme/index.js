@@ -35,6 +35,21 @@ const SatisFaturasiOnizleme = () => {
   const [editProductModalVisible, setEditProductModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [faturaAciklama, setFaturaAciklama] = useState(""); 
+  const [isPerakendeCari, setIsPerakendeCari] = useState(false);
+
+  // E-Arşiv modal stat e'leri
+  const [showEArsivModal, setShowEArsivModal] = useState(false);
+
+  const [cha_EArsiv_unvani_ad, setCha_EArsiv_unvani_ad] = useState('');
+  const [cha_EArsiv_unvani_soyad, setCha_EArsiv_unvani_soyad] = useState('');
+  const [cha_EArsiv_daire_adi, setCha_EArsiv_daire_adi] = useState('');
+  const [cha_EArsiv_Vkn, setCha_EArsiv_Vkn] = useState('');
+  const [cha_EArsiv_ulke, setCha_EArsiv_ulke] = useState('');
+  const [cha_EArsiv_Il, setCha_EArsiv_Il] = useState('');
+  const [cha_EArsiv_tel_ulke_kod, setCha_EArsiv_tel_ulke_kod] = useState('');
+  const [cha_EArsiv_tel_bolge_kod, setCha_EArsiv_tel_bolge_kod] = useState('');
+  const [cha_EArsiv_tel_no, setCha_EArsiv_tel_no] = useState('');
+  const [cha_EArsiv_mail, setCha_EArsiv_mail] = useState('');
 
 
   useEffect(() => {
@@ -60,6 +75,26 @@ const SatisFaturasiOnizleme = () => {
       }
     }
   }, [addedProducts]);
+
+  useEffect(() => {
+    const fetchPerakendeCariMi = async () => {
+      if (!faturaBilgileri?.cha_kod) return;
+  
+      try {
+        const response = await axiosLinkMain.get(`/Api/Cari/PerakendeCariMi?carikod=${faturaBilgileri.cha_kod}`
+        );
+        console.log('API Yanıtı:', response.data);
+
+        setIsPerakendeCari(response.data?.cari_Perakende_fl === true);
+      } catch (error) {
+        console.error("PerakendeCariMi API hatası:", error);
+        setIsPerakendeCari(false); // Hata durumunda gizli kalsın
+      }
+    };
+  
+    fetchPerakendeCariMi();
+  }, [faturaBilgileri?.cha_kod]);
+  
 
 
 
@@ -489,6 +524,16 @@ const detailedProducts = products.map((product) => {
           detay: detailedProducts, // sth alanları
           cha_adres_no: 1,
           cha_satici_kodu: sth_plasiyer_kodu,
+          cha_EArsiv_unvani_ad: cha_EArsiv_unvani_ad,
+          cha_EArsiv_unvani_soyad: cha_EArsiv_unvani_soyad,
+          cha_EArsiv_daire_adi: cha_EArsiv_daire_adi,
+          cha_EArsiv_Vkn: cha_EArsiv_Vkn,
+          cha_EArsiv_ulke: cha_EArsiv_ulke,
+          cha_EArsiv_Il: cha_EArsiv_Il,
+          cha_EArsiv_tel_ulke_kod: cha_EArsiv_tel_ulke_kod,
+          cha_EArsiv_tel_bolge_kod: cha_EArsiv_tel_bolge_kod,
+          cha_EArsiv_tel_no: cha_EArsiv_tel_no,
+          cha_EArsiv_mail: cha_EArsiv_mail,
           cha_special3: "iq",
           evrak_aciklamalari: formatExplanations(),
       };
@@ -533,6 +578,7 @@ const detailedProducts = products.map((product) => {
               cha_satici_kodu: sth_plasiyer_kodu,
               evrak_aciklamalari: formatExplanations(),
               cha_adres_no: 1,
+             
           };
           documents.push(servicePayload);
       });
@@ -616,12 +662,22 @@ const detailedProducts = products.map((product) => {
         keyExtractor={(item, index) => `${item.Stok_Kod}-${index}`}
       />
 
-    {/* Apiye Giden Değerler
+    {/* Apiye Giden Değerler 
       <View style={MainStyles.faturaBilgileriContainer}>
         <Text style={MainStyles.faturaBilgileriText}>cha_evrakno_seri: {faturaBilgileri.cha_evrakno_seri}</Text>
         <Text style={MainStyles.faturaBilgileriText}>cha_evrakno_sira: {faturaBilgileri.cha_evrakno_sira}</Text>
         
-        <Text style={MainStyles.faturaBilgileriText}>cha_vade: {faturaBilgileri.cha_vade}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cari_satis_fk: {faturaBilgileri.cari_satis_fk}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_unvani_ad: {cha_EArsiv_unvani_ad}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_unvani_soyad: {cha_EArsiv_unvani_soyad}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_daire_adi: {cha_EArsiv_daire_adi}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_Vkn: {cha_EArsiv_Vkn}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_ulke: {cha_EArsiv_ulke}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_Il: {cha_EArsiv_Il}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_tel_ulke_kod: {cha_EArsiv_tel_ulke_kod}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_tel_bolge_kod: {cha_EArsiv_tel_bolge_kod}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_tel_no: {cha_EArsiv_tel_no}</Text>
+        <Text style={MainStyles.faturaBilgileriText}>cha_EArsiv_mail: {cha_EArsiv_mail}</Text>
         
       </View>
     {/* Apiye Giden Değerler */}
@@ -661,41 +717,41 @@ const detailedProducts = products.map((product) => {
       </View>
     {/* Ürün İşlem Seçim */}
 
-     {/* Sipariş Toplam Hesap */}
-     <View style={MainStyles.containerstf}>
-    <View style={MainStyles.summaryContainer}>
-      <Text style={MainStyles.headerText}>Sipariş Özeti</Text>
-      <Text style={MainStyles.totalText}>Satır Sayısı: {addedProducts.length}</Text>
-    </View>
-    
-    <View style={MainStyles.totalsContainer}>
-      <View style={MainStyles.rowContainerOnizleme}>
-        <Text style={MainStyles.totalText}>Net Fiyat:</Text>
-        <Text style={MainStyles.amountText}>
-        {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateSubTotal() - calculateIskonto())}
-      </Text>
+    {/* Sipariş Toplam Hesap */}
+      <View style={MainStyles.containerstf}>
+        <View style={MainStyles.summaryContainer}>
+          <Text style={MainStyles.headerText}>Sipariş Özeti</Text>
+          <Text style={MainStyles.totalText}>Satır Sayısı: {addedProducts.length}</Text>
+        </View>
+        
+        <View style={MainStyles.totalsContainer}>
+          <View style={MainStyles.rowContainerOnizleme}>
+            <Text style={MainStyles.totalText}>Net Fiyat:</Text>
+            <Text style={MainStyles.amountText}>
+            {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateSubTotal() - calculateIskonto())}
+          </Text>
+          </View>
+          <View style={MainStyles.rowContainerOnizleme}>
+            <Text style={MainStyles.totalText}>Ara Toplam:</Text>
+            <Text style={MainStyles.amountText}>
+              {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateSubTotal())}
+            </Text>
+          </View>
+          <View style={MainStyles.rowContainerOnizleme}>
+            <Text style={MainStyles.totalText}>İskonto Toplam:</Text>
+            <Text style={MainStyles.amountText}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateIskonto())}</Text>
+          </View>
+          <View style={MainStyles.rowContainerOnizleme}>
+            <Text style={MainStyles.totalText}>Vergi Toplam:</Text>
+            <Text style={MainStyles.amountText}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTax())} </Text>
+          </View>
+          <View style={MainStyles.rowContainerOnizleme}>
+            <Text style={MainStyles.totalText}>Yekün:</Text>
+            <Text style={MainStyles.amountTextYekun}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateYekun())} </Text>
+          </View>
+        </View>
       </View>
-      <View style={MainStyles.rowContainerOnizleme}>
-        <Text style={MainStyles.totalText}>Ara Toplam:</Text>
-        <Text style={MainStyles.amountText}>
-          {new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateSubTotal())}
-        </Text>
-      </View>
-      <View style={MainStyles.rowContainerOnizleme}>
-        <Text style={MainStyles.totalText}>İskonto Toplam:</Text>
-        <Text style={MainStyles.amountText}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateIskonto())}</Text>
-      </View>
-      <View style={MainStyles.rowContainerOnizleme}>
-        <Text style={MainStyles.totalText}>Vergi Toplam:</Text>
-        <Text style={MainStyles.amountText}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateTax())} </Text>
-      </View>
-      <View style={MainStyles.rowContainerOnizleme}>
-        <Text style={MainStyles.totalText}>Yekün:</Text>
-        <Text style={MainStyles.amountTextYekun}>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(calculateYekun())} </Text>
-      </View>
-    </View>
-  </View>
-{/* Sipariş Toplam Hesap */}
+    {/* Sipariş Toplam Hesap */}
 
 
     {/* Açıklama Ekleme */}
@@ -741,6 +797,61 @@ const detailedProducts = products.map((product) => {
         </View>
       </Modal>
     {/* Açıklama Ekleme */}
+
+    {isPerakendeCari && (
+      <TouchableOpacity
+        style={MainStyles.aciklamaContainer}
+        onPress={() => setShowEArsivModal(true)}
+      >
+        <Text style={MainStyles.saveButtonTextAciklama}>Perakende Müşteri</Text>
+      </TouchableOpacity>
+    )}
+
+    <Modal
+      visible={showEArsivModal}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setShowEArsivModal(false)}
+    >
+      <View style={MainStyles.modalContainerAciklama}>
+        <CustomHeader title="Perakende Müşteri Bilgileri" onClose={() => setShowEArsivModal(false)} />
+        <View style={MainStyles.modalContent}>
+            {[
+              { label: "Ad", value: cha_EArsiv_unvani_ad, setter: setCha_EArsiv_unvani_ad },
+              { label: "Soyad", value: cha_EArsiv_unvani_soyad, setter: setCha_EArsiv_unvani_soyad },
+              { label: "Daire Adı", value: cha_EArsiv_daire_adi, setter: setCha_EArsiv_daire_adi },
+              { label: "VKN/TCKN", value: cha_EArsiv_Vkn, setter: setCha_EArsiv_Vkn },
+              { label: "Ülke", value: cha_EArsiv_ulke, setter: setCha_EArsiv_ulke },
+              { label: "İl", value: cha_EArsiv_Il, setter: setCha_EArsiv_Il },
+              { label: "Tel. Ülke Kodu", value: cha_EArsiv_tel_ulke_kod, setter: setCha_EArsiv_tel_ulke_kod },
+              { label: "Tel. Bölge Kodu", value: cha_EArsiv_tel_bolge_kod, setter: setCha_EArsiv_tel_bolge_kod },
+              { label: "Telefon No", value: cha_EArsiv_tel_no, setter: setCha_EArsiv_tel_no },
+              { label: "E-Posta", value: cha_EArsiv_mail, setter: setCha_EArsiv_mail }
+            ].map(({ label, value, setter }, idx) => (
+              <TextInput
+                key={idx}
+                style={MainStyles.textInput}
+                placeholder={label}
+                placeholderTextColor={colors.black}
+                value={value}
+                onChangeText={setter}
+              />
+            ))}
+
+          <TouchableOpacity
+            style={MainStyles.addButton}
+            onPress={() => {
+              setShowEArsivModal(false);
+              Alert.alert("Başarılı", "Bilgiler eklendi.");
+            }}
+          >
+            <Text style={MainStyles.addButtonText}>Kaydet</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+
+
 
     {/* Kaydet İptal Seçim */}
     {loading && (
