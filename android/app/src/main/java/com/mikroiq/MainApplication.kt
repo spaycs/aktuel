@@ -1,4 +1,4 @@
-package com.mikroiq
+package com.aktuel
 
 import android.app.Application
 import com.facebook.react.PackageList

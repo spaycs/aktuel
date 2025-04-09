@@ -5,7 +5,6 @@ import { AlinanSiparis, Alisİrsaliyesi, Camera, CameraMenu, DepolarArasiSevkFis
 import { useAuth } from '../userDetail/Id';
 import axiosLink from '../../utils/axios';
 import { colors } from '../../res/colors';
-import { ProductContext } from '../../context/ProductContext';
 import { useAuthDefault } from '../../components/DefaultUser';
 import axiosLinkMain from '../../utils/axiosMain';
 import { CommonActions } from '@react-navigation/native';

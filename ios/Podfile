@@ -27,8 +27,8 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-# MikroIQ hedefi için pod'ları dahil edin
-target 'MikroIQ' do
+# Aktuel hedefi için pod'ları dahil edin
+target 'Aktuel' do
   # Native modülleri dahil et
   config = use_native_modules!
 
@@ -48,8 +48,8 @@ target 'MikroIQ' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # MikroIQ test hedefi için pod'ları dahil et
-  target 'MikroIQTests' do
+  # Aktuel test hedefi için pod'ları dahil et
+  target 'AktuelTests' do
     inherit! :complete
     # Testler için gerekli pod'ları buraya ekleyebilirsiniz
   end

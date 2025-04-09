@@ -21,6 +21,15 @@ DerivedData
 *.ipa
 *.xcuserstate
 **/.xcode.env.local
+node_modules/
+android/app/build/
+ios/build/
+ios/Pods/
+*.iml
+.gradle
+/local.properties
+/.idea
+.env
 
 # Android/IntelliJ
 #

@@ -1,4 +1,8 @@
 {
-  "name": "MikroIQ",
-  "displayName": "MikroIQ"
+  "name": "aktuel",
+  "displayName": "aktuel",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-xxxxxxxx~xxxxxxxx",
+    "ios_app_id": "ca-app-pub-xxxxxxxx~xxxxxxxx"
+  }
 }

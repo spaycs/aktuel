@@ -2,15 +2,11 @@ import axios from 'axios';
 import { useAuth } from '../components/userDetail/Id';
 
 let axiosLinkMain = axios.create({
-  baseURL: 'http://hilalapi.novatekcloud.com:8094', // Varsayılan URL
+  baseURL: 'http://172.24.129.10:8055', // Varsayılan URL
 });
 
 export const useAxiosLinkMain = () => {
   const { authData } = useAuth();
-
-  if (authData && authData.FirmaApiUrl) {
-    axiosLinkMain.defaults.baseURL = authData.FirmaApiUrl;
-  }
 
   return axiosLinkMain;
 };
