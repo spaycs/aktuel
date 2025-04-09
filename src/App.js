@@ -24,7 +24,7 @@ function App() {
                         </AuthDefaultProvider>
                     </AuthProvider>
                 </NavigationContainer>
-        </GestureHandlerRootView>
+        </GestureHandlerRootView> 
     );
 }
 
