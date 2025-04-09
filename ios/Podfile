@@ -2,10 +2,6 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-# React Native izinleri için gerekli olan podları dahil edin
-permissions_path = '../node_modules/react-native-permissions/ios'
-pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways/Permission-LocationAlways.podspec"
-pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse/Permission-LocationWhenInUse.podspec"
 
 # React Native core kütüphanesini yalnızca tek bir kaynaktan dahil edin
 # `React-Core`'u sadece bir kez dahil etmelisiniz, bu yüzden aşağıdaki satırda tek bir yol kullanacağız.
