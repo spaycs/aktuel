@@ -1,6 +1,6 @@
 {
-  "name": "Aktuel",
-  "displayName": "Aktuel",
+  "name": "aktuel",
+  "displayName": "aktuel",
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-3413497302597553~7144044141",
     "ios_app_id": "ca-app-pub-3413497302597553~7144044141"
