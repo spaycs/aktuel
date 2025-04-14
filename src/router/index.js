@@ -50,14 +50,13 @@ const Router = () => {
                 component={MainApp}
                 options={({ navigation, route }) => ({
                     headerBackVisible:false,
+                    headerTitle: () => <Aktuel width={200} height={30}/>,
                     headerTitleAlign: 'center',
                     headerStyle: {
-                        backgroundColor: colors.red,  // Arka plan rengini burada belirtiyoruz
+                        backgroundColor: colors.white,  // Arka plan rengini burada belirtiyoruz
                       },
                     
-                    headerTitle: () => (
-                       <Text style={{ color: colors.white, fontSize: 16, fontWeight: 'bold'}}>Aktüel Ürünler</Text>
-                        ),
+                  
                     })}
                 
             />

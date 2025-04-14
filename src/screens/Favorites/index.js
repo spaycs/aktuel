@@ -71,7 +71,13 @@ export default Favorites;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white', padding: 10 },
-  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
+  title: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginTop: 5,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
   marketContainer: {
     flex: 1,
     alignItems: 'center',

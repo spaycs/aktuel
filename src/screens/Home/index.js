@@ -127,7 +127,7 @@ const Home = ({ navigation }) => {
         value={searchText}
         onChangeText={setSearchText}
       />
-
+       <Text style={styles.title}>Mağazalar</Text>
       <FlatList
         data={filteredMarkets}
         renderItem={renderItem}
@@ -148,9 +148,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: 'bold',
+    marginTop: 5,
     marginBottom: 5,
+    textAlign: 'center',
   },
   searchInput: {
     height: 45,
@@ -165,10 +167,11 @@ const styles = StyleSheet.create({
   marketContainer: {
     flex: 1,
     backgroundColor: '#fff',
-    margin: 8,
+    marginTop: 8,
+    marginRight: 5,
     paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: '#eee',
     shadowColor: '#000',

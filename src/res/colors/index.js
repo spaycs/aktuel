@@ -2,7 +2,7 @@ const mainColor ={
     black: '#000000',
     white: '#FFFFFF',
     blue: '#007bff',
-    red: '#ea3540',
+    red: '#f9af23',
     yellow: '#fcd155',
     green: '#6beb76',
     orange: '#fbb550',
