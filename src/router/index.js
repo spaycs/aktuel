@@ -50,8 +50,10 @@ const Router = () => {
                 component={MainApp}
                 options={({ navigation, route }) => ({
                     headerBackVisible:false,
+                    headerBackTitleVisible: false,
                     headerTitle: () => <Aktuel width={180} height={40}/>,
                     headerTitleAlign: 'center',
+                    
                     })}
                 
             />
@@ -60,6 +62,7 @@ const Router = () => {
                 component={Home}
                 options={({ navigation, route }) => ({
                     headerBackVisible:false,
+                    headerBackTitleVisible: false,
                     headerTitleAlign: 'center',
                     headerTitle: () => <Aktuel width={180} height={40}/>,
                     })}
@@ -69,6 +72,7 @@ const Router = () => {
                 name="MarketDetail"
                 component={MarketDetail}
                 options={({ route }) => ({
+                    headerBackTitleVisible: false,
                     title: route.params?.name || 'Detay',
                 })}
                 />
@@ -95,7 +99,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerBackVisible:false,
                     headerTitleAlign: 'center',
-                    
+                    headerBackTitleVisible: false,
                     headerTitle: () => <Aktuel width={180} height={40}/>,
                     })}
             />

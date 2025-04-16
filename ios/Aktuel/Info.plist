@@ -10,6 +10,10 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
+	<key>UIAppFonts</key>
+	<array>
+	<string>FontAwesome.ttf</string>
+	</array>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>GADApplicationIdentifier</key>
