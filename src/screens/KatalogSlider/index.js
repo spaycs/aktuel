@@ -128,7 +128,7 @@ const KatalogSlider = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size="large" color="#000" />
       ) : (
@@ -160,7 +160,7 @@ const KatalogSlider = ({ route }) => {
         visible={visible}
         onRequestClose={() => setIsVisible(false)}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

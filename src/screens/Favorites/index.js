@@ -47,7 +47,7 @@ const Favorites = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Favori Mağazalarım</Text>
       {loading ? (
         <ActivityIndicator size="large" color="gray" />
@@ -63,7 +63,7 @@ const Favorites = ({ navigation }) => {
           numColumns={3}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

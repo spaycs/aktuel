@@ -52,7 +52,7 @@ const AlisverisListesi = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Alışveriş Listesi</Text>
 
       <View style={styles.inputContainer}>
@@ -73,7 +73,7 @@ const AlisverisListesi = () => {
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.listContainer}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

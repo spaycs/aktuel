@@ -58,7 +58,7 @@ const MarketDetail = ({ route, navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size="large" color={colors.primary || 'gray'} />
       ) : (
@@ -69,7 +69,7 @@ const MarketDetail = ({ route, navigation }) => {
           contentContainerStyle={styles.listContent}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

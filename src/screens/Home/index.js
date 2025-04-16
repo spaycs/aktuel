@@ -119,7 +119,7 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <TextInput
         style={styles.searchInput}
         placeholder="Mağaza ara..."
@@ -134,7 +134,7 @@ const Home = ({ navigation }) => {
         numColumns={2}
         contentContainerStyle={styles.flatListContent}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
