@@ -120,14 +120,13 @@ const Home = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-
       <TextInput
         style={styles.searchInput}
         placeholder="Mağaza ara..."
         value={searchText}
         onChangeText={setSearchText}
+        placeholderTextColor={colors.black}
       />
-       <Text style={styles.title}>Mağazalar</Text>
       <FlatList
         data={filteredMarkets}
         renderItem={renderItem}
@@ -160,6 +159,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 12,
+    backgroundColor: colors.white,
   },
   flatListContent: {
     paddingBottom: 20,

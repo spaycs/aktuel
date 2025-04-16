@@ -50,13 +50,8 @@ const Router = () => {
                 component={MainApp}
                 options={({ navigation, route }) => ({
                     headerBackVisible:false,
-                    headerTitle: () => <Aktuel width={200} height={30}/>,
+                    headerTitle: () => <Aktuel width={180} height={40}/>,
                     headerTitleAlign: 'center',
-                    headerStyle: {
-                        backgroundColor: colors.white,  // Arka plan rengini burada belirtiyoruz
-                      },
-                    
-                  
                     })}
                 
             />
@@ -66,10 +61,7 @@ const Router = () => {
                 options={({ navigation, route }) => ({
                     headerBackVisible:false,
                     headerTitleAlign: 'center',
-                    
-                    headerTitle: () => (
-                        <Aktuel width={50}/>
-                        ),
+                    headerTitle: () => <Aktuel width={180} height={40}/>,
                     })}
             />
            
@@ -94,9 +86,7 @@ const Router = () => {
                     headerBackVisible:false,
                     headerTitleAlign: 'center',
                     
-                    headerTitle: () => (
-                        <Aktuel width={50}/>
-                        ),
+                    headerTitle: () => <Aktuel width={180} height={40}/>,
                     })}
             />
             <Stack.Screen
@@ -106,9 +96,7 @@ const Router = () => {
                     headerBackVisible:false,
                     headerTitleAlign: 'center',
                     
-                    headerTitle: () => (
-                        <MikroIQ width={50}/>
-                        ),
+                    headerTitle: () => <Aktuel width={180} height={40}/>,
                     })}
             />
              
