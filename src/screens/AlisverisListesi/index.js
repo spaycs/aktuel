@@ -14,10 +14,40 @@ import {
   setAlisverisListesi,
 } from '../../utils/alisverisStorage'; // ← path'e göre güncelle
 import { colors } from '../../res/colors';
+import axios from 'axios';
 
 const AlisverisListesi = () => {
   const [itemText, setItemText] = useState('');
   const [items, setItems] = useState([]);
+   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
+        
+          useEffect(() => {
+            // İlk render'da sadece çalışacak
+            const logHareket = async () => {
+              if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
+        
+              try {
+                const body = {
+                  Message: 'Alışveriş Listesi Sayfası Açıldı', // Hardcoded message
+                  Data: `Alışveriş Listesi `,   // Hardcoded data
+                  User: 'Genel'
+                };
+        
+                const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);
+        
+                if (response.status === 200) {
+                  console.log('Hareket Logu başarıyla eklendi');
+                  setIsLogSent(true); // Başarıyla log eklendikten sonra flag'i true yap
+                } else {
+                  console.log('Hareket Logu eklenirken bir hata oluştu');
+                }
+              } catch (error) {
+                console.error('API çağrısı sırasında hata oluştu:', error);
+              }
+            };
+        
+            logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
+          }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
 
   useEffect(() => {
     const loadData = async () => {
@@ -29,11 +59,33 @@ const AlisverisListesi = () => {
 
   const handleAddItem = async () => {
     if (itemText.trim() === '') return;
-    const updated = [...items, itemText.trim()];
+  
+    const trimmedItem = itemText.trim();
+    const updated = [...items, trimmedItem];
     setItems(updated);
     await setAlisverisListesi(updated);
     setItemText('');
+  
+    // Log gönderimi
+    try {
+      const logBody = {
+        Message: 'Alışveriş Listesine Ürün Eklendi',
+        Data: `Eklenen Ürün: ${trimmedItem}`,
+        User: 'Genel'
+      };
+  
+      const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', logBody);
+  
+      if (response.status === 200) {
+        console.log('Ürün ekleme logu başarıyla gönderildi');
+      } else {
+        console.log('Ürün ekleme logu gönderilirken hata oluştu');
+      }
+    } catch (error) {
+      console.error('Ürün ekleme logu sırasında hata:', error);
+    }
   };
+  
 
   const handleDeleteItem = async (index) => {
     const updated = [...items];

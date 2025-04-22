@@ -44,6 +44,36 @@ const Home = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [filteredMarkets, setFilteredMarkets] = useState([]);
   const [favorites, setLocalFavorites] = useState([]);
+  const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
+
+  useEffect(() => {
+    // İlk render'da sadece çalışacak
+    const logHareket = async () => {
+      if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
+
+      try {
+        const body = {
+          Message: 'Anasayfa Açıldı', // Hardcoded message
+          Data: 'Anasayfa', // Hardcoded data
+          User: 'Genel'
+        };
+
+        const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);
+
+        if (response.status === 200) {
+          console.log('Hareket Logu başarıyla eklendi');
+          setIsLogSent(true); // Başarıyla log eklendikten sonra flag'i true yap
+        } else {
+          console.log('Hareket Logu eklenirken bir hata oluştu');
+        }
+      } catch (error) {
+        console.error('API çağrısı sırasında hata oluştu:', error);
+      }
+    };
+
+    logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
+  }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
+
 
   useEffect(() => {
     fetchMarketList();
@@ -89,10 +119,35 @@ const Home = ({ navigation }) => {
     const updatedFavorites = isAlreadyFav
       ? favorites.filter((fav) => fav.id !== market.id)
       : [...favorites, market];
-
+  
     setLocalFavorites(updatedFavorites);
     await setFavorites(updatedFavorites);
+  
+    // Favori işlemini logla
+    try {
+      const logBody = {
+        Message: isAlreadyFav
+          ? 'Favoriden Mağaza Çıkarıldı'
+          : 'Favoriye Mağaza Eklendi',
+        Data: `Mağaza Adı: ${market.name}`,
+        User: 'Genel',
+      };
+  
+      const response = await axios.post(
+        'http://31.210.85.83:8055/api/Log/HareketLogEkle',
+        logBody
+      );
+  
+      if (response.status === 200) {
+        console.log('Favori logu başarıyla gönderildi');
+      } else {
+        console.log('Favori logu gönderilirken hata oluştu');
+      }
+    } catch (error) {
+      console.error('Favori logu gönderilirken hata:', error);
+    }
   };
+  
 
   const renderItem = ({ item }) => {
     const isFav = favorites.some((fav) => fav.id === item.id);

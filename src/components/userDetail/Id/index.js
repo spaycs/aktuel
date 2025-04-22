@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // FirmaApiUrl değiştiğinde axiosLinkMain'i güncelle
-      console.log("Güncel bilgi", authData);
   }); 
 
   useEffect(() => {

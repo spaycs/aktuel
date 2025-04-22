@@ -3,10 +3,40 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndi
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getFavorites } from '../../utils/storage';
 import axiosLinkMain from '../../utils/axiosMain'; 
+import axios from 'axios';
 
 const Favorites = ({ navigation }) => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
+      
+        useEffect(() => {
+          // İlk render'da sadece çalışacak
+          const logHareket = async () => {
+            if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
+      
+            try {
+              const body = {
+                Message: 'Favorilerim Sayfası Açıldı', // Hardcoded message
+                Data: `Favorilerim `,   // Hardcoded data
+                User: 'Genel'
+              };
+      
+              const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);
+      
+              if (response.status === 200) {
+                console.log('Hareket Logu başarıyla eklendi');
+                setIsLogSent(true); // Başarıyla log eklendikten sonra flag'i true yap
+              } else {
+                console.log('Hareket Logu eklenirken bir hata oluştu');
+              }
+            } catch (error) {
+              console.error('API çağrısı sırasında hata oluştu:', error);
+            }
+          };
+      
+          logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
+        }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
 
   useEffect(() => {
     const fetchFavorites = async () => {
