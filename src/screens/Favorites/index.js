@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,Platform, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getFavorites } from '../../utils/storage';
 import { UserContext } from '../../context/UserContext';
@@ -16,11 +16,11 @@ const Favorites = ({ navigation }) => {
           // İlk render'da sadece çalışacak
           const logHareket = async () => {
             if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
-      
+            const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
             try {
               const body = {
                 Message: 'Favorilerim Sayfası Açıldı', // Hardcoded message
-                Data: `Favorilerim `,   // Hardcoded data
+                Data: `Favorilerim  - ${platform}`,
                 User: userId
               };
       

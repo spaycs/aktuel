@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../res/colors';
@@ -50,14 +51,13 @@ const Home = ({ navigation }) => {
   
   useEffect(() => {
     // İlk render'da sadece çalışacak
-    console.log('userId',userId)
     const logHareket = async () => {
       if (!userId || isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
-
+      const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
       try {
         const body = {
           Message: 'Anasayfa Açıldı', // Hardcoded message
-          Data: 'Anasayfa', // Hardcoded data
+          Data: `Anasayfa - ${platform}`, 
           User: userId,
         };
 

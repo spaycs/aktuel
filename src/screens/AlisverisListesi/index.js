@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -27,11 +28,11 @@ const AlisverisListesi = () => {
             // İlk render'da sadece çalışacak
             const logHareket = async () => {
               if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
-        
+              const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
               try {
                 const body = {
                   Message: 'Alışveriş Listesi Sayfası Açıldı', // Hardcoded message
-                  Data: `Alışveriş Listesi `,   // Hardcoded data
+                  Data: `Alışveriş Listesi  - ${platform}`,
                   User: userId,
                 };
         

@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserContext } from '../../context/UserContext';
@@ -27,11 +28,11 @@ const MarketDetail = ({ route, navigation }) => {
       // İlk render'da sadece çalışacak
       const logHareket = async () => {
         if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
-  
+        const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
         try {
           const body = {
             Message: 'Market Sayfası Açıldı', // Hardcoded message
-            Data: `Market Adı: ${name}`,   // Hardcoded data
+            Data: `Market Adı: ${name} - ${platform}`,
             User: userId,
           };
   

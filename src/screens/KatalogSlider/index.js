@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   Text,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -109,11 +110,11 @@ useEffect(() => {
         // İlk render'da sadece çalışacak
         const logHareket = async () => {
           if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
-    
+          const platform = Platform.OS === 'android' ? 'Android' : 'iOS';
           try {
             const body = {
               Message: 'Katalog Sayfası Açıldı', // Hardcoded message
-              Data: `Katalog Id: ${katalogId}`,   // Hardcoded data
+              Data: `Katalog Id: ${katalogId} - ${platform}`, 
               User: userId,
             };
     
