@@ -6,10 +6,24 @@ import { AuthProvider } from "./components/userDetail/Id";
 import { AuthDefaultProvider } from "./components/DefaultUser";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import VersionCheck from 'react-native-version-check';
+import { UserProvider } from './context/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 function App() {
 
     const [isUpdateRequired, setIsUpdateRequired] = useState(false);
+    useEffect(() => {
+        const loadUserId = async () => {
+          let id = await AsyncStorage.getItem('user_id');
+          if (!id) {
+            id = uuid.v4();
+            await AsyncStorage.setItem('user_id', id);
+          }
+        };
+        loadUserId();
+      }, []);
+      
 
     // Uygulama açıldığında mağazadaki son sürüm ile mevcut sürümü karşılaştırır
     
@@ -82,6 +96,7 @@ function App() {
     // Router Sayfa yönlendirmeleri yapılır 
     return (
         <GestureHandlerRootView style={{ flex: 1, }}>
+            <UserProvider>
                 <NavigationContainer>              
                     <AuthProvider>                  
                         <AuthDefaultProvider>       
@@ -89,6 +104,7 @@ function App() {
                         </AuthDefaultProvider>
                     </AuthProvider>
                 </NavigationContainer>
+            </UserProvider>
         </GestureHandlerRootView> 
     );
 }

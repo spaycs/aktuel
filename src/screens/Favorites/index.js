@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getFavorites } from '../../utils/storage';
+import { UserContext } from '../../context/UserContext';
 import axiosLinkMain from '../../utils/axiosMain'; 
 import axios from 'axios';
 
 const Favorites = ({ navigation }) => {
+  const { userId } = useContext(UserContext);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
-      
+
         useEffect(() => {
           // İlk render'da sadece çalışacak
           const logHareket = async () => {
@@ -19,7 +21,7 @@ const Favorites = ({ navigation }) => {
               const body = {
                 Message: 'Favorilerim Sayfası Açıldı', // Hardcoded message
                 Data: `Favorilerim `,   // Hardcoded data
-                User: 'Genel'
+                User: userId
               };
       
               const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);

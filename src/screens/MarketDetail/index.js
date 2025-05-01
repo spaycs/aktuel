@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { UserContext } from '../../context/UserContext';
 import { colors } from '../../res/colors';
 import axiosLinkMain from '../../utils/axiosMain';
 import axios from 'axios';
@@ -16,6 +17,7 @@ Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.style = { color: colors.black };
 
 const MarketDetail = ({ route, navigation }) => {
+  const { userId } = useContext(UserContext);
   const { marketId, name } = route.params;
   const [katalogList, setKatalogList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ const MarketDetail = ({ route, navigation }) => {
           const body = {
             Message: 'Market Sayfası Açıldı', // Hardcoded message
             Data: `Market Adı: ${name}`,   // Hardcoded data
-            User: 'Genel'
+            User: userId,
           };
   
           const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext,useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,10 +13,12 @@ import {
   getAlisverisListesi,
   setAlisverisListesi,
 } from '../../utils/alisverisStorage'; // ← path'e göre güncelle
+import { UserContext } from '../../context/UserContext';
 import { colors } from '../../res/colors';
 import axios from 'axios';
 
 const AlisverisListesi = () => {
+  const { userId } = useContext(UserContext);
   const [itemText, setItemText] = useState('');
   const [items, setItems] = useState([]);
    const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
@@ -30,7 +32,7 @@ const AlisverisListesi = () => {
                 const body = {
                   Message: 'Alışveriş Listesi Sayfası Açıldı', // Hardcoded message
                   Data: `Alışveriş Listesi `,   // Hardcoded data
-                  User: 'Genel'
+                  User: userId,
                 };
         
                 const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);
@@ -71,7 +73,7 @@ const AlisverisListesi = () => {
       const logBody = {
         Message: 'Alışveriş Listesine Ürün Eklendi',
         Data: `Eklenen Ürün: ${trimmedItem}`,
-        User: 'Genel'
+        User: userId,
       };
   
       const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', logBody);

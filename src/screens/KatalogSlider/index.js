@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useContext,useEffect, useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -20,18 +20,20 @@ import {
 } from 'react-native-google-mobile-ads';
 import MobileAds from 'react-native-google-mobile-ads';
 import ImageViewing from 'react-native-image-viewing';
+import { UserContext } from '../../context/UserContext';
 import axiosLinkMain from '../../utils/axiosMain'; // API bağlantısı
 import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
 // 📢 Gerçek Reklam Birimi ID'lerin
-const BANNER_AD_UNIT_ID = "ca-app-pub-3413497302597553/7062909821";
-const INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-3413497302597553/9961306414";
-const REWARDED_AD_UNIT_ID = 'ca-app-pub-3413497302597553/9048904753';
+const BANNER_AD_UNIT_ID = "ca-app-pub-3413497302597553/8776360444";
+const INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-3413497302597553/1364774285";
+const REWARDED_AD_UNIT_ID = 'ca-app-pub-3413497302597553/4837115436';
 
 
 const KatalogSlider = ({ route }) => {
+  const { userId } = useContext(UserContext);
   const { katalogId, marketId } = route.params;
   const [images, setImages] = useState([]);
   const [visible, setIsVisible] = useState(false);
@@ -112,7 +114,7 @@ useEffect(() => {
             const body = {
               Message: 'Katalog Sayfası Açıldı', // Hardcoded message
               Data: `Katalog Id: ${katalogId}`,   // Hardcoded data
-              User: 'Genel'
+              User: userId,
             };
     
             const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);

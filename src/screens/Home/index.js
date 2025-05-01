@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import {
   FlatList,
   Image,
@@ -15,6 +15,7 @@ import { getFavorites, setFavorites } from '../../utils/storage';
 import axios from 'axios'; // axios import etmeyi unutma
 import axiosLinkMain from '../../utils/axiosMain';
 import FastImage from 'react-native-fast-image';
+import { UserContext } from '../../context/UserContext';
 
 
 Text.defaultProps = Text.defaultProps || {};
@@ -40,22 +41,24 @@ const normalizeText = (text) => {
 };
 
 const Home = ({ navigation }) => {
+  const { userId } = useContext(UserContext);
   const [markets, setMarkets] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [filteredMarkets, setFilteredMarkets] = useState([]);
   const [favorites, setLocalFavorites] = useState([]);
   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
-
+  
   useEffect(() => {
     // İlk render'da sadece çalışacak
+    console.log('userId',userId)
     const logHareket = async () => {
-      if (isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
+      if (!userId || isLogSent) return;  // Eğer log zaten gönderildiyse, fonksiyonu durdur
 
       try {
         const body = {
           Message: 'Anasayfa Açıldı', // Hardcoded message
           Data: 'Anasayfa', // Hardcoded data
-          User: 'Genel'
+          User: userId,
         };
 
         const response = await axios.post('http://31.210.85.83:8055/api/Log/HareketLogEkle', body);
@@ -72,8 +75,7 @@ const Home = ({ navigation }) => {
     };
 
     logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
-  }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
-
+  }, [userId]); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
 
   useEffect(() => {
     fetchMarketList();
@@ -130,7 +132,7 @@ const Home = ({ navigation }) => {
           ? 'Favoriden Mağaza Çıkarıldı'
           : 'Favoriye Mağaza Eklendi',
         Data: `Mağaza Adı: ${market.name}`,
-        User: 'Genel',
+        User: userId,
       };
   
       const response = await axios.post(
