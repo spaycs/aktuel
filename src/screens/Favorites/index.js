@@ -11,7 +11,6 @@ const Favorites = ({ navigation }) => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
-
         useEffect(() => {
           // İlk render'da sadece çalışacak
           const logHareket = async () => {
@@ -39,7 +38,6 @@ const Favorites = ({ navigation }) => {
       
           logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
         }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
-
   useEffect(() => {
     const fetchFavorites = async () => {
       try {

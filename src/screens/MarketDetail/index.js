@@ -23,7 +23,6 @@ const MarketDetail = ({ route, navigation }) => {
   const [katalogList, setKatalogList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
-  
     useEffect(() => {
       // İlk render'da sadece çalışacak
       const logHareket = async () => {
@@ -51,7 +50,6 @@ const MarketDetail = ({ route, navigation }) => {
   
       logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
     }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
-
   useEffect(() => {
     const fetchKatalogList = async () => {
       try {

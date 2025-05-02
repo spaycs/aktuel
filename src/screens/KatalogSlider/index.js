@@ -16,8 +16,6 @@ import {
   BannerAdSize,
   InterstitialAd,
   AdEventType,
-  RewardedAd,
-  RewardedAdEventType,
 } from 'react-native-google-mobile-ads';
 import MobileAds from 'react-native-google-mobile-ads';
 import ImageViewing from 'react-native-image-viewing';
@@ -30,7 +28,6 @@ const { width } = Dimensions.get('window');
 // 📢 Gerçek Reklam Birimi ID'lerin
 const BANNER_AD_UNIT_ID = "ca-app-pub-3413497302597553/8776360444";
 const INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-3413497302597553/1364774285";
-const REWARDED_AD_UNIT_ID = 'ca-app-pub-3413497302597553/4837115436';
 
 
 const KatalogSlider = ({ route }) => {
@@ -45,42 +42,6 @@ const KatalogSlider = ({ route }) => {
   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
   const interstitialRef = useRef(null);
 
-const rewardedAdRef = useRef(
-  RewardedAd.createForAdRequest(REWARDED_AD_UNIT_ID, {
-    requestNonPersonalizedAdsOnly: true,
-  })
-);
-
-useEffect(() => {
-  console.log('🧪 RewardedAdEventType:', RewardedAdEventType);
-  const timeout = setTimeout(() => {
-    const rewardedAd = rewardedAdRef.current;
-
-    const onAdLoaded = rewardedAd.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => {
-        rewardedAd.show();
-      }
-    );
-
-    const onAdEarned = rewardedAd.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      (reward) => {
-        console.log('İzlenme tamamlandı.', reward);
-      }
-    );
-
-    rewardedAd.load();
-
-    return () => {
-      onAdLoaded();   // bu unsubscribe eder
-      onAdClosed();
-      onAdEarned();
-    };
-  }, 10000);
-
-  return () => clearTimeout(timeout);
-}, []);
     
   useEffect(() => {
     const interstitial = InterstitialAd.createForAdRequest(INTERSTITIAL_AD_UNIT_ID, {
@@ -133,7 +94,6 @@ useEffect(() => {
     
         logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
       }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
-
   useEffect(() => {
     MobileAds()
       .initialize()

@@ -48,7 +48,6 @@ const Home = ({ navigation }) => {
   const [filteredMarkets, setFilteredMarkets] = useState([]);
   const [favorites, setLocalFavorites] = useState([]);
   const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
-  
   useEffect(() => {
     // İlk render'da sadece çalışacak
     const logHareket = async () => {
@@ -76,7 +75,6 @@ const Home = ({ navigation }) => {
 
     logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
   }, [userId]); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
-
   useEffect(() => {
     fetchMarketList();
     const fetchFavs = async () => {

@@ -23,7 +23,6 @@ const AlisverisListesi = () => {
   const [itemText, setItemText] = useState('');
   const [items, setItems] = useState([]);
    const [isLogSent, setIsLogSent] = useState(false); // API çağrısının yapılıp yapılmadığını takip etmek için
-        
           useEffect(() => {
             // İlk render'da sadece çalışacak
             const logHareket = async () => {
@@ -51,7 +50,6 @@ const AlisverisListesi = () => {
         
             logHareket(); // Sayfa yüklendiğinde API çağrısını başlat
           }, []); // Boş bağımlılık dizisi, yalnızca ilk render'da çalışacak
-
   useEffect(() => {
     const loadData = async () => {
       const saved = await getAlisverisListesi();
